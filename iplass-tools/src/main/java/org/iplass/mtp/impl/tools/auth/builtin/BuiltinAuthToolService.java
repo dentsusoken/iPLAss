@@ -80,10 +80,13 @@ public class BuiltinAuthToolService implements Service {
 
 	@Override
 	public void init(Config config) {
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 		accountToolDao = new AccountToolDao(rdb);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		apdm = ManagerLocator.getInstance().getManager(AuthenticationPolicyDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		apdm = ManagerLocator.getInstance()
+				.getManager(AuthenticationPolicyDefinitionManager.class);
 	}
 
 	@Override
@@ -100,12 +103,13 @@ public class BuiltinAuthToolService implements Service {
 		BuiltinAuthUserSearchResult result = new BuiltinAuthUserSearchResult();
 
 		if (param.getCondition() instanceof UserSpecificCondition) {
-			UserSpecificCondition cond = (UserSpecificCondition)param.getCondition();
+			UserSpecificCondition cond = (UserSpecificCondition) param.getCondition();
 
 			AuthenticationPolicyDefinition authPolicy = null;
 			if (cond.getType() == SpecificType.LOCKED) {
 				authPolicy = apdm.getOrDefault(cond.getLockedUserPolicyName());
-				if (authPolicy.getAccountLockoutPolicy().getLockoutFailureCount() == 0) {
+				if (authPolicy.getAccountLockoutPolicy()
+						.getLockoutFailureCount() == 0) {
 					//無期限
 					result.setTotalCount(0);
 					result.setExecuteOffset(0);
@@ -114,7 +118,8 @@ public class BuiltinAuthToolService implements Service {
 				}
 			} else if (cond.getType() == SpecificType.EXPIRED_PASSWORD) {
 				authPolicy = apdm.getOrDefault(cond.getPasswordRemainDaysPolicyName());
-				if (authPolicy.getPasswordPolicy().getMaximumPasswordAge() == 0) {
+				if (authPolicy.getPasswordPolicy()
+						.getMaximumPasswordAge() == 0) {
 					//無期限
 					result.setTotalCount(0);
 					result.setExecuteOffset(0);
@@ -149,7 +154,7 @@ public class BuiltinAuthToolService implements Service {
 			result.setUsers(userList);
 
 		} else if (param.getCondition() instanceof UserAttributeCondition) {
-			UserAttributeCondition cond = (UserAttributeCondition)param.getCondition();
+			UserAttributeCondition cond = (UserAttributeCondition) param.getCondition();
 
 			try {
 				//検索条件の生成
@@ -170,7 +175,7 @@ public class BuiltinAuthToolService implements Service {
 
 				//User検索
 				final List<BuiltinAuthUser> userList = new ArrayList<>();
-				searchUser(where, param.getLimit(), param.getOffset() , new Predicate<BuiltinAuthUser>() {
+				searchUser(where, param.getLimit(), param.getOffset(), new Predicate<BuiltinAuthUser>() {
 
 					@Override
 					public boolean test(BuiltinAuthUser user) {
@@ -190,7 +195,9 @@ public class BuiltinAuthToolService implements Service {
 		} else {
 			result.setError(true);
 			result.addMessages("unsupport condition type. condition is "
-						+ (param.getCondition() != null ? param.getCondition().getClass().getName() : "null"));
+					+ (param.getCondition() != null ? param.getCondition()
+							.getClass()
+							.getName() : "null"));
 			return result;
 		}
 
@@ -206,7 +213,7 @@ public class BuiltinAuthToolService implements Service {
 	 */
 	public void exportCsv(final OutputStream os, final BuiltinAuthUserSearchParameter param) throws IOException {
 
-		try (final BuiltinAuthUserCsvWriter writer = new BuiltinAuthUserCsvWriter(os)){
+		try (final BuiltinAuthUserCsvWriter writer = new BuiltinAuthUserCsvWriter(os)) {
 
 			//ヘッダ出力
 			writer.writeHeader();
@@ -296,7 +303,7 @@ public class BuiltinAuthToolService implements Service {
 	 * @param user Account情報が設定されたUser
 	 */
 	private void applyUser(BuiltinAuthUser authUser) {
-		User user = (User)em.load(authUser.getOid(), User.DEFINITION_NAME, new LoadOption(false, false));
+		User user = (User) em.load(authUser.getOid(), User.DEFINITION_NAME, new LoadOption(false, false));
 
 		if (user != null) {
 			authUser.setUserExist(true);
@@ -328,17 +335,17 @@ public class BuiltinAuthToolService implements Service {
 
 			String names[] = null;
 			if (name.contains(" ")) {
-				names = name.split(" ", 2);	//最大で2つのみ
+				names = name.split(" ", 2); //最大で2つのみ
 			} else if (name.contains("　")) {
-				names = name.split("　", 2);	//最大で2つのみ
+				names = name.split("　", 2); //最大で2つのみ
 			} else {
-				names = new String[]{name};
+				names = new String[] { name };
 			}
 			if (names.length == 2) {
 				conditions.add(new Or(
 						new And(
-							new Like(User.FIRST_NAME, names[0], MatchPattern.PARTIAL),
-							new Like(User.LAST_NAME, names[1], MatchPattern.PARTIAL)),
+								new Like(User.FIRST_NAME, names[0], MatchPattern.PARTIAL),
+								new Like(User.LAST_NAME, names[1], MatchPattern.PARTIAL)),
 						new And(
 								new Like(User.LAST_NAME, names[0], MatchPattern.PARTIAL),
 								new Like(User.FIRST_NAME, names[1], MatchPattern.PARTIAL)),
@@ -347,15 +354,13 @@ public class BuiltinAuthToolService implements Service {
 								new Like(User.LAST_NAME_KANA, names[1], MatchPattern.PARTIAL)),
 						new And(
 								new Like(User.LAST_NAME_KANA, names[0], MatchPattern.PARTIAL),
-								new Like(User.FIRST_NAME_KANA, names[1], MatchPattern.PARTIAL))
-						));
+								new Like(User.FIRST_NAME_KANA, names[1], MatchPattern.PARTIAL))));
 			} else if (names.length == 1) {
 				conditions.add(new Or(
 						new Like(User.FIRST_NAME, names[0], MatchPattern.PARTIAL),
 						new Like(User.LAST_NAME, names[0], MatchPattern.PARTIAL),
 						new Like(User.FIRST_NAME_KANA, names[0], MatchPattern.PARTIAL),
-						new Like(User.LAST_NAME_KANA, names[0], MatchPattern.PARTIAL)
-						));
+						new Like(User.LAST_NAME_KANA, names[0], MatchPattern.PARTIAL)));
 			}
 		}
 		if (StringUtil.isNotBlank(cond.getMail())) {
@@ -375,8 +380,7 @@ public class BuiltinAuthToolService implements Service {
 					//時間レベルを0とMaxで挟んで検索
 					conditions.add(new And(
 							new GreaterEqual(Entity.END_DATE, adjustTimes(calcDate, 0, 0, 0, 0)),
-							new LesserEqual(Entity.END_DATE, adjustTimes(calcDate, 23, 59, 59, 999))
-							));
+							new LesserEqual(Entity.END_DATE, adjustTimes(calcDate, 23, 59, 59, 999))));
 				} else if (SearchOperator.LESSEQUAL == cond.getValidTermRemainDaysOparator()) {
 					//時間レベルをMaxにして検索
 					conditions.add(new LesserEqual(Entity.END_DATE, adjustTimes(calcDate, 23, 59, 59, 999)));
@@ -384,7 +388,8 @@ public class BuiltinAuthToolService implements Service {
 			}
 		}
 		//Where条件が直接指定されていた場合はPreparedQueryで変換
-		if (cond.getDirectWhere() != null && !cond.getDirectWhere().isEmpty()) {
+		if (cond.getDirectWhere() != null && !cond.getDirectWhere()
+				.isEmpty()) {
 			conditions.add(new PreparedQuery(cond.getDirectWhere()).condition(null));
 		}
 
@@ -507,18 +512,20 @@ public class BuiltinAuthToolService implements Service {
 	private void search(final BuiltinAuthUserSearchParameter param, final Predicate<BuiltinAuthUser> callback) {
 
 		if (param.getCondition() instanceof UserSpecificCondition) {
-			UserSpecificCondition cond = (UserSpecificCondition)param.getCondition();
+			UserSpecificCondition cond = (UserSpecificCondition) param.getCondition();
 
 			AuthenticationPolicyDefinition authPolicy = null;
 			if (cond.getType() == SpecificType.LOCKED) {
 				authPolicy = apdm.getOrDefault(cond.getLockedUserPolicyName());
-				if (authPolicy.getAccountLockoutPolicy().getLockoutFailureCount() == 0) {
+				if (authPolicy.getAccountLockoutPolicy()
+						.getLockoutFailureCount() == 0) {
 					//無期限
 					return;
 				}
 			} else if (cond.getType() == SpecificType.EXPIRED_PASSWORD) {
 				authPolicy = apdm.getOrDefault(cond.getPasswordRemainDaysPolicyName());
-				if (authPolicy.getPasswordPolicy().getMaximumPasswordAge() == 0) {
+				if (authPolicy.getPasswordPolicy()
+						.getMaximumPasswordAge() == 0) {
 					//無期限
 					return;
 				}
@@ -534,13 +541,13 @@ public class BuiltinAuthToolService implements Service {
 			});
 
 		} else if (param.getCondition() instanceof UserAttributeCondition) {
-			UserAttributeCondition cond = (UserAttributeCondition)param.getCondition();
+			UserAttributeCondition cond = (UserAttributeCondition) param.getCondition();
 
 			//検索条件の生成
 			Where where = getUserWhere(cond);
 
 			//User検索
-			searchUser(where, param.getLimit(), param.getOffset() , new Predicate<BuiltinAuthUser>() {
+			searchUser(where, param.getLimit(), param.getOffset(), new Predicate<BuiltinAuthUser>() {
 
 				@Override
 				public boolean test(BuiltinAuthUser user) {
@@ -572,7 +579,7 @@ public class BuiltinAuthToolService implements Service {
 
 				//更新
 				accountToolDao.resetLoginErrorCnt(account);
-				allCount ++;
+				allCount++;
 				result.addMessages("reset login error count for " + account.getAccountId() + ".");
 			}
 			result.addMessages("Result : SUCCESS");
@@ -582,7 +589,9 @@ public class BuiltinAuthToolService implements Service {
 			logger.error(e.getMessage(), e);
 			result.setError(true);
 			result.addMessages("Result : FAILURE");
-			result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()));
+			result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage()
+					: e.getClass()
+							.getName()));
 		}
 		return result;
 	}
@@ -594,14 +603,16 @@ public class BuiltinAuthToolService implements Service {
 		}
 
 		//最大日数を取得してLimitの日付を算出
-		int maxAge = authPolicy.getPasswordPolicy().getMaximumPasswordAge();
+		int maxAge = authPolicy.getPasswordPolicy()
+				.getMaximumPasswordAge();
 		if (maxAge > 0) {
 			//時分秒をクリア
 			Date lastPasswordChangeDate = InternalDateUtil.truncateTime(lastPasswordChange);
 			Date limitDate = InternalDateUtil.addDays(lastPasswordChangeDate, maxAge);
 
 			//残日数を計算
-			Date now = ExecuteContext.getCurrentContext().getCurrentLocalDate();
+			Date now = ExecuteContext.getCurrentContext()
+					.getCurrentLocalDate();
 			return InternalDateUtil.diffDays(limitDate, now);
 		} else {
 			return null;

@@ -69,15 +69,15 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * @author lis7zi
  */
 @WebApi(
-	name=GetCalendarWidgetCommand.WEBAPI_NAME,
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="params"),
-	results="calendarWidgetList",
-	checkXRequestedWithHeader=true
+		name = GetCalendarWidgetCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "params"),
+		results = "calendarWidgetList",
+		checkXRequestedWithHeader = true
 )
-@Template(name="gem/calendar/calendarWidget", displayName="カレンダーウィジェット", path="/jsp/gem/calendar/calendarWidget.jsp")
-@CommandClass(name="gem/calendar/GetCalendarWidgetCommand", displayName="カレンダーウィジェット")
+@Template(name = "gem/calendar/calendarWidget", displayName = "カレンダーウィジェット", path = "/jsp/gem/calendar/calendarWidget.jsp")
+@CommandClass(name = "gem/calendar/GetCalendarWidgetCommand", displayName = "カレンダーウィジェット")
 public final class GetCalendarWidgetCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/calendar/getCalendarWidget";
@@ -95,15 +95,18 @@ public final class GetCalendarWidgetCommand implements Command {
 	 * コンストラクタ
 	 */
 	public GetCalendarWidgetCommand() {
-		ecm = ManagerLocator.getInstance().getManager(EntityCalendarManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		ecm = ManagerLocator.getInstance()
+				.getManager(EntityCalendarManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute(RequestContext request) {
-		Map<String, String> json = (Map<String, String>)request.getAttribute("params");
+		Map<String, String> json = (Map<String, String>) request.getAttribute("params");
 		String calendarName = json.get(Constants.CALENDAR_NAME);
 		java.util.Date targetDate = stringToTime(json.get(Constants.CALENDAR_TARGET_DATE));
 
@@ -130,12 +133,12 @@ public final class GetCalendarWidgetCommand implements Command {
 	private void searchData(Set<String> linkList, EntityCalendarItem item, java.util.Date targetDate) {
 		String defName = item.getDefinitionName();
 		String propertyName = CalendarSearchType.DATE.equals(item.getCalendarSearchType())
-								? item.getPropertyName() : item.getFromPropertyName();
+				? item.getPropertyName()
+				: item.getFromPropertyName();
 		EntityDefinition ed = edm.get(defName);
 		PropertyDefinition pd = ed.getProperty(propertyName);
 
 		targetDate = targetDate != null ? targetDate : new java.util.Date();
-
 
 		Calendar fromCal = Calendar.getInstance();
 		fromCal.setTime(targetDate);
@@ -167,7 +170,8 @@ public final class GetCalendarWidgetCommand implements Command {
 			conditions.add(new Between(propertyName, new Time(fromCal.getTimeInMillis()), new Time(toCal.getTimeInMillis())));
 		}
 		//フィルタ条件（個別バインド変数未指定）
-		if (item.getFilterCondition() != null && !item.getFilterCondition().isEmpty()) {
+		if (item.getFilterCondition() != null && !item.getFilterCondition()
+				.isEmpty()) {
 			conditions.add(new PreparedQuery(item.getFilterCondition()).condition(null));
 		}
 		where.setCondition(new And(conditions));
@@ -179,7 +183,8 @@ public final class GetCalendarWidgetCommand implements Command {
 		} else {
 			q.limit(1000);
 		}
-		List<Entity> list = em.searchEntity(q).getList();
+		List<Entity> list = em.searchEntity(q)
+				.getList();
 
 		SimpleDateFormat format = DateUtil.getSimpleDateFormat("yyyyMMdd", false);
 		for (Entity entity : list) {
@@ -216,6 +221,5 @@ public final class GetCalendarWidgetCommand implements Command {
 
 		return date;
 	}
-
 
 }

@@ -24,12 +24,12 @@ import org.iplass.mtp.impl.metadata.MetaData;
 
 public class MetaEntityMapping implements MetaData {
 	private static final long serialVersionUID = 3653948484919058222L;
-	
+
 	private String mappingClass;
-	
+
 	public MetaEntityMapping() {
 	}
-	
+
 	public MetaEntityMapping(String mappingClass) {
 		this.mappingClass = mappingClass;
 	}

@@ -94,11 +94,12 @@ public class WebAuthnEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
-		
+
 		// 共通属性
 		commonSection = new MetaCommonAttributeSection<>(targetNode, WebAuthnDefinition.class, true);
 
@@ -150,8 +151,10 @@ public class WebAuthnEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (WebAuthnDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
@@ -175,18 +178,18 @@ public class WebAuthnEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnConnectEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnConnectEditPane_saveWebAuthnComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
 							final WebAuthnDefinition definition = curDefinition;
-					commonSection.getEditDefinition(definition);
-					definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-					attrPane.getEditDefinition(definition);
+							commonSection.getEditDefinition(definition);
+							definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+							attrPane.getEditDefinition(definition);
 
-					updateDefinition(definition, true);
-				}
-			}
-		});
+							updateDefinition(definition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -195,17 +198,16 @@ public class WebAuthnEditPane extends MetaDataMainEditPane {
 	private void cancelDefinition() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnConnectEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnConnectEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_webauthn_WebAuthnConnectEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**

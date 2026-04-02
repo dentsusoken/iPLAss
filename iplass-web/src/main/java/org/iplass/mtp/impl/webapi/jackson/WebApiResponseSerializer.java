@@ -32,12 +32,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class WebApiResponseSerializer extends StdSerializer<WebApiResponse> {
 	private static final long serialVersionUID = -3028378394756086182L;
-	
+
 	public static final String PROP_STATUS = "status";
 	public static final String PROP_EXCEPTION_TYPE = "exceptionType";
 	public static final String PROP_EXCEPTION_MESSAGE = "exceptionMessage";
-	
-	
+
 	public WebApiResponseSerializer() {
 		super(WebApiResponse.class);
 	}
@@ -61,13 +60,16 @@ public class WebApiResponseSerializer extends StdSerializer<WebApiResponse> {
 	@Override
 	public void serialize(WebApiResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		gen.writeStartObject(value);
-		boolean writeNull = provider.getConfig().getDefaultPropertyInclusion().getValueInclusion() == Include.ALWAYS;
-		
+		boolean writeNull = provider.getConfig()
+				.getDefaultPropertyInclusion()
+				.getValueInclusion() == Include.ALWAYS;
+
 		if (writeNull || value.getStatus() != null) {
 			gen.writeStringField(PROP_STATUS, value.getStatus());
 		}
 		if (writeNull || value.getResults() != null) {
-			for (Map.Entry<String, Object> e: value.getResults().entrySet()) {
+			for (Map.Entry<String, Object> e : value.getResults()
+					.entrySet()) {
 				if (e.getValue() != null) {
 					gen.writeObjectField(e.getKey(), e.getValue());
 				}

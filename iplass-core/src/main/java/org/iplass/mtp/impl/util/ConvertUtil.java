@@ -59,7 +59,7 @@ public class ConvertUtil {
 		if (from instanceof SelectValue) {
 			from = ((SelectValue) from).getValue();
 		}
-		
+
 		if (from instanceof byte[] && type == String.class) {
 			return (T) convertToString((byte[]) from);
 		}
@@ -67,11 +67,11 @@ public class ConvertUtil {
 		//可能な限り変換する。
 		return (T) cub.convert(from, type);
 	}
-	
+
 	private static String convertToString(byte[] data) {
 		StringBuilder str = new StringBuilder();
 		int i = 0;
-		for (byte b: data) {
+		for (byte b : data) {
 			i = b & 0xFF;
 			if (i <= 0xF) {
 				str.append('0');
@@ -92,8 +92,6 @@ public class ConvertUtil {
 		SimpleDateFormat fdf = DateUtil.getSimpleDateFormat(pattern, useTenantTimeZone);
 		return fdf.format(date);
 	}
-
-
 
 	@SuppressWarnings("unchecked")
 	public static <T extends java.util.Date> T convertToDate(Class<T> type, Object from, String pattern, boolean useTenantTimeZone) {
@@ -138,21 +136,23 @@ public class ConvertUtil {
 
 		throw new IllegalArgumentException("not support type:" + type);
 	}
-	
+
 	public static String convertToString(Object value) {
 		if (value == null) {
 			return null;
 		}
-		
+
 		if (value instanceof String) {
 			return (String) value;
 		}
-		
+
 		if (value instanceof Double) {
-			return BigDecimal.valueOf((Double) value).toPlainString();
+			return BigDecimal.valueOf((Double) value)
+					.toPlainString();
 		}
 		if (value instanceof Float) {
-			return BigDecimal.valueOf((Float) value).toPlainString();
+			return BigDecimal.valueOf((Float) value)
+					.toPlainString();
 		}
 		if (value instanceof BigDecimal) {
 			return ((BigDecimal) value).toPlainString();
@@ -160,14 +160,14 @@ public class ConvertUtil {
 		if (value instanceof Number) {
 			return value.toString();
 		}
-		
+
 		if (value instanceof SelectValue) {
 			return ((SelectValue) value).getValue();
 		}
 		if (value instanceof BinaryReference) {
 			return String.valueOf(((BinaryReference) value).getLobId());
 		}
-		
+
 		if (value instanceof Date) {
 			//ISO8601
 			SimpleDateFormat format = DateUtil.getSimpleDateFormat("yyyy-MM-dd", false);
@@ -187,15 +187,14 @@ public class ConvertUtil {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 			return format.format(value);
 		}
-		
+
 		if (value instanceof byte[]) {
 			return convertToString((byte[]) value);
 		}
-		
+
 		//可能な限り変換する。
 		return (String) cub.convert(value, String.class);
 	}
-
 
 	@SuppressWarnings("unchecked")
 	public static <T> T convertFromString(Class<T> type, String from) {
@@ -225,7 +224,9 @@ public class ConvertUtil {
 		if (type == Date.class) {
 			//いくつかのパターンでパース試みる
 			try {
-				return (T) new Date(DateUtil.getDateInstance(DateFormat.MEDIUM, false).parse(from).getTime());
+				return (T) new Date(DateUtil.getDateInstance(DateFormat.MEDIUM, false)
+						.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 //			try {
@@ -236,21 +237,24 @@ public class ConvertUtil {
 //				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd", false);
 				sdf.setLenient(false);
-				return (T) new Date(sdf.parse(from).getTime());
+				return (T) new Date(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 //				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyyMMdd", false);
 				sdf.setLenient(false);
-				return (T) new Date(sdf.parse(from).getTime());
+				return (T) new Date(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				// Locale設定フォーマット
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDateFormat(), false);
 				sdf.setLenient(false);
-				return (T) new Date(sdf.parse(from).getTime());
+				return (T) new Date(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
@@ -258,7 +262,8 @@ public class ConvertUtil {
 //				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy/M/d", false);
 				sdf.setLenient(false);
-				return (T) new Date(sdf.parse(from).getTime());
+				return (T) new Date(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 				throw new IllegalArgumentException("Date Format must Locale specific DateFormat.MEDIUM or yyyy-MM-dd or yyyyMMdd.", e);
 			}
@@ -266,52 +271,61 @@ public class ConvertUtil {
 		if (type == Timestamp.class) {
 			//いくつかのパターンでパース試みる
 			try {
-				return (T) new Timestamp(DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true).parse(from).getTime());
+				return (T) new Timestamp(DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true)
+						.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			//ISO8601
 			try {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", false);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			//timezoneを明示的に指定している場合
 			try {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSXXX", false);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", true);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss", true);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyyMMddHHmmssSSS", true);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyyMMddHHmmss", true);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				// Locale設定フォーマット
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
@@ -319,59 +333,69 @@ public class ConvertUtil {
 //				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d H:mm");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy/M/d H:mm", true);
 				sdf.setLenient(false);
-				return (T) new Timestamp(sdf.parse(from).getTime());
+				return (T) new Timestamp(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 				//Dateでパース
 				try {
 					java.util.Date date = convertFromString(Date.class, from);
-					date = DateUtils.truncate(date, Calendar.DAY_OF_MONTH);	//時間を切り捨て
+					date = DateUtils.truncate(date, Calendar.DAY_OF_MONTH); //時間を切り捨て
 					Timestamp ts = convertToDate(Timestamp.class, date, null, true);
 					return (T) ts;
 				} catch (IllegalArgumentException ie) {
 					//Dateでも変換できない場合はエラー
-					throw new IllegalArgumentException("Timestamp Format must Locale specific DateFormat.MEDIUM or yyyy-MM-dd HH:mm:ss.SSS or yyyy-MM-dd HH:mm:ss or yyyyMMddHHmmssSSS or yyyyMMddHHmmss.", e);
+					throw new IllegalArgumentException(
+							"Timestamp Format must Locale specific DateFormat.MEDIUM or yyyy-MM-dd HH:mm:ss.SSS or yyyy-MM-dd HH:mm:ss or yyyyMMddHHmmssSSS or yyyyMMddHHmmss.",
+							e);
 				}
 			}
 		}
 		if (type == Time.class) {
 //			return (T) java.sql.Time.valueOf(from);
 			try {
-				return (T) new Time(DateUtil.getTimeInstance(DateFormat.MEDIUM, false).parse(from).getTime());
+				return (T) new Time(DateUtil.getTimeInstance(DateFormat.MEDIUM, false)
+						.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 //				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("HH:mm:ss.SSS", false);
 				sdf.setLenient(false);
-				return (T) new Time(sdf.parse(from).getTime());
+				return (T) new Time(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 //				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("HH:mm:ss", false);
 				sdf.setLenient(false);
-				return (T) new Time(sdf.parse(from).getTime());
+				return (T) new Time(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 //				SimpleDateFormat sdf = new SimpleDateFormat("HHmmssSSS");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("HHmmssSSS", false);
 				sdf.setLenient(false);
-				return (T) new Time(sdf.parse(from).getTime());
+				return (T) new Time(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 //				SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("HHmmss", false);
 				sdf.setLenient(false);
-				return (T) new Time(sdf.parse(from).getTime());
+				return (T) new Time(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
 				// Locale設定フォーマット
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputTimeSecFormat(), false);
 				sdf.setLenient(false);
-				return (T) new Time(sdf.parse(from).getTime());
+				return (T) new Time(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
 			}
 			try {
@@ -379,9 +403,11 @@ public class ConvertUtil {
 //				SimpleDateFormat sdf = new SimpleDateFormat("H:mm:ss");
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("H:mm:ss", false);
 				sdf.setLenient(false);
-				return (T) new Time(sdf.parse(from).getTime());
+				return (T) new Time(sdf.parse(from)
+						.getTime());
 			} catch (ParseException e) {
-				throw new IllegalArgumentException("Time Format must Locale specific DateFormat.MEDIUM or HH:mm:ss.SSS or HH:mm:ss or HHmmssSSS or HHmmss.", e);
+				throw new IllegalArgumentException(
+						"Time Format must Locale specific DateFormat.MEDIUM or HH:mm:ss.SSS or HH:mm:ss or HHmmssSSS or HHmmss.", e);
 			}
 
 		}
@@ -393,7 +419,8 @@ public class ConvertUtil {
 	}
 
 	private static LocaleFormat getLocaleFormat() {
-		return ExecuteContext.getCurrentContext().getLocaleFormat();
+		return ExecuteContext.getCurrentContext()
+				.getLocaleFormat();
 	}
 
 }

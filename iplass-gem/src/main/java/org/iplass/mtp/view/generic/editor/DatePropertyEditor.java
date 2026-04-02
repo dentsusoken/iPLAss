@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -30,6 +27,9 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 日付型プロパティエディタ
@@ -49,41 +49,41 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 
 	/** 現在日付設定ボタン表示可否 */
 	@MetaFieldInfo(
-			displayName="現在日付設定ボタンを非表示",
-			displayNameKey="generic_editor_DatePropertyEditor_hideButtonPanelDisplaNameKey",
-			description="現在日付設定ボタンを非表示するかを設定します。",
-			descriptionKey="generic_editor_DatePropertyEditor_hideButtonPanelDescriptionKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1010
-			)
+			displayName = "現在日付設定ボタンを非表示",
+			displayNameKey = "generic_editor_DatePropertyEditor_hideButtonPanelDisplaNameKey",
+			description = "現在日付設定ボタンを非表示するかを設定します。",
+			descriptionKey = "generic_editor_DatePropertyEditor_hideButtonPanelDescriptionKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1010
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
+	)
 	private boolean hideButtonPanel;
 
 	/** 曜日を表示 */
 	@MetaFieldInfo(
-			displayName="曜日を表示",
-			displayNameKey="generic_editor_DatePropertyEditor_showWeekdayDisplaNameKey",
-			description="曜日を表示します。",
-			descriptionKey="generic_editor_DatePropertyEditor_showWeekdayDescriptionKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1020
-			)
+			displayName = "曜日を表示",
+			displayNameKey = "generic_editor_DatePropertyEditor_showWeekdayDisplaNameKey",
+			description = "曜日を表示します。",
+			descriptionKey = "generic_editor_DatePropertyEditor_showWeekdayDescriptionKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1020
+	)
 	@EntityViewField()
 	private boolean showWeekday;
 
 	/** 初期値 */
 	@MetaFieldInfo(
-			displayName="初期値",
-			displayNameKey="generic_editor_DatePropertyEditor_defaultValueDisplaNameKey",
-			description="新規作成時の初期値を設定します。yyyyMMdd形式か予約語を指定してください。",
-			descriptionKey="generic_editor_DatePropertyEditor_defaultValueDescriptionKey",
-			displayOrder=1030
-			)
+			displayName = "初期値",
+			displayNameKey = "generic_editor_DatePropertyEditor_defaultValueDisplaNameKey",
+			description = "新規作成時の初期値を設定します。yyyyMMdd形式か予約語を指定してください。",
+			descriptionKey = "generic_editor_DatePropertyEditor_defaultValueDescriptionKey",
+			displayOrder = 1030
+	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-			)
+			referenceTypes = { FieldReferenceType.DETAIL }
+	)
 	private String defaultValue;
 
 	/** 最小日付 */
@@ -97,11 +97,13 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 	private String minDate;
 
 	/** 最小日付の設定値をファンクション実行する */
-	@MetaFieldInfo(displayName = "最小日付の設定値をファンクション実行する",
+	@MetaFieldInfo(
+			displayName = "最小日付の設定値をファンクション実行する",
 			displayNameKey = "generic_editor_DatePropertyEditor_minDateFunctionDisplaNameKey",
 			description = "チェックをすると、最小日付の文字列を javascript function として実行し、実行結果を DatePicker の最小日付として設定します。",
 			descriptionKey = "generic_editor_DatePropertyEditor_minDateFunctionDescriptionKey",
-			inputType = InputType.CHECKBOX, displayOrder = 1050)
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1050)
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
 	private boolean minDateFunction;
 
@@ -116,11 +118,13 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 	private String maxDate;
 
 	/** 最大日付の設定値をファンクション実行する */
-	@MetaFieldInfo(displayName = "最大日付の設定値をファンクション実行する",
+	@MetaFieldInfo(
+			displayName = "最大日付の設定値をファンクション実行する",
 			displayNameKey = "generic_editor_DatePropertyEditor_maxDateFunctionDisplaNameKey",
 			description = "チェックをすると、最大日付の文字列を javascript function として実行し、実行結果を DatePicker の最大日付として設定します。",
 			descriptionKey = "generic_editor_DatePropertyEditor_maxDateFunctionDescriptionKey",
-			inputType = InputType.CHECKBOX, displayOrder = 1070)
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1070)
 	@EntityViewField(referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.BULK })
 	private boolean maxDateFunction;
 

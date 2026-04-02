@@ -28,7 +28,6 @@ import org.iplass.gem.command.common.SearchResultData;
  */
 public interface CreateSearchResultEventHandler {
 
-
 	/**
 	 * CreateSearchResultEventを実行します。
 	 *

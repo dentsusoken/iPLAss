@@ -44,51 +44,53 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-@ActionMapping(name="oauth/jwks",
-	publicAction=true,
-	clientCacheType=ClientCacheType.CACHE,
-	clientCacheMaxAge=3600,
-	result={
-		@Result(type=Type.STREAM, contentTypeAttributeName="contentType")
-	},
-	cacheCriteria = @CacheCriteria(
-			type = CacheCriteria.Type.PARAMETER_MATCH,
-			timeToLive=3600000
-			)
+@ActionMapping(
+		name = "oauth/jwks",
+		publicAction = true,
+		clientCacheType = ClientCacheType.CACHE,
+		clientCacheMaxAge = 3600,
+		result = {
+				@Result(type = Type.STREAM, contentTypeAttributeName = "contentType")
+		},
+		cacheCriteria = @CacheCriteria(
+				type = CacheCriteria.Type.PARAMETER_MATCH,
+				timeToLive = 3600000
+		)
 )
-@CommandClass(name="mtp/oauth/JwksCommand", displayName="JWK Set Uri", readOnly=true)
+@CommandClass(name = "mtp/oauth/JwksCommand", displayName = "JWK Set Uri", readOnly = true)
 public class JwksCommand implements Command {
 
 	static final String STAT_SUCCESS = "SUCCESS";
-	
-	private OAuthAuthorizationService service = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
+
+	private OAuthAuthorizationService service = ServiceRegistry.getRegistry()
+			.getService(OAuthAuthorizationService.class);
 	private ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-	
+
 	@Override
 	public String execute(RequestContext request) {
-		
+
 		Map<String, Object> res = new HashMap<>();
 		ArrayList<Map<String, Object>> keys = new ArrayList<>();
 		res.put("keys", keys);
-		
+
 		String jwkSet = null;
 		JwtKeyStore keyStore = service.getJwtKeyStore();
 		if (keyStore != null) {
 			JwtProcessor jwtProcessor = service.getJwtProcessor();
 			List<CertificateKeyPair> keyList = keyStore.list();
-			for (CertificateKeyPair ckp: keyList) {
+			for (CertificateKeyPair ckp : keyList) {
 				keys.add(ckp.toPublicJwkMap(jwtProcessor.preferredAlgorithm(ckp)));
 			}
-			
+
 			try {
 				jwkSet = objectMapper.writeValueAsString(res);
 			} catch (JsonProcessingException e) {
 				throw new SystemException(e);
 			}
 		} else {
-			jwkSet ="{\"keys\": []}";
+			jwkSet = "{\"keys\": []}";
 		}
-		
+
 		try {
 			request.setAttribute("streamData", jwkSet.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {

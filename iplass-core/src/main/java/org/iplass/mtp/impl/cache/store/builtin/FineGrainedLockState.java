@@ -29,17 +29,17 @@ import org.slf4j.LoggerFactory;
 
 class FineGrainedLockState implements AutoCloseable {
 	private static Logger logger = LoggerFactory.getLogger(FineGrainedLockState.class);
-	
+
 	private TargetIndex[] targetIndex;
-	
+
 	private CacheEntry newEntry;
 	private CacheEntry oldEntry;
-	
+
 	private class TargetIndex {
 		LinkedHashMap<Object, IndexValue> indexValueMap;
 		int shardIndex;
 	}
-	
+
 	FineGrainedLockState(CacheEntry newEntry, CacheEntry oldEntry, FineGrainedLockIndex[] fineGrainedLockIndex) {
 		this.newEntry = newEntry;
 		this.oldEntry = oldEntry;
@@ -48,30 +48,31 @@ class FineGrainedLockState implements AutoCloseable {
 			targetIndex[i] = new TargetIndex();
 			TreeSet<Object> sortedIndexValues = new TreeSet<>();
 			targetIndex[i].indexValueMap = new LinkedHashMap<>();
-			Object key = (newEntry != null) ? newEntry.getKey(): oldEntry.getKey();
+			Object key = (newEntry != null) ? newEntry.getKey() : oldEntry.getKey();
 			targetIndex[i].shardIndex = fineGrainedLockIndex[i].shardIndex(key);
-			
+
 			if (newEntry != null) {
 				addToSortedIndexValues(sortedIndexValues, newEntry.getIndexValue(i));
 			}
 			if (oldEntry != null) {
 				addToSortedIndexValues(sortedIndexValues, oldEntry.getIndexValue(i));
 			}
-			
-			for (Object ival: sortedIndexValues) {
+
+			for (Object ival : sortedIndexValues) {
 				targetIndex[i].indexValueMap.put(ival, fineGrainedLockIndex[i].getIndexValue(ival, true));
 			}
-			
-			for (IndexValue iv: targetIndex[i].indexValueMap.values()) {
-				iv.writeLock(targetIndex[i].shardIndex).lock();
+
+			for (IndexValue iv : targetIndex[i].indexValueMap.values()) {
+				iv.writeLock(targetIndex[i].shardIndex)
+						.lock();
 			}
 		}
 
 	}
-	
+
 	private void addToSortedIndexValues(TreeSet<Object> sortedIndexValues, Object ival) {
 		if (ival instanceof Object[]) {
-			for (Object o: (Object[]) ival) {
+			for (Object o : (Object[]) ival) {
 				sortedIndexValues.add(o);
 			}
 		} else {
@@ -80,13 +81,13 @@ class FineGrainedLockState implements AutoCloseable {
 			}
 		}
 	}
-	
+
 	public void maintain() {
 		for (int i = 0; i < targetIndex.length; i++) {
 			if (oldEntry != null) {
 				Object ival = oldEntry.getIndexValue(i);
 				if (ival instanceof Object[]) {
-					for (Object o: (Object[]) ival) {
+					for (Object o : (Object[]) ival) {
 						IndexValue iv = targetIndex[i].indexValueMap.get(o);
 						iv.remove(targetIndex[i].shardIndex, oldEntry.getKey());
 					}
@@ -100,7 +101,7 @@ class FineGrainedLockState implements AutoCloseable {
 			if (newEntry != null) {
 				Object ival = newEntry.getIndexValue(i);
 				if (ival instanceof Object[]) {
-					for (Object o: (Object[]) ival) {
+					for (Object o : (Object[]) ival) {
 						IndexValue iv = targetIndex[i].indexValueMap.get(o);
 						iv.add(targetIndex[i].shardIndex, newEntry.getKey());
 					}
@@ -117,9 +118,10 @@ class FineGrainedLockState implements AutoCloseable {
 	@Override
 	public void close() {
 		for (int i = 0; i < targetIndex.length; i++) {
-			for (IndexValue iv: targetIndex[i].indexValueMap.values()) {
+			for (IndexValue iv : targetIndex[i].indexValueMap.values()) {
 				try {
-					iv.writeLock(targetIndex[i].shardIndex).unlock();
+					iv.writeLock(targetIndex[i].shardIndex)
+							.unlock();
 				} catch (IllegalMonitorStateException e) {
 					logger.warn("Illegal Lock State in FineGrainedLock." + e, e);
 				}

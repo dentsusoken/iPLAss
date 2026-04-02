@@ -60,7 +60,8 @@ public abstract class MultiColumnDropLayout extends HLayout {
 	 * @param colNum
 	 */
 	public void addElement(Canvas component, int colNum) {
-		cols.get(colNum).addMember(component);
+		cols.get(colNum)
+				.addMember(component);
 	}
 
 	/**

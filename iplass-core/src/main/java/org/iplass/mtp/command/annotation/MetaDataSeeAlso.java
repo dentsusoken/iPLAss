@@ -26,8 +26,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RUNTIME)
 public @interface MetaDataSeeAlso {
-    Class<?>[] value();
+	Class<?>[] value();
 }

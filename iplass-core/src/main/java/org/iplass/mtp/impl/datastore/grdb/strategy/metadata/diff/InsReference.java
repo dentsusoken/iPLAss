@@ -30,11 +30,11 @@ import org.iplass.mtp.impl.entity.property.MetaReferenceProperty;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
 public class InsReference extends Diff {
-	
+
 	private MetaReferenceProperty insertProperty;
 	private ColResolver colResolver;
 	private MetaEntity entity;
-	
+
 	public InsReference(MetaReferenceProperty insertProperty, MetaEntity entity, ColResolver colResolver) {
 		this.insertProperty = insertProperty;
 		this.colResolver = colResolver;

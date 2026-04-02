@@ -65,7 +65,7 @@ public class JavaClassAccountNotificationListenerEditPane extends Authentication
 	 */
 	@Override
 	public void setDefinition(AccountNotificationListenerDefinition definition) {
-		JavaClassAccountNotificationListenerDefinition listener = (JavaClassAccountNotificationListenerDefinition)definition;
+		JavaClassAccountNotificationListenerDefinition listener = (JavaClassAccountNotificationListenerDefinition) definition;
 		txtClassNameField.setValue(listener.getClassName());
 	}
 
@@ -76,7 +76,7 @@ public class JavaClassAccountNotificationListenerEditPane extends Authentication
 	 */
 	@Override
 	public AccountNotificationListenerDefinition getEditDefinition(AccountNotificationListenerDefinition definition) {
-		JavaClassAccountNotificationListenerDefinition listener = (JavaClassAccountNotificationListenerDefinition)definition;
+		JavaClassAccountNotificationListenerDefinition listener = (JavaClassAccountNotificationListenerDefinition) definition;
 		listener.setClassName(SmartGWTUtil.getStringValue(txtClassNameField, true));
 		return listener;
 	}

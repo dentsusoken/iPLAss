@@ -21,10 +21,10 @@
 package org.iplass.mtp.impl.async.rdb.sql;
 
 public interface TaskQueueTable {
-	
+
 	public static final String TABLE_NAME = "TASK_QUEUE";
 	public static final String TABLE_NAME_HISTORY = "TASK_QUEUE_HI";
-	
+
 	public static final String TENANT_ID = "TENANT_ID";
 	public static final String Q_ID = "Q_ID";
 	public static final String TASK_ID = "TASK_ID";

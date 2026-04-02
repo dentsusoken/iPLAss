@@ -95,7 +95,8 @@ public class TreeViewItem extends PartsItem {
 
 			styleField = new MtpTextItem("style", "Class");
 			styleField.setValue(parts.getStyle());
-			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
+			SmartGWTUtil.addHoverToFormItem(styleField,
+					AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
 			maxHeightField = new IntegerItem("maxHeight", "Max Height");
 			maxHeightField.setWidth("100%");
@@ -113,7 +114,7 @@ public class TreeViewItem extends PartsItem {
 			save.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						//入力情報をパーツに
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setStyle(SmartGWTUtil.getStringValue(styleField));

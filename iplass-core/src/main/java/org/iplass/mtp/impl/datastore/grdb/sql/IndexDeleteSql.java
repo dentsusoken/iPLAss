@@ -34,7 +34,6 @@ import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class IndexDeleteSql extends UpdateSqlHandler {
 
 	private static final String TMP_TABLE_ALIAS = "tt";
@@ -43,7 +42,8 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 //		return deleteByColName(tenantId, eh.getMetaData().getId(), ((MetaGRdbEntityStore) eh.getEntityStoreRuntime().getMetaData()).getTableNamePostfix(), colName, typeAdapter, type, rdb);
 //	}
 
-	public String deleteByColName(int tenantId, String defId, String tableNamePostfix, int pageNo, String colName, BaseRdbTypeAdapter typeAdapter, IndexType type, RdbAdapter rdb) {
+	public String deleteByColName(int tenantId, String defId, String tableNamePostfix, int pageNo, String colName, BaseRdbTypeAdapter typeAdapter,
+			IndexType type, RdbAdapter rdb) {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
@@ -53,9 +53,13 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 			sb.append(MetaGRdbEntityStore.makeUniqueIndexTableName(typeAdapter.getColOfIndex(), tableNamePostfix));
 		}
 
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdb.sanitize(defId));
-		sb.append("' AND " + ObjIndexTable.COL_NAME + "='").append(rdb.sanitize(MetaGRdbPropertyStore.makeExternalIndexColName(pageNo, colName))).append("'");
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(defId));
+		sb.append("' AND " + ObjIndexTable.COL_NAME + "='")
+				.append(rdb.sanitize(MetaGRdbPropertyStore.makeExternalIndexColName(pageNo, colName)))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -75,9 +79,14 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colOfIndex));
 		}
 
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjIndexTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjIndexTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
 		if (type == IndexType.NON_UNIQUE) {
 			sb.append(" AND " + ObjIndexTable.OBJ_VER + "=");
 			if (version != null) {
@@ -89,7 +98,6 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 
 		return sb.toString();
 	}
-
 
 	/**
 	 * oidリスト指定による、テーブル単位の一括削除。
@@ -144,17 +152,39 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colOfIndex));
 		}
 
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (type == IndexType.NON_UNIQUE) {
 			if (rdb.isSupportRowValueConstructor()) {
 				sb.append(" AND (" + ObjIndexTable.OBJ_ID + "," + ObjIndexTable.OBJ_VER + ") IN("
-						+ "SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdb.getTemplaryTablePrefix() + ObjStoreTable.TABLE_NAME_TMP + ")");
+						+ "SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdb.getTemplaryTablePrefix()
+						+ ObjStoreTable.TABLE_NAME_TMP + ")");
 			} else {
 				String objIndexTable = ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colOfIndex);
-				sb.append(" AND EXISTS (SELECT 1 FROM ").append(rdb.getTemplaryTablePrefix() + ObjStoreTable.TABLE_NAME_TMP).append(" ").append(TMP_TABLE_ALIAS);
-				sb.append(" WHERE ").append(TMP_TABLE_ALIAS).append(".").append(ObjIndexTable.OBJ_ID ).append("=").append(objIndexTable).append(".").append(ObjIndexTable.OBJ_ID);
-				sb.append(" AND ").append(TMP_TABLE_ALIAS).append(".").append(ObjIndexTable.OBJ_VER ).append("=").append(objIndexTable).append(".").append(ObjIndexTable.OBJ_VER);
+				sb.append(" AND EXISTS (SELECT 1 FROM ")
+						.append(rdb.getTemplaryTablePrefix() + ObjStoreTable.TABLE_NAME_TMP)
+						.append(" ")
+						.append(TMP_TABLE_ALIAS);
+				sb.append(" WHERE ")
+						.append(TMP_TABLE_ALIAS)
+						.append(".")
+						.append(ObjIndexTable.OBJ_ID)
+						.append("=")
+						.append(objIndexTable)
+						.append(".")
+						.append(ObjIndexTable.OBJ_ID);
+				sb.append(" AND ")
+						.append(TMP_TABLE_ALIAS)
+						.append(".")
+						.append(ObjIndexTable.OBJ_VER)
+						.append("=")
+						.append(objIndexTable)
+						.append(".")
+						.append(ObjIndexTable.OBJ_VER);
 				sb.append(")");
 			}
 		} else {
@@ -211,23 +241,34 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 
 	public String deleteByOidAndVersion(int tenantId, GRdbPropertyStoreHandler colDef, String oid, Long version, RdbAdapter rdb) {
 
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		String objDefId = eh.getMetaData().getId();
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		String objDefId = eh.getMetaData()
+				.getId();
 		String colName = colDef.getExternalIndexColName();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		if (type == IndexType.NON_UNIQUE) {
-			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colDef.getSingleColumnRdbTypeAdapter().getColOfIndex()));
+			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colDef.getSingleColumnRdbTypeAdapter()
+					.getColOfIndex()));
 		} else {
-			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colDef.getSingleColumnRdbTypeAdapter().getColOfIndex()));
+			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colDef.getSingleColumnRdbTypeAdapter()
+					.getColOfIndex()));
 		}
 
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdb.sanitize(objDefId));
-		sb.append("' AND " + ObjIndexTable.COL_NAME + "='").append(rdb.sanitize(colName));
-		sb.append("' AND " + ObjIndexTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(objDefId));
+		sb.append("' AND " + ObjIndexTable.COL_NAME + "='")
+				.append(rdb.sanitize(colName));
+		sb.append("' AND " + ObjIndexTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
 		if (type == IndexType.NON_UNIQUE) {
 			sb.append(" AND " + ObjIndexTable.OBJ_VER + "=");
 			if (version != null) {
@@ -309,8 +350,11 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 			sb.append(MetaGRdbEntityStore.makeUniqueIndexTableName(colTypePostFix, tableNamePostfix));
 		}
 
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdb.sanitize(defId)).append("'");
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(defId))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -324,21 +368,26 @@ public class IndexDeleteSql extends UpdateSqlHandler {
 			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colTypePostFix));
 		}
 
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (usedColNames != null && usedColNames.size() > 0) {
 			sb.append(" AND " + ObjIndexTable.COL_NAME + " NOT IN (");
-			for (int i = 0; i< usedColNames.size(); i++) {
+			for (int i = 0; i < usedColNames.size(); i++) {
 				if (i != 0) {
 					sb.append(",");
 				}
-				sb.append("'").append(rdb.sanitize(usedColNames.get(i))).append("'");
+				sb.append("'")
+						.append(rdb.sanitize(usedColNames.get(i)))
+						.append("'");
 			}
 			sb.append(")");
 		}
 
 		return sb.toString();
 	}
-
 
 }

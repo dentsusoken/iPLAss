@@ -29,9 +29,8 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class BlobRecycleBinSql extends UpdateSqlHandler {
-	
+
 	public String searchSql(RdbAdapter rdb, int tenantId, long rbid) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT "
@@ -39,41 +38,54 @@ public class BlobRecycleBinSql extends UpdateSqlHandler {
 				+ " FROM " + ObjBlobTable.TABLE_NAME_RB
 				+ " WHERE " + ObjBlobTable.TENANT_ID + "=");
 		sb.append(tenantId);
-		sb.append(" AND " + ObjBlobTable.RB_ID + "=").append(rbid);
+		sb.append(" AND " + ObjBlobTable.RB_ID + "=")
+				.append(rbid);
 		return sb.toString();
 	}
-	
+
 	public String insertSql(int tenantId, Long rbid, Long lobid, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO " + ObjBlobTable.TABLE_NAME_RB + "(");
 		sb.append(ObjBlobTable.TENANT_ID + "," + ObjBlobTable.RB_ID + "," + ObjBlobTable.LOB_ID);
 		sb.append(") VALUES(");
-		sb.append(tenantId).append(",");
-		sb.append(rbid).append(",");
-		sb.append(lobid).append(")");
-		
+		sb.append(tenantId)
+				.append(",");
+		sb.append(rbid)
+				.append(",");
+		sb.append(lobid)
+				.append(")");
+
 		return sb.toString();
 	}
-	
+
 	public String deleteByRbIdSql(int tenantId, Long rbid, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(ObjBlobTable.TABLE_NAME_RB);
-		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjBlobTable.RB_ID + "=").append(rbid);
+		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjBlobTable.RB_ID + "=")
+				.append(rbid);
 		return sb.toString();
 	}
-	
+
 	public String deleteByTimestampSql(int tenantId, EntityHandler eh, Timestamp ts, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(ObjBlobTable.TABLE_NAME_RB);
-		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.RB_ID + " in (SELECT " + ObjStoreTable.RB_ID + " FROM " + ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB() + " WHERE ");
-		sb.append(ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjBlobTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.RB_ID + " in (SELECT " + ObjStoreTable.RB_ID + " FROM "
+				+ ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB() + " WHERE ");
+		sb.append(ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (ts != null) {
-			sb.append(" AND " + ObjStoreTable.RB_DATE + "<").append(rdb.toTimeStampExpression(ts));
+			sb.append(" AND " + ObjStoreTable.RB_DATE + "<")
+					.append(rdb.toTimeStampExpression(ts));
 		}
 		sb.append(")");
 		return sb.toString();

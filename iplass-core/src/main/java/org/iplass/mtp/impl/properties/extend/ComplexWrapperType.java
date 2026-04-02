@@ -26,17 +26,20 @@ import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 
-
 public abstract class ComplexWrapperType extends WrapperType {
 	private static final long serialVersionUID = 1990458928686520536L;
 
 	public abstract ComplexWrapperTypeLoadAdapter createLoadAdapter();
 
 	public abstract boolean isNeedPrevStoreTypeValueOnToStoreTypeValue();
-	public abstract Object toStoreTypeValue(Object extendTypeValue, Object prevStoreTypeValue, PropertyHandler ph, EntityHandler eh, String oid, Long version, Entity entity);
+
+	public abstract Object toStoreTypeValue(Object extendTypeValue, Object prevStoreTypeValue, PropertyHandler ph, EntityHandler eh, String oid,
+			Long version, Entity entity);
 
 	public abstract void notifyAfterDelete(Object storeTypeValue, PropertyHandler ph, EntityHandler eh, String oid, Long rbid);
+
 	public abstract void notifyAfterPurge(EntityHandler eh, Long rbid);
+
 	public abstract void notifyAfterRestore(EntityHandler eh, Long rbid);
 
 	@Override

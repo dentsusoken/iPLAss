@@ -93,18 +93,19 @@ public class SimpleHttpInvoker {
 		try {
 			exponentialBackoff.execute(() -> {
 				try {
-					httpClientConfig.getInstance().execute(request, resp -> {
-						HttpEntity entity = resp.getEntity();
+					httpClientConfig.getInstance()
+							.execute(request, resp -> {
+								HttpEntity entity = resp.getEntity();
 
-						try {
-							response.status = resp.getCode();
-							response.content = null == entity ? null : EntityUtils.toString(entity, contentCharset);
-							return null;
+								try {
+									response.status = resp.getCode();
+									response.content = null == entity ? null : EntityUtils.toString(entity, contentCharset);
+									return null;
 
-						} finally {
-							EntityUtils.consume(entity);
-						}
-					});
+								} finally {
+									EntityUtils.consume(entity);
+								}
+							});
 
 				} catch (IOException e) {
 					if (logger.isDebugEnabled()) {

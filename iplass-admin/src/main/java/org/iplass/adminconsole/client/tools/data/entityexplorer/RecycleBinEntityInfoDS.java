@@ -72,7 +72,8 @@ public class RecycleBinEntityInfoDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_failedToGetEntityList") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_failedToGetEntityList")
+						+ caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);

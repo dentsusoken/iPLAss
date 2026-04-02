@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/source", 
+		path = "/metaDataEntry/metaData/source",
 		fileExtension = FileExtention.HTML)
 public class HtmlSourcePath extends AbstractExternalRefPath {
 }

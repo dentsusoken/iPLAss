@@ -40,33 +40,42 @@ public class WebApiTokenCheckOpenApiConverter implements WebApiOpenApiConverter 
 
 	@Override
 	public void convertOpenApi(WebApiOpenApiConvertContext context) {
-		var tokenCheck = context.getWebApiDefinition().getTokenCheck();
+		var tokenCheck = context.getWebApiDefinition()
+				.getTokenCheck();
 		if (null == tokenCheck) {
 			// Token Checkが設定されていない場合は何もしない
 			return;
 		}
 
 		var pathItem = context.getPathItem();
-		pathItem.addParametersItem(new HeaderParameter().name(HEADER).schema(new StringSchema()));
-		pathItem.addParametersItem(new QueryParameter().name(QUERY).schema(new StringSchema()));
+		pathItem.addParametersItem(new HeaderParameter().name(HEADER)
+				.schema(new StringSchema()));
+		pathItem.addParametersItem(new QueryParameter().name(QUERY)
+				.schema(new StringSchema()));
 	}
 
 	@Override
 	public void convertWebApi(WebApiOpenApiConvertContext context) {
 		// 初期値設定
-		context.getWebApiDefinition().setTokenCheck(null);
+		context.getWebApiDefinition()
+				.setTokenCheck(null);
 
-		var parmeters = context.getPathItem().getParameters();
+		var parmeters = context.getPathItem()
+				.getParameters();
 		if (null != parmeters) {
 			for (Parameter param : parmeters) {
-				boolean isHeader = LOWER_HEADER.equals(param.getName().toLowerCase()) && "header".equals(param.getIn());
-				boolean isQuery = LOWER_QUERY.equals(param.getName().toLowerCase()) && "query".equals(param.getIn());
+				boolean isHeader = LOWER_HEADER.equals(param.getName()
+						.toLowerCase()) && "header".equals(param.getIn());
+				boolean isQuery = LOWER_QUERY.equals(param.getName()
+						.toLowerCase()) && "query".equals(param.getIn());
 
 				if (isHeader || isQuery) {
-					var tokenCheck = context.getWebApiDefinition().getTokenCheck();
+					var tokenCheck = context.getWebApiDefinition()
+							.getTokenCheck();
 					if (null == tokenCheck) {
 						tokenCheck = new WebApiTokenCheck();
-						context.getWebApiDefinition().setTokenCheck(tokenCheck);
+						context.getWebApiDefinition()
+								.setTokenCheck(tokenCheck);
 						return;
 					}
 				}

@@ -57,7 +57,8 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 	 * @param node 処理を実行したノード
 	 * @param infinispanRequestId Infinispan要求ID
 	 */
-	public InfinispanTaskFuture(Future<Void> parent, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode, Address node, String infinispanRequestId) {
+	public InfinispanTaskFuture(Future<Void> parent, Map<Address, InfinispanManagedTaskResult<T>> taskResultParNode, Address node,
+			String infinispanRequestId) {
 		this.parent = parent;
 		this.taskResultParNode = taskResultParNode;
 		this.node = node;
@@ -134,7 +135,8 @@ public class InfinispanTaskFuture<T> implements Future<T> {
 		if (!taskResult.isSuccess()) {
 			// 異常パターン
 			throw new InfinispanTaskExecutionException(
-					"An exception occurred during execution of node '" + node.toString() + "', requestId '" + infinispanRequestId + "'.", taskResult.getCause());
+					"An exception occurred during execution of node '" + node.toString() + "', requestId '" + infinispanRequestId + "'.",
+					taskResult.getCause());
 		}
 
 		// 正常パターン

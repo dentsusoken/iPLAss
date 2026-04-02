@@ -47,7 +47,7 @@ public class RedisCacheHandler implements CacheHandler {
 	public final <K, V, R> List<? extends Future<R>> executeParallel(CacheHandlerTask<K, V, R> task, K... inputKeys) {
 		task.setContext(new RedisCacheContext<K, V>(cs),
 				inputKeys != null && inputKeys.length > 0 ? new HashSet<K>(Arrays.asList(inputKeys))
-						: Collections.<K>emptySet());
+						: Collections.<K> emptySet());
 
 		ArrayList<Future<R>> ret = new ArrayList<Future<R>>();
 

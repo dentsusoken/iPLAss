@@ -193,18 +193,20 @@ public class PushNotificationResponseDetail {
 
 	@Override
 	public String toString() {
-		return new StringBuilder(this.getClass().getSimpleName())
-				.append("{")
-				.append("status=").append(status)
-				.append(toStringValue("target", target))
-				.append(toStringValue("response", response))
-				.append(toStringValue("messageId", messageId))
-				.append(toStringValue("retryAfterSeconds", retryAfterSeconds))
-				.append(toStringValue("retryCount", retryCount))
-				.append(toStringValue("errorMessage", errorMessage))
-				.append(toStringValue("cause", cause))
-				.append("}")
-				.toString();
+		return new StringBuilder(this.getClass()
+				.getSimpleName())
+						.append("{")
+						.append("status=")
+						.append(status)
+						.append(toStringValue("target", target))
+						.append(toStringValue("response", response))
+						.append(toStringValue("messageId", messageId))
+						.append(toStringValue("retryAfterSeconds", retryAfterSeconds))
+						.append(toStringValue("retryCount", retryCount))
+						.append(toStringValue("errorMessage", errorMessage))
+						.append(toStringValue("cause", cause))
+						.append("}")
+						.toString();
 	}
 
 	private String toStringValue(String key, Object value) {

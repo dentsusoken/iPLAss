@@ -36,7 +36,8 @@ import org.iplass.mtp.tenant.Tenant;
  */
 public abstract class AuthContext {
 
-	private static AuthManager authManager = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private static AuthManager authManager = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	/**
 	 * 現時点のセキュリティ情報（AuthContext）を取得します。
@@ -62,7 +63,7 @@ public abstract class AuthContext {
 	 * @return
 	 */
 	public abstract User getUser();
-	
+
 	/**
 	 * 現在実行中のユーザーに紐付く認証トークンのリストを取得します。
 	 * @return
@@ -96,7 +97,7 @@ public abstract class AuthContext {
 	 * @return
 	 */
 	public abstract Object getAttribute(String name);
-	
+
 	/**
 	 * 現在のセッションが認証された時間を取得します。
 	 * 未ログインユーザーの場合は、返却される値は不定です。
@@ -150,15 +151,14 @@ public abstract class AuthContext {
 	 *
 	 */
 	public abstract void refresh();
-	
-	
+
 	/**
 	 * 現在のAuthContextが特権実行されている状態かを取得します。
 	 * 
 	 * @return 特権実行中の場合true
 	 */
 	public abstract boolean isPrivileged();
-	
+
 	/**
 	 * 指定のfunctionを特権実行（セキュリティ制約がない状態で実行）します。<br>
 	 * 

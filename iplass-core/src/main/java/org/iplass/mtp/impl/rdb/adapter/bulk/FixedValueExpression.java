@@ -20,7 +20,7 @@
 package org.iplass.mtp.impl.rdb.adapter.bulk;
 
 public class FixedValueExpression {
-	
+
 	public static final FixedValueExpression VALUE = new FixedValueExpression();
 
 }

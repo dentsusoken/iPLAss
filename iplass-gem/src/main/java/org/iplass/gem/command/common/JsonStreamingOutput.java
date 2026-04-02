@@ -26,11 +26,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.TimeZone;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.StreamingOutput;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.StreamingOutput;
 
 /**
  * Objectを直接JSON文字列化してWebAPIの結果としたい場合に
@@ -48,7 +47,9 @@ public class JsonStreamingOutput implements StreamingOutput {
 	public void write(OutputStream output) throws IOException, WebApplicationException {
 		ObjectMapper mapper = new ObjectMapper();
 		//for backward compatibility
-		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+		mapper.configOverride(java.sql.Date.class)
+				.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+						.withTimeZone(TimeZone.getDefault()));
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"));

@@ -94,7 +94,6 @@ public class MenuEditPane extends MetaDataMainEditPane {
 	/** 個別属性部分 */
 	private MenuAttributePane menuAttrPane;
 
-
 	/**
 	 * コンストラクタ
 	 *
@@ -116,7 +115,8 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -167,7 +167,6 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		StatusCheckUtil.statuCheck(MenuTree.class.getName(), defName, this);
 	}
 
-
 	/**
 	 * 対象のMenuTreeをレイアウト表示パネルに設定します。
 	 *
@@ -175,8 +174,10 @@ public class MenuEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry menuTree) {
 		this.curDefinition = (MenuTree) menuTree.getDefinition();
-		this.curVersion = menuTree.getDefinitionInfo().getVersion();
-		this.curDefinitionId = menuTree.getDefinitionInfo().getObjDefId();
+		this.curVersion = menuTree.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = menuTree.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		//多言語表示
@@ -270,8 +271,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		@Override
 		public void onClick(ClickEvent event) {
 
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_cancelConfirmComment"), new BooleanCallback() {
 				@Override
 				public void execute(Boolean value) {
 					if (value) {
@@ -301,7 +301,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		private MenuItemDragPane dragPane;
 
 		public MenuAttributePane() {
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
+			setOverflow(Overflow.AUTO); //Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			setWidth100();
 			List<FormItem> items = new ArrayList<>();
@@ -322,12 +322,12 @@ public class MenuEditPane extends MetaDataMainEditPane {
 			//Tree構成編集部分
 			VLayout treeGridPane = new VLayout();
 			treeGridPane.setShowResizeBar(true);
-			treeGridPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
+			treeGridPane.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、次を収縮
 
 			SectionStack treeHeaderStack = new SectionStack();
 			SectionStackSection treeHeaderSection = new SectionStackSection("Menu Tree");
 			treeHeaderSection.setExpanded(true);
-			treeHeaderSection.setCanCollapse(false);	//CLOSE不可
+			treeHeaderSection.setCanCollapse(false); //CLOSE不可
 
 			//Expand/Contractボタン
 			ImgButton expandAllButton = new ImgButton();
@@ -444,7 +444,6 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		private void deleteMenuItemNode(MenuItem deleteItem) {
 			treeGrid.deleteMenuItemNode(deleteItem);
 		}
-
 
 		/**
 		 * MenuTree上からメニューアイテム編集ダイアログを表示します。

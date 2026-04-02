@@ -41,13 +41,13 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 		super(r);
 		noBody = new NoBodyOutputStream();
 	}
-	
+
 	void setContentLength() {
 		if (!didSetContentLength) {
-			  super.setContentLength(noBody.getContentLength());
+			super.setContentLength(noBody.getContentLength());
 		}
 	}
-	
+
 	@Override
 	public void setContentLength(int len) {
 		super.setContentLength(len);
@@ -77,7 +77,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 		super.addIntHeader(name, value);
 		checkHeader(name);
 	}
-	
+
 	private void checkHeader(String name) {
 		if ("content-length".equalsIgnoreCase(name)) {
 			didSetContentLength = true;
@@ -88,7 +88,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 	public ServletOutputStream getOutputStream() throws IOException {
 		return noBody;
 	}
-	
+
 	@Override
 	public PrintWriter getWriter() throws UnsupportedEncodingException {
 		if (writer == null) {
@@ -97,7 +97,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 		}
 		return writer;
 	}
-	
+
 	class NoBodyOutputStream extends ServletOutputStream {
 		private int contentLength = 0;
 
@@ -112,14 +112,14 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 		public void write(int b) {
 			contentLength++;
 		}
-		
+
 		@Override
 		public synchronized void write(byte[] buf, int offset, int len) throws IOException {
 			if (buf == null) {
 				throw new NullPointerException("buf is null");
 			}
-			
-			if (offset < 0 || len < 0 || offset+len > buf.length) {
+
+			if (offset < 0 || len < 0 || offset + len > buf.length) {
 				String msg = "index out of bounds: offset={0}, len={1}, buf.length={2}";
 				Object[] msgArgs = new Object[3];
 				msgArgs[0] = Integer.valueOf(offset);
@@ -128,7 +128,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 				msg = MessageFormat.format(msg, msgArgs);
 				throw new IndexOutOfBoundsException(msg);
 			}
-			
+
 			contentLength += len;
 		}
 
@@ -142,5 +142,5 @@ class NoBodyResponse extends HttpServletResponseWrapper {
 			//do anything?
 		}
 	}
-	
+
 }

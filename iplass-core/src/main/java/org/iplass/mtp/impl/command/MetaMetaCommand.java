@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.command;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.definition.CommandDefinition;
 import org.iplass.mtp.command.definition.JavaClassCommandDefinition;
@@ -32,8 +30,9 @@ import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-@XmlSeeAlso({MetaMetaJavaCommand.class, MetaMetaScriptingCommand.class})
+@XmlSeeAlso({ MetaMetaJavaCommand.class, MetaMetaScriptingCommand.class })
 public abstract class MetaMetaCommand extends BaseRootMetaData implements DefinableMetaData<CommandDefinition> {
 
 	private static final long serialVersionUID = -5145049329757303334L;
@@ -100,6 +99,7 @@ public abstract class MetaMetaCommand extends BaseRootMetaData implements Defina
 
 		//FIXME ここのタイミングでどこから使われているか把握して、メタデータ更新時に参照先のMetaをリロード
 		public abstract Command newCommand();
+
 		public abstract MetaMetaCommand getMetaData();
 
 	}

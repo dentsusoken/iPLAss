@@ -47,18 +47,19 @@ import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ActionMapping(name=UpdateExpirePasswordCommand.ACTION_UPDATE_EXP_PASSWORD,
-		allowMethod=HttpMethodType.POST,
-		clientCacheType=ClientCacheType.NO_CACHE,
-		privileged=true,
-		command=@CommandConfig("cmd.checkLoginToken=true"),
-		result={
-			@Result(status="SUCCESS", type=Type.REDIRECT, value="mtp.auth.redirectPath"),
-			@Result(status="ERROR", type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
-			@Result(status="TOKEN_ERROR", type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)
-			}
+@ActionMapping(
+		name = UpdateExpirePasswordCommand.ACTION_UPDATE_EXP_PASSWORD,
+		allowMethod = HttpMethodType.POST,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		privileged = true,
+		command = @CommandConfig("cmd.checkLoginToken=true"),
+		result = {
+				@Result(status = "SUCCESS", type = Type.REDIRECT, value = "mtp.auth.redirectPath"),
+				@Result(status = "ERROR", type = Type.TEMPLATE, value = Constants.TEMPLATE_PASSWORD_EXPIRE),
+				@Result(status = "TOKEN_ERROR", type = Type.TEMPLATE, value = Constants.TEMPLATE_LOGIN)
+		}
 )
-@CommandClass(name="gem/auth/UpdateExpirePasswordCommand", displayName="有効期限切れパスワード更新")
+@CommandClass(name = "gem/auth/UpdateExpirePasswordCommand", displayName = "有効期限切れパスワード更新")
 public final class UpdateExpirePasswordCommand implements Command, AuthCommandConstants {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdateExpirePasswordCommand.class);
@@ -67,11 +68,13 @@ public final class UpdateExpirePasswordCommand implements Command, AuthCommandCo
 
 	private boolean checkLoginToken;
 
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	public boolean isCheckLoginToken() {
 		return checkLoginToken;
 	}
+
 	public void setCheckLoginToken(boolean checkLoginToken) {
 		this.checkLoginToken = checkLoginToken;
 	}
@@ -87,7 +90,8 @@ public final class UpdateExpirePasswordCommand implements Command, AuthCommandCo
 			}
 		}
 
-		CredentialExpiredState state = (CredentialExpiredState) request.getSession().getAttribute(SESSION_CREDENTIAL_EXPIRE_STATE);
+		CredentialExpiredState state = (CredentialExpiredState) request.getSession()
+				.getAttribute(SESSION_CREDENTIAL_EXPIRE_STATE);
 		if (state == null) {
 			throw new SystemException("CredentialExpiredState is null");
 		}
@@ -123,8 +127,10 @@ public final class UpdateExpirePasswordCommand implements Command, AuthCommandCo
 				request.setAttribute(RESULT_REDIRECT_PATH, redirectPath);
 			} else {
 				//トップ画面へ遷移
-				Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-				String menuUrl = WebUtil.getTenantWebInfo(tenant).getHomeUrl();
+				Tenant tenant = ExecuteContext.getCurrentContext()
+						.getCurrentTenant();
+				String menuUrl = WebUtil.getTenantWebInfo(tenant)
+						.getHomeUrl();
 				if (menuUrl != null && menuUrl.length() != 0) {
 					request.setAttribute(RESULT_REDIRECT_PATH, TemplateUtil.getTenantContextPath() + menuUrl);
 				} else {

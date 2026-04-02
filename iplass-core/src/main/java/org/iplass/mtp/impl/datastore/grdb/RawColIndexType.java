@@ -26,7 +26,7 @@ public enum RawColIndexType {
 	NONE,
 	INDEX,
 	UNIQUE_INDEX;
-	
+
 	public static RawColIndexType typeOf(IndexType it) {
 		if (it == null) {
 			return NONE;
@@ -42,6 +42,6 @@ public enum RawColIndexType {
 		default:
 			return null;
 		}
-		
+
 	}
 }

@@ -44,7 +44,8 @@ public class JxlsGroovyEvaluator implements ExpressionEvaluator {
 		this.expression = expression;
 
 		this.cacheStore = cacheStore;
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		se = tc.getScriptEngine();
 	}
 
@@ -74,6 +75,5 @@ public class JxlsGroovyEvaluator implements ExpressionEvaluator {
 	public String getExpression() {
 		return expression;
 	}
-
 
 }

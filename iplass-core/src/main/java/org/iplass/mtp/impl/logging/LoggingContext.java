@@ -39,7 +39,6 @@ public class LoggingContext implements TenantResource {
 
 	private static LogConditionRuntime NULL_LOG_CONDITION = new LogConditionRuntime(null, null, null, 0);
 
-
 	private TenantContext tc;
 	private volatile List<LogConditionRuntime> list;
 
@@ -50,7 +49,7 @@ public class LoggingContext implements TenantResource {
 		}
 
 		List<LogCondition> ret = new ArrayList<>();
-		for (LogConditionRuntime lc: cList) {
+		for (LogConditionRuntime lc : cList) {
 			ret.add(lc.getCondition());
 		}
 
@@ -59,7 +58,8 @@ public class LoggingContext implements TenantResource {
 
 	public void apply(List<LogCondition> logConditions) {
 		synchronized (this) {
-			LoggingService loggingService = ServiceRegistry.getRegistry().getService(LoggingService.class);
+			LoggingService loggingService = ServiceRegistry.getRegistry()
+					.getService(LoggingService.class);
 			List<LogConditionRuntime> newList = null;
 			if (logConditions != null) {
 				long maxExpires;
@@ -75,7 +75,7 @@ public class LoggingContext implements TenantResource {
 					if (lc.getExpiresAt() > maxExpires) {
 						throw new SystemException("The max age of log condition is " + loggingService.getMaxAgeSecondsOfLogCondition() + " seconds.");
 					}
-					
+
 					newList.add(new LogConditionRuntime(lc, loggingService.createRuntime(lc), tc, i));
 				}
 			}
@@ -106,8 +106,9 @@ public class LoggingContext implements TenantResource {
 		List<LogConditionRuntime> cList = list;
 		if (cList != null) {
 			long time = System.currentTimeMillis();
-			for (LogConditionRuntime lc: cList) {
-				if (lc.getCondition().getExpiresAt() > time && lc.isConditionMatch(ec)) {
+			for (LogConditionRuntime lc : cList) {
+				if (lc.getCondition()
+						.getExpiresAt() > time && lc.isConditionMatch(ec)) {
 					ec.setAttribute(LOG_CONDITION, lc, false);
 					return lc;
 				}
@@ -117,7 +118,6 @@ public class LoggingContext implements TenantResource {
 		ec.setAttribute(LOG_CONDITION, NULL_LOG_CONDITION, false);
 		return null;
 	}
-
 
 	@Override
 	public void init(TenantContext tenantContext) {

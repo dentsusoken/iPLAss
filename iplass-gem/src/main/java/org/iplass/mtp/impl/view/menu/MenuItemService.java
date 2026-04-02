@@ -38,9 +38,11 @@ public class MenuItemService extends AbstractTypedMetaDataService<MetaMenu, Meta
 		public TypeMap() {
 			super(getFixedPath(), MetaMenu.class, MenuItem.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<MenuItem> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(MenuItemManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(MenuItemManager.class);
 		}
 	}
 

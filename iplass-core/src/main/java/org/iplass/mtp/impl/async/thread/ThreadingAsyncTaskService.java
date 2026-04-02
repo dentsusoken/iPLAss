@@ -52,23 +52,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-
 public class ThreadingAsyncTaskService extends AsyncTaskService {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ThreadingAsyncTaskService.class);
 	private static Logger fatal = LoggerFactory.getLogger("mtp.fatal.async");
-	
+
 	public static final String FIXED = "fixed";
 	public static final String SINGLE = "single";
 	public static final String CACHED = "cached";
-	
+
 	private String threadPoolType = CACHED;
 	private int corePoolSize = 0;
 	private int maximumPoolSize = -1;
 	private long keepAliveTime = 60000;//millis
-	
+
 	private boolean useResourceHolder = true;
-	
+
 	private ExecutorService executor;
 
 	public String getThreadPoolType() {
@@ -131,7 +130,7 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 		}
 		final String mdcUser = ec.getClientId();
 		final String mdcTraceId = MDC.get(ExecuteContext.MDC_TRACE_ID);
-		
+
 		Callable<V> wrapper = new Callable<V>() {
 			@Override
 			public V call() throws Exception {
@@ -152,7 +151,8 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 								ec.mdcPut(AuthService.MDC_USER, mdcUser);
 								if (uc != null) {
 									//Auth設定
-									AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+									AuthService as = ServiceRegistry.getRegistry()
+											.getService(AuthService.class);
 									return as.doSecuredAction(uc, () -> {
 										return callImpl(task);
 									});
@@ -160,7 +160,8 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 									return callImpl(task);
 								}
 							} catch (WrapException e) {
-								logger.error("exception occured in async task:" + e.getCause().getMessage(), e.getCause());
+								logger.error("exception occured in async task:" + e.getCause()
+										.getMessage(), e.getCause());
 								if (task instanceof ExceptionHandleable) {
 									((ExceptionHandleable) task).aborted(e.getCause());
 								}
@@ -184,8 +185,8 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 							}
 						}
 					});
-				} catch(WrapException e) {
-					 throw (Exception) e.getCause();
+				} catch (WrapException e) {
+					throw (Exception) e.getCause();
 				} finally {
 					if (useResourceHolder) {
 						ResourceHolder.fin();
@@ -203,9 +204,8 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 		executor = null;
 	}
 
-
 	public void init(Config config) {
-		
+
 		if (config.getValue("threadPoolType") != null) {
 			threadPoolType = config.getValue("threadPoolType");
 		}
@@ -225,7 +225,7 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 	}
 
 	private void createExecuter() {
-		
+
 		switch (threadPoolType) {
 		case FIXED:
 			if (corePoolSize < 1) {
@@ -239,12 +239,12 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 		case CACHED:
 			if (maximumPoolSize == -1) {
 				executor = new ThreadPoolExecutor(corePoolSize, Integer.MAX_VALUE,
-                        keepAliveTime, TimeUnit.MILLISECONDS,
-                        new SynchronousQueue<Runnable>());
+						keepAliveTime, TimeUnit.MILLISECONDS,
+						new SynchronousQueue<Runnable>());
 			} else {
 				executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
-                        keepAliveTime, TimeUnit.MILLISECONDS,
-                        new SynchronousQueue<Runnable>());
+						keepAliveTime, TimeUnit.MILLISECONDS,
+						new SynchronousQueue<Runnable>());
 			}
 			break;
 		default:
@@ -264,12 +264,12 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 	public <V> AsyncTaskFuture<V> getResult(long taskId, String queueName) {
 		throw new UnsupportedOperationException("ThreadingAsyncTaskService not support getResult() methods");
 	}
-	
+
 	private static class ThreadingAsyncTaskFuture<V> implements AsyncTaskFuture<V> {
-		
+
 		private final Future<V> real;
 		private final boolean returnResult;
-		
+
 		private ThreadingAsyncTaskFuture(Future<V> real, boolean returnResult) {
 			this.real = real;
 			this.returnResult = returnResult;
@@ -325,9 +325,9 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 		public String getQueueName() {
 			return AsyncTaskOption.LOCAL_THREAD_QUEUE_NAME;
 		}
-		
+
 	}
-	
+
 	private static class WrapException extends RuntimeException {
 		private static final long serialVersionUID = 6163604599717782498L;
 

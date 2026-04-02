@@ -35,11 +35,11 @@ public class ServerEnv {
 	@Deprecated
 	public static final String SERVER_ROLE_DEF_SYSTEM_PROP_NAME = BootstrapProps.SERVER_ROLES;
 	@Deprecated
-	public static final String SERVER_ID_DEF_SYSTEM_PROP_NAME =  BootstrapProps.SERVER_ID;
+	public static final String SERVER_ID_DEF_SYSTEM_PROP_NAME = BootstrapProps.SERVER_ID;
 	@Deprecated
-	public static final String SERVER_NAME_DEF_SYSTEM_PROP_NAME =  BootstrapProps.SERVER_NAME;
+	public static final String SERVER_NAME_DEF_SYSTEM_PROP_NAME = BootstrapProps.SERVER_NAME;
 	@Deprecated
-	public static final String INTERFACE_NAME_DEF_SYSTEM_PROP_NAME =  BootstrapProps.NETWORK_INTERFACE_NAME;
+	public static final String INTERFACE_NAME_DEF_SYSTEM_PROP_NAME = BootstrapProps.NETWORK_INTERFACE_NAME;
 
 	private static ServerEnv instance = new ServerEnv();
 
@@ -56,7 +56,8 @@ public class ServerEnv {
 
 		String myserverroles = props.getProperty(BootstrapProps.SERVER_ROLES);
 		if (myserverroles != null) {
-			serverRoles = myserverroles.trim().split("\\s*,\\s*");
+			serverRoles = myserverroles.trim()
+					.split("\\s*,\\s*");
 		}
 
 		String id = props.getProperty(BootstrapProps.SERVER_ID);
@@ -89,7 +90,7 @@ public class ServerEnv {
 	public String[] getServerNameAndAddress() throws SocketException {
 		String defHostName = props.getProperty(BootstrapProps.SERVER_NAME);
 		if (defHostName != null) {
-			return new String[]{defHostName};
+			return new String[] { defHostName };
 		} else {
 			Set<String> list = new LinkedHashSet<>();
 			String networkInterfaceName = props.getProperty(BootstrapProps.NETWORK_INTERFACE_NAME);

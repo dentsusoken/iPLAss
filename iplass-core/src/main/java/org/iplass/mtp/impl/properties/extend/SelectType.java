@@ -33,22 +33,22 @@ import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.entity.property.PropertyType;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.properties.basic.StringType;
+import org.iplass.mtp.impl.properties.extend.select.MetaSelectValue.SelectValueRuntime;
 import org.iplass.mtp.impl.properties.extend.select.SelectValueService;
 import org.iplass.mtp.impl.properties.extend.select.Value;
-import org.iplass.mtp.impl.properties.extend.select.MetaSelectValue.SelectValueRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
-
 
 public class SelectType extends WrapperType {
 	private static final long serialVersionUID = 9042652773091106209L;
 
 	private static StringType actualType = new StringType();
-	
-	private static SelectValueService svService = ServiceRegistry.getRegistry().getService(SelectValueService.class);
+
+	private static SelectValueService svService = ServiceRegistry.getRegistry()
+			.getService(SelectValueService.class);
 
 	private List<Value> values;
-	
+
 	private String selectValueMetaDataId;
 
 	public String getSelectValueMetaDataId() {
@@ -66,19 +66,19 @@ public class SelectType extends WrapperType {
 	public void setValues(List<Value> values) {
 		this.values = values;
 	}
-	
+
 	public List<Value> runtimeValues() {
 		if (selectValueMetaDataId != null) {
 			SelectValueRuntime r = svService.getRuntimeById(selectValueMetaDataId);
 			if (r == null) {
 				return null;
 			}
-			return r.getMetaData().getValues();
+			return r.getMetaData()
+					.getValues();
 		} else {
 			return values;
 		}
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -86,8 +86,9 @@ public class SelectType extends WrapperType {
 		int result = 1;
 		result = prime
 				* result
-				+ ((selectValueMetaDataId == null) ? 0 : selectValueMetaDataId
-						.hashCode());
+				+ ((selectValueMetaDataId == null) ? 0
+						: selectValueMetaDataId
+								.hashCode());
 		result = prime * result + ((values == null) ? 0 : values.hashCode());
 		return result;
 	}
@@ -132,13 +133,15 @@ public class SelectType extends WrapperType {
 	@Override
 	public SelectProperty createPropertyDefinitionInstance() {
 		SelectProperty def = new SelectProperty();
-		
+
 		if (selectValueMetaDataId != null) {
 			SelectValueRuntime r = svService.getRuntimeById(selectValueMetaDataId);
 			if (r != null) {
 				//grobal設定を適用
-				def.setSelectValueDefinitionName(r.getMetaData().getName());
-				SelectValueDefinition svd = Value.toSelectValueDefinition(r.getMetaData().getValues());
+				def.setSelectValueDefinitionName(r.getMetaData()
+						.getName());
+				SelectValueDefinition svd = Value.toSelectValueDefinition(r.getMetaData()
+						.getValues());
 				def.setSelectValueList(svd.getSelectValueList());
 				def.setLocalizedSelectValueList(svd.getLocalizedSelectValueList());
 			}
@@ -148,22 +151,23 @@ public class SelectType extends WrapperType {
 			def.setSelectValueList(svd.getSelectValueList());
 			def.setLocalizedSelectValueList(svd.getLocalizedSelectValueList());
 		}
-		
+
 		return def;
 	}
-	
+
 	@Override
 	public void applyDefinition(PropertyDefinition def) {
 		super.applyDefinition(def);
-		
+
 		SelectProperty spd = (SelectProperty) def;
-		
+
 		if (spd.getSelectValueDefinitionName() != null) {
 			SelectValueRuntime r = svService.getRuntimeByName(spd.getSelectValueDefinitionName());
 			if (r == null) {
 				throw new EntityRuntimeException("SelectValue definition:" + spd.getSelectValueDefinitionName() + " is undefined.");
 			} else {
-				selectValueMetaDataId = r.getMetaData().getId();
+				selectValueMetaDataId = r.getMetaData()
+						.getId();
 			}
 			values = null;
 		} else {
@@ -174,7 +178,6 @@ public class SelectType extends WrapperType {
 			values = Value.toValues(svd);
 		}
 	}
-	
 
 	@Override
 	public Object createRuntime(
@@ -191,12 +194,12 @@ public class SelectType extends WrapperType {
 	public PropertyType actualType() {
 		return actualType;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.SELECT;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getDataStoreEnumType() {
 		return PropertyDefinitionType.STRING;
@@ -212,8 +215,9 @@ public class SelectType extends WrapperType {
 		String value = (String) fromDataStore;
 		List<Value> runtimeValues = runtimeValues();
 		if (runtimeValues != null) {
-			for (Value v: runtimeValues) {
-				if (v.getValue().equals(value)) {
+			for (Value v : runtimeValues) {
+				if (v.getValue()
+						.equals(value)) {
 					//多言語対応
 					String dispName = I18nUtil.stringMeta(v.getDisplayName(), v.getLocalizedDisplayNameList());
 					SelectValue select = new SelectValue(v.getValue(), dispName);
@@ -231,7 +235,7 @@ public class SelectType extends WrapperType {
 		if (toDataStore == null) {
 			return null;
 		}
-		
+
 		//Stringが指定されても動作するように。
 		String value = null;
 		if (toDataStore instanceof String) {
@@ -241,8 +245,9 @@ public class SelectType extends WrapperType {
 		}
 		List<Value> runtimeValues = runtimeValues();
 		if (runtimeValues != null) {
-			for (Value v: runtimeValues) {
-				if (v.getValue().equals(value)) {
+			for (Value v : runtimeValues) {
+				if (v.getValue()
+						.equals(value)) {
 					return value;
 				}
 			}
@@ -278,8 +283,9 @@ public class SelectType extends WrapperType {
 		}
 		List<Value> runtimeValues = runtimeValues();
 		if (runtimeValues != null) {
-			for (Value v: runtimeValues) {
-				if (v.getValue().equals(strValue)) {
+			for (Value v : runtimeValues) {
+				if (v.getValue()
+						.equals(strValue)) {
 					//多言語対応
 					String dispName = I18nUtil.stringMeta(v.getDisplayName(), v.getLocalizedDisplayNameList());
 					SelectValue select = new SelectValue(v.getValue(), dispName);
@@ -290,7 +296,5 @@ public class SelectType extends WrapperType {
 
 		return null;
 	}
-
-
 
 }

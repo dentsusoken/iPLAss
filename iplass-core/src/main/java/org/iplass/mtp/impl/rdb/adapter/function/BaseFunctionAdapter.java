@@ -26,39 +26,39 @@ import org.iplass.mtp.entity.query.value.primary.Function;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
 public abstract class BaseFunctionAdapter implements FunctionAdapter<Function> {
-	
+
 	private String functionName;
 	private String sqlFunctionName;
-	
+
 	public BaseFunctionAdapter(String functionName) {
 		this.functionName = functionName;
 		this.sqlFunctionName = functionName;
 	}
-	
+
 	public BaseFunctionAdapter(String functionName, String sqlFunctionName) {
 		this.functionName = functionName;
 		this.sqlFunctionName = sqlFunctionName;
 	}
-	
+
 	@Override
 	public abstract Class<?> getType(Function function, ArgumentTypeResolver typeResolver);
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
 		context.append(sqlFunctionName);
 		context.append("(");
 		if (function.getArguments() != null) {
-			for (int i = 0; i < function.getArguments().size(); i++) {
+			for (int i = 0; i < function.getArguments()
+					.size(); i++) {
 				if (i != 0) {
 					context.append(",");
 				}
-				context.appendArgument(function.getArguments().get(i));
+				context.appendArgument(function.getArguments()
+						.get(i));
 			}
 		}
 		context.append(")");
 	}
-	
-	
 
 	@Override
 	public void toSQL(StringBuilder context, List<CharSequence> args, RdbAdapter rdb) {

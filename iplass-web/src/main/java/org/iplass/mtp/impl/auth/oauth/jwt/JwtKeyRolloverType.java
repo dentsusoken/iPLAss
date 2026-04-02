@@ -32,7 +32,7 @@ import java.util.Date;
  *
  */
 public enum JwtKeyRolloverType {
-	
+
 	/**
 	 * 古いキーを有効期間が切れるまで使い続ける方式
 	 */
@@ -40,10 +40,15 @@ public enum JwtKeyRolloverType {
 		@Override
 		CertificateKeyPair select(SimpleJwtKeyStore jwtKeyStore) {
 			CertificateKeyPair candidate = null;
-			for (CertificateKeyPair pair: jwtKeyStore.list()) {
+			for (CertificateKeyPair pair : jwtKeyStore.list()) {
 				try {
-					pair.getCertificate().checkValidity();
-					if (candidate == null || candidate.getCertificate().getNotAfter().getTime() > pair.getCertificate().getNotAfter().getTime()) {
+					pair.getCertificate()
+							.checkValidity();
+					if (candidate == null || candidate.getCertificate()
+							.getNotAfter()
+							.getTime() > pair.getCertificate()
+									.getNotAfter()
+									.getTime()) {
 						candidate = pair;
 					}
 				} catch (CertificateExpiredException | CertificateNotYetValidException e) {
@@ -61,15 +66,24 @@ public enum JwtKeyRolloverType {
 		CertificateKeyPair select(SimpleJwtKeyStore jwtKeyStore) {
 			CertificateKeyPair candidateOldest = null;
 			CertificateKeyPair candidateNewest = null;
-			
-			for (CertificateKeyPair pair: jwtKeyStore.list()) {
+
+			for (CertificateKeyPair pair : jwtKeyStore.list()) {
 				try {
-					pair.getCertificate().checkValidity();
-					
-					if (candidateOldest == null || candidateOldest.getCertificate().getNotAfter().getTime() > pair.getCertificate().getNotAfter().getTime()) {
+					pair.getCertificate()
+							.checkValidity();
+
+					if (candidateOldest == null || candidateOldest.getCertificate()
+							.getNotAfter()
+							.getTime() > pair.getCertificate()
+									.getNotAfter()
+									.getTime()) {
 						candidateOldest = pair;
 					}
-					if (candidateNewest == null || candidateNewest.getCertificate().getNotAfter().getTime() < pair.getCertificate().getNotAfter().getTime()) {
+					if (candidateNewest == null || candidateNewest.getCertificate()
+							.getNotAfter()
+							.getTime() < pair.getCertificate()
+									.getNotAfter()
+									.getTime()) {
 						candidateNewest = pair;
 					}
 
@@ -77,16 +91,18 @@ public enum JwtKeyRolloverType {
 					//ignore
 				}
 			}
-			
+
 			CertificateKeyPair candidate = null;
 			if (candidateOldest == candidateNewest) {
 				candidate = candidateOldest;
 			} else if (candidateOldest != null) {
 				Instant now = Instant.now();
-				Date nowPlus = new Date(now.plus(jwtKeyStore.getRollOverDaysBeforeExpire(), ChronoUnit.DAYS).toEpochMilli());
-				
+				Date nowPlus = new Date(now.plus(jwtKeyStore.getRollOverDaysBeforeExpire(), ChronoUnit.DAYS)
+						.toEpochMilli());
+
 				try {
-					candidateOldest.getCertificate().checkValidity(nowPlus);
+					candidateOldest.getCertificate()
+							.checkValidity(nowPlus);
 					candidate = candidateOldest;
 				} catch (CertificateExpiredException | CertificateNotYetValidException e) {
 					candidate = candidateNewest;
@@ -102,10 +118,15 @@ public enum JwtKeyRolloverType {
 		@Override
 		CertificateKeyPair select(SimpleJwtKeyStore jwtKeyStore) {
 			CertificateKeyPair candidate = null;
-			for (CertificateKeyPair pair: jwtKeyStore.list()) {
+			for (CertificateKeyPair pair : jwtKeyStore.list()) {
 				try {
-					pair.getCertificate().checkValidity();
-					if (candidate == null || candidate.getCertificate().getNotAfter().getTime() < pair.getCertificate().getNotAfter().getTime()) {
+					pair.getCertificate()
+							.checkValidity();
+					if (candidate == null || candidate.getCertificate()
+							.getNotAfter()
+							.getTime() < pair.getCertificate()
+									.getNotAfter()
+									.getTime()) {
 						candidate = pair;
 					}
 				} catch (CertificateExpiredException | CertificateNotYetValidException e) {
@@ -115,7 +136,7 @@ public enum JwtKeyRolloverType {
 			return candidate;
 		}
 	};
-	
+
 	abstract CertificateKeyPair select(SimpleJwtKeyStore jwtKeyStore);
 
 }

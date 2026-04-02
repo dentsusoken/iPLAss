@@ -56,9 +56,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface MetaDataServiceAsync {
 
-	/* ---------------------------------------
-	 * 共通
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- 共通 ---------------------------------------
+	 */
 
 	void getAllMetaDataPath(final int tenantId, AsyncCallback<List<String>> callback);
 
@@ -192,9 +192,9 @@ public interface MetaDataServiceAsync {
 	<D extends Definition> void copyDefinition(int tenantId, String className, String sourceName, String newName,
 			String displayName, String description, AsyncCallback<AdminDefinitionModifyResult> callback);
 
-	/* ---------------------------------------
-	 * Entity
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Entity ---------------------------------------
+	 */
 
 	void getEntityDefinitionNameList(int tenantId, AsyncCallback<List<Name>> callback);
 
@@ -204,9 +204,11 @@ public interface MetaDataServiceAsync {
 
 	void createEntityDefinition(int tenantId, EntityDefinition definition, AsyncCallback<AdminDefinitionModifyResult> callback);
 
-	void updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, boolean checkVersion, AsyncCallback<AdminDefinitionModifyResult> callback);
+	void updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, boolean checkVersion,
+			AsyncCallback<AdminDefinitionModifyResult> callback);
 
-	void updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, Map<String, String> renamePropertyMap, boolean checkVersion, AsyncCallback<AdminDefinitionModifyResult> callback);
+	void updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, Map<String, String> renamePropertyMap,
+			boolean checkVersion, AsyncCallback<AdminDefinitionModifyResult> callback);
 
 	void checkLockEntityDefinition(int tenantId, String defName, AsyncCallback<Boolean> callback);
 
@@ -237,9 +239,9 @@ public interface MetaDataServiceAsync {
 
 	void getCrawlTargetEntityViewMap(int tenantId, AsyncCallback<Map<String, List<String>>> callback);
 
-	/* ---------------------------------------
-	 * EntityView
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- EntityView ---------------------------------------
+	 */
 
 	void createDefaultSearchFormView(int tenantId, String name, AsyncCallback<SearchFormView> callback);
 
@@ -249,9 +251,9 @@ public interface MetaDataServiceAsync {
 
 	void getRoles(int tenantId, AsyncCallback<List<Entity>> callback);
 
-	/* ---------------------------------------
-	 * Menu Item
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Menu Item ---------------------------------------
+	 */
 
 	/**
 	 * メニューアイテムを全件取得します。
@@ -279,9 +281,9 @@ public interface MetaDataServiceAsync {
 	 */
 	void updateMenuItem(int tenantId, MenuItem definition, AsyncCallback<AdminDefinitionModifyResult> callback);
 
-	/* ---------------------------------------
-	 * Template
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Template ---------------------------------------
+	 */
 
 	void getTemplateDefinitionEntry(int tenantId, String name, AsyncCallback<DefinitionEntry> callback);
 
@@ -292,7 +294,8 @@ public interface MetaDataServiceAsync {
 	 * @param definition Template定義
 	 * @param callback  Callbackクラス
 	 */
-	void updateTemplateDefinition(int tenantId, TemplateDefinition definition, int currentVersion, boolean checkVersion, AsyncCallback<AdminDefinitionModifyResult> callback);
+	void updateTemplateDefinition(int tenantId, TemplateDefinition definition, int currentVersion, boolean checkVersion,
+			AsyncCallback<AdminDefinitionModifyResult> callback);
 
 	void getReportTemplateDefinitionNameList(int tenantId, AsyncCallback<List<Name>> callback);
 
@@ -304,7 +307,7 @@ public interface MetaDataServiceAsync {
 	 * @param type レポートタイプ
 	 * @param callback  Callbackクラス
 	 */
-	void getOutputFileTypeList( int tenantId, String type, AsyncCallback<List<OutputFileType>> callback);
+	void getOutputFileTypeList(int tenantId, String type, AsyncCallback<List<OutputFileType>> callback);
 
 	/**
 	 * ReportingEngineでレポート出力形式の一覧を取得します。
@@ -313,11 +316,11 @@ public interface MetaDataServiceAsync {
 	 * @param tenantId テナントID
 	 * @param callback  Callbackクラス
 	 */
-	void getReportTypeList( int tenantId, AsyncCallback<List<Name>> callback);
+	void getReportTypeList(int tenantId, AsyncCallback<List<Name>> callback);
 
-	/* ---------------------------------------
-	 * StaticResource
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- StaticResource ---------------------------------------
+	 */
 
 	/**
 	 * 静的リソースの名前リストを取得します。
@@ -355,11 +358,12 @@ public interface MetaDataServiceAsync {
 	 * @param newDefinitionName 新定義名称
 	 * @param callback Callbackクラス
 	 */
-	void copyStaticResourceDefinition(int tenantId, String sourceName, DefinitionSummary newDefinitionName, AsyncCallback<AdminDefinitionModifyResult> callback);
+	void copyStaticResourceDefinition(int tenantId, String sourceName, DefinitionSummary newDefinitionName,
+			AsyncCallback<AdminDefinitionModifyResult> callback);
 
-	/* ---------------------------------------
-	 * EntityWebApi
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- EntityWebApi ---------------------------------------
+	 */
 
 	/**
 	 * EntityWebApiDefinitionの一覧を取得します。
@@ -368,7 +372,6 @@ public interface MetaDataServiceAsync {
 	 * @param callback  Callbackクラス
 	 */
 	void getEntityWebApiDefinitionEntryList(int tenantId, AsyncCallback<List<DefinitionEntry>> callback);
-
 
 	/**
 	 * EntityWebApiDefinitionを登録します。
@@ -379,10 +382,9 @@ public interface MetaDataServiceAsync {
 	 */
 	void registEntityWebApiDefinition(int tenantId, List<DefinitionEntry> ec, final boolean checkVersion, AsyncCallback<Boolean> callback);
 
-
-	/* ---------------------------------------
-	 * AuthenticationPolicy
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- AuthenticationPolicy ---------------------------------------
+	 */
 
 	/**
 	 * AuthenticationPolicyDefinitionで選択可能なAuthProviderの名前を返します。
@@ -392,9 +394,9 @@ public interface MetaDataServiceAsync {
 	 */
 	void getSelectableAuthProviderNameList(int tenantId, AsyncCallback<List<String>> callback);
 
-	/* ---------------------------------------
-	 * Queue
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Queue ---------------------------------------
+	 */
 
 	/**
 	 * ServiceConfigに設定されているQueueNameListを取得します。
@@ -443,9 +445,9 @@ public interface MetaDataServiceAsync {
 	 */
 	void forceDeleteAsyncTask(int tenantId, final String queueName, final List<Long> taskIds, AsyncCallback<TaskForceDeleteResultInfo> callback);
 
-	/* ---------------------------------------
-	 * Menu item
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Menu item ---------------------------------------
+	 */
 
 	/**
 	 * ServiceConfigに設定されているイメージカラーを取得します。
@@ -455,9 +457,9 @@ public interface MetaDataServiceAsync {
 	 */
 	void getImageColorList(int tenantId, AsyncCallback<List<String>> callback);
 
-	/* ---------------------------------------
-	 * OAuth
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- OAuth ---------------------------------------
+	 */
 
 	void generateCredentialOAuthClient(final int tenantId, final String definitionName, AsyncCallback<String> callback);
 
@@ -467,20 +469,21 @@ public interface MetaDataServiceAsync {
 
 	void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName, AsyncCallback<Void> callback);
 
-	/* ---------------------------------------
-	 * OpenIDConnect
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- OpenIDConnect ---------------------------------------
+	 */
 
 	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret, AsyncCallback<Void> callback);
-	
-	/* ---------------------------------------
-	 * Webhook Endpoint Security Info
-	 --------------------------------------- */
-	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,AsyncCallback<Void> callback);
 
-	public void getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType,AsyncCallback<String> callback);
+	/*
+	 * --------------------------------------- Webhook Endpoint Security Info ---------------------------------------
+	 */
+	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,
+			AsyncCallback<Void> callback);
+
+	public void getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType, AsyncCallback<String> callback);
 
 	public void generateHmacTokenString(AsyncCallback<String> callback);
 
-	public void getEndpointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>>callback);
+	public void getEndpointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>> callback);
 }

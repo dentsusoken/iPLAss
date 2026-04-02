@@ -19,13 +19,13 @@
  */
 package org.iplass.mtp.impl.util;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * RequestPath ユーティリティ
@@ -61,7 +61,10 @@ public class RequestPathUtil {
 	 * @return WebAPI パス文字列
 	 */
 	public static String getWebApiPath(int pathIndex) {
-		return ServiceRegistry.getRegistry().getService(WebFrontendService.class).getRestPath().get(pathIndex);
+		return ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class)
+				.getRestPath()
+				.get(pathIndex);
 	}
 
 	/**
@@ -89,16 +92,21 @@ public class RequestPathUtil {
 		String scheme = request.getScheme();
 		int port = request.getServerPort();
 		String contextPath = request.getContextPath();
-		String tenantUrl = ExecuteContext.getCurrentContext().getCurrentTenant().getUrl();
+		String tenantUrl = ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getUrl();
 
 		if (port < 0) {
 			port = scheme.equals(HTTP_SCHEME) ? DEFAULT_HTTP_PORT : DEFAULT_HTTPS_PORT;
 		}
 
 		// リバースプロキシを利用した場合でも正しくとれる
-		url.append(scheme).append("://").append(request.getServerName());
+		url.append(scheme)
+				.append("://")
+				.append(request.getServerName());
 		if ((scheme.equals(HTTP_SCHEME) && (port != DEFAULT_HTTP_PORT)) || (scheme.equals(HTTPS_SCHEME) && (port != DEFAULT_HTTPS_PORT))) {
-			url.append(':').append(port);
+			url.append(':')
+					.append(port);
 		}
 
 		if (StringUtil.isNotEmpty(contextPath)) {
@@ -118,7 +126,8 @@ public class RequestPathUtil {
 	 * @return テナントルートパス
 	 */
 	public static String getTenantRoot() {
-		return getTenantRoot(WebRequestStack.getCurrent().getRequest());
+		return getTenantRoot(WebRequestStack.getCurrent()
+				.getRequest());
 	}
 
 	/**
@@ -151,7 +160,8 @@ public class RequestPathUtil {
 	 * @return WebAPIルートパス
 	 */
 	public static String getWebApiRoot(String webApiPath) {
-		return getWebApiRoot(WebRequestStack.getCurrent().getRequest(), webApiPath);
+		return getWebApiRoot(WebRequestStack.getCurrent()
+				.getRequest(), webApiPath);
 	}
 
 	/**
@@ -160,6 +170,7 @@ public class RequestPathUtil {
 	 * @return WebAPIルートパス
 	 */
 	public static String getWebApiRoot() {
-		return getWebApiRoot(WebRequestStack.getCurrent().getRequest());
+		return getWebApiRoot(WebRequestStack.getCurrent()
+				.getRequest());
 	}
 }

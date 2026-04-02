@@ -43,26 +43,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 
 public class RdbAuthTokenStore implements AuthTokenStore {
-	
+
 	private AuthTokenSelectSQL selectSql;
 	private AuthTokenUpdateSQL updateSql;
 	private RdbAdapter rdb;
-	
+
 	private boolean saveDetailAsJson;
 
 	private ObjectMapper objectMapper;
 
 	public RdbAuthTokenStore() {
-		rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+		rdb = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class)
+				.getRdbAdapter();
 		selectSql = rdb.getQuerySqlCreator(AuthTokenSelectSQL.class);
 		updateSql = rdb.getUpdateSqlCreator(AuthTokenUpdateSQL.class);
 		objectMapper = new ObjectMapper();
 		objectMapper.enableDefaultTyping(DefaultTyping.OBJECT_AND_NON_CONCRETE, As.PROPERTY);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		//for backward compatibility
-		objectMapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+		objectMapper.configOverride(java.sql.Date.class)
+				.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+						.withTimeZone(TimeZone.getDefault()));
 	}
-	
+
 	public boolean isSaveDetailAsJson() {
 		return saveDetailAsJson;
 	}
@@ -70,7 +74,7 @@ public class RdbAuthTokenStore implements AuthTokenStore {
 	public void setSaveDetailAsJson(boolean saveDetailAsJson) {
 		this.saveDetailAsJson = saveDetailAsJson;
 	}
-	
+
 	@Override
 	public void create(final AuthToken token) {
 		SqlExecuter<Void> executer = new SqlExecuter<Void>() {
@@ -182,7 +186,7 @@ public class RdbAuthTokenStore implements AuthTokenStore {
 				PreparedStatement ps = getPreparedStatement(selectSql.createSelectByUserUniqueKeySQL());
 				selectSql.setSelectByUserUniqueKeyParameter(rdb, ps, tenantId, type, userUniqueKey);
 				List<AuthToken> res = new ArrayList<>();
-				
+
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
 						res.add(selectSql.toAuthToken(rs, saveDetailAsJson, objectMapper, rdb));

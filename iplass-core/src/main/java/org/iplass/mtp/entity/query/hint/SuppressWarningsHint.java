@@ -57,11 +57,10 @@ public class SuppressWarningsHint extends EQLHint {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "suppress_warnings";
 	}
-	
 
 }

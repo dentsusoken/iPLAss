@@ -31,9 +31,9 @@ import org.iplass.mtp.impl.entity.MetaEventListener;
 
 public class MetaJavaClassEventListener extends MetaEventListener {
 	private static final long serialVersionUID = 817043706754815712L;
-	
+
 	private String className;
-	
+
 	public String getClassName() {
 		return className;
 	}
@@ -56,7 +56,6 @@ public class MetaJavaClassEventListener extends MetaEventListener {
 		copy.className = className;
 		return copy;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -96,16 +95,15 @@ public class MetaJavaClassEventListener extends MetaEventListener {
 	public JavaClassEventListenerRuntime createRuntime(MetaEntity entity) {
 		return new JavaClassEventListenerRuntime();
 	}
-	
-	
-	
+
 	public class JavaClassEventListenerRuntime extends EventListenerRuntime {
-		
+
 		private EntityEventListener listener;
-		
+
 		public JavaClassEventListenerRuntime() {
 			try {
-				listener = (EntityEventListener) Class.forName(className).newInstance();
+				listener = (EntityEventListener) Class.forName(className)
+						.newInstance();
 			} catch (InstantiationException e) {
 				throw new EntityRuntimeException("can not instantiate " + className, e);
 			} catch (IllegalAccessException e) {
@@ -163,12 +161,11 @@ public class MetaJavaClassEventListener extends MetaEventListener {
 		public void handleAfterRestore(Entity entity) {
 			listener.afterRestore(entity);
 		}
-		
+
 		@Override
 		public void handleAfterPurge(Entity entity) {
 			listener.afterPurge(entity);
 		}
 	}
-	
 
 }

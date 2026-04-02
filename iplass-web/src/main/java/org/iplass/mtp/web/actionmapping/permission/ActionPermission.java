@@ -32,19 +32,19 @@ import org.iplass.mtp.auth.Permission;
  *
  */
 public class ActionPermission extends Permission {
-	
+
 	private final String actionName;
 	private final ActionParameter parameter;
 	private final boolean externalResource;
-	
+
 	public ActionPermission(String actionName) {
 		this(actionName, (ActionParameter) null, false);
 	}
-	
+
 	public ActionPermission(String actionName, boolean externalResource) {
 		this(actionName, (ActionParameter) null, externalResource);
 	}
-	
+
 	public ActionPermission(String actionName, Map<String, Object> parameter) {
 		this(actionName, new MapActionParameter(parameter), false);
 	}
@@ -62,7 +62,7 @@ public class ActionPermission extends Permission {
 		this.parameter = parameter;
 		this.externalResource = externalResource;
 	}
-	
+
 	/**
 	 * 実際にはActionとして定義されていないリソース（たとえば静的ファイルなど）の権限を定義して、
 	 * その権限チェックを行いたい場合は、このフラグをtrueにセット。

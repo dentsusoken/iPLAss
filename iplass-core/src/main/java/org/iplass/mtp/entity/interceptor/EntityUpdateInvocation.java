@@ -24,10 +24,12 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.UpdateOption;
 
 public interface EntityUpdateInvocation extends EntityInvocation<Void> {
-	
+
 	public Entity getEntity();
+
 	public void setEntity(Entity entity);
-	
+
 	public UpdateOption getUpdateOption();
+
 	public void setUpdateOption(UpdateOption updateOption);
 }

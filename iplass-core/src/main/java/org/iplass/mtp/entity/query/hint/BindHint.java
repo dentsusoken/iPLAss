@@ -42,7 +42,7 @@ public class BindHint extends EQLHint {
 
 	public BindHint() {
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
@@ -53,8 +53,6 @@ public class BindHint extends EQLHint {
 		visitor.visit(this);
 	}
 
-	
-	
 	@Override
 	public int hashCode() {
 		return 1003779204;//BindHintの文字列のhash
@@ -70,8 +68,7 @@ public class BindHint extends EQLHint {
 			return false;
 		return true;
 	}
-	
-	
+
 	@Override
 	public String toString() {
 		return "bind";

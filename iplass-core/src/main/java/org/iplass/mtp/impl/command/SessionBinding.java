@@ -36,11 +36,11 @@ public class SessionBinding {
 
 	private SessionContext session;
 	private boolean initSession;
-	
+
 	public static SessionBinding newSessionBinding() {
 		return new SessionBinding();
 	}
-	
+
 	private SessionContext getContext() {
 		if (!initSession) {
 			RequestContext req = RequestContextHolder.getCurrent();
@@ -51,10 +51,10 @@ public class SessionBinding {
 		}
 		return session;
 	}
-	
+
 	public SessionBinding() {
 	}
-	
+
 	public Object getAttribute(String name) {
 		SessionContext sess = getContext();
 		if (sess == null) {

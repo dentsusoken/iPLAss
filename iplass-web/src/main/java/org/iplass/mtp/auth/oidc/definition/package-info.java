@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/auth/oidc",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/auth/oidc", prefix="def-oidc")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/auth/oidc",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/auth/oidc", prefix = "def-oidc")
+		}
 )
 package org.iplass.mtp.auth.oidc.definition;

@@ -37,7 +37,7 @@ import org.iplass.mtp.tenant.Tenant;
  *
  */
 public class ResourceOwnerTokenIntrospector implements CustomTokenIntrospector {
-	
+
 	public static final String RESOURCE_OWNER_NAME = "resource_owner";
 	public static final String TENANT_ID = "tenant_id";
 	public static final String TENANT_NAME = "tenant_name";
@@ -45,7 +45,8 @@ public class ResourceOwnerTokenIntrospector implements CustomTokenIntrospector {
 	@Override
 	public boolean handle(Map<String, Object> response, RequestContext request, User resourceOwner) {
 		response.put(RESOURCE_OWNER_NAME, resourceOwner);
-		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 		response.put(TENANT_ID, tenant.getId());
 		response.put(TENANT_NAME, tenant.getName());
 		return true;

@@ -34,10 +34,12 @@ public final class I18nUtil {
 	public static String stringDef(String defaultString, List<LocalizedStringDefinition> localizedStringList) {
 		String multilingualString = defaultString;
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
+		if (ec.getCurrentTenant()
+				.getTenantConfig(TenantI18nInfo.class)
+				.isUseMultilingual()) {
 			String lang = ec.getLanguage();
 			if (lang != null && localizedStringList != null) {
-				for (LocalizedStringDefinition lsd: localizedStringList) {
+				for (LocalizedStringDefinition lsd : localizedStringList) {
 					if (lang.equals(lsd.getLocaleName())) {
 						multilingualString = lsd.getStringValue();
 						break;
@@ -51,10 +53,12 @@ public final class I18nUtil {
 	public static String stringMeta(String defaultString, List<MetaLocalizedString> localizedStringList) {
 		String multilingualString = defaultString;
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
+		if (ec.getCurrentTenant()
+				.getTenantConfig(TenantI18nInfo.class)
+				.isUseMultilingual()) {
 			String lang = ec.getLanguage();
 			if (lang != null && localizedStringList != null) {
-				for (MetaLocalizedString mls: localizedStringList) {
+				for (MetaLocalizedString mls : localizedStringList) {
 					if (lang.equals(mls.getLocaleName())) {
 						multilingualString = mls.getStringValue();
 						break;
@@ -77,9 +81,9 @@ public final class I18nUtil {
 		Locale locale = null;
 		if (tmp.length == 1) {
 			locale = new Locale(tmp[0]);
-		} else 	if (tmp.length == 2) {
+		} else if (tmp.length == 2) {
 			locale = new Locale(tmp[0], tmp[1]);
-		} else 	if (tmp.length == 3) {
+		} else if (tmp.length == 3) {
 			locale = new Locale(tmp[0], tmp[1], tmp[2]);
 		}
 
@@ -112,7 +116,7 @@ public final class I18nUtil {
 		}
 
 		List<MetaLocalizedString> meta = new ArrayList<>();
-		for (LocalizedStringDefinition ed: def) {
+		for (LocalizedStringDefinition ed : def) {
 
 			MetaLocalizedString mls = new MetaLocalizedString();
 			mls.setLocaleName(ed.getLocaleName());
@@ -129,15 +133,17 @@ public final class I18nUtil {
 		}
 
 		List<LocalizedStringDefinition> def = new ArrayList<>();
-		for (MetaLocalizedString m: meta) {
+		for (MetaLocalizedString m : meta) {
 			def.add(m.currentConfig());
 		}
 		return def;
 	}
-	
+
 	public static String getLanguageIfUseMultilingual() {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
+		if (ec.getCurrentTenant()
+				.getTenantConfig(TenantI18nInfo.class)
+				.isUseMultilingual()) {
 			return ec.getLanguage();
 		}
 		return null;

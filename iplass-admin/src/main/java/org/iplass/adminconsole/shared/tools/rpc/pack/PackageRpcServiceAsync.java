@@ -44,7 +44,6 @@ public interface PackageRpcServiceAsync {
 	 */
 	void getPackageList(final int tenantId, AsyncCallback<List<PackageEntryStatusInfo>> callback);
 
-
 	/**
 	 * Packageを削除します。
 	 *
@@ -53,7 +52,6 @@ public interface PackageRpcServiceAsync {
 	 * @param callback Void
 	 */
 	void deletePackage(final int tenantId, final List<String> packOids, AsyncCallback<Void> callback);
-
 
 	/**
 	 * Packageを登録します。
@@ -82,13 +80,12 @@ public interface PackageRpcServiceAsync {
 	 */
 	void syncCreatePackage(final int tenantId, final String packOid, AsyncCallback<PackageCreateResultInfo> callback);
 
-
 	void getPackageEntryInfo(final int tenantId, final String packOid, AsyncCallback<PackageEntryInfo> callback);
-
 
 	void importPackageMetaData(final int tenantId, final String packOid, final Tenant importTenant, AsyncCallback<MetaDataImportResultInfo> callback);
 
-	void importPackageEntityData(final int tenantId, final String packOid, final String path, final PackageImportCondition condition, AsyncCallback<EntityDataImportResultInfo> callback);
+	void importPackageEntityData(final int tenantId, final String packOid, final String path, final PackageImportCondition condition,
+			AsyncCallback<EntityDataImportResultInfo> callback);
 
 	/**
 	 * メタデータ整合性チェックを行います。

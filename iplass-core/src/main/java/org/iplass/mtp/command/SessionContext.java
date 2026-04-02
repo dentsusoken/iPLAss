@@ -35,8 +35,11 @@ public interface SessionContext {
 	//TODO サイズ制限を設ける
 
 	public Object getAttribute(String name);
+
 	public void setAttribute(String name, Object value);
+
 	public void removeAttribute(String name);
+
 	public Iterator<String> getAttributeNames();
 
 	/**

@@ -113,8 +113,10 @@ public class StaticResourcePlugin extends DefaultMetaDataPlugin {
 		service.deleteStaticResourceDefinition(TenantInfoHolder.getId(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
 			public void onFailure(Throwable caught) {
 				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourcePluginManager_failedToDeleteStaticResource") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourcePluginManager_failedToDeleteStaticResource")
+						+ caught.getMessage());
 			}
+
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourcePluginManager_completion"),
@@ -123,7 +125,8 @@ public class StaticResourcePlugin extends DefaultMetaDataPlugin {
 					refresh();
 					removeTab(itemNode);
 				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourcePluginManager_failedToDeleteStaticResource") + result.getMessage());
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourcePluginManager_failedToDeleteStaticResource")
+							+ result.getMessage());
 				}
 			}
 		});
@@ -136,7 +139,7 @@ public class StaticResourcePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{StaticResourceEditPane.class};
+		return new Class[] { StaticResourceEditPane.class };
 	}
 
 }

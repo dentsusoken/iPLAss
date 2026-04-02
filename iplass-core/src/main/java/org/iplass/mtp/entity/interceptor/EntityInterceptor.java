@@ -28,7 +28,7 @@ package org.iplass.mtp.entity.interceptor;
  *
  */
 public interface EntityInterceptor {
-	
+
 	/**
 	 * 各Entity操作（登録、更新、、、）によって、
 	 * 各EntityInvocationのサブクラスのインスタンスを引数に呼び出される。
@@ -37,5 +37,5 @@ public interface EntityInterceptor {
 	 * @return
 	 */
 	public Object intercept(EntityInvocation<?> invocation);
-	
+
 }

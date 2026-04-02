@@ -27,10 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.activation.MimetypesFileTypeMap;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
 import org.iplass.mtp.definition.binary.BinaryDefinition;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -55,6 +51,10 @@ import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.activation.MimetypesFileTypeMap;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
+
 public class MetaStaticResource extends BaseRootMetaData implements DefinableMetaData<StaticResourceDefinition> {
 	private static final long serialVersionUID = -1254930892273250498L;
 
@@ -75,6 +75,7 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 	public void setResource(BinaryMetaData resource) {
 		this.resource = resource;
 	}
+
 	public List<MetaLocalizedStaticResource> getLocalizedResourceList() {
 		return localizedResourceList;
 	}
@@ -142,8 +143,9 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 		}
 
 		if (def.getLocalizedResourceList() != null) {
-			localizedResourceList = new ArrayList<>(def.getLocalizedResourceList().size());
-			for (LocalizedStaticResourceDefinition lr: def.getLocalizedResourceList()) {
+			localizedResourceList = new ArrayList<>(def.getLocalizedResourceList()
+					.size());
+			for (LocalizedStaticResourceDefinition lr : def.getLocalizedResourceList()) {
 				MetaLocalizedStaticResource mlr = new MetaLocalizedStaticResource();
 				mlr.setLocaleName(lr.getLocaleName());
 				if (lr.getResource() instanceof ArchiveBinaryDefinition) {
@@ -159,8 +161,9 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 		if (def.getMimeTypeMapping() == null) {
 			mimeTypeMapping = null;
 		} else {
-			mimeTypeMapping = new ArrayList<MetaMimeTypeMapping>(def.getMimeTypeMapping().size());
-			for (MimeTypeMappingDefinition md: def.getMimeTypeMapping()) {
+			mimeTypeMapping = new ArrayList<MetaMimeTypeMapping>(def.getMimeTypeMapping()
+					.size());
+			for (MimeTypeMappingDefinition md : def.getMimeTypeMapping()) {
 				mimeTypeMapping.add(new MetaMimeTypeMapping(md.getExtension(), md.getMimeType()));
 			}
 		}
@@ -181,24 +184,27 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 		}
 		if (localizedResourceList != null && localizedResourceList.size() > 0) {
 			def.setLocalizedResourceList(new ArrayList<>(localizedResourceList.size()));
-			for (MetaLocalizedStaticResource mlr: localizedResourceList) {
+			for (MetaLocalizedStaticResource mlr : localizedResourceList) {
 				LocalizedStaticResourceDefinition lr = new LocalizedStaticResourceDefinition();
 				lr.setLocaleName(mlr.getLocaleName());
 				if (mlr.getResource() != null) {
-					lr.setResource(mlr.getResource().currentConfig());
+					lr.setResource(mlr.getResource()
+							.currentConfig());
 				}
-				def.getLocalizedResourceList().add(lr);
+				def.getLocalizedResourceList()
+						.add(lr);
 			}
 		}
 
 		def.setContentType(contentType);
 		if (mimeTypeMapping != null && mimeTypeMapping.size() > 0) {
 			def.setMimeTypeMapping(new ArrayList<>(mimeTypeMapping.size()));
-			for (MetaMimeTypeMapping mm: mimeTypeMapping) {
+			for (MetaMimeTypeMapping mm : mimeTypeMapping) {
 				MimeTypeMappingDefinition md = new MimeTypeMappingDefinition();
 				md.setExtension(mm.getExtension());
 				md.setMimeType(mm.getMimeType());
-				def.getMimeTypeMapping().add(md);
+				def.getMimeTypeMapping()
+						.add(md);
 			}
 		}
 		def.setEntryTextCharset(entryTextCharset);
@@ -218,7 +224,7 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 			try {
 				if (mimeTypeMapping != null && mimeTypeMapping.size() > 0) {
 					mimeMap = new HashMap<>();
-					for (MetaMimeTypeMapping mm: mimeTypeMapping) {
+					for (MetaMimeTypeMapping mm : mimeTypeMapping) {
 						mimeMap.put(mm.getExtension(), mm.getMimeType());
 					}
 				}
@@ -256,10 +262,12 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 					mimeType = mimeMap.get(ext);
 				}
 				if (mimeType == null) {
-					mimeType = requestStack.getServletContext().getMimeType(entryPath);
+					mimeType = requestStack.getServletContext()
+							.getMimeType(entryPath);
 				}
 				if (mimeType == null) {
-					mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(entryPath);
+					mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap()
+							.getContentType(entryPath);
 				}
 			}
 			if (mimeType == null) {
@@ -267,7 +275,8 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 				mimeType = "application/octet-stream";
 			}
 
-			if (entryTextCharset != null && mimeType.toLowerCase().startsWith("text/")) {
+			if (entryTextCharset != null && mimeType.toLowerCase()
+					.startsWith("text/")) {
 				mimeType = mimeType + "; charset=" + entryTextCharset;
 			}
 			return mimeType;
@@ -293,7 +302,8 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 
 		private BinaryMetaData resource() {
 			if (langMap != null) {
-				String lang = ExecuteContext.getCurrentContext().getLanguage();
+				String lang = ExecuteContext.getCurrentContext()
+						.getLanguage();
 				BinaryMetaData ret = langMap.get(lang);
 				if (ret != null) {
 					return ret;
@@ -309,7 +319,8 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 
 			InputStream is = null;
 			try {
-				String method = requestStack.getRequest().getMethod();
+				String method = requestStack.getRequest()
+						.getMethod();
 				boolean isHead = "HEAD".equals(method);
 
 				long size = -1;
@@ -319,7 +330,8 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 					ArchiveBinaryMetaData archive = (ArchiveBinaryMetaData) _resource;
 					String pathTrans = transratePath(entryPath);
 					if (!archive.hasEntry(pathTrans)) {
-						requestStack.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+						requestStack.getResponse()
+								.sendError(HttpServletResponse.SC_NOT_FOUND);
 						return;
 					}
 					size = archive.getEntrySize(pathTrans);
@@ -347,7 +359,8 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 
 				//Content-Type
 				if (contentType != null) {
-					requestStack.getResponse().setContentType(contentType);
+					requestStack.getResponse()
+							.setContentType(contentType);
 				}
 
 				//Range
@@ -358,13 +371,16 @@ public class MetaStaticResource extends BaseRootMetaData implements DefinableMet
 				}
 
 				//Content-Length
-				requestStack.getResponse().setHeader("Content-Length", String.valueOf(size));
+				requestStack.getResponse()
+						.setHeader("Content-Length", String.valueOf(size));
 
 				//write body
 				if (is != null) {
-					OutputStream os = requestStack.getResponse().getOutputStream();
+					OutputStream os = requestStack.getResponse()
+							.getOutputStream();
 					//OutputStreamを使っていることをマーク（一度つかったら、getWriter()使えない。）
-					requestStack.getRequestContext().setAttribute(WebRequestContext.MARK_USE_OUTPUT_STREAM, WebRequestContext.MARK_USE_OUTPUT_STREAM);
+					requestStack.getRequestContext()
+							.setAttribute(WebRequestContext.MARK_USE_OUTPUT_STREAM, WebRequestContext.MARK_USE_OUTPUT_STREAM);
 					RangeHeader.writeResponseBody(is, os, range);
 				}
 			} finally {

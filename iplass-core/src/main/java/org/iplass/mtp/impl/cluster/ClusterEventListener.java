@@ -21,7 +21,7 @@
 package org.iplass.mtp.impl.cluster;
 
 public interface ClusterEventListener {
-	
+
 	public void onMessage(Message msg);
 
 }

@@ -43,14 +43,17 @@ public class WebApiResponseTypeOpenApiOperationConverter extends AbstractWebApiO
 		// OpenAPIのOperationにResponseのContent-Typeを設定
 		var content = initResponseContent(operation.getOperation());
 
-		if (StringUtil.isEmpty(context.getWebApiDefinition().getResponseType())) {
+		if (StringUtil.isEmpty(context.getWebApiDefinition()
+				.getResponseType())) {
 			// responseType が設定されていない場合
 			content.addMediaType(APPLICATION_JSON, new MediaType());
 			content.addMediaType(APPLICATION_XML, new MediaType());
 
 		} else {
 			// responseType が設定されている場合
-			var mediaTypes = context.getWebApiDefinition().getResponseType().split(",");
+			var mediaTypes = context.getWebApiDefinition()
+					.getResponseType()
+					.split(",");
 			for (String mediaType : mediaTypes) {
 				var trimed = mediaType.trim();
 				if (StringUtil.isNotEmpty(trimed)) {
@@ -75,17 +78,29 @@ public class WebApiResponseTypeOpenApiOperationConverter extends AbstractWebApiO
 			return CheckNext.CONTINUE;
 		}
 
-		if (StringUtil.isEmpty(context.getWebApiDefinition().getResponseType())) {
+		if (StringUtil.isEmpty(context.getWebApiDefinition()
+				.getResponseType())) {
 			// 新規にプロパティセット
-			var commaContentType = content.keySet().stream().collect(Collectors.joining(","));
-			context.getWebApiDefinition().setResponseType(commaContentType);
+			var commaContentType = content.keySet()
+					.stream()
+					.collect(Collectors.joining(","));
+			context.getWebApiDefinition()
+					.setResponseType(commaContentType);
 
 		} else {
 			// 既存のプロパティとジョイン。重複した登録はしない。
-			var beforeResponseTypeSet = Stream.of(context.getWebApiDefinition().getResponseType().split(","))
-					.map(String::trim).filter(StringUtil::isNotEmpty).collect(Collectors.toSet());
-			var commaContentType = Stream.concat(beforeResponseTypeSet.stream(), content.keySet().stream()).distinct().collect(Collectors.joining(","));
-			context.getWebApiDefinition().setResponseType(commaContentType);
+			var beforeResponseTypeSet = Stream.of(context.getWebApiDefinition()
+					.getResponseType()
+					.split(","))
+					.map(String::trim)
+					.filter(StringUtil::isNotEmpty)
+					.collect(Collectors.toSet());
+			var commaContentType = Stream.concat(beforeResponseTypeSet.stream(), content.keySet()
+					.stream())
+					.distinct()
+					.collect(Collectors.joining(","));
+			context.getWebApiDefinition()
+					.setResponseType(commaContentType);
 		}
 
 		return CheckNext.CONTINUE;

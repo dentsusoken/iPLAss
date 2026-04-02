@@ -72,7 +72,8 @@ public class WebApiParamMapEditDialog extends MtpDialog {
 		editScript.setStartRow(true);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIParamMapEditDialog_dispEditDialogCondition")));
+		editScript.setPrompt(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIParamMapEditDialog_dispEditDialogCondition")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
@@ -84,15 +85,15 @@ public class WebApiParamMapEditDialog extends MtpDialog {
 						null,
 						new ScriptEditorDialogHandler() {
 
-					@Override
-					public void onSave(String text) {
-						conditionField.setValue(text);
-					}
+							@Override
+							public void onSave(String text) {
+								conditionField.setValue(text);
+							}
 
-					@Override
-					public void onCancel() {
-					}
-				});
+							@Override
+							public void onCancel() {
+							}
+						});
 
 			}
 		});
@@ -111,7 +112,7 @@ public class WebApiParamMapEditDialog extends MtpDialog {
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					saveMap();
 				}
 			}

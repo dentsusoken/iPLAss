@@ -83,9 +83,12 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 * コンストラクタ
 	 */
 	public RegistrationCommandBase() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	/**
@@ -111,8 +114,9 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			LoadOption loadOption, LoadType type) {
 		Entity e = null;
 		if (oid != null) {
-			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler().beforeLoadEntity(defName,
-					loadOption, type);
+			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler()
+					.beforeLoadEntity(defName,
+							loadOption, type);
 			if (leContext.isDoPrivileged()) {
 				// 特権実行
 				e = AuthContext.doPrivileged(() -> {
@@ -123,7 +127,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 				// データ取得
 				e = em.load(oid, version, defName, leContext.getLoadOption());
 			}
-			context.getLoadEntityInterrupterHandler().afterLoadEntity(e, loadOption, type);
+			context.getLoadEntityInterrupterHandler()
+					.afterLoadEntity(e, loadOption, type);
 		}
 		return e;
 	}
@@ -209,7 +214,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(beforeRegistRefEntity(context, entity, loadEntity));
 
 			// カスタム登録前処理
-			errors.addAll(context.getRegistrationInterrupterHandler().beforeRegister(entity, RegistrationType.UPDATE));
+			errors.addAll(context.getRegistrationInterrupterHandler()
+					.beforeRegister(entity, RegistrationType.UPDATE));
 
 			// 本データの更新
 			errors.addAll(update(context, entity));
@@ -218,7 +224,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(afterRegistRefEntity(context, entity, loadEntity));
 
 			// カスタム登録後処理
-			errors.addAll(context.getRegistrationInterrupterHandler().afterRegister(entity, RegistrationType.UPDATE));
+			errors.addAll(context.getRegistrationInterrupterHandler()
+					.afterRegister(entity, RegistrationType.UPDATE));
 
 			if (errors.isEmpty()) {
 				ret.setResultType(ResultType.SUCCESS);
@@ -259,7 +266,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		List<String> updatePropNames = new ArrayList<>();
 		List<V> propList = context.getUpdateProperty();
 		for (V prop : propList) {
-			if (!context.getRegistrationPropertyBaseHandler().isDispProperty(prop)) {
+			if (!context.getRegistrationPropertyBaseHandler()
+					.isDispProperty(prop)) {
 				continue;
 			}
 			PropertyDefinition pd = context.getProperty(prop.getPropertyName());
@@ -308,7 +316,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		if (occurredErrors.isEmpty()) {
 			UpdateOption option = new UpdateOption(true, targetVersion);
 			option.setUpdateProperties(
-					context.getRegistrationInterrupterHandler().getAdditionalProperties(updatePropNames));
+					context.getRegistrationInterrupterHandler()
+							.getAdditionalProperties(updatePropNames));
 			option.setPurgeCompositionedEntity(context.isPurgeCompositionedEntity());
 			option.setLocalized(context.isLocalizationData());
 			option.setForceUpdate(context.isForceUpadte());
@@ -358,7 +367,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(beforeRegistRefEntity(context, entity, null));
 
 			// カスタム登録前処理
-			errors.addAll(context.getRegistrationInterrupterHandler().beforeRegister(entity, RegistrationType.INSERT));
+			errors.addAll(context.getRegistrationInterrupterHandler()
+					.beforeRegister(entity, RegistrationType.INSERT));
 
 			// 本データの追加
 			errors.addAll(insert(context, entity));
@@ -368,7 +378,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 					loadUpdateEntity(context, entity, new LoadOption(true, false))));
 
 			// カスタム登録後処理
-			errors.addAll(context.getRegistrationInterrupterHandler().afterRegister(entity, RegistrationType.INSERT));
+			errors.addAll(context.getRegistrationInterrupterHandler()
+					.afterRegister(entity, RegistrationType.INSERT));
 
 			if (errors.isEmpty()) {
 				ret.setResultType(ResultType.SUCCESS);
@@ -409,7 +420,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		if (occurredErrors.isEmpty()) {
 			try {
 				InsertOption option = new InsertOption();
-				option.setLocalized(context.getView().isLocalizationData());
+				option.setLocalized(context.getView()
+						.isLocalizationData());
 				em.insert(entity, option);
 			} catch (EntityValidationException e) {
 				if (getLogger().isDebugEnabled()) {
@@ -435,7 +447,10 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	private void rollBack(T context, Entity entity) {
 		// ロールバックフラグON
-		ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().setRollbackOnly();
+		ManagerLocator.getInstance()
+				.getManager(TransactionManager.class)
+				.currentTransaction()
+				.setRollbackOnly();
 
 		// OIDリセット
 		resetOid(context, entity);

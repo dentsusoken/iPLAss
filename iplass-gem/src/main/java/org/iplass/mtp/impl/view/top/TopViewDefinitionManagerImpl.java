@@ -26,11 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
@@ -44,6 +39,11 @@ import org.iplass.mtp.view.top.parts.HasNestParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
+
 /**
  * TOP画面定義を管理するクラス
  * @author lis3wg
@@ -52,7 +52,8 @@ import org.iplass.mtp.web.template.TemplateUtil;
 public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager<TopViewDefinition> implements TopViewDefinitionManager {
 
 	/** サービス */
-	private TopViewDefinitionService service = ServiceRegistry.getRegistry().getService(TopViewDefinitionService.class);
+	private TopViewDefinitionService service = ServiceRegistry.getRegistry()
+			.getService(TopViewDefinitionService.class);
 
 	@Deprecated
 	@Override
@@ -64,7 +65,8 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	public void loadParts(HttpServletRequest req, HttpServletResponse res,
 			ServletContext application, PageContext page) {
 		TopViewHandler handler = getRequestTopViewHandler();
-		if (handler == null) return;
+		if (handler == null)
+			return;
 		handler.loadParts(req, res, application, page);
 	}
 
@@ -72,15 +74,18 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	public void loadWidgets(HttpServletRequest req, HttpServletResponse res,
 			ServletContext application, PageContext page) {
 		TopViewHandler handler = getRequestTopViewHandler();
-		if (handler == null) return;
+		if (handler == null)
+			return;
 		handler.loadWidgets(req, res, application, page);
 	}
 
 	@Override
 	public TopViewDefinition getRequestTopView() {
 		TopViewHandler handler = getRequestTopViewHandler();
-		if (handler == null) return null;
-		return handler.getMetaData().currentConfig();
+		if (handler == null)
+			return null;
+		return handler.getMetaData()
+				.currentConfig();
 	}
 
 	@Override
@@ -109,7 +114,7 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 		if (definition != null) {
 			Optional<T> typeParts = getAllParts(definition).stream()
 					.filter(type::isInstance)
-					.map(part -> (T)part)
+					.map(part -> (T) part)
 					.findFirst();
 			return typeParts.isPresent() ? typeParts.get() : null;
 		}
@@ -122,7 +127,7 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 		if (definition != null) {
 			List<T> typeParts = getAllParts(definition).stream()
 					.filter(type::isInstance)
-					.map(part -> (T)part)
+					.map(part -> (T) part)
 					.collect(Collectors.toList());
 			return typeParts;
 		}
@@ -132,12 +137,13 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	private List<TopViewParts> getAllParts(TopViewDefinition definition) {
 		if (definition != null) {
 			final List<TopViewParts> allParts = new ArrayList<>();
-			definition.getParts().forEach(parts -> {
-				allParts.add(parts);
-				if (parts instanceof HasNestParts) {
-					allParts.addAll(((HasNestParts)parts).getNestParts());
-				}
-			});
+			definition.getParts()
+					.forEach(parts -> {
+						allParts.add(parts);
+						if (parts instanceof HasNestParts) {
+							allParts.addAll(((HasNestParts) parts).getNestParts());
+						}
+					});
 			return allParts;
 		}
 		return Collections.emptyList();
@@ -147,9 +153,10 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	@SuppressWarnings("unchecked")
 	public <T extends TopViewPartsHandler> T getTopViewPartsHandler(TopViewHandler handler, Class<T> type) {
 		if (handler != null) {
-			Optional<T> typeParts = handler.getAllParts().stream()
+			Optional<T> typeParts = handler.getAllParts()
+					.stream()
 					.filter(type::isInstance)
-					.map(part -> (T)part)
+					.map(part -> (T) part)
 					.findFirst();
 			return typeParts.isPresent() ? typeParts.get() : null;
 		}
@@ -160,9 +167,10 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	@SuppressWarnings("unchecked")
 	public <T extends TopViewPartsHandler> List<T> getTopViewPartsHandlerList(TopViewHandler handler, Class<T> type) {
 		if (handler != null) {
-			List<T> typeParts = handler.getAllParts().stream()
+			List<T> typeParts = handler.getAllParts()
+					.stream()
 					.filter(type::isInstance)
-					.map(part -> (T)part)
+					.map(part -> (T) part)
 					.collect(Collectors.toList());
 			return typeParts;
 		}
@@ -175,8 +183,10 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	 */
 	private String getRollName() {
 		RequestContext context = TemplateUtil.getRequestContext();
-		String roleName = (String) context.getSession().getAttribute("roleName");
-		if (roleName == null || roleName.isEmpty()) roleName = "DEFAULT";
+		String roleName = (String) context.getSession()
+				.getAttribute("roleName");
+		if (roleName == null || roleName.isEmpty())
+			roleName = "DEFAULT";
 		return roleName;
 	}
 

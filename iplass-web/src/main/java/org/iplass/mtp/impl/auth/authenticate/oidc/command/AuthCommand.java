@@ -29,11 +29,11 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.impl.auth.authenticate.oidc.MetaOpenIdConnect.OpenIdConnectRuntime;
-import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCRuntimeException;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCState;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.util.StringUtil;
@@ -42,63 +42,69 @@ import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ActionMapping(name=AuthCommand.ACTION_NAME,
-	clientCacheType=ClientCacheType.NO_CACHE,
-	publicAction=true,
-	paramMapping={
-			@ParamMapping(name=AuthCommand.PARAM_DEFINITION_NAME, mapFrom=ParamMapping.PATHS)
-	},
-	result={
-		@Result(status=AuthCommand.STAT_SUCCESS,
-				type=Type.REDIRECT,
-				allowExternalLocation=true,
-				value=WebRequestConstants.REDIRECT_PATH)
-	}
+@ActionMapping(
+		name = AuthCommand.ACTION_NAME,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		publicAction = true,
+		paramMapping = {
+				@ParamMapping(name = AuthCommand.PARAM_DEFINITION_NAME, mapFrom = ParamMapping.PATHS)
+		},
+		result = {
+				@Result(
+						status = AuthCommand.STAT_SUCCESS,
+						type = Type.REDIRECT,
+						allowExternalLocation = true,
+						value = WebRequestConstants.REDIRECT_PATH)
+		}
 )
-@CommandClass(name="mtp/oidc/AuthCommand", displayName="OpenID Connect Login processing")
+@CommandClass(name = "mtp/oidc/AuthCommand", displayName = "OpenID Connect Login processing")
 public class AuthCommand implements Command {
-	
+
 	public static final String PARAM_DEFINITION_NAME = "defName";
 	public static final String REQUEST_ERROR_TEMPLATE = "org.iplass.mtp.oidc.errorTemplate";
-	
+
 	public static final String ACTION_NAME = "oidc/auth";
 	public static final String STAT_SUCCESS = "SUCCESS";
 	public static final String SESSION_OIDC_STATE = "org.iplass.mtp.oidc.state";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(AuthCommand.class);
-	
-	private OpenIdConnectService service = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
+
+	private OpenIdConnectService service = ServiceRegistry.getRegistry()
+			.getService(OpenIdConnectService.class);
 
 	@Override
 	public String execute(RequestContext request) {
-		
+
 		//他人でログインされることはないのでLogin CSRF対策は必要ないと考える
-		
+
 		String defName = StringUtil.stripToNull(request.getParam(PARAM_DEFINITION_NAME));
 		OpenIdConnectRuntime oidp = service.getOrDefault(defName);
 		if (oidp == null) {
 			throw new OIDCRuntimeException("no OpenIdProvider Definition:" + defName);
 		}
-		
+
 		String backUrlAfterAuth = oidp.backUrlAfterAuth(request);
 		if (backUrlAfterAuth == null) {
 			backUrlAfterAuth = (String) request.getAttribute(WebRequestConstants.REDIRECT_PATH);
 		}
 		if (backUrlAfterAuth == null) {
 			//トップ画面へ遷移
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-			String menuUrl = WebUtil.getTenantWebInfo(tenant).getHomeUrl();
+			Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
+			String menuUrl = WebUtil.getTenantWebInfo(tenant)
+					.getHomeUrl();
 			if (menuUrl != null && menuUrl.length() != 0) {
 				backUrlAfterAuth = TemplateUtil.getTenantContextPath() + menuUrl;
 			} else {
 				backUrlAfterAuth = TemplateUtil.getTenantContextPath() + "/";
 			}
 		}
-		
+
 		String errorTemplate = (String) request.getAttribute(REQUEST_ERROR_TEMPLATE);
-		
+
 		OIDCState state = oidp.newOIDCState(backUrlAfterAuth, oidp.createRedirectUri(request, AuthCallbackCommand.ACTION_NAME), errorTemplate);
-		request.getSession().setAttribute(SESSION_OIDC_STATE, state);
+		request.getSession()
+				.setAttribute(SESSION_OIDC_STATE, state);
 
 		String redirect = oidp.authorizeUrl(state);
 

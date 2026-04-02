@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.iplass.adminconsole.annotation.MultiLang;
+import org.iplass.mtp.definition.Definition;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.iplass.adminconsole.annotation.MultiLang;
-import org.iplass.mtp.definition.Definition;
 
 /**
  * 画面定義
@@ -118,7 +118,8 @@ public class EntityView implements Definition {
 	 * @return FormView
 	 */
 	public List<FormView> getViews() {
-		if (this.views == null) this.views = new ArrayList<>();
+		if (this.views == null)
+			this.views = new ArrayList<>();
 		return views;
 	}
 
@@ -149,7 +150,8 @@ public class EntityView implements Definition {
 	}
 
 	public List<ViewControlSetting> getViewControlSettings() {
-		if (this.viewControlSettings == null) this.viewControlSettings = new ArrayList<>();
+		if (this.viewControlSettings == null)
+			this.viewControlSettings = new ArrayList<>();
 		return viewControlSettings;
 	}
 
@@ -186,12 +188,14 @@ public class EntityView implements Definition {
 	 */
 	private DetailFormView getDetailFormViewByName(String name) {
 		DetailFormView view = null;
-		if (this.getViews() != null && this.getViews().size() > 0) {
+		if (this.getViews() != null && this.getViews()
+				.size() > 0) {
 			for (FormView fv : this.getViews()) {
 				if (fv instanceof DetailFormView) {
 //					if (name == null) {
 					if (name == null || name.isEmpty()) {
-						if (fv.getName() == null || fv.getName().equals("")) {
+						if (fv.getName() == null || fv.getName()
+								.equals("")) {
 							view = (DetailFormView) fv;
 						}
 					} else {
@@ -199,7 +203,8 @@ public class EntityView implements Definition {
 							view = (DetailFormView) fv;
 						}
 					}
-					if (view != null) break;
+					if (view != null)
+						break;
 				}
 			}
 		}
@@ -261,7 +266,8 @@ public class EntityView implements Definition {
 		} else {
 			form = getDetailFormView(name);
 		}
-		if (form != null) removeDetailForView(form);
+		if (form != null)
+			removeDetailForView(form);
 	}
 
 	/**
@@ -269,7 +275,8 @@ public class EntityView implements Definition {
 	 * @param formView 詳細画面のFormView
 	 */
 	public void removeDetailForView(DetailFormView formView) {
-		if (formView == null) throw new IllegalArgumentException("FormView is null.");
+		if (formView == null)
+			throw new IllegalArgumentException("FormView is null.");
 		removeView(formView);
 	}
 
@@ -297,12 +304,14 @@ public class EntityView implements Definition {
 	 */
 	private SearchFormView getSearchFormViewByName(String name) {
 		SearchFormView view = null;
-		if (this.getViews() != null && this.getViews().size() > 0) {
+		if (this.getViews() != null && this.getViews()
+				.size() > 0) {
 			for (FormView fv : this.getViews()) {
 				if (fv instanceof SearchFormView) {
 //					if (name == null) {
 					if (name == null || name.isEmpty()) {
-						if (fv.getName() == null || fv.getName().equals("")) {
+						if (fv.getName() == null || fv.getName()
+								.equals("")) {
 							view = (SearchFormView) fv;
 						}
 					} else {
@@ -310,7 +319,8 @@ public class EntityView implements Definition {
 							view = (SearchFormView) fv;
 						}
 					}
-					if (view != null) break;
+					if (view != null)
+						break;
 				}
 			}
 		}
@@ -372,7 +382,8 @@ public class EntityView implements Definition {
 		} else {
 			form = getSearchFormView(name);
 		}
-		if (form != null) removeSearchForView(form);
+		if (form != null)
+			removeSearchForView(form);
 	}
 
 	/**
@@ -380,7 +391,8 @@ public class EntityView implements Definition {
 	 * @param formView 検索画面のFormView
 	 */
 	public void removeSearchForView(SearchFormView formView) {
-		if (formView == null) throw new IllegalArgumentException("FormView is null.");
+		if (formView == null)
+			throw new IllegalArgumentException("FormView is null.");
 		removeView(formView);
 	}
 
@@ -409,12 +421,14 @@ public class EntityView implements Definition {
 	 */
 	private BulkFormView getBulkFormViewByName(String name) {
 		BulkFormView view = null;
-		if (this.getViews() != null && this.getViews().size() > 0) {
+		if (this.getViews() != null && this.getViews()
+				.size() > 0) {
 			for (FormView fv : this.getViews()) {
 				if (fv instanceof BulkFormView) {
 //					if (name == null) {
 					if (name == null || name.isEmpty()) {
-						if (fv.getName() == null || fv.getName().equals("")) {
+						if (fv.getName() == null || fv.getName()
+								.equals("")) {
 							view = (BulkFormView) fv;
 						}
 					} else {
@@ -422,7 +436,8 @@ public class EntityView implements Definition {
 							view = (BulkFormView) fv;
 						}
 					}
-					if (view != null) break;
+					if (view != null)
+						break;
 				}
 			}
 		}
@@ -484,7 +499,8 @@ public class EntityView implements Definition {
 		} else {
 			form = getBulkFormView(name);
 		}
-		if (form != null) removeDetailForView(form);
+		if (form != null)
+			removeDetailForView(form);
 	}
 
 	/**
@@ -492,7 +508,8 @@ public class EntityView implements Definition {
 	 * @param formView 一括更新画面のFormView
 	 */
 	public void removeDetailForView(BulkFormView formView) {
-		if (formView == null) throw new IllegalArgumentException("FormView is null.");
+		if (formView == null)
+			throw new IllegalArgumentException("FormView is null.");
 		removeView(formView);
 	}
 
@@ -505,7 +522,8 @@ public class EntityView implements Definition {
 	public boolean isAutoGenerateDetailView(String viewName) {
 		Optional<ViewControlSetting> setting = getViewControlSetting(viewName);
 		if (setting.isPresent()) {
-			return setting.get().isAutoGenerateDetailView();
+			return setting.get()
+					.isAutoGenerateDetailView();
 		} else {
 			return false;
 		}
@@ -520,7 +538,8 @@ public class EntityView implements Definition {
 	public boolean isAutoGenerateSearchView(String viewName) {
 		Optional<ViewControlSetting> setting = getViewControlSetting(viewName);
 		if (setting.isPresent()) {
-			return setting.get().isAutoGenerateSearchView();
+			return setting.get()
+					.isAutoGenerateSearchView();
 		} else {
 			return false;
 		}
@@ -535,7 +554,8 @@ public class EntityView implements Definition {
 	public boolean isAutoGenerateBulkView(String viewName) {
 		Optional<ViewControlSetting> setting = getViewControlSetting(viewName);
 		if (setting.isPresent()) {
-			return setting.get().isAutoGenerateBulkView();
+			return setting.get()
+					.isAutoGenerateBulkView();
 		} else {
 			return false;
 		}
@@ -543,14 +563,15 @@ public class EntityView implements Definition {
 
 	private Optional<ViewControlSetting> getViewControlSetting(final String viewName) {
 		return getViewControlSettings().stream()
-					.filter(s -> {
-						//don't use StringUtil
-						if (viewName == null || viewName.isEmpty()) {
-							return s.getName() == null || s.getName().isEmpty();
-						} else {
-							return viewName.equals(s.getName());
-						}
-					})
-					.findFirst();
+				.filter(s -> {
+					//don't use StringUtil
+					if (viewName == null || viewName.isEmpty()) {
+						return s.getName() == null || s.getName()
+								.isEmpty();
+					} else {
+						return viewName.equals(s.getName());
+					}
+				})
+				.findFirst();
 	}
 }

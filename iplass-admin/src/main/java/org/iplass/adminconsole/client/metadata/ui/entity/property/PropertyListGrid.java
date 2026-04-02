@@ -76,7 +76,6 @@ public class PropertyListGrid extends ListGrid {
 
 	private PropertyTypeAttributeController typeController = GWT.create(PropertyTypeAttributeController.class);
 
-
 	/**
 	 * コンストラクタ
 	 */
@@ -86,27 +85,27 @@ public class PropertyListGrid extends ListGrid {
 		setWidth100();
 		setHeight(1);
 
-		setShowAllColumns(true);	// 列を全て表示
-		setShowAllRecords(true);	// レコードを全て表示
+		setShowAllColumns(true); // 列を全て表示
+		setShowAllRecords(true); // レコードを全て表示
 
 		setOverflow(Overflow.VISIBLE);
 		setBodyOverflow(Overflow.VISIBLE);
 
-		setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+		setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-		setCanResizeFields(true);	//列幅変更可
-		setCanSort(false);			//ソート不可
-		setCanGroupBy(false);		//Group化不可
-		setCanPickFields(false);	//列の選択不可
-		setCanAutoFitFields(false);	//列幅の自動調整不可(崩れるので)
+		setCanResizeFields(true); //列幅変更可
+		setCanSort(false); //ソート不可
+		setCanGroupBy(false); //Group化不可
+		setCanPickFields(false); //列の選択不可
+		setCanAutoFitFields(false); //列幅の自動調整不可(崩れるので)
 
-		setCanDragRecordsOut(true);				//grid内でのD&Dでの並べ替えを許可
+		setCanDragRecordsOut(true); //grid内でのD&Dでの並べ替えを許可
 		setCanAcceptDroppedRecords(true);
 		setCanReorderRecords(true);
 
-		setCanEdit(true);						//編集可
-		setEditEvent(ListGridEditEvent.CLICK);	//Clickで編集開始
-		setEditByCell(true);					//Cell単位で編集
+		setCanEdit(true); //編集可
+		setEditEvent(ListGridEditEvent.CLICK); //Clickで編集開始
+		setEditByCell(true); //Cell単位で編集
 
 		//この２つを指定することでcreateRecordComponentが有効
 		setShowRecordComponents(true);
@@ -197,7 +196,7 @@ public class PropertyListGrid extends ListGrid {
 		// レコード編集イベント設定
 		addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				showPropertyEditDialog((PropertyListGridRecord)getRecord(event.getRecordNum()));
+				showPropertyEditDialog((PropertyListGridRecord) getRecord(event.getRecordNum()));
 			}
 		});
 
@@ -214,12 +213,12 @@ public class PropertyListGrid extends ListGrid {
 	}
 
 	@Override
-    protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
-		PropertyListGridRecord propertyRecord = (PropertyListGridRecord)record;
+	protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+		PropertyListGridRecord propertyRecord = (PropertyListGridRecord) record;
 		if (propertyRecord.isInherited()) {
 			return "entityInheritedPropertyGridRow";
 		} else if (propertyRecord.isDelete()) {
-				return "entityDeletePropertyGridRow";
+			return "entityDeletePropertyGridRow";
 		} else {
 			return super.getBaseStyle(record, rowNum, colNum);
 		}
@@ -229,10 +228,10 @@ public class PropertyListGrid extends ListGrid {
 	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 		final String fieldName = this.getFieldName(colNum);
 		if (PropertyListGridRecord.SHOW_ICON.equals(fieldName)) {
-			PropertyListGridRecord plgd = (PropertyListGridRecord)record;
+			PropertyListGridRecord plgd = (PropertyListGridRecord) record;
 			if (plgd.getTypeAttribute() instanceof ReferenceAttribute) {
 				//Referenceの場合は参照先Entity定義にリンク
-				final ReferenceAttribute reference = (ReferenceAttribute)plgd.getTypeAttribute();
+				final ReferenceAttribute reference = (ReferenceAttribute) plgd.getTypeAttribute();
 				MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
 				button.setActionButtonPrompt("view the selected reference Entity");
 				button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
@@ -243,7 +242,7 @@ public class PropertyListGrid extends ListGrid {
 				});
 				return button;
 			} else if (plgd.getTypeAttribute() instanceof SelectAttribute) {
-				final SelectAttribute select = (SelectAttribute)plgd.getTypeAttribute();
+				final SelectAttribute select = (SelectAttribute) plgd.getTypeAttribute();
 				//Selectの場合はGlobal指定されている場合は指定されたSelectValue定義にリンク
 				if (SmartGWTUtil.isNotEmpty(select.getSelectValueDefinitionName())) {
 					MetaDataViewGridButton button = new MetaDataViewGridButton(SelectValueDefinition.class.getName());
@@ -278,16 +277,16 @@ public class PropertyListGrid extends ListGrid {
 			List<PropertyListGridRecord> showProps = new ArrayList<PropertyListGridRecord>();
 			//inheritedPropsは変数から
 			if (isShowInheritedProperty) {
-				showProps.addAll(inheritedProps);	//inheritedを先頭に
+				showProps.addAll(inheritedProps); //inheritedを先頭に
 			}
 			//declaredPropsはレコードから
 			for (ListGridRecord record : getRecords()) {
-				PropertyListGridRecord propertyRecord = (PropertyListGridRecord)record;
+				PropertyListGridRecord propertyRecord = (PropertyListGridRecord) record;
 				if (!propertyRecord.isInherited()) {
 					showProps.add(propertyRecord);
 				}
 			}
-			setData(showProps.toArray(new PropertyListGridRecord[]{}));
+			setData(showProps.toArray(new PropertyListGridRecord[] {}));
 		}
 	}
 
@@ -295,17 +294,17 @@ public class PropertyListGrid extends ListGrid {
 		List<PropertyListGridRecord> showProps = new ArrayList<PropertyListGridRecord>();
 		//inheritedPropsは変数から
 		for (ListGridRecord record : inheritedProps) {
-			PropertyListGridRecord propertyRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propertyRecord = (PropertyListGridRecord) record;
 			//共通項目はデフォルト未選択
 			propertyRecord.setCrawlProp(false);
 		}
 		if (isShowInheritedProperty) {
-			showProps.addAll(inheritedProps);	//inheritedを先頭に
+			showProps.addAll(inheritedProps); //inheritedを先頭に
 		}
 
 		//declaredPropsはレコードから
 		for (ListGridRecord record : getRecords()) {
-			PropertyListGridRecord propertyRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propertyRecord = (PropertyListGridRecord) record;
 			if (!propertyRecord.isInherited()) {
 				if (!propertyRecord.isDelete()) {
 					if (isCrawlEntity) {
@@ -322,7 +321,7 @@ public class PropertyListGrid extends ListGrid {
 				showProps.add(propertyRecord);
 			}
 		}
-		setData(showProps.toArray(new PropertyListGridRecord[]{}));
+		setData(showProps.toArray(new PropertyListGridRecord[] {}));
 	}
 
 	public EntityDefinition getEditDefinition(EntityDefinition definition) {
@@ -335,7 +334,7 @@ public class PropertyListGrid extends ListGrid {
 		if (!isShowInheritedProperty) {
 			//InheritedPropertyがGridに表示されていないので変数から
 			for (ListGridRecord record : inheritedProps) {
-				PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+				PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 				if (propRecord.isCustomOid()) {
 					oidProps.add(propRecord.getRecordName());
 				}
@@ -360,7 +359,7 @@ public class PropertyListGrid extends ListGrid {
 		List<PropertyDefinition> properties = new ArrayList<PropertyDefinition>();
 
 		for (ListGridRecord record : getRecords()) {
-			PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 
 			if (propRecord.isDelete()) {
 				continue;
@@ -396,7 +395,7 @@ public class PropertyListGrid extends ListGrid {
 
 		if (oidProps.isEmpty()) {
 			definition.setOidPropertyName(null);
-		} else if (oidProps.size() == 1 && Entity.OID.equals(oidProps.get(0))){
+		} else if (oidProps.size() == 1 && Entity.OID.equals(oidProps.get(0))) {
 			definition.setOidPropertyName(null);
 		} else {
 			definition.setOidPropertyName(oidProps);
@@ -413,7 +412,7 @@ public class PropertyListGrid extends ListGrid {
 			rdbStore = new SchemalessRdbStore(SchemalessRdbStore.DEFAULT_STORAGE_SPACE);
 		} else {
 			if (definition.getStoreDefinition() instanceof SchemalessRdbStore) {
-				rdbStore = (SchemalessRdbStore)definition.getStoreDefinition();
+				rdbStore = (SchemalessRdbStore) definition.getStoreDefinition();
 			} else {
 				//現状あり得ない
 			}
@@ -441,7 +440,7 @@ public class PropertyListGrid extends ListGrid {
 
 		ListGridRecord[] records = getRecords();
 		for (ListGridRecord record : records) {
-			PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 
 			if (propRecord.isDelete()) {
 				continue;
@@ -453,7 +452,8 @@ public class PropertyListGrid extends ListGrid {
 			}
 
 			if (propRecord.getSavedName() != null) {
-				if (!propRecord.getSavedName().equals(propRecord.getRecordName())) {
+				if (!propRecord.getSavedName()
+						.equals(propRecord.getRecordName())) {
 					renamePropertyMap.put(propRecord.getSavedName(), propRecord.getRecordName());
 				}
 			}
@@ -472,11 +472,11 @@ public class PropertyListGrid extends ListGrid {
 		Set<String> names = new HashSet<String>();
 		//InheritedPropertyを取得
 		for (ListGridRecord record : inheritedProps) {
-			PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 			names.add(propRecord.getRecordName());
 		}
 		for (ListGridRecord record : records) {
-			PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 
 			if (propRecord.isDelete()) {
 				continue;
@@ -508,7 +508,7 @@ public class PropertyListGrid extends ListGrid {
 		}
 
 		for (ListGridRecord record : records) {
-			PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+			PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 			//Inheritedは対象外
 			if (propRecord.isInherited()) {
 				continue;
@@ -539,7 +539,7 @@ public class PropertyListGrid extends ListGrid {
 			if (curDefinition.getStoreDefinition() != null) {
 				StoreDefinition storeDefinition = curDefinition.getStoreDefinition();
 				if (storeDefinition instanceof SchemalessRdbStore) {
-					SchemalessRdbStore rdbStoreDefinition  = (SchemalessRdbStore)storeDefinition;
+					SchemalessRdbStore rdbStoreDefinition = (SchemalessRdbStore) storeDefinition;
 					if (rdbStoreDefinition.getColumnMappingList() != null) {
 						for (ColumnMapping mapping : rdbStoreDefinition.getColumnMappingList()) {
 							colMap.put(mapping.getPropertyName(), mapping.getColumnName());
@@ -560,11 +560,11 @@ public class PropertyListGrid extends ListGrid {
 			}
 			List<PropertyListGridRecord> showProps = new ArrayList<PropertyListGridRecord>();
 			if (isShowInheritedProperty) {
-				showProps.addAll(inheritedProps);	//inheritedを先頭に
+				showProps.addAll(inheritedProps); //inheritedを先頭に
 			}
 			showProps.addAll(declaredProps);
 
-			setData(showProps.toArray(new PropertyListGridRecord[]{}));
+			setData(showProps.toArray(new PropertyListGridRecord[] {}));
 		}
 	}
 
@@ -600,16 +600,16 @@ public class PropertyListGrid extends ListGrid {
 	}
 
 	private void valueChanged(String colName, int row, Object value) {
-		PropertyListGridRecord target = (PropertyListGridRecord)getRecord(row);
+		PropertyListGridRecord target = (PropertyListGridRecord) getRecord(row);
 		if (PropertyListGridRecord.CUSTOM_OID.equals(colName)) {
-			target.setCustomOid((Boolean)value);
+			target.setCustomOid((Boolean) value);
 
 			//OIDのみか、OID以外の複数の組み合わせのみ
 			ListGridRecord[] records = getAllRecords();
 			if (Entity.OID.equals(target.getRecordName())) {
 				//OIDが選択or解除されたらすべて解除
 				for (ListGridRecord record : records) {
-					PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+					PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 					if (!Entity.OID.equals(propRecord.getRecordName()) && propRecord.isCustomOid()) {
 						propRecord.setCustomOid(false);
 						refreshRow(getRecordIndex(propRecord));
@@ -618,14 +618,14 @@ public class PropertyListGrid extends ListGrid {
 			} else {
 				boolean checkCustomOid = false;
 				for (ListGridRecord record : records) {
-					PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+					PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 					if (!propRecord.isDelete() && !Entity.OID.equals(propRecord.getRecordName()) && propRecord.isCustomOid()) {
 						checkCustomOid = true;
 						break;
 					}
 				}
 				for (ListGridRecord record : records) {
-					PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+					PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 					if (Entity.OID.equals(propRecord.getRecordName())) {
 						if (checkCustomOid) {
 							//OIDのチェック解除
@@ -644,14 +644,14 @@ public class PropertyListGrid extends ListGrid {
 			ListGridRecord[] records = getRecords();
 
 			for (ListGridRecord record : records) {
-				PropertyListGridRecord propRecord = (PropertyListGridRecord)record;
+				PropertyListGridRecord propRecord = (PropertyListGridRecord) record;
 				if (propRecord.isCustomName()) {
 					propRecord.setCustomName(false);
 					refreshRow(getRecordIndex(propRecord));
 					break;
 				}
 			}
-			target.setCustomName((Boolean)value);
+			target.setCustomName((Boolean) value);
 		}
 	}
 
@@ -675,7 +675,7 @@ public class PropertyListGrid extends ListGrid {
 
 		//DropされたレコードにInheritedプロパティが含まれていたら無効
 		for (ListGridRecord record : event.getDropRecords()) {
-			PropertyListGridRecord plgr = (PropertyListGridRecord)record;
+			PropertyListGridRecord plgr = (PropertyListGridRecord) record;
 			if (plgr.isInherited()) {
 				event.cancel();
 				return;
@@ -685,7 +685,7 @@ public class PropertyListGrid extends ListGrid {
 		//Drop先が最終レコードより前の場合、次のレコードがInheritedだったら無効
 		//（Inheritedの間にDropは不可）
 		if (event.getIndex() < getRecordList().getLength() - 1) {
-			PropertyListGridRecord plgr = (PropertyListGridRecord)getRecord(event.getIndex());
+			PropertyListGridRecord plgr = (PropertyListGridRecord) getRecord(event.getIndex());
 			if (plgr.isInherited()) {
 				event.cancel();
 				return;

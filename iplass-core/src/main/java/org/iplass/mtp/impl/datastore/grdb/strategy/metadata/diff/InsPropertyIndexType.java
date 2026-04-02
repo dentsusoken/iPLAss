@@ -34,7 +34,6 @@ import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class InsPropertyIndexType extends Diff {
 
 	private MetaPrimitiveProperty nextProperty;
@@ -53,7 +52,7 @@ public class InsPropertyIndexType extends Diff {
 		if (needDataModify()) {
 			if (nextProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 				MetaGRdbPropertyStore propStore = (MetaGRdbPropertyStore) nextProperty.getEntityStoreProperty();
-				if(propStore.isExternalIndex()) {
+				if (propStore.isExternalIndex()) {
 					BaseRdbTypeAdapter typeMapping = (BaseRdbTypeAdapter) rdb.getRdbTypeAdapter(nextProperty.getType());
 
 					String tableNamePostfixRuntime = dataStore.getTableNamePostfix(nextEntity.getName(),

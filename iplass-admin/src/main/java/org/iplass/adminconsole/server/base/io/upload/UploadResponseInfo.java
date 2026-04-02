@@ -39,7 +39,7 @@ public class UploadResponseInfo extends LinkedHashMap<String, Object> {
 	}
 
 	public Status getStatus() {
-		return (Status)get(UploadProperty.STATUS_CODE);
+		return (Status) get(UploadProperty.STATUS_CODE);
 	}
 
 	public void setStatus(Status status) {
@@ -65,7 +65,7 @@ public class UploadResponseInfo extends LinkedHashMap<String, Object> {
 
 	public void addStatusMessage(String statusMessage) {
 		@SuppressWarnings("unchecked")
-		List<String> infos = (List<String>)get(UploadProperty.STATUS_MESSAGE);
+		List<String> infos = (List<String>) get(UploadProperty.STATUS_MESSAGE);
 		if (infos == null) {
 			infos = new ArrayList<String>();
 			put(UploadProperty.STATUS_MESSAGE, infos);
@@ -77,7 +77,7 @@ public class UploadResponseInfo extends LinkedHashMap<String, Object> {
 
 	public void addMessage(String message) {
 		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>)get(UploadProperty.MESSAGE);
+		List<String> messages = (List<String>) get(UploadProperty.MESSAGE);
 		if (messages == null) {
 			messages = new ArrayList<String>();
 			put(UploadProperty.MESSAGE, messages);

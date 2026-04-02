@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.webapi;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -32,6 +30,8 @@ import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.KeyGenerator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * EntityWebApi定義
@@ -115,7 +115,9 @@ public class MetaEntityWebApi extends BaseRootMetaData implements DefinableMetaD
 		this.definitionId = definitionId;
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see prot.spi.metadata.RootMetaData#createRuntime()
 	 */
 	@Override
@@ -123,7 +125,9 @@ public class MetaEntityWebApi extends BaseRootMetaData implements DefinableMetaD
 		return new EntityWebApiHandler();
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see prot.spi.metadata.RootMetaData#copy()
 	 */
 	@Override
@@ -141,7 +145,8 @@ public class MetaEntityWebApi extends BaseRootMetaData implements DefinableMetaD
 		}
 
 		EntityContext metaContext = EntityContext.getCurrentContext();
-		MetaEntity metaEntity = metaContext.getHandlerByName(definition.getName()).getMetaData();
+		MetaEntity metaEntity = metaContext.getHandlerByName(definition.getName())
+				.getMetaData();
 
 		this.name = metaEntity.getName();
 		this.definitionId = metaEntity.getId();
@@ -158,7 +163,8 @@ public class MetaEntityWebApi extends BaseRootMetaData implements DefinableMetaD
 	 */
 	public EntityWebApiDefinition currentConfig() {
 		EntityContext metaContext = EntityContext.getCurrentContext();
-		MetaEntity metaEntity = metaContext.getHandlerById(definitionId).getMetaData();
+		MetaEntity metaEntity = metaContext.getHandlerById(definitionId)
+				.getMetaData();
 
 		EntityWebApiDefinition definition = new EntityWebApiDefinition();
 		definition.setName(metaEntity.getName());
@@ -179,7 +185,9 @@ public class MetaEntityWebApi extends BaseRootMetaData implements DefinableMetaD
 		EntityWebApiHandler() {
 		}
 
-		/* (非 Javadoc)
+		/*
+		 * (非 Javadoc)
+		 * 
 		 * @see prot.spi.metadata.MetaDataRuntime#getMetaData()
 		 */
 		@Override

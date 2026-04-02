@@ -31,7 +31,8 @@ public abstract class MultiLangExternalRefPath extends AbstractExternalRefPath {
 	@Override
 	public String getLocaleName(Node textNode) {
 		Node parent = getLocaleParentNode(textNode);
-		String localeTagName = getClass().getAnnotation(ExternalRefPathAttribute.class).localeTagName();
+		String localeTagName = getClass().getAnnotation(ExternalRefPathAttribute.class)
+				.localeTagName();
 		return getChildNodeValue(parent, localeTagName);
 	}
 
@@ -42,6 +43,7 @@ public abstract class MultiLangExternalRefPath extends AbstractExternalRefPath {
 	 * @return
 	 */
 	protected Node getLocaleParentNode(Node targetTextNode) {
-		return targetTextNode.getParentNode().getParentNode();
+		return targetTextNode.getParentNode()
+				.getParentNode();
 	}
 }

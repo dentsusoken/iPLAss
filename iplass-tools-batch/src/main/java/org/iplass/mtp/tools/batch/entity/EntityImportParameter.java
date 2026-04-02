@@ -84,10 +84,9 @@ public class EntityImportParameter {
 
 	//Importファイル(内部用)
 	private File importFile;
-	
+
 	//BinaryデータをImportするか
 	private boolean isImportBinaryData;
-
 
 	//EntityImport用条件
 	private EntityDataImportCondition entityImportCondition;
@@ -128,7 +127,7 @@ public class EntityImportParameter {
 	public void setImportFilePath(String importFilePath) {
 		this.importFilePath = importFilePath;
 	}
-	
+
 	public boolean isImportBinaryData() {
 		return isImportBinaryData;
 	}

@@ -42,12 +42,15 @@ public class MetaCacheRelatedEntity implements MetaData {
 	public String getDefinitionName() {
 		return definitionName;
 	}
+
 	public void setDefinitionName(String definitionName) {
 		this.definitionName = definitionName;
 	}
+
 	public RelatedEntityType getType() {
 		return type;
 	}
+
 	public void setType(RelatedEntityType type) {
 		this.type = type;
 	}

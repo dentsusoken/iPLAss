@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.element.property;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
@@ -31,6 +28,9 @@ import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * プロパティレイアウト情報のメタデータ
@@ -72,7 +72,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	 * @return 列幅
 	 */
 	public int getWidth() {
-	    return width;
+		return width;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	 * @param width 列幅
 	 */
 	public void setWidth(int width) {
-	    this.width = width;
+		this.width = width;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	 * @return テキストの配置
 	 */
 	public TextAlign getTextAlign() {
-	    return textAlign;
+		return textAlign;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	 * @param textAlign テキストの配置
 	 */
 	public void setTextAlign(TextAlign textAlign) {
-	    this.textAlign = textAlign;
+		this.textAlign = textAlign;
 	}
 
 	/**
@@ -184,20 +184,21 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		super.fillFrom(element, definitionId);
 		PropertyColumn p = (PropertyColumn) element;
 		width = p.getWidth();
-		nullOrderType =  p.getNullOrderType();
+		nullOrderType = p.getNullOrderType();
 		textAlign = p.getTextAlign();
 		sortable = p.isSortable();
 		outputCsv = p.isOutputCsv();
 
-		if(p.getBulkUpdateEditor() != null) {
+		if (p.getBulkUpdateEditor() != null) {
 			MetaPropertyEditor editor = MetaPropertyEditor.createInstance(p.getBulkUpdateEditor());
 			EntityContext context = EntityContext.getCurrentContext();
 			EntityHandler entity = context.getHandlerById(definitionId);
 
-			fillCustomPropertyEditor(p.getBulkUpdateEditor(),p.getPropertyName(), context, entity);
+			fillCustomPropertyEditor(p.getBulkUpdateEditor(), p.getPropertyName(), context, entity);
 
 			if (editor != null) {
-				p.getBulkUpdateEditor().setPropertyName(p.getPropertyName());
+				p.getBulkUpdateEditor()
+						.setPropertyName(p.getPropertyName());
 				editor.applyConfig(p.getBulkUpdateEditor());
 				this.bulkUpdateEditor = editor;
 			}

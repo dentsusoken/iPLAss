@@ -178,7 +178,8 @@ public class OpenApiSupportTreeGridDS extends AbstractAdminDataSource {
 				return 1;
 			}
 			// 名前でソートする
-			return a.getName().compareTo(b.getName());
+			return a.getName()
+					.compareTo(b.getName());
 		});
 
 		List<TreeNode> children = new ArrayList<>();

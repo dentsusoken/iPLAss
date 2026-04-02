@@ -41,7 +41,7 @@ public class JasperReportingEntityDataSource extends JRBeanCollectionDataSource 
 	@Override
 	protected Object getFieldValue(Object bean, JRField field) throws JRException {
 		if (bean instanceof Entity) {
-			return getEntityFieldValue((Entity)bean, getPropertyName(field));
+			return getEntityFieldValue((Entity) bean, getPropertyName(field));
 		} else {
 			return getBeanProperty(bean, getPropertyName(field));
 		}

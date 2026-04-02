@@ -29,9 +29,9 @@ import org.iplass.mtp.impl.cluster.Message;
  *
  */
 public interface MessageChannel {
-	
+
 	public void setMessageReceiver(MessageReceiver handler);
-	
+
 	public void sendMessage(Message message);
 
 }

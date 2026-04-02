@@ -133,7 +133,6 @@ public interface FulltextSearchService extends Service {
 	 */
 	Map<String, List<String>> fulltextSearchOidList(List<String> defNames, String keyword);
 
-
 	//TODO 現状Luceneの場合、FulltextSearchResultはoidのみ
 	/**
 	 * 全文検索を実行し、検索結果情報を返す。
@@ -145,6 +144,7 @@ public interface FulltextSearchService extends Service {
 	List<FulltextSearchResult> execFulltextSearch(String defName, String keyword);
 
 	void initTenantContext(TenantContext tenantContext);
+
 	void destroyTenantContext(TenantContext tenantContext);
 
 }

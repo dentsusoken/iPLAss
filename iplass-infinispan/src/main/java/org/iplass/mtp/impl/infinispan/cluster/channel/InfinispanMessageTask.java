@@ -37,7 +37,8 @@ class InfinispanMessageTask implements InfinispanSerializableTask<Void> {
 
 	@Override
 	public Void call() {
-		ClusterService cs = ServiceRegistry.getRegistry().getService(ClusterService.class);
+		ClusterService cs = ServiceRegistry.getRegistry()
+				.getService(ClusterService.class);
 		MessageChannel mc = cs.getMessageChannel();
 		if (mc instanceof InfinispanMessageChannel) {
 			((InfinispanMessageChannel) mc).receiveMessage(msg);

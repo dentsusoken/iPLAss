@@ -31,27 +31,27 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class GroupBySyntax implements Syntax<GroupBy>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	public GroupBy parse(ParseContext str) throws ParseException {
-		
+
 		//GROUP
 		if (!str.equalsNextToken(GROUP, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("GROUP BY expected.", this, str));
 		}
 		str.consumeChars(GROUP.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//BY
 		if (!str.equalsNextToken(BY, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("BY expected.", this, str));
 		}
 		str.consumeChars(BY.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		GroupBy groupBy = new GroupBy();
-		
+
 		//ValueExpression
 		boolean isFirst = true;
 		while (true) {
@@ -67,20 +67,19 @@ public class GroupBySyntax implements Syntax<GroupBy>, QueryConstants {
 			ValueExpression groupingField = polynomial.parse(str);
 			groupBy.add(groupingField);
 		}
-		
+
 		int current = str.getCurrentIndex();
 		String token = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (ROLLUP.equalsIgnoreCase(token)) {
 			groupBy.setRollType(RollType.ROLLUP);
 		} else if (CUBE.equalsIgnoreCase(token)) {
-				groupBy.setRollType(RollType.CUBE);
+			groupBy.setRollType(RollType.CUBE);
 		} else {
 			str.setCurrentIndex(current);
 		}
-		
+
 		return groupBy;
 	}
-
 
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);

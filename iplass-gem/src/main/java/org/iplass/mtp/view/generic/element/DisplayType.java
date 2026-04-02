@@ -28,11 +28,15 @@ import jakarta.xml.bind.annotation.XmlEnumValue;
  */
 public enum DisplayType {
 	/** 詳細編集 */
-	@XmlEnumValue("Detail")DETAIL,
+	@XmlEnumValue("Detail")
+	DETAIL,
 	/** 詳細表示 */
-	@XmlEnumValue("View")VIEW,
+	@XmlEnumValue("View")
+	VIEW,
 	/** 詳細編集,詳細表示 */
-	@XmlEnumValue("Both")BOTH,
+	@XmlEnumValue("Both")
+	BOTH,
 	/** カスタム */
-	@XmlEnumValue("Custom")CUSTOM
+	@XmlEnumValue("Custom")
+	CUSTOM
 }

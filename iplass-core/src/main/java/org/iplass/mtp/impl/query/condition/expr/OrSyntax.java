@@ -31,9 +31,8 @@ import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 
-
 public class OrSyntax implements Syntax<Condition>, QueryConstants {
-	
+
 	private AndSyntax and;
 
 	public void init(SyntaxContext context) {
@@ -43,7 +42,7 @@ public class OrSyntax implements Syntax<Condition>, QueryConstants {
 	public Condition parse(ParseContext str) throws ParseException {
 		//first condition
 		Condition firstCond = and.parse(str);
-		
+
 		//2項目以降
 		List<Condition> condList = null;
 		while (str.equalsNextToken(OR, ParseContext.TOKEN_DELIMITERS)) {
@@ -56,14 +55,14 @@ public class OrSyntax implements Syntax<Condition>, QueryConstants {
 			}
 			condList.add(cond);
 		}
-		
+
 		if (condList == null) {
 			return firstCond;
 		}
-		
+
 		Or or = new Or();
 		or.setConditions(condList);
-		
+
 		return or;
 	}
 

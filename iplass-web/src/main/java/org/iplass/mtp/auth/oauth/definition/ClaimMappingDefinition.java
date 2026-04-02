@@ -33,23 +33,27 @@ public class ClaimMappingDefinition implements Serializable {
 	private String claimName;
 	private String userPropertyName;
 	private String customValueScript;
-	
+
 	public String getClaimName() {
 		return claimName;
 	}
+
 	public void setClaimName(String claimName) {
 		this.claimName = claimName;
 	}
+
 	public String getUserPropertyName() {
 		return userPropertyName;
 	}
+
 	public void setUserPropertyName(String userPropertyName) {
 		this.userPropertyName = userPropertyName;
 	}
+
 	public String getCustomValueScript() {
 		return customValueScript;
 	}
-	
+
 	/**
 	 * claimの値を取得するためのカスタムのGroovyScriptを設定可能です。
 	 * 

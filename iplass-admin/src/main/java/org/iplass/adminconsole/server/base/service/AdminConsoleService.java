@@ -126,14 +126,16 @@ public class AdminConsoleService implements Service {
 			return Arrays.asList(initPath);
 		}
 
-		return logHomes.stream().map(logHome -> {
-			String path = convLogTenantPath(logHome);
-			// 最後に/を追加
-			if (!path.endsWith("/")) {
-				path += "/";
-			}
-			return path;
-		}).collect(Collectors.toList());
+		return logHomes.stream()
+				.map(logHome -> {
+					String path = convLogTenantPath(logHome);
+					// 最後に/を追加
+					if (!path.endsWith("/")) {
+						path += "/";
+					}
+					return path;
+				})
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -147,9 +149,11 @@ public class AdminConsoleService implements Service {
 			return Collections.emptyList();
 		}
 
-		return filters.stream().map(filter -> {
-			return convLogTenantPath(filter);
-		}).collect(Collectors.toList());
+		return filters.stream()
+				.map(filter -> {
+					return convLogTenantPath(filter);
+				})
+				.collect(Collectors.toList());
 	}
 
 	private String convLogTenantPath(String path) {
@@ -158,12 +162,16 @@ public class AdminConsoleService implements Service {
 		}
 		String ret = path;
 		if (path.contains(LOG_TENANT_ID_FILTER_KEY)) {
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-			ret = logTenantIdPattern.matcher(path).replaceAll(String.valueOf(tenant.getId()));
+			Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
+			ret = logTenantIdPattern.matcher(path)
+					.replaceAll(String.valueOf(tenant.getId()));
 		}
 		if (path.contains(LOG_TENANT_NAME_FILTER_KEY)) {
-			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-			ret = logTenantNamePattern.matcher(path).replaceAll(String.valueOf(tenant.getName()));
+			Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
+			ret = logTenantNamePattern.matcher(path)
+					.replaceAll(String.valueOf(tenant.getName()));
 		}
 		return ret;
 	}

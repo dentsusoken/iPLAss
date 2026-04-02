@@ -104,14 +104,14 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
 
 		//共通属性
 		commonSection = new MetaCommonAttributeSection<>(targetNode, TreeView.class, true);
-
 
 		//メイン編集領域
 		HLayout layout = new HLayout();
@@ -121,7 +121,7 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 		VLayout layout2 = new VLayout();
 		layout2.setHeight100();
 		layout2.setShowResizeBar(true);
-		layout2.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
+		layout2.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、次を収縮
 
 		colModelPane = new TreeViewGridColModelPane();
 		layout2.addMember(colModelPane);
@@ -153,7 +153,8 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onDataChanged(DataChangedEvent event) {
-				List<TreeViewGridColModel> colModel = (List<TreeViewGridColModel>) event.getValueMap().get("colModel");
+				List<TreeViewGridColModel> colModel = (List<TreeViewGridColModel>) event.getValueMap()
+						.get("colModel");
 				treeGrid.setColModel(colModel);
 			}
 		});
@@ -192,7 +193,6 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 		StatusCheckUtil.statuCheck(TreeView.class.getName(), defName, this);
 	}
 
-
 	/**
 	 * 対象のTreeViewをレイアウト表示パネルに設定します。
 	 *
@@ -200,15 +200,16 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 	 */
 	private void setTreeView(DefinitionEntry entry) {
 		this.curDefinition = (TreeView) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
 		colModelPane.setDefinition(curDefinition.getColModel());
 		treeGrid.setTreeView(curDefinition);
 	}
-
 
 	/**
 	 * ツリーの更新処理
@@ -271,29 +272,28 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 			}
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewEditPane_saveConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewEditPane_saveConfirmComment")
-					, new BooleanCallback() {
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
 
-						TreeView editTreeView = new TreeView();
+								TreeView editTreeView = new TreeView();
 
-						commonSection.getEditDefinition(editTreeView);
+								commonSection.getEditDefinition(editTreeView);
 //						editTreeView.setName(commonSection.getName());
 //						editTreeView.setDisplayName(commonSection.getDisplayName());
 //						editTreeView.setDescription(commonSection.getDescription());
-						editTreeView.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+								editTreeView.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
 
-						//TreeView属性のセット
-						editTreeView.setColModel(colModelPane.getDefinition());
-						editTreeView.setItems(treeGrid.getItems());
+								//TreeView属性のセット
+								editTreeView.setColModel(colModelPane.getDefinition());
+								editTreeView.setItems(treeGrid.getItems());
 
-						updateTree(editTreeView, true);
-					}
-				}
-			});
+								updateTree(editTreeView, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -306,16 +306,15 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 

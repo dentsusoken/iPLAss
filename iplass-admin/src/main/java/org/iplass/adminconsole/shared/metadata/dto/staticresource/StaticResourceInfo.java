@@ -23,8 +23,6 @@ package org.iplass.adminconsole.shared.metadata.dto.staticresource;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -32,6 +30,8 @@ import org.iplass.mtp.web.staticresource.definition.EntryPathTranslatorDefinitio
 import org.iplass.mtp.web.staticresource.definition.LocalizedStaticResourceDefinition;
 import org.iplass.mtp.web.staticresource.definition.MimeTypeMappingDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 静的リソースの定義。
@@ -47,7 +47,13 @@ public class StaticResourceInfo implements Definition {
 	private static final long serialVersionUID = 6902974253290025512L;
 
 	private String name;
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private String description;
@@ -65,72 +71,95 @@ public class StaticResourceInfo implements Definition {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public String getBinaryName() {
 		return binaryName;
 	}
+
 	public void setBinaryName(String binaryName) {
 		this.binaryName = binaryName;
 	}
+
 	public String getStoredBinaryName() {
 		return storedBinaryName;
 	}
+
 	public void setStoredBinaryName(String storedBinaryName) {
 		this.storedBinaryName = storedBinaryName;
 	}
+
 	public FileType getFileType() {
 		return fileType;
 	}
+
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
 	}
+
 	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
 		return localizedDisplayNameList;
 	}
+
 	public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
 		this.localizedDisplayNameList = localizedDisplayNameList;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public List<LocalizedStaticResourceInfo> getLocalizedResourceList() {
 		return localizedResourceList;
 	}
+
 	public void setLocalizedResourceList(List<LocalizedStaticResourceInfo> localizedResourceList) {
 		this.localizedResourceList = localizedResourceList;
 	}
+
 	public String getContentType() {
 		return contentType;
 	}
+
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
+
 	public List<MimeTypeMappingDefinition> getMimeTypeMapping() {
 		return mimeTypeMapping;
 	}
+
 	public void setMimeTypeMapping(List<MimeTypeMappingDefinition> mimeTypeMapping) {
 		this.mimeTypeMapping = mimeTypeMapping;
 	}
+
 	public String getEntryTextCharset() {
 		return entryTextCharset;
 	}
+
 	public void setEntryTextCharset(String entryTextCharset) {
 		this.entryTextCharset = entryTextCharset;
 	}
+
 	public EntryPathTranslatorDefinition getEntryPathTranslator() {
 		return entryPathTranslator;
 	}
+
 	public void setEntryPathTranslator(EntryPathTranslatorDefinition entryPathTranslator) {
 		this.entryPathTranslator = entryPathTranslator;
 	}

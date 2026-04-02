@@ -64,7 +64,8 @@ public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet imp
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataExplorerServiceImpl.class);
 
-	private EntityService ehService = ServiceRegistry.getRegistry().getService(EntityService.class);
+	private EntityService ehService = ServiceRegistry.getRegistry()
+			.getService(EntityService.class);
 
 	@Override
 	public EntityDataTransferTypeList entityDataTypeWhiteList(EntityDataTransferTypeList param) {
@@ -74,225 +75,238 @@ public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet imp
 	@Override
 	public MetaTreeNode getMetaTree(final int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<MetaTreeNode>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaTreeNode>() {
 
-			@Override
-			public MetaTreeNode call() {
+					@Override
+					public MetaTreeNode call() {
 
-				MetaTreeNode root = new MetaDataTreeBuilder().all().build();
-				root.setName("MetaDataList");
+						MetaTreeNode root = new MetaDataTreeBuilder().all()
+								.build();
+						root.setName("MetaDataList");
 
-				return root;
-			}
+						return root;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public ImportFileInfo getMetaImportFileTree(final int tenantId, final String tagOid) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<ImportFileInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<ImportFileInfo>() {
 
-			@Override
-			public ImportFileInfo call() {
+					@Override
+					public ImportFileInfo call() {
 
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				Map<String, Object> fileInfo = logic.tagTree(tagOid);
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						Map<String, Object> fileInfo = logic.tagTree(tagOid);
 
-				MetaTreeNode pathRoot = (MetaTreeNode)fileInfo.get(MetaDataPortingLogic.KEY_ROOT_NODE);
-				int entryCount = (Integer)fileInfo.get(MetaDataPortingLogic.KEY_ENTRY_COUNT);
-				String fileName = (String)fileInfo.get(MetaDataPortingLogic.KEY_FILE_NAME);
+						MetaTreeNode pathRoot = (MetaTreeNode) fileInfo.get(MetaDataPortingLogic.KEY_ROOT_NODE);
+						int entryCount = (Integer) fileInfo.get(MetaDataPortingLogic.KEY_ENTRY_COUNT);
+						String fileName = (String) fileInfo.get(MetaDataPortingLogic.KEY_FILE_NAME);
 
-				MetaTreeNode root = new MetaTreeNode();
-				root.setName("metaDataList");
-				root.setChildren(pathRoot.getChildren());
-				root.setItems(pathRoot.getItems());
+						MetaTreeNode root = new MetaTreeNode();
+						root.setName("metaDataList");
+						root.setChildren(pathRoot.getChildren());
+						root.setItems(pathRoot.getItems());
 
-				ImportFileInfo result = new ImportFileInfo();
-				result.setTagOid(tagOid);
-				result.setFileName(fileName);
-				result.setCount(entryCount);
-				result.setRootNode(root);
+						ImportFileInfo result = new ImportFileInfo();
+						result.setTagOid(tagOid);
+						result.setFileName(fileName);
+						result.setCount(entryCount);
+						result.setRootNode(root);
 
-				return result;
-			}
+						return result;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public List<ImportMetaDataStatus> checkImportStatus(final int tenantId, final String tagOid, final List<String> pathList) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<ImportMetaDataStatus>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<ImportMetaDataStatus>>() {
 
-			@Override
-			public List<ImportMetaDataStatus> call() {
+					@Override
+					public List<ImportMetaDataStatus> call() {
 
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				return logic.checkImportStatus(tagOid, pathList);
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						return logic.checkImportStatus(tagOid, pathList);
 
-			}
-		});
+					}
+				});
 	}
 
 	@Override
 	public Tenant getImportTenant(final int tenantId, final String tagOid) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Tenant>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Tenant>() {
 
-			@Override
-			public Tenant call() {
+					@Override
+					public Tenant call() {
 
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				return logic.getImportTenant(tagOid);
-			}
-		});
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						return logic.getImportTenant(tagOid);
+					}
+				});
 	}
 
 	@Override
 	public MetaDataImportResultInfo importMetaData(final int tenantId, final String tagOid, final List<String> pathList, final Tenant importTenant) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<MetaDataImportResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaDataImportResultInfo>() {
 
-			@Override
-			public MetaDataImportResultInfo call() {
+					@Override
+					public MetaDataImportResultInfo call() {
 
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				return logic.importMetaData(tagOid, pathList, importTenant);
-			}
-		});
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						return logic.importMetaData(tagOid, pathList, importTenant);
+					}
+				});
 	}
 
 	@Override
 	public void removeImportFile(final int tenantId, final String tagOid) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
+					@Override
+					public Void call() {
 
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				logic.removeImportFile(tagOid);
-				return null;
-			}
-		});
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						logic.removeImportFile(tagOid);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public void createTag(final int tenantId, final String name, final String description) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				logic.createTag(tenantId, name, description);
-				return null;
-			}
+					@Override
+					public Void call() {
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						logic.createTag(tenantId, name, description);
+						return null;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public List<Entity> getTagList(final int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Entity>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Entity>>() {
 
-			@Override
-			public List<Entity> call() {
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				return logic.getTagList();
-			}
+					@Override
+					public List<Entity> call() {
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						return logic.getTagList();
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public void removeTag(final int tenantId, final List<String> tagList) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				logic.removeTag(tagList);
-				return null;
-			}
+					@Override
+					public Void call() {
+						MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
+						logic.removeTag(tagList);
+						return null;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public DeleteResultInfo deleteMetaData(final int tenantId, final List<String> pathList) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DeleteResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DeleteResultInfo>() {
 
-			@Override
-			public DeleteResultInfo call() {
-				DeleteResultInfo result = new DeleteResultInfo();
+					@Override
+					public DeleteResultInfo call() {
+						DeleteResultInfo result = new DeleteResultInfo();
 
-				String curPath = null;
-				try {
-					List<MetaDataEntry> entries = new ArrayList<MetaDataEntry>();
-					for (String path : pathList) {
-						curPath = path;
-						List<String> entryPaths = null;
-						if (path.endsWith("*")) {
-							//ContextPathの全体選択の場合
-							String contextPath = path.substring(0, path.length() - 1);
+						String curPath = null;
+						try {
+							List<MetaDataEntry> entries = new ArrayList<MetaDataEntry>();
+							for (String path : pathList) {
+								curPath = path;
+								List<String> entryPaths = null;
+								if (path.endsWith("*")) {
+									//ContextPathの全体選択の場合
+									String contextPath = path.substring(0, path.length() - 1);
 
-							List<MetaDataEntryInfo> nodes = MetaDataContext.getContext().definitionList(contextPath);
-							entryPaths = new ArrayList<String>();
-							for (MetaDataEntryInfo node : nodes) {
-								entryPaths.add(node.getPath());
+									List<MetaDataEntryInfo> nodes = MetaDataContext.getContext()
+											.definitionList(contextPath);
+									entryPaths = new ArrayList<String>();
+									for (MetaDataEntryInfo node : nodes) {
+										entryPaths.add(node.getPath());
+									}
+								} else {
+									//Entryの選択の場合
+									String entryPath = path;
+									entryPaths = new ArrayList<String>(1);
+									entryPaths.add(entryPath);
+								}
+
+								for (String entryPath : entryPaths) {
+									//MetaDataEntryの取得
+									MetaDataEntry entry = MetaDataContext.getContext()
+											.getMetaDataEntry(entryPath);
+									if (entry == null) {
+
+										logger.error(resourceString("deleteMetaDataErr", tenantId));
+
+										result.addErrorMessage(resourceString("canNotGetMetaDataDefInfo", entryPath));
+										result.addErrorCount();
+										continue;
+									}
+									if (org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType.SHARED.equals(entry.getRepositryType())) {
+
+										result.addWarnMessage(resourceString("deleteMetaDataErr", entryPath));
+										result.addWarnCount();
+										continue;
+									}
+									if (entry.getMetaData() instanceof MetaTenant) {
+
+										result.addWarnMessage(resourceString("skipTenantMetaData", entryPath));
+										result.addWarnCount();
+										continue;
+									}
+									entries.add(entry);
+								}
 							}
-						} else {
-							//Entryの選択の場合
-							String entryPath = path;
-							entryPaths = new ArrayList<String>(1);
-							entryPaths.add(entryPath);
+							curPath = null;
+
+							//削除
+							if (!entries.isEmpty()) {
+								doDeleteMetaData(entries, result);
+							}
+
+						} catch (Exception e) {
+							TransactionUtil.setRollback();
+
+							logger.error("meta data delete failed.", e);
+
+							result.clearMessages();
+							result.addErrorMessage(resourceString("deleteMetaDataProcErr", e.getMessage()));
+							if (curPath != null) {
+								result.addErrorMessage(resourceString("targetPath", curPath));
+							}
 						}
 
-						for (String entryPath : entryPaths) {
-							//MetaDataEntryの取得
-							MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(entryPath);
-							if (entry == null) {
-
-								logger.error(resourceString("deleteMetaDataErr", tenantId));
-
-								result.addErrorMessage(resourceString("canNotGetMetaDataDefInfo", entryPath));
-								result.addErrorCount();
-								continue;
-							}
-							if (org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType.SHARED.equals(entry.getRepositryType())) {
-
-								result.addWarnMessage(resourceString("deleteMetaDataErr", entryPath));
-								result.addWarnCount();
-								continue;
-							}
-							if (entry.getMetaData() instanceof MetaTenant) {
-
-								result.addWarnMessage(resourceString("skipTenantMetaData", entryPath));
-								result.addWarnCount();
-								continue;
-							}
-							entries.add(entry);
-						}
-					}
-					curPath = null;
-
-					//削除
-					if (!entries.isEmpty()) {
-						doDeleteMetaData(entries, result);
+						return result;
 					}
 
-				} catch (Exception e) {
-					TransactionUtil.setRollback();
-
-					logger.error("meta data delete failed.", e);
-
-					result.clearMessages();
-					result.addErrorMessage(resourceString("deleteMetaDataProcErr", e.getMessage()));
-					if (curPath != null) {
-						result.addErrorMessage(resourceString("targetPath", curPath));
-					}
-				}
-
-				return result;
-			}
-
-		});
+				});
 	}
 
 	@Override
@@ -348,23 +362,27 @@ public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet imp
 		});
 
 		//★★★暫定対応 全キャッシュクリア
-		MetaDataContext.getContext().clearAllCache();
-		MetaDataContext.getContext().traceCache();
+		MetaDataContext.getContext()
+				.clearAllCache();
+		MetaDataContext.getContext()
+				.traceCache();
 	}
 
 	private void removeMetaDataEntry(MetaDataEntry entry, DeleteResultInfo result) {
 
 		logger.debug("start meta data remove. path=" + entry.getPath());
 
-		MetaDataAuditLogger.getLogger().logMetadata(MetaDataAction.DELETE, "*", "path:" + entry.getPath());
+		MetaDataAuditLogger.getLogger()
+				.logMetadata(MetaDataAction.DELETE, "*", "path:" + entry.getPath());
 
 		String path = entry.getPath();
 		RootMetaData removeMeta = entry.getMetaData();
 
 		if (removeMeta instanceof MetaEntity) {
-			removeMetaEntity(path, (MetaEntity)removeMeta);
+			removeMetaEntity(path, (MetaEntity) removeMeta);
 		} else {
-			MetaDataContext.getContext().remove(path);
+			MetaDataContext.getContext()
+					.remove(path);
 		}
 
 		logger.debug("meta data removed. path=" + entry.getPath());
@@ -375,9 +393,10 @@ public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet imp
 	private void removeMetaEntity(String path, MetaEntity removeEntity) {
 		try {
 			Future<String> result = ehService.removeDataModelSchema(removeEntity);
-			result.get();	//Thread block
+			result.get(); //Thread block
 		} catch (ExecutionException e) {
-			throw new ApplicationException("exception occured during entity definition remove:" + e.getCause().getMessage(), e);
+			throw new ApplicationException("exception occured during entity definition remove:" + e.getCause()
+					.getMessage(), e);
 		} catch (InterruptedException e) {
 			throw new ApplicationException("execution interrrupted during entity definition remove:" + e.getMessage(), e);
 		}

@@ -138,15 +138,17 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		for (Entry<EntityPropertyComboBoxItem, String> entry : triggerdPropertyList.entrySet()) {
 			String triggerProperty = entry.getValue();
 			if (form.getItem(triggerProperty) != null) {
-				form.getItem(triggerProperty).addChangedHandler(new ChangedHandler() {
+				form.getItem(triggerProperty)
+						.addChangedHandler(new ChangedHandler() {
 
-					@Override
-					public void onChanged(ChangedEvent event) {
-						String _defName = refDefName != null ? refDefName : defName;
-						String refPropDefName = SmartGWTUtil.getStringValue(form.getItem(triggerProperty));
-						entry.getKey().resetDataSource(_defName, refPropDefName);
-					}
-				});
+							@Override
+							public void onChanged(ChangedEvent event) {
+								String _defName = refDefName != null ? refDefName : defName;
+								String refPropDefName = SmartGWTUtil.getStringValue(form.getItem(triggerProperty));
+								entry.getKey()
+										.resetDataSource(_defName, refPropDefName);
+							}
+						});
 			}
 		}
 		triggerdPropertyList.clear();
@@ -176,7 +178,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
 	@Override
 	protected EntityViewFieldSettingDialog getOwner() {
-		return (EntityViewFieldSettingDialog)super.getOwner();
+		return (EntityViewFieldSettingDialog) super.getOwner();
 	}
 
 	@Override
@@ -234,8 +236,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 					&& info.getExcludePropertyType().length > 0) {
 				item = new EntityPropertyComboBoxItem(
 						info.getFixedEntityName(),
-						info.getExcludePropertyType()
-				);
+						info.getExcludePropertyType());
 			} else {
 				//Entity が固定されている場合 + 除外タイプが指定されてい場合
 				item = new EntityPropertyComboBoxItem(info.getFixedEntityName());
@@ -306,6 +307,6 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 						childRefPropertyName = pd.getName();
 						childRefPropertyDisplayName = pd.getDisplayName();
 					}
-		});
+				});
 	}
 }

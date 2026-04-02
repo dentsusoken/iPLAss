@@ -32,13 +32,13 @@ import org.slf4j.LoggerFactory;
 public class CacheEntryCleaner {
 	private static Logger logger = LoggerFactory.getLogger(CacheEntryCleaner.class);
 	private static CacheEntryCleaner instance = new CacheEntryCleaner();
-	
+
 	private ScheduledExecutorService executer;
-	
+
 	public static CacheEntryCleaner getInstance() {
 		return instance;
 	}
-	
+
 	public static void shutdown() {
 		if (!instance.executer.isShutdown()) {
 			instance.executer.shutdown();
@@ -49,37 +49,39 @@ public class CacheEntryCleaner {
 			}
 		}
 	}
-	
+
 	public CacheEntryCleaner() {
 		SecurityManager s = System.getSecurityManager();
-		final ThreadGroup group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		final ThreadGroup group = (s != null) ? s.getThreadGroup()
+				: Thread.currentThread()
+						.getThreadGroup();
 		executer = Executors.newSingleThreadScheduledExecutor(r -> {
-				Thread t = new Thread(group, r, "CacheEntryCleaner", 0);
-				t.setDaemon(true);
-				t.setPriority(Thread.MIN_PRIORITY);
-				t.setUncaughtExceptionHandler((thread, e) -> {
-					UncaughtExceptionHandler uh = Thread.getDefaultUncaughtExceptionHandler();
-					if (uh != null) {
-						uh.uncaughtException(thread, e);
-					} else {
-						logger.error("Exception in CacheEntryCleaner " + e, e);
-					}
-				});
-				return t;
+			Thread t = new Thread(group, r, "CacheEntryCleaner", 0);
+			t.setDaemon(true);
+			t.setPriority(Thread.MIN_PRIORITY);
+			t.setUncaughtExceptionHandler((thread, e) -> {
+				UncaughtExceptionHandler uh = Thread.getDefaultUncaughtExceptionHandler();
+				if (uh != null) {
+					uh.uncaughtException(thread, e);
+				} else {
+					logger.error("Exception in CacheEntryCleaner " + e, e);
+				}
+			});
+			return t;
 		});
 	}
-	
+
 	public void register(SimpleCacheStoreBase store, long interval) {
 		Worker worker = new Worker(store);
 		ScheduledFuture<?> future = executer.scheduleWithFixedDelay(worker, interval, interval, TimeUnit.MILLISECONDS);
 		worker.future = future;
 	}
-	
+
 	private static class Worker implements Runnable {
-		
+
 		private WeakReference<SimpleCacheStoreBase> ref;
 		private volatile ScheduledFuture<?> future;
-		
+
 		private Worker(SimpleCacheStoreBase store) {
 			this.ref = new WeakReference<>(store);
 		}
@@ -93,7 +95,7 @@ public class CacheEntryCleaner {
 				cs.removeInvalidEntry();
 			}
 		}
-		
+
 	}
 
 }

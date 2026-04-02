@@ -49,7 +49,8 @@ public abstract class AdminCsvWriter implements Closeable, Flushable {
 		this.originalWriter = new OutputStreamWriter(out, encode);
 
 		//Quat:「"」、Demilter：「,」、NewLine：「\n」
-		this.csvWriter = new CsvMapWriter(originalWriter, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+		this.csvWriter = new CsvMapWriter(originalWriter, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true)
+				.build());
 		//Quat:「"」、Demilter：「,」、NewLine：「\r\n」
 //		csvWriter = new CsvMapWriter(writer, CsvPreference.STANDARD_PREFERENCE);
 

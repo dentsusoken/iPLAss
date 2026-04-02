@@ -36,7 +36,6 @@ import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class RecycleBinSql extends UpdateSqlHandler {
 
 	public String copyDataToRB(int tenantId, EntityHandler eh,
@@ -47,35 +46,59 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		sb.append("(" + ObjStoreTable.RB_ID + "," + ObjStoreTable.RB_DATE + "," + ObjStoreTable.RB_USER + ",");
 		appendAllDataCols(sb, ssmap, eh);
 		sb.append(") SELECT ");
-		sb.append(rbid).append(",");
-		sb.append(rdb.systimestamp()).append(",");
-		sb.append("'").append(rdb.sanitize(userId)).append("',");
+		sb.append(rbid)
+				.append(",");
+		sb.append(rdb.systimestamp())
+				.append(",");
+		sb.append("'")
+				.append(rdb.sanitize(userId))
+				.append("',");
 		appendAllDataCols(sb, ssmap, eh);
 		sb.append(" FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjStoreTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjStoreTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
 
 		return sb.toString();
 	}
 
 	private void appendAllDataCols(StringBuilder sb, StorageSpaceMap ssmap, EntityHandler eh) {
-		sb.append(ObjStoreTable.TENANT_ID).append(',');
-		sb.append(ObjStoreTable.OBJ_DEF_ID).append(',');
-		sb.append(ObjStoreTable.PG_NO).append(',');
-		sb.append(ObjStoreTable.OBJ_ID).append(',');
-		sb.append(ObjStoreTable.OBJ_VER).append(',');
-		sb.append(ObjStoreTable.OBJ_DEF_VER).append(',');
-		sb.append(ObjStoreTable.STATUS).append(',');
-		sb.append(ObjStoreTable.OBJ_NAME).append(',');
-		sb.append(ObjStoreTable.OBJ_DESC).append(',');
-		sb.append(ObjStoreTable.CRE_DATE).append(',');
-		sb.append(ObjStoreTable.UP_DATE).append(',');
-		sb.append(ObjStoreTable.S_DATE).append(',');
-		sb.append(ObjStoreTable.E_DATE).append(',');
-		sb.append(ObjStoreTable.LOCK_USER).append(',');
-		sb.append(ObjStoreTable.CRE_USER).append(',');
+		sb.append(ObjStoreTable.TENANT_ID)
+				.append(',');
+		sb.append(ObjStoreTable.OBJ_DEF_ID)
+				.append(',');
+		sb.append(ObjStoreTable.PG_NO)
+				.append(',');
+		sb.append(ObjStoreTable.OBJ_ID)
+				.append(',');
+		sb.append(ObjStoreTable.OBJ_VER)
+				.append(',');
+		sb.append(ObjStoreTable.OBJ_DEF_VER)
+				.append(',');
+		sb.append(ObjStoreTable.STATUS)
+				.append(',');
+		sb.append(ObjStoreTable.OBJ_NAME)
+				.append(',');
+		sb.append(ObjStoreTable.OBJ_DESC)
+				.append(',');
+		sb.append(ObjStoreTable.CRE_DATE)
+				.append(',');
+		sb.append(ObjStoreTable.UP_DATE)
+				.append(',');
+		sb.append(ObjStoreTable.S_DATE)
+				.append(',');
+		sb.append(ObjStoreTable.E_DATE)
+				.append(',');
+		sb.append(ObjStoreTable.LOCK_USER)
+				.append(',');
+		sb.append(ObjStoreTable.CRE_USER)
+				.append(',');
 		sb.append(ObjStoreTable.UP_USER);
 
 		addCol(sb, ObjStoreTable.VALUE_STR_PREFIX, null, ssmap.getVarcharColumns());
@@ -99,13 +122,14 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		addCol(sb, ObjStoreTable.UNIQUE_DBL_PREFIX, null, ssmap.getUniqueIndexedDoubleColumns());
 		addCol(sb, ObjStoreTable.UNIQUE_DBL_PREFIX, ObjStoreTable.INDEX_TD_POSTFIX, ssmap.getUniqueIndexedDoubleColumns());
 
-		for (PropertyHandler p: eh.getDeclaredPropertyList()) {
+		for (PropertyHandler p : eh.getDeclaredPropertyList()) {
 			GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) p.getStoreSpecProperty();
 			if (col != null && col.isNative()) {
 				List<GRdbPropertyStoreHandler> cols = col.asList();
-				for (GRdbPropertyStoreHandler c: cols) {
+				for (GRdbPropertyStoreHandler c : cols) {
 					sb.append(',');
-					sb.append(c.getMetaData().getColumnName());
+					sb.append(c.getMetaData()
+							.getColumnName());
 				}
 			}
 		}
@@ -114,7 +138,8 @@ public class RecycleBinSql extends UpdateSqlHandler {
 	private void addCol(StringBuilder sb, String prefix, String postFix, int count) {
 		for (int i = 1; i <= count; i++) {
 			sb.append(',');
-			sb.append(prefix).append(i);
+			sb.append(prefix)
+					.append(i);
 			if (postFix != null) {
 				sb.append(postFix);
 			}
@@ -132,9 +157,13 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		appendAllDataCols(sb, ssmap, eh);
 		sb.append(" FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB());
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjStoreTable.RB_ID + "=").append(rbid);
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjStoreTable.RB_ID + "=")
+				.append(rbid);
 		return sb.toString();
 	}
 
@@ -142,13 +171,19 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB());
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (rbid != null) {
-			sb.append(" AND " + ObjStoreTable.RB_ID + "=").append(rbid);
+			sb.append(" AND " + ObjStoreTable.RB_ID + "=")
+					.append(rbid);
 		}
 		if (ts != null) {
-			sb.append(" AND " + ObjStoreTable.RB_DATE + "<").append(rdb.toTimeStampExpression(ts));
+			sb.append(" AND " + ObjStoreTable.RB_DATE + "<")
+					.append(rdb.toTimeStampExpression(ts));
 		}
 		return sb.toString();
 	}
@@ -157,19 +192,30 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF_RB());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (rbid != null) {
-			sb.append(" AND " + ObjRefTable.RB_ID + "=").append(rbid);
+			sb.append(" AND " + ObjRefTable.RB_ID + "=")
+					.append(rbid);
 		}
 		if (ts != null) {
-			sb.append(" AND " + ObjRefTable.RB_ID + " IN (SELECT ").append(ObjStoreTable.RB_ID + " FROM ");
+			sb.append(" AND " + ObjRefTable.RB_ID + " IN (SELECT ")
+					.append(ObjStoreTable.RB_ID + " FROM ");
 			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB());
 			sb.append(" WHERE ");
-			sb.append(ObjStoreTable.TENANT_ID + "=").append(tenantId);
-			sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+			sb.append(ObjStoreTable.TENANT_ID + "=")
+					.append(tenantId);
+			sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+					.append(rdb.sanitize(eh.getMetaData()
+							.getId()))
+					.append("'");
 			if (ts != null) {
-				sb.append(" AND " + ObjStoreTable.RB_DATE + "<").append(rdb.toTimeStampExpression(ts));
+				sb.append(" AND " + ObjStoreTable.RB_DATE + "<")
+						.append(rdb.toTimeStampExpression(ts));
 			}
 			sb.append(")");
 		}
@@ -187,16 +233,26 @@ public class RecycleBinSql extends UpdateSqlHandler {
 
 	public String copyRefToRB(int tenantId, long rbid, EntityHandler eh, String oid, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO ").append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF_RB());
-		sb.append("(").append(ObjRefTable.RB_ID).append(",");
+		sb.append("INSERT INTO ")
+				.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF_RB());
+		sb.append("(")
+				.append(ObjRefTable.RB_ID)
+				.append(",");
 		appendAllRefCols(sb);
 		sb.append(") SELECT ");
-		sb.append(rbid).append(",");
+		sb.append(rbid)
+				.append(",");
 		appendAllRefCols(sb);
-		sb.append(" FROM ").append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjRefTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" FROM ")
+				.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjRefTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -222,13 +278,16 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		appendAllRefCols(sb);
 		sb.append(" FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF_RB());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjRefTable.RB_ID + "=").append(rbid);
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjRefTable.RB_ID + "=")
+				.append(rbid);
 
 		return sb.toString();
 	}
-
 
 	public String lockData(int tenantId, EntityHandler eh, Long rbid, Timestamp ts, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
@@ -240,18 +299,23 @@ public class RecycleBinSql extends UpdateSqlHandler {
 				+ "," + ObjStoreTable.OBJ_VER
 				+ " FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB());
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (rbid != null) {
-			sb.append(" AND " + ObjStoreTable.RB_ID + "=").append(rbid);
+			sb.append(" AND " + ObjStoreTable.RB_ID + "=")
+					.append(rbid);
 		}
 		if (ts != null) {
-			sb.append(" AND " + ObjStoreTable.RB_DATE + "<").append(rdb.toTimeStampExpression(ts));
+			sb.append(" AND " + ObjStoreTable.RB_DATE + "<")
+					.append(rdb.toTimeStampExpression(ts));
 		}
 
 		return rdb.createRowLockSql(sb.toString());
 	}
-
 
 	public String searchRB(int tenantId, EntityHandler eh, Long rbid, RdbAdapter rdb) {
 		return searchRB(tenantId, eh, rbid, null, rdb);
@@ -270,13 +334,19 @@ public class RecycleBinSql extends UpdateSqlHandler {
 				+ " FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE_RB());
 		sb.append(" A WHERE ");
-		sb.append(ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 		if (rbid != null) {
-			sb.append(" AND " + ObjStoreTable.RB_ID + "=").append(rbid);
+			sb.append(" AND " + ObjStoreTable.RB_ID + "=")
+					.append(rbid);
 		}
 		if (ts != null) {
-			sb.append(" AND " + ObjStoreTable.RB_DATE + "<").append(rdb.toTimeStampExpression(ts));
+			sb.append(" AND " + ObjStoreTable.RB_DATE + "<")
+					.append(rdb.toTimeStampExpression(ts));
 		}
 		sb.append(" AND " + ObjStoreTable.PG_NO + "=0");
 		sb.append(" AND " + ObjStoreTable.OBJ_VER
@@ -302,8 +372,11 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(MetaGRdbEntityStore.makeObjRbTableName(tableNamePostfix));
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(defId)).append("'");
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(defId))
+				.append("'");
 		return sb.toString();
 
 	}
@@ -312,8 +385,11 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(MetaGRdbEntityStore.makeObjRefRbTableName(tableNamePostfix));
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(defId)).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(defId))
+				.append("'");
 		return sb.toString();
 	}
 
@@ -321,8 +397,11 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(MetaGRdbEntityStore.makeObjRefRbTableName(tableNamePostfix));
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.TARGET_OBJ_DEF_ID + "='").append(rdb.sanitize(targetDefId)).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.TARGET_OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(targetDefId))
+				.append("'");
 		return sb.toString();
 	}
 
@@ -350,8 +429,12 @@ public class RecycleBinSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF_RB());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 
 		//利用されているReferencePropertyを除外する
 		if (!refPropertyIds.isEmpty()) {
@@ -363,7 +446,9 @@ public class RecycleBinSql extends UpdateSqlHandler {
 				} else {
 					sb.append(",");
 				}
-				sb.append("'").append(rdb.sanitize(refProperty)).append("'");
+				sb.append("'")
+						.append(rdb.sanitize(refProperty))
+						.append("'");
 			}
 			sb.append(")");
 		}

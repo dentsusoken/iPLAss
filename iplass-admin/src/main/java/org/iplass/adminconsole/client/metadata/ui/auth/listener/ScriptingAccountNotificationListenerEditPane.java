@@ -65,26 +65,27 @@ public class ScriptingAccountNotificationListenerEditPane extends Authentication
 		editScript.setWidth(100);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_listener_ScriptingAccountNotificationListenerEditPane_dispScriptEditDialog")));
+		editScript.setPrompt(SmartGWTUtil.getHoverString(
+				AdminClientMessageUtil.getString("ui_metadata_auth_listener_ScriptingAccountNotificationListenerEditPane_dispScriptEditDialog")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
 			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
 				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-				SmartGWTUtil.getStringValue(txtScriptField, true),
-				ScriptEditorDialogCondition.AUTHENTICATION_LISTENER_NOTIFICATION_SCRIPT, null,
-				AdminClientMessageUtil.getString("ui_metadata_auth_listener_ScriptingAccountNotificationListenerEditPane_scriptComment"),
-				new ScriptEditorDialogHandler() {
+						SmartGWTUtil.getStringValue(txtScriptField, true),
+						ScriptEditorDialogCondition.AUTHENTICATION_LISTENER_NOTIFICATION_SCRIPT, null,
+						AdminClientMessageUtil.getString("ui_metadata_auth_listener_ScriptingAccountNotificationListenerEditPane_scriptComment"),
+						new ScriptEditorDialogHandler() {
 
-					@Override
-					public void onSave(String text) {
-						txtScriptField.setValue(text);
-					}
+							@Override
+							public void onSave(String text) {
+								txtScriptField.setValue(text);
+							}
 
-					@Override
-					public void onCancel() {
-					}
-				});
+							@Override
+							public void onCancel() {
+							}
+						});
 			}
 		});
 
@@ -108,7 +109,8 @@ public class ScriptingAccountNotificationListenerEditPane extends Authentication
 			checkbox.setTitle(info.displayName);
 			mapTypeCheckBox.put(info.notificationType, checkbox);
 		}
-		notificationTypeForm.setItems(mapTypeCheckBox.values().toArray(new CheckboxItem[0]));
+		notificationTypeForm.setItems(mapTypeCheckBox.values()
+				.toArray(new CheckboxItem[0]));
 
 		addMember(scriptForm);
 		addMember(notificationTypeForm);
@@ -116,19 +118,20 @@ public class ScriptingAccountNotificationListenerEditPane extends Authentication
 
 	@Override
 	public void setDefinition(AccountNotificationListenerDefinition definition) {
-		ScriptingAccountNotificationListenerDefinition listener = (ScriptingAccountNotificationListenerDefinition)definition;
+		ScriptingAccountNotificationListenerDefinition listener = (ScriptingAccountNotificationListenerDefinition) definition;
 		txtScriptField.setValue(listener.getScript());
 
 		if (listener.getListenNotification() != null) {
 			for (NotificationType type : listener.getListenNotification()) {
-				mapTypeCheckBox.get(type).setValue(true);
+				mapTypeCheckBox.get(type)
+						.setValue(true);
 			}
 		}
 	}
 
 	@Override
 	public AccountNotificationListenerDefinition getEditDefinition(AccountNotificationListenerDefinition definition) {
-		ScriptingAccountNotificationListenerDefinition listener = (ScriptingAccountNotificationListenerDefinition)definition;
+		ScriptingAccountNotificationListenerDefinition listener = (ScriptingAccountNotificationListenerDefinition) definition;
 		listener.setScript(SmartGWTUtil.getStringValue(txtScriptField, true));
 
 		List<NotificationType> listenNotification = new ArrayList<NotificationType>();
@@ -157,8 +160,7 @@ public class ScriptingAccountNotificationListenerEditPane extends Authentication
 		PROPERTY_UPDATED("Property Updated", NotificationType.PROPERTY_UPDATED),
 		REMOVE("Remove", NotificationType.REMOVE),
 		LOGIN_SUCCESS("Login Success", NotificationType.LOGIN_SUCCESS),
-		LOGIN_FAILED("Login Failed", NotificationType.LOGIN_FAILED)
-		;
+		LOGIN_FAILED("Login Failed", NotificationType.LOGIN_FAILED);
 
 		private String displayName;
 		private NotificationType notificationType;

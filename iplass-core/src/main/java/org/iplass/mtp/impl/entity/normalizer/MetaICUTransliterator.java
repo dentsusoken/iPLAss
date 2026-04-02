@@ -88,11 +88,11 @@ public class MetaICUTransliterator extends MetaNormalizer {
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
 		return new ICUTransliteratorRuntime(property);
 	}
-	
+
 	public class ICUTransliteratorRuntime extends NormalizerRuntime {
-		
+
 		private Transliterator trans;
-		
+
 		ICUTransliteratorRuntime(MetaProperty property) {
 			if (transliteratorId == null) {
 				throw new NullPointerException(property.getName() + "'s ICUTransliterator transliteratorId must specified");
@@ -105,10 +105,10 @@ public class MetaICUTransliterator extends MetaNormalizer {
 			if (value == null) {
 				return null;
 			}
-			
+
 			return trans.transliterate(value.toString());
 		}
-		
+
 	}
 
 }

@@ -38,7 +38,7 @@ public class ScriptParts extends TopViewParts {
 	 * @return スクリプト
 	 */
 	public String getScript() {
-	    return script;
+		return script;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class ScriptParts extends TopViewParts {
 	 * @param script スクリプト
 	 */
 	public void setScript(String script) {
-	    this.script = script;
+		this.script = script;
 	}
 
 }

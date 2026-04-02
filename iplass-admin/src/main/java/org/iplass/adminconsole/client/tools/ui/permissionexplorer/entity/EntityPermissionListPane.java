@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.permissionexplorer.entity;
 
-
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
@@ -112,7 +111,8 @@ public class EntityPermissionListPane extends PermissionListPane {
 			}
 
 			@Override
-			public void applyEditRolePermission(PermissionListGridRecord record, int rowNum, int colNum, String defName, String roleCode, int roleIndex, DataChangedEvent event) {
+			public void applyEditRolePermission(PermissionListGridRecord record, int rowNum, int colNum, String defName, String roleCode, int roleIndex,
+					DataChangedEvent event) {
 
 				Entity[] permissionArray = event.getValueObject(Entity[].class);
 
@@ -124,7 +124,8 @@ public class EntityPermissionListPane extends PermissionListPane {
 			}
 
 			@Override
-			public void showRolePermissionEditDialog(final PermissionListGridRecord record, final String defName, final String roleCode, final int roleIndex, final PermissionEditDialog dialog) {
+			public void showRolePermissionEditDialog(final PermissionListGridRecord record, final String defName, final String roleCode,
+					final int roleIndex, final PermissionEditDialog dialog) {
 
 				Entity[] permissionArray = record.getPermission(roleIndex);
 

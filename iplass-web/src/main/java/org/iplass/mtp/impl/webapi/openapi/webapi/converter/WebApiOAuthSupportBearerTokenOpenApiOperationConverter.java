@@ -40,7 +40,8 @@ public class WebApiOAuthSupportBearerTokenOpenApiOperationConverter extends Abst
 
 	@Override
 	protected boolean isMapOpenApiOperationValue(WebApiOpenApiConvertContext context) {
-		return context.getWebApiDefinition().isSupportBearerToken();
+		return context.getWebApiDefinition()
+				.isSupportBearerToken();
 	}
 
 	@Override
@@ -52,30 +53,40 @@ public class WebApiOAuthSupportBearerTokenOpenApiOperationConverter extends Abst
 			api.setComponents(new Components());
 		}
 
-		if (null == api.getComponents().getSecuritySchemes() || null == api.getComponents().getSecuritySchemes().get(SECURITY_SCHEME_NAME)) {
+		if (null == api.getComponents()
+				.getSecuritySchemes()
+				|| null == api.getComponents()
+						.getSecuritySchemes()
+						.get(SECURITY_SCHEME_NAME)) {
 			// /components/securitySchemas/Bearerが未定義の場合、Bearerトークンのセキュリティスキーマを定義する。
-			api.getComponents().addSecuritySchemes(SECURITY_SCHEME_NAME, new SecurityScheme().type(Type.HTTP).scheme(LOWER_SECURITY_SCHEME_NAME));
+			api.getComponents()
+					.addSecuritySchemes(SECURITY_SCHEME_NAME, new SecurityScheme().type(Type.HTTP)
+							.scheme(LOWER_SECURITY_SCHEME_NAME));
 		}
 
-		operation.getOperation().addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME));
+		operation.getOperation()
+				.addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME));
 	}
 
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
 		// デフォルト値の設定
-		context.getWebApiDefinition().setSupportBearerToken(false);
+		context.getWebApiDefinition()
+				.setSupportBearerToken(false);
 	}
 
 	@Override
 	protected CheckNext convertWebApiOperation(OperationContext operation, WebApiOpenApiConvertContext context) {
-		var securityList = operation.getOperation().getSecurity();
+		var securityList = operation.getOperation()
+				.getSecurity();
 		if (null != securityList && !securityList.isEmpty()) {
 			for (var securityRequirement : securityList) {
 				for (var securityKey : securityRequirement.keySet()) {
 					var securityScheme = getComponentsSecurityScheme(context.getOpenApi(), securityKey);
 					if (null != securityScheme && SecurityScheme.Type.HTTP == securityScheme.getType() && "bearer".equals(securityScheme.getScheme())) {
 						// SecuritySchema が、HTTPタイプ、bearer スキーマであればチェックオンにする
-						context.getWebApiDefinition().setSupportBearerToken(true);
+						context.getWebApiDefinition()
+								.setSupportBearerToken(true);
 						return CheckNext.FINISH;
 					}
 				}
@@ -86,9 +97,12 @@ public class WebApiOAuthSupportBearerTokenOpenApiOperationConverter extends Abst
 	}
 
 	private SecurityScheme getComponentsSecurityScheme(OpenAPI openApi, String securityKey) {
-		if (null == openApi.getComponents() || null == openApi.getComponents().getSecuritySchemes()) {
+		if (null == openApi.getComponents() || null == openApi.getComponents()
+				.getSecuritySchemes()) {
 			return null;
 		}
-		return openApi.getComponents().getSecuritySchemes().get(securityKey);
+		return openApi.getComponents()
+				.getSecuritySchemes()
+				.get(securityKey);
 	}
 }

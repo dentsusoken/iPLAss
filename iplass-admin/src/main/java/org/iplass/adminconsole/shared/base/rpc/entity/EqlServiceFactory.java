@@ -39,7 +39,7 @@ public abstract class EqlServiceFactory extends AbstractAdminServiceFactory {
 
 		EqlServiceAsync service = GWT.create(EqlService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		EqlServiceFactory.service = service;
 

@@ -41,11 +41,11 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class SimpleLocalCacheHandler implements CacheHandler {
-	
+
 	private int concurrencyLevel;
-	
+
 	private CacheStore cs;
-	
+
 	public SimpleLocalCacheHandler(CacheStore cs, int concurrencyLevel) {
 		this.cs = cs;
 		this.concurrencyLevel = concurrencyLevel;
@@ -55,13 +55,13 @@ public class SimpleLocalCacheHandler implements CacheHandler {
 	@Override
 	public final <K, V, R> List<Future<R>> executeParallel(
 			CacheHandlerTask<K, V, R> handler, K... inputKeys) {
-		
+
 		ArrayList<Future<R>> ret = new ArrayList<Future<R>>();
-		
+
 		if (inputKeys == null || inputKeys.length == 0) {
 			//key未指定の場合は、複数スレッドでの並列処理ができないので、単一スレッドで処理
 			CacheContext<K, V> cc = new SimpleLocalCacheContext<K, V>(cs);
-			handler.setContext(cc, Collections.<K>emptySet());
+			handler.setContext(cc, Collections.<K> emptySet());
 			try {
 				R r = handler.call();
 				ret.add(new SyncFuture<R>(r, null));
@@ -72,12 +72,13 @@ public class SimpleLocalCacheHandler implements CacheHandler {
 		} else {
 			//並列度により、複数スレッドで処理
 			if (concurrencyLevel > 1) {
-				AsyncTaskService atc = ServiceRegistry.getRegistry().getService(AsyncTaskService.class);
+				AsyncTaskService atc = ServiceRegistry.getRegistry()
+						.getService(AsyncTaskService.class);
 				for (int i = 0; i < concurrencyLevel; i++) {
 					final CacheHandlerTask<K, V, R> copyTask = ObjectUtil.deepCopy(handler);
 					final CacheContext<K, V> cc = new SimpleLocalCacheContext<K, V>(cs);
 					final Set<K> keys = new HashSet<K>();
-					for (int j = i; j < inputKeys.length; j+=concurrencyLevel) {
+					for (int j = i; j < inputKeys.length; j += concurrencyLevel) {
 						keys.add(inputKeys[j]);
 					}
 					if (keys.size() > 0) {
@@ -103,20 +104,19 @@ public class SimpleLocalCacheHandler implements CacheHandler {
 				}
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	private static class SyncFuture<R> implements Future<R> {
-		
+
 		private R result;
 		private Exception e;
-		
+
 		private SyncFuture(R result, Exception e) {
 			this.result = result;
 			this.e = e;
 		}
-		
 
 		@Override
 		public boolean cancel(boolean mayInterruptIfRunning) {
@@ -146,7 +146,7 @@ public class SimpleLocalCacheHandler implements CacheHandler {
 		public boolean isDone() {
 			return true;
 		}
-		
+
 	}
-	
+
 }

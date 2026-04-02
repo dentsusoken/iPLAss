@@ -31,23 +31,23 @@ import org.slf4j.LoggerFactory;
 
 public class ClusterService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(ClusterService.class);
-	
+
 	private MessageChannel messageChannel;
 
 	private final ListenerMap listenerMap = new ListenerMap();
-	
+
 	@Override
 	public void init(Config config) {
 		listenerMap.init();
-		
+
 		messageChannel = (MessageChannel) config.getBean("messageChannel");
 		if (messageChannel != null) {
 			messageChannel.setMessageReceiver(new MessageReceiver() {
-				
+
 				@Override
 				public void receiveMessage(Message msg) {
 					List<ClusterEventListener> listeners = listenerMap.getListener(msg.getEventName());
-					for (ClusterEventListener l: listeners) {
+					for (ClusterEventListener l : listeners) {
 						try {
 							l.onMessage(msg);
 						} catch (RuntimeException e) {
@@ -61,9 +61,9 @@ public class ClusterService implements Service {
 
 	@Override
 	public void destroy() {
-		
+
 	}
-	
+
 	public MessageChannel getMessageChannel() {
 		return messageChannel;
 	}
@@ -71,25 +71,25 @@ public class ClusterService implements Service {
 	public void setMessageChannel(MessageChannel messageChannel) {
 		this.messageChannel = messageChannel;
 	}
-	
+
 	public void sendMessage(Message msg) {
 		if (messageChannel != null) {
 			messageChannel.sendMessage(msg);
 		}
 	}
-	
+
 //	public void registerListener(String eventName, ClusterEventListener listener) {
 //		listenerMap.addListener(eventName, listener);
 //	}
-	
+
 	public void registerListener(String[] eventNames, ClusterEventListener listener) {
-		for (String e: eventNames) {
+		for (String e : eventNames) {
 			listenerMap.addListener(e, listener);
 		}
 	}
-	
+
 	public void removeListener(String[] eventNames, ClusterEventListener listener) {
-		for (String e: eventNames) {
+		for (String e : eventNames) {
 			listenerMap.removeListener(e, listener);
 		}
 	}

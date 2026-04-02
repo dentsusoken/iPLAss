@@ -114,7 +114,8 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 		selVersionControlType.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
-				if (selVersionControlType.getValue() != null && selVersionControlType.getValue().equals(VersionControlReferenceType.AS_OF_EXPRESSION_BASE.name())) {
+				if (selVersionControlType.getValue() != null && selVersionControlType.getValue()
+						.equals(VersionControlReferenceType.AS_OF_EXPRESSION_BASE.name())) {
 					txtVersionControlExpression.setDisabled(false);
 				} else {
 					txtVersionControlExpression.setDisabled(true);
@@ -149,19 +150,22 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 	@Override
 	public void applyFrom(String defName, PropertyListGridRecord record, PropertyAttribute typeAttribute) {
 
-		ReferenceAttribute referenceAttribute = (ReferenceAttribute)typeAttribute;
+		ReferenceAttribute referenceAttribute = (ReferenceAttribute) typeAttribute;
 
 		if (referenceAttribute.getObjectDefinitionName() != null) {
 			selReferenceName.setValue(referenceAttribute.getObjectDefinitionName());
 			//MappedByが設定されているかに関わらずチェック
 			//（初期未設定で登録時に再度開くと有効にならないため）
-			mappedTargetDataInit(referenceAttribute.getObjectDefinitionName(), referenceAttribute.getMappedBy(), referenceAttribute.isAuditLogMappedBy());
+			mappedTargetDataInit(referenceAttribute.getObjectDefinitionName(), referenceAttribute.getMappedBy(),
+					referenceAttribute.isAuditLogMappedBy());
 		}
 		if (referenceAttribute.getReferenceType() != null) {
-			selReferenceType.setValue(referenceAttribute.getReferenceType().name());
+			selReferenceType.setValue(referenceAttribute.getReferenceType()
+					.name());
 		}
 		if (referenceAttribute.getVersionControlType() != null) {
-			selVersionControlType.setValue(referenceAttribute.getVersionControlType().name());
+			selVersionControlType.setValue(referenceAttribute.getVersionControlType()
+					.name());
 		} else {
 			selVersionControlType.setValue("");
 		}
@@ -169,7 +173,8 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 			txtVersionControlExpression.setValue(referenceAttribute.getVersionControlAsOfExpression());
 		}
 
-		txtVersionControlExpression.setDisabled(!VersionControlReferenceType.AS_OF_EXPRESSION_BASE.name().equals(selVersionControlType.getValueAsString()));
+		txtVersionControlExpression.setDisabled(!VersionControlReferenceType.AS_OF_EXPRESSION_BASE.name()
+				.equals(selVersionControlType.getValueAsString()));
 
 		pnlSortList.applyFrom(record, referenceAttribute);
 
@@ -178,7 +183,7 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		ReferenceAttribute referenceAttribute = (ReferenceAttribute)record.getTypeAttribute();
+		ReferenceAttribute referenceAttribute = (ReferenceAttribute) record.getTypeAttribute();
 
 		ListGridRecord refRecord = selReferenceName.getSelectedRecord();
 		if (refRecord != null) {
@@ -254,7 +259,9 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 				// Propertyを設定
 				List<PropertyDefinition> lstProp = result.getDeclaredPropertyList();
 
-				if (lstProp == null) { return; }
+				if (lstProp == null) {
+					return;
+				}
 
 				//TODO DataSource化
 
@@ -263,9 +270,11 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 
 				for (PropertyDefinition prop : lstProp) {
 					if (prop instanceof ReferenceProperty) {
-						ReferenceProperty refProp = (ReferenceProperty)prop;
-						if (refProp.getDisplayName() != null && !refProp.getDisplayName().isEmpty()) {
-							if (refProp.getDisplayName().equals(refProp.getName())) {
+						ReferenceProperty refProp = (ReferenceProperty) prop;
+						if (refProp.getDisplayName() != null && !refProp.getDisplayName()
+								.isEmpty()) {
+							if (refProp.getDisplayName()
+									.equals(refProp.getName())) {
 								mappingPropertyMap.put(refProp.getName(), refProp.getName());
 							} else {
 								mappingPropertyMap.put(refProp.getName(),

@@ -110,7 +110,8 @@ public class OpenApiSupportTreeGridEntry implements Serializable {
 	 */
 	public OpenApiSupportTreeGridEntry getChildFolder(String name) {
 		for (var child : children) {
-			if (child.getName().equals(name) && child.isFolder()) {
+			if (child.getName()
+					.equals(name) && child.isFolder()) {
 				return child;
 			}
 		}

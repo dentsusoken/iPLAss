@@ -51,5 +51,4 @@ public class ScriptingCustomTokenIntrospectorDefinition extends CustomTokenIntro
 		this.script = script;
 	}
 
-
 }

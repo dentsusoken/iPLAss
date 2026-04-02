@@ -46,7 +46,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PoiReportingOutputModel implements ReportingOutputModel{
+public class PoiReportingOutputModel implements ReportingOutputModel {
 
 	private static Logger logger = LoggerFactory.getLogger(PoiReportingOutputModel.class);
 
@@ -60,8 +60,8 @@ public class PoiReportingOutputModel implements ReportingOutputModel{
 
 	private PoiReportOutputLogicRuntime logicRuntime;
 
-	PoiReportingOutputModel(byte[] binary, String type, String extension) throws Exception{
-		try (ByteArrayInputStream bis = new ByteArrayInputStream(binary)){
+	PoiReportingOutputModel(byte[] binary, String type, String extension) throws Exception {
+		try (ByteArrayInputStream bis = new ByteArrayInputStream(binary)) {
 			// ブック読み込み
 			book = WorkbookFactory.create(bis);
 
@@ -69,21 +69,21 @@ public class PoiReportingOutputModel implements ReportingOutputModel{
 				if (!(book instanceof XSSFWorkbook)) {
 					throw new ApplicationException("SXSSF does not support other than XSSF");
 				}
-				book = new SXSSFWorkbook((XSSFWorkbook)book);
+				book = new SXSSFWorkbook((XSSFWorkbook) book);
 			}
 		}
 	}
 
 	public Workbook getBook() {
-	    return book;
+		return book;
 	}
 
 	public PoiReportOutputLogicRuntime getLogicRuntime() {
-	    return logicRuntime;
+		return logicRuntime;
 	}
 
 	public void setLogicRuntime(PoiReportOutputLogicRuntime logicRuntime) {
-	    this.logicRuntime = logicRuntime;
+		this.logicRuntime = logicRuntime;
 	}
 
 	public String getPasswordAttributeName() {
@@ -119,7 +119,7 @@ public class PoiReportingOutputModel implements ReportingOutputModel{
 
 				//SXSSFWorkbookの場合は、一時ファイルを削除
 				if (book instanceof SXSSFWorkbook) {
-					((SXSSFWorkbook)book).dispose();
+					((SXSSFWorkbook) book).dispose();
 				}
 
 				book = null;
@@ -148,7 +148,7 @@ public class PoiReportingOutputModel implements ReportingOutputModel{
 
 		//一時ファイルにWorkbookの内容を出力
 		tempPasswordFile = TempFile.createTempFile("tmp", ".tmp");
-		try (FileOutputStream fos = new FileOutputStream(tempPasswordFile)){
+		try (FileOutputStream fos = new FileOutputStream(tempPasswordFile)) {
 			book.write(fos);
 		}
 
@@ -162,8 +162,7 @@ public class PoiReportingOutputModel implements ReportingOutputModel{
 
 		//OPCPackageを利用して一時ファイルにPOIFSFileSystem経由でパスワード設定
 		try (OPCPackage opc = OPCPackage.open(tempPasswordFile, PackageAccess.READ_WRITE);
-			OutputStream encos = enc.getDataStream(fs);
-		) {
+				OutputStream encos = enc.getDataStream(fs);) {
 			opc.save(encos);
 		}
 

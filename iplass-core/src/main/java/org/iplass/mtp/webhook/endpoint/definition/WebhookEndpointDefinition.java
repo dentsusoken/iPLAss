@@ -19,12 +19,12 @@
  */
 package org.iplass.mtp.webhook.endpoint.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 @XmlRootElement
-public class WebhookEndpointDefinition implements Definition{
+public class WebhookEndpointDefinition implements Definition {
 
 	private static final long serialVersionUID = 8660365992932082923L;
 
@@ -37,10 +37,10 @@ public class WebhookEndpointDefinition implements Definition{
 	private boolean hmacEnabled;
 	/** 送り先 */
 	private String url;
-	
+
 	public WebhookEndpointDefinition() {
 	}
-	
+
 	public WebhookEndpointDefinition(String url) {
 		this.url = url;
 	}
@@ -52,7 +52,7 @@ public class WebhookEndpointDefinition implements Definition{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

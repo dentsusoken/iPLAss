@@ -88,7 +88,8 @@ public class TimestampConverter extends TypeConverter {
 			try {
 				//ISO-8601 extend
 				OffsetDateTime odt = OffsetDateTime.parse(exp);
-				t = new Timestamp(odt.toInstant().toEpochMilli());
+				t = new Timestamp(odt.toInstant()
+						.toEpochMilli());
 			} catch (DateTimeParseException e) {
 			}
 			//ISO-8601 basic
@@ -126,7 +127,9 @@ public class TimestampConverter extends TypeConverter {
 					t = toTs(exp, DateUtil.getSimpleDateFormat("yyyyMMddHHmmss", true));
 				}
 				if (t == null) {
-					t = toTs(exp, DateUtil.getSimpleDateFormat(ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDatetimeSecFormat(), true));
+					t = toTs(exp, DateUtil.getSimpleDateFormat(ExecuteContext.getCurrentContext()
+							.getLocaleFormat()
+							.getOutputDatetimeSecFormat(), true));
 				}
 				if (t == null) {
 					t = toTs(exp, DateUtil.getSimpleDateFormat(lf.getExcelDateFormat() + " " + lf.getExcelTimeFormat(), true));

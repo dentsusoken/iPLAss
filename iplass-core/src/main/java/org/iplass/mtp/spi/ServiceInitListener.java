@@ -29,7 +29,7 @@ package org.iplass.mtp.spi;
  * @param <T>
  */
 public interface ServiceInitListener<T extends Service> {
-	
+
 	/**
 	 * Service初期化時に呼び出されます。
 	 * 
@@ -37,7 +37,7 @@ public interface ServiceInitListener<T extends Service> {
 	 * @param config
 	 */
 	public void inited(T service, Config config);
-	
+
 	/**
 	 * Service破棄時に呼び出されます。
 	 * 

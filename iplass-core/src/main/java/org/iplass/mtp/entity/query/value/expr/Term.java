@@ -29,7 +29,6 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 import org.iplass.mtp.entity.query.value.primary.ParenValue;
 
-
 /**
  * 項（乗除算）を表す。
  * 
@@ -40,26 +39,26 @@ public class Term extends ValueExpression {
 	private static final long serialVersionUID = -322677503164182618L;
 
 	//TODO baseValue（第一引数）は別だしのほうが良いか？？
-	
+
 	private List<ValueExpression> mulValues;
 	private List<ValueExpression> divValues;
-	
+
 	public Term() {
 	}
-	
+
 	public Term(ValueExpression baseValue) {
 		mul(baseValue);
 	}
-	
+
 	public Term(List<ValueExpression> mulValues,
 			List<ValueExpression> divValues) {
 		if (mulValues != null) {
-			for (ValueExpression v: mulValues) {
+			for (ValueExpression v : mulValues) {
 				mul(v);
 			}
 		}
 		if (divValues != null) {
-			for (ValueExpression v: divValues) {
+			for (ValueExpression v : divValues) {
 				div(v);
 			}
 		}
@@ -92,7 +91,7 @@ public class Term extends ValueExpression {
 		mulValues.add(value);
 		return this;
 	}
-	
+
 	public Term div(ValueExpression value) {
 		if (divValues == null) {
 			divValues = new ArrayList<ValueExpression>();
@@ -104,10 +103,10 @@ public class Term extends ValueExpression {
 		divValues.add(value);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		StringBuilder sb = new StringBuilder();
 		if (mulValues != null) {
 			for (int i = 0; i < mulValues.size(); i++) {
@@ -123,25 +122,26 @@ public class Term extends ValueExpression {
 				sb.append(divValues.get(i));
 			}
 		}
-		
+
 		return sb.toString();
 	}
 
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (mulValues != null) {
-				for (ValueExpression v: mulValues) {
+				for (ValueExpression v : mulValues) {
 					v.accept(visitor);
 				}
 			}
 			if (divValues != null) {
-				for (ValueExpression v: divValues) {
+				for (ValueExpression v : divValues) {
 					v.accept(visitor);
 				}
 			}
 		}
-		
+
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

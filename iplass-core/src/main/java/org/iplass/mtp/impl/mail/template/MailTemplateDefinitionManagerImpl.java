@@ -37,7 +37,8 @@ public class MailTemplateDefinitionManagerImpl extends AbstractTypedDefinitionMa
 //	private DefinitionManager dm;
 
 	public MailTemplateDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(MailService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(MailService.class);
 //		dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
 	}
 

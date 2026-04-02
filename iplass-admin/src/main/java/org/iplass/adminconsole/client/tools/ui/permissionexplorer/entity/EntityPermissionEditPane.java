@@ -149,7 +149,8 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		areaReferencePropertyListField.setTitle("Reference Property List");
 		areaReferencePropertyListField.setWidth(370);
 
-		referencePermissionForm.setItems(slctReferenceAllowFiled, areaReferenceAllowRangeField, slctReferencePropertyControlField, areaReferencePropertyListField);
+		referencePermissionForm.setItems(slctReferenceAllowFiled, areaReferenceAllowRangeField, slctReferencePropertyControlField,
+				areaReferencePropertyListField);
 
 		// 登録権限
 		createPermissionForm = new DynamicForm();
@@ -268,7 +269,7 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 			editEntity.setValue("role", roleEntity);
 			editEntity.setDefinitionName("mtp.auth.EntityPermission");
 		} else {
-			editEntity = (GenericEntity)permissionEntity;
+			editEntity = (GenericEntity) permissionEntity;
 		}
 		createFieldData();
 	}
@@ -284,7 +285,8 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		if (editEntity.getValue("canReference") != null) {
 			//com.google.gwt.dev.jjs.InternalCompilerException: Error constructing Java AST
 			//slctReferenceAllowFiled.setValue(Boolean.toString((boolean)editEntity.getValue("canReference")));
-			slctReferenceAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canReference").toString());
+			slctReferenceAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canReference")
+					.toString());
 		}
 		areaReferenceAllowRangeField.setValue(editEntity.getValueAs(String.class, "referenceCondition"));
 		if (editEntity.getValue("referencePropertyControlType") != null) {
@@ -297,7 +299,8 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		if (editEntity.getValue("canCreate") != null) {
 			//com.google.gwt.dev.jjs.InternalCompilerException: Error constructing Java AST
 			//slctCreateAllowFiled.setValue(Boolean.toString((boolean)editEntity.getValue("canCreate")));
-			slctCreateAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canCreate").toString());
+			slctCreateAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canCreate")
+					.toString());
 		}
 		areaCreateAllowRangeField.setValue(editEntity.getValueAs(String.class, "createCondition"));
 		if (editEntity.getValue("createPropertyControlType") != null) {
@@ -310,7 +313,8 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		if (editEntity.getValue("canUpdate") != null) {
 			//com.google.gwt.dev.jjs.InternalCompilerException: Error constructing Java AST
 			//slctUpdateAllowFiled.setValue(Boolean.toString((boolean)editEntity.getValue("canUpdate")));
-			slctUpdateAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canUpdate").toString());
+			slctUpdateAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canUpdate")
+					.toString());
 		}
 		areaUpdateAllowRangeField.setValue(editEntity.getValueAs(String.class, "updateCondition"));
 		if (editEntity.getValue("updatePropertyControlType") != null) {
@@ -323,7 +327,8 @@ public class EntityPermissionEditPane extends PermissionEditPane {
 		if (editEntity.getValue("canDelete") != null) {
 			//com.google.gwt.dev.jjs.InternalCompilerException: Error constructing Java AST
 			//slctDeleteAllowFiled.setValue(Boolean.toString((boolean)editEntity.getValue("canDelete")));
-			slctDeleteAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canDelete").toString());
+			slctDeleteAllowFiled.setValue(editEntity.getValueAs(Boolean.class, "canDelete")
+					.toString());
 		}
 		areaDeleteAllowRangeField.setValue(editEntity.getValueAs(String.class, "deleteCondition"));
 	}

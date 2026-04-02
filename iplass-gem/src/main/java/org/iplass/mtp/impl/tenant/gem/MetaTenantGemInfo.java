@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 
 	private static final long serialVersionUID = -8193028509449590924L;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(MetaTenantGemInfo.class);
 
 	/** テナント名の利用有無 */
@@ -56,10 +56,10 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 
 	/** ログイン画面、エラー画面でテナント名を表示するか否か */
 	private boolean dispTenantName;
-	
+
 	/** テナント名制御Script */
 	private String screenTitle;
-	
+
 	/** 多言語設定用テナント名制御Script */
 	private List<MetaLocalizedString> localizedScreenTitle;
 
@@ -125,7 +125,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	public void setDispTenantName(boolean dispTenantName) {
 		this.dispTenantName = dispTenantName;
 	}
-	
+
 	public String getScreenTitle() {
 		return screenTitle;
 	}
@@ -147,7 +147,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return スキン
 	 */
 	public String getSkin() {
-	    return skin;
+		return skin;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param skin スキン
 	 */
 	public void setSkin(String skin) {
-	    this.skin = skin;
+		this.skin = skin;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return テーマ
 	 */
 	public String getTheme() {
-	    return theme;
+		return theme;
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param theme テーマ
 	 */
 	public void setTheme(String theme) {
-	    this.theme = theme;
+		this.theme = theme;
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return テナント画像URL
 	 */
 	public String getTenantImageUrl() {
-	    return tenantImageUrl;
+		return tenantImageUrl;
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param tenantImageUrl テナント画像URL
 	 */
 	public void setTenantImageUrl(String tenantImageUrl) {
-	    this.tenantImageUrl = tenantImageUrl;
+		this.tenantImageUrl = tenantImageUrl;
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return テナント画像URL(縮小時)
 	 */
 	public String getTenantMiniImageUrl() {
-	    return tenantMiniImageUrl;
+		return tenantMiniImageUrl;
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param tenantMiniImageUrl テナント画像URL(縮小時)
 	 */
 	public void setTenantMiniImageUrl(String tenantMiniImageUrl) {
-	    this.tenantMiniImageUrl = tenantMiniImageUrl;
+		this.tenantMiniImageUrl = tenantMiniImageUrl;
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return テナント画像URL(大)
 	 */
 	public String getTenantLargeImageUrl() {
-	    return tenantLargeImageUrl;
+		return tenantLargeImageUrl;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param tenantLargeImageUrl テナント画像URL(大)
 	 */
 	public void setTenantLargeImageUrl(String tenantLargeImageUrl) {
-	    this.tenantLargeImageUrl = tenantLargeImageUrl;
+		this.tenantLargeImageUrl = tenantLargeImageUrl;
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return Javascriptファイルパス
 	 */
 	public String getJavascriptFilePath() {
-	    return javascriptFilePath;
+		return javascriptFilePath;
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param javascriptFilePath Javascriptファイルパス
 	 */
 	public void setJavascriptFilePath(String javascriptFilePath) {
-	    this.javascriptFilePath = javascriptFilePath;
+		this.javascriptFilePath = javascriptFilePath;
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @return スタイルシートファイルパス
 	 */
 	public String getStylesheetFilePath() {
-	    return stylesheetFilePath;
+		return stylesheetFilePath;
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	 * @param stylesheetFilePath スタイルシートファイルパス
 	 */
 	public void setStylesheetFilePath(String stylesheetFilePath) {
-	    this.stylesheetFilePath = stylesheetFilePath;
+		this.stylesheetFilePath = stylesheetFilePath;
 	}
 
 	@Override
@@ -299,7 +299,7 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 		definition.setScreenTitle(getScreenTitle());
 		definition.setLocalizedScreenTitle(I18nUtil.toDef(getLocalizedScreenTitle()));
 		definition.setSkin(getSkin() != null ? getSkin().toLowerCase() : null);
-		definition.setTheme(getTheme() != null ? getTheme().toLowerCase(): null);
+		definition.setTheme(getTheme() != null ? getTheme().toLowerCase() : null);
 		definition.setTenantImageUrl(getTenantImageUrl());
 		definition.setTenantMiniImageUrl(getTenantMiniImageUrl());
 		definition.setTenantLargeImageUrl(getTenantLargeImageUrl());
@@ -315,14 +315,16 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 	}
 
 	public class MetaTenantGemInfoRuntime extends MetaTenantConfigRuntime {
-		
+
 		/** テナント名制御Script */
 		private GroovyTemplate screenTitleTemplate;
-		
+
 		/** 多言語設定用テナント名制御Script */
 		private Map<String, GroovyTemplate> localizedScreenTitleTemplate;
-		
-		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+
+		private ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 
 		public MetaTenantGemInfoRuntime() {
 			if (screenTitle != null) {
@@ -338,21 +340,21 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 			if (localizedScreenTitle != null) {
 				try {
 					this.localizedScreenTitleTemplate = localizedScreenTitle.stream()
-					.collect(Collectors.toMap(
-							MetaLocalizedString::getLocaleName,
-							l -> GroovyTemplateCompiler.compile(
-									l.getStringValue(),
-									"MetaTenantGemInfo_screenTitle_" + l.getLocaleName(), 
-									(GroovyScriptEngine) scriptEngine)));
+							.collect(Collectors.toMap(
+									MetaLocalizedString::getLocaleName,
+									l -> GroovyTemplateCompiler.compile(
+											l.getStringValue(),
+											"MetaTenantGemInfo_screenTitle_" + l.getLocaleName(),
+											(GroovyScriptEngine) scriptEngine)));
 				} catch (Exception e) {
 					setIllegalStateException(new RuntimeException(e));
 				}
 			}
 		}
-		
+
 		public String getScreenTitle() {
-			String screenTitleByTemplate = getScreenTitleByTemplate(); 
-			if(!StringUtils.isEmpty(screenTitleByTemplate)) {
+			String screenTitleByTemplate = getScreenTitleByTemplate();
+			if (!StringUtils.isEmpty(screenTitleByTemplate)) {
 				return screenTitleByTemplate;
 			}
 			Tenant tenant = TemplateUtil.getTenant();
@@ -360,29 +362,30 @@ public class MetaTenantGemInfo extends MetaTenantConfig<TenantGemInfo> {
 
 			dispTenantName = TemplateUtil.getMultilingualString(dispTenantName, tenant.getLocalizedDisplayNameList());
 
-			if (StringUtils.isEmpty(dispTenantName)){
+			if (StringUtils.isEmpty(dispTenantName)) {
 				dispTenantName = tenant.getName();
 			}
 			return dispTenantName;
 		}
-		
+
 		private String getScreenTitleByTemplate() {
 			GroovyTemplate template = null;
-			String lang = ExecuteContext.getCurrentContext().getLanguage();
+			String lang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 
 			if (lang != null && localizedScreenTitleTemplate != null && localizedScreenTitleTemplate.containsKey(lang)) {
 				template = localizedScreenTitleTemplate.get(lang);
 			} else if (screenTitleTemplate != null) {
 				template = screenTitleTemplate;
 			}
-			
-			if(template == null) {
+
+			if (template == null) {
 				return null;
 			}
-			
+
 			Map<String, Object> binding = new HashMap<String, Object>();
 			binding.put("request", TemplateUtil.getRequestContext());
-			
+
 			StringWriter sw = new StringWriter();
 			try {
 				template.doTemplate(new GroovyTemplateBinding(sw, binding));

@@ -43,7 +43,7 @@ public class MetaReferenceRecursiveTreeSetting implements MetaData {
 	 * @return ツリーのルートに表示するデータの検索条件
 	 */
 	public String getRootCondition() {
-	    return rootCondition;
+		return rootCondition;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class MetaReferenceRecursiveTreeSetting implements MetaData {
 	 * @param rootCondition ツリーのルートに表示するデータの検索条件
 	 */
 	public void setRootCondition(String rootCondition) {
-	    this.rootCondition = rootCondition;
+		this.rootCondition = rootCondition;
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class MetaReferenceRecursiveTreeSetting implements MetaData {
 	 * @return 子階層のプロパティID
 	 */
 	public String getChildPropertyId() {
-	    return childPropertyId;
+		return childPropertyId;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class MetaReferenceRecursiveTreeSetting implements MetaData {
 	 * @param childPropertyId 子階層のプロパティID
 	 */
 	public void setChildPropertyId(String childPropertyId) {
-	    this.childPropertyId = childPropertyId;
+		this.childPropertyId = childPropertyId;
 	}
 
 	@Override
@@ -79,7 +79,8 @@ public class MetaReferenceRecursiveTreeSetting implements MetaData {
 		EntityContext ctx = EntityContext.getCurrentContext();
 
 		PropertyHandler property = entity.getProperty(setting.getChildPropertyName(), ctx);
-		if (property == null && !(property instanceof ReferencePropertyHandler)) return;
+		if (property == null && !(property instanceof ReferencePropertyHandler))
+			return;
 
 		//プロパティのIDを取得
 		ReferencePropertyHandler referenceProperty = (ReferencePropertyHandler) property;
@@ -92,7 +93,8 @@ public class MetaReferenceRecursiveTreeSetting implements MetaData {
 		EntityContext ctx = EntityContext.getCurrentContext();
 
 		PropertyHandler property = entity.getPropertyById(childPropertyId, ctx);
-		if (property == null && !(property instanceof ReferencePropertyHandler)) return null;
+		if (property == null && !(property instanceof ReferencePropertyHandler))
+			return null;
 
 		//プロパティ名を取得
 		ReferencePropertyHandler referenceProperty = (ReferencePropertyHandler) property;

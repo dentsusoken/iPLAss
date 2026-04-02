@@ -58,7 +58,8 @@ public class FilterValueExpressionChecker implements ConditionVisitor {
 	 */
 	public void execute(String expression) {
 		try {
-			Condition.newCondition(convCheckExpression(expression)).accept(this);
+			Condition.newCondition(convCheckExpression(expression))
+					.accept(this);
 		} catch (QueryException e) {
 			throw new UnsupportedFilterOperationException(resourceString("view.filter.incorrectErr"), e);
 		}
@@ -75,9 +76,10 @@ public class FilterValueExpressionChecker implements ConditionVisitor {
 		StringBuilder sb = new StringBuilder();
 
 		//$nを検索
-		Matcher m = Pattern.compile("\\$\\d+").matcher(expression);
+		Matcher m = Pattern.compile("\\$\\d+")
+				.matcher(expression);
 		int curIndex = 0;
-		while(m.find()) {
+		while (m.find()) {
 			//対象のFilter番号を取得
 			String numStr = expression.substring(m.start() + 1, m.end());
 			int condNum = Integer.parseInt(numStr);
@@ -120,7 +122,8 @@ public class FilterValueExpressionChecker implements ConditionVisitor {
 		//内部的に変換したn=nの形式のみ許可する
 
 		String strVal1 = equals.getPropertyName();
-		String strVal2 = equals.getValue().toString();
+		String strVal2 = equals.getValue()
+				.toString();
 
 		try {
 			int val1 = Integer.parseInt(strVal1);

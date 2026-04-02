@@ -20,9 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.element;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
@@ -39,12 +36,15 @@ import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyBase;
 import org.iplass.mtp.view.generic.element.section.Section;
 
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlTransient;
+
 /**
  * 画面を構成する要素のメタデータ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaSection.class, MetaPropertyLayout.class, MetaButton.class, MetaTemplateElement.class,
-	MetaScriptingElement.class, MetaLink.class, MetaBlankSpace.class, MetaVirtualProperty.class})
+@XmlSeeAlso({ MetaSection.class, MetaPropertyLayout.class, MetaButton.class, MetaTemplateElement.class,
+		MetaScriptingElement.class, MetaLink.class, MetaBlankSpace.class, MetaVirtualProperty.class })
 public abstract class MetaElement implements MetaData {
 
 	/** シリアルバージョンUID */

@@ -24,8 +24,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -44,8 +42,10 @@ import org.iplass.mtp.webhook.endpoint.WebhookAuthenticationType;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 @XmlRootElement
-public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMetaData<WebhookEndpointDefinition>{
+public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMetaData<WebhookEndpointDefinition> {
 
 	private static final long serialVersionUID = 7029271819447338103L;
 	private WebhookAuthenticationType headerAuthType;
@@ -56,8 +56,9 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 
 	private boolean hmacEnabled;
 	private String hmacHashHeader;
+
 	/** セキュリティ関連部分はtemplateManagerによってdbで管理しています */
-	
+
 	//Definition → Meta
 	@Override
 	public void applyConfig(WebhookEndpointDefinition definition) {
@@ -70,7 +71,7 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 		this.hmacEnabled = definition.isHmacEnabled();
 		this.headerAuthType = getByTypeCode(definition.getHeaderAuthType());
 	}
-	
+
 	//Meta → Definition
 	@Override
 	public WebhookEndpointDefinition currentConfig() {
@@ -85,14 +86,15 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 		definition.setHmacEnabled(hmacEnabled);
 		return definition;
 	}
+
 	public MetaWebhookEndpoint() {
-		
+
 	}
-	
+
 	public MetaWebhookEndpoint(String url) {
 		this.url = url;
 	}
-	
+
 	public String getUrl() {
 		if (url == null) {
 			url = "";
@@ -103,7 +105,7 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	public WebhookAuthenticationType getHeaderAuthType() {
 		return headerAuthType;
 	}
@@ -130,7 +132,6 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 		return ObjectUtil.deepCopy(this);
 	}
 
-
 	public String getHmacHashHeader() {
 		return hmacHashHeader;
 	}
@@ -138,7 +139,6 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 	public void setHmacHashHeader(String hmacHashHeader) {
 		this.hmacHashHeader = hmacHashHeader;
 	}
-
 
 	public boolean isHmacEnabled() {
 		return hmacEnabled;
@@ -160,9 +160,9 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 		}
 		return null;
 	}
-	
+
 	private String getTypeCodeString(WebhookAuthenticationType type) {
-		if (type==null) {
+		if (type == null) {
 			return null;
 		} else {
 			if (WebhookAuthenticationType.BASIC.equals(type)) {
@@ -177,16 +177,20 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 			return null;
 		}
 	}
-	public class WebhookEndpointRuntime extends BaseMetaDataRuntime{
+
+	public class WebhookEndpointRuntime extends BaseMetaDataRuntime {
 		private GroovyTemplate urlTemplate;
 		private String hmacKey;
 		private String headerAuthToken;
 
 		public WebhookEndpointRuntime() {
 			super();
-			
-			WebhookEndpointService service = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
-			int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+
+			WebhookEndpointService service = ServiceRegistry.getRegistry()
+					.getService(WebhookEndpointService.class);
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getTenantId();
 
 			hmacKey = service.getHmacTokenById(tenantId, getId());
 			if (WebhookAuthenticationType.BASIC.equals(getHeaderAuthType())) {
@@ -198,23 +202,27 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 			}
 
 			try {
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				urlTemplate = GroovyTemplateCompiler.compile(getUrl(), "WebhookEndpointTemplate_" + getName() + "_UrlTemplate", (GroovyScriptEngine) se);
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
+				urlTemplate = GroovyTemplateCompiler.compile(getUrl(), "WebhookEndpointTemplate_" + getName() + "_UrlTemplate",
+						(GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
+
 		public WebhookEndpoint createWebhookEndpoint(Map<String, Object> parameter) {
 			Map<String, Object> binding = new HashMap<String, Object>();
 			if (parameter != null) {
-				for (Map.Entry<String, Object> e: parameter.entrySet()) {
+				for (Map.Entry<String, Object> e : parameter.entrySet()) {
 					binding.put(e.getKey(), e.getValue());
 				}
 			}
 			String resultUrl = "";
-			if (urlTemplate!=null) {
+			if (urlTemplate != null) {
 				StringWriter sw = new StringWriter();
-				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, binding);
 				try {
 					urlTemplate.doTemplate(gtb);
 				} catch (IOException e) {
@@ -226,11 +234,13 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 			if (!hmacEnabled) {
 				hmacKey = null;
 			}
-			if (hmacHashHeader!=null && !hmacHashHeader.replaceAll("\\s","").isEmpty()) {
-				endpoint.setHmacHashHeader(hmacHashHeader.replaceAll("\\s",""));
+			if (hmacHashHeader != null && !hmacHashHeader.replaceAll("\\s", "")
+					.isEmpty()) {
+				endpoint.setHmacHashHeader(hmacHashHeader.replaceAll("\\s", ""));
 			}
-			if (headerAuthCustomTypeName!=null && !headerAuthCustomTypeName.replaceAll("\\s","").isEmpty()) {
-				endpoint.setHeaderAuthCustomTypeName(headerAuthCustomTypeName.replaceAll("\\s",""));
+			if (headerAuthCustomTypeName != null && !headerAuthCustomTypeName.replaceAll("\\s", "")
+					.isEmpty()) {
+				endpoint.setHeaderAuthCustomTypeName(headerAuthCustomTypeName.replaceAll("\\s", ""));
 			}
 			return endpoint;
 		}
@@ -239,24 +249,31 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 		public MetaWebhookEndpoint getMetaData() {
 			return MetaWebhookEndpoint.this;
 		}
+
 		public GroovyTemplate getUrlTemplate() {
 			return urlTemplate;
 		}
+
 		public String getHmacKey() {
 			return hmacKey;
 		}
+
 		public String getHeaderAuthToken() {
 			return headerAuthToken;
 		}
+
 		public WebhookAuthenticationType getAuthType() {
 			return headerAuthType;
 		}
+
 		public String getHmacHashHeader() {
 			return hmacHashHeader;
 		}
+
 		public String getHeaderAuthCustomTypeName() {
 			return headerAuthCustomTypeName;
 		}
+
 		public boolean isHmacEnabled() {
 			return hmacEnabled;
 		}

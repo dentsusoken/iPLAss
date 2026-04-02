@@ -74,7 +74,10 @@ public class MessageItemCsvReader implements Iterable<MessageItem>, Closeable {
 		InputStream is = inputStream;
 		if (!(inputStream instanceof BOMInputStream)) {
 			try {
-				is = BOMInputStream.builder().setInputStream(inputStream).setInclude(false).get();
+				is = BOMInputStream.builder()
+						.setInputStream(inputStream)
+						.setInclude(false)
+						.get();
 			} catch (IOException e) {
 				throw new EntityDataPortingRuntimeException(e);
 			}
@@ -87,7 +90,8 @@ public class MessageItemCsvReader implements Iterable<MessageItem>, Closeable {
 		} catch (UnsupportedEncodingException e) {
 			throw new EntityDataPortingRuntimeException(e);
 		}
-		csvMapReader = new CsvMapReader(isReader, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+		csvMapReader = new CsvMapReader(isReader, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true)
+				.build());
 
 		//ヘッダ読み込み
 		readCsvHeader();
@@ -136,8 +140,8 @@ public class MessageItemCsvReader implements Iterable<MessageItem>, Closeable {
 
 				MessageItem item = new MessageItem();
 
-				item.setMessageId((String)currentMap.get(FIXED_HEADER_MESSAGE_ID));
-				item.setMessage((String)currentMap.get(FIXED_HEADER_DEFAULT_MESSAGE));
+				item.setMessageId((String) currentMap.get(FIXED_HEADER_MESSAGE_ID));
+				item.setMessage((String) currentMap.get(FIXED_HEADER_DEFAULT_MESSAGE));
 
 				List<LocalizedStringDefinition> localizedMessageList = new ArrayList<>();
 				for (Map.Entry<String, Object> entry : currentMap.entrySet()) {
@@ -148,7 +152,7 @@ public class MessageItemCsvReader implements Iterable<MessageItem>, Closeable {
 						continue;
 					}
 
-					String value = (String)entry.getValue();
+					String value = (String) entry.getValue();
 					if (StringUtil.isEmpty(value)) {
 						continue;//未設定の場合は多言語定義作らない
 					}
@@ -183,15 +187,18 @@ public class MessageItemCsvReader implements Iterable<MessageItem>, Closeable {
 					} catch (IOException e) {
 						rowException = new UploadRuntimeException(
 								rs("metadata.message.MessageItemCsvUploadServiceImpl.readErr",
-										csvMapReader.getLineNumber(), ",detail:" + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "")), e);
+										csvMapReader.getLineNumber(), ",detail:" + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "")),
+								e);
 					} catch (ArrayIndexOutOfBoundsException e) {
 						rowException = new UploadRuntimeException(
 								rs("metadata.message.MessageItemCsvUploadServiceImpl.readErr",
-										csvMapReader.getLineNumber(), ",detail:" + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "")), e);
+										csvMapReader.getLineNumber(), ",detail:" + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "")),
+								e);
 					} catch (SuperCsvException e) {
 						rowException = new UploadRuntimeException(
 								rs("metadata.message.MessageItemCsvUploadServiceImpl.readErr",
-										csvMapReader.getLineNumber(), ",detail:" + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "")), e);
+										csvMapReader.getLineNumber(), ",detail:" + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "")),
+								e);
 					}
 				}
 			}
@@ -223,7 +230,7 @@ public class MessageItemCsvReader implements Iterable<MessageItem>, Closeable {
 	private void createCellProcessor() {
 		processors = new CellProcessor[header.length];
 		for (int i = 0; i < header.length; i++) {
-			processors[i] = new ConvertNullTo(null,new Optional());
+			processors[i] = new ConvertNullTo(null, new Optional());
 		}
 	}
 

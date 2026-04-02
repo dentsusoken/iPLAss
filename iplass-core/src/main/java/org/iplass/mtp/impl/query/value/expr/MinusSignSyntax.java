@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.query.value.primary.LiteralSyntax;
 import org.iplass.mtp.impl.query.value.primary.PrimaryValueSyntax;
 
 public class MinusSignSyntax implements Syntax<ValueExpression>, QueryConstants {
-	
+
 	private PrimaryValueSyntax primaryValue;
 	private LiteralSyntax literalValue;
 
@@ -42,7 +42,7 @@ public class MinusSignSyntax implements Syntax<ValueExpression>, QueryConstants 
 
 	public ValueExpression parse(ParseContext str) throws ParseException {
 		if (str.startsWith(MINUS)) {
-			
+
 			//short cut check for Literal value
 			int currentIndex = str.getCurrentIndex();
 			try {
@@ -50,15 +50,14 @@ public class MinusSignSyntax implements Syntax<ValueExpression>, QueryConstants 
 			} catch (ParseException e) {
 				str.setCurrentIndex(currentIndex);
 			}
-			
+
 			str.consumeChars(1);
 			str.consumeChars(ParseContext.WHITE_SPACES);
-			
+
 			return new MinusSign(primaryValue.parse(str));
 		} else {
 			return primaryValue.parse(str);
 		}
 	}
-
 
 }

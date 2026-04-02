@@ -59,7 +59,8 @@ public class BulkFormViewControl extends ItemControl {
 
 		BulkFormView fv = new BulkFormView();
 		setValueObject(fv);
-		setClassName(fv.getClass().getName());
+		setClassName(fv.getClass()
+				.getName());
 	}
 
 	/**
@@ -76,7 +77,8 @@ public class BulkFormViewControl extends ItemControl {
 	 */
 	public void apply(EntityDefinition ed, BulkFormView fv) {
 		setValueObject(fv);
-		setClassName(fv.getClass().getName());
+		setClassName(fv.getClass()
+				.getName());
 		if (fv.getTitle() == null) {
 			setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_BulkFormWindow_bulkScreen"));
 		} else {
@@ -87,7 +89,7 @@ public class BulkFormViewControl extends ItemControl {
 			ItemControl window = sectionController.createControl(section, defName, FieldReferenceType.BULK, ed);
 
 			if (window instanceof DefaultSectionControl) {
-				DefaultSectionControl dsChild = (DefaultSectionControl)window;
+				DefaultSectionControl dsChild = (DefaultSectionControl) window;
 				dsChild.setEntityDefinition(ed);
 				dsChild.restoreMember();
 			}

@@ -22,10 +22,9 @@ package org.iplass.mtp.definition.binary;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.iplass.mtp.impl.metadata.binary.jaxb.BinaryDefinitionXmlAdapter;
 
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * バイナリ形式の定義（メタデータ）を表すインタフェース。
@@ -41,18 +40,18 @@ public interface BinaryDefinition extends Serializable {
 	 * @return
 	 */
 	public String getName();
-	
+
 	/**
 	 * バイナリのサイズ。
 	 * 
 	 * @return
 	 */
 	public long getSize();
-	
+
 	/**
 	 * バイナリデータのInputStream。
 	 * @return
 	 */
 	public InputStream getInputStream();
-	
+
 }

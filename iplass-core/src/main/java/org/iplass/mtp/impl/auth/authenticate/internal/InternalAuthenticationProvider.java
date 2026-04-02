@@ -42,12 +42,12 @@ import org.iplass.mtp.spi.Config;
  *
  */
 public class InternalAuthenticationProvider implements AuthenticationProvider {
-	
+
 	public static final String PROVIDER_NAME = "_internal";
 	private AuthLogger authLogger;
 
 	private String authLoggerName;
-	
+
 	private UserEntityResolver userEntityResolver;
 	private TrustedAuthValidator trustedAuthValidator;
 
@@ -66,18 +66,19 @@ public class InternalAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public String getProviderName() {
-	    return PROVIDER_NAME;
+		return PROVIDER_NAME;
 	}
 
 	@Override
 	public AuthLogger getAuthLogger() {
 		return authLogger;
 	}
-	
+
 	@Override
 	public void inited(AuthService service, Config config) {
-		authLogger = config.getDependentService(AuthLoggerService.class).getAuthLogger(authLoggerName);
-		
+		authLogger = config.getDependentService(AuthLoggerService.class)
+				.getAuthLogger(authLoggerName);
+
 		DefaultUserEntityResolver er = new DefaultUserEntityResolver();
 		er.setEagerLoadReferenceProperty(DefaultUserEntityResolver.DEFAULT_EAGER_LOAD_REFERENCE_PROPERTY);
 		er.setUnmodifiableUniqueKeyProperty(User.ACCOUNT_ID);

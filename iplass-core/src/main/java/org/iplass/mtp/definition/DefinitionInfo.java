@@ -23,7 +23,6 @@ package org.iplass.mtp.definition;
 import java.io.Serializable;
 import java.util.List;
 
-
 /**
  * Definitionのメタ情報（共有設定、バージョン番号など）を表すクラスです。
  *
@@ -47,60 +46,79 @@ public class DefinitionInfo implements Serializable {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public SharedConfig getSharedConfig() {
 		return sharedConfig;
 	}
+
 	public void setSharedConfig(SharedConfig sharedConfig) {
 		this.sharedConfig = sharedConfig;
 	}
+
 	public boolean isShared() {
 		return shared;
 	}
+
 	public void setShared(boolean shared) {
 		this.shared = shared;
 	}
+
 	public boolean isSharedOverwrite() {
 		return sharedOverwrite;
 	}
+
 	public void setSharedOverwrite(boolean sharedOverwrite) {
 		this.sharedOverwrite = sharedOverwrite;
 	}
+
 	public int getVersion() {
 		return version;
 	}
+
 	public void setVersion(int version) {
 		this.version = version;
 	}
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	public List<VersionHistory> getVersionHistory() {
 		return versionHistory;
 	}
+
 	public void setVersionHistory(List<VersionHistory> versionHistory) {
 		this.versionHistory = versionHistory;
 	}
+
 	public String getObjDefId() {
 		return definitionId;
 	}
+
 	public void setObjDefId(String definitionId) {
 		this.definitionId = definitionId;
 	}

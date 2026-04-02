@@ -36,8 +36,10 @@ public class TempUserCleaner extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(TempUserCleaner.class);
 
-	private TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 	private int tenantId;
 
 	/**
@@ -54,14 +56,14 @@ public class TempUserCleaner extends MtpSilentBatch {
 		if (args != null && args.length > 0 && StringUtil.isNotEmpty(args[0])) {
 			tenantId = Integer.parseInt(args[0]);
 		}
-		
+
 		try {
 			if (tenantId >= 0) {
 				(new TempUserCleaner(tenantId)).clean();
 			} else {
 				List<TenantInfo> tenants = getValidTenantInfoList();
 				if (tenants != null) {
-					for (TenantInfo t: tenants) {
+					for (TenantInfo t : tenants) {
 						(new TempUserCleaner(t.getId())).clean();
 					}
 				}
@@ -102,14 +104,16 @@ public class TempUserCleaner extends MtpSilentBatch {
 				Transaction.required(t -> {
 					//有効期限切れのテンポラリーユーザー情報検索(有効終了日が現在日付より小さい場合且つ、テンポラリーフラグがtrueの場合)
 					Query query = new Query()
-										.selectAll(User.DEFINITION_NAME, true, false)
-										.where(new And()
-												.eq(User.TEMPORARY_FLG, true)
-												.lt(User.END_DATE, new java.sql.Date(ExecuteContext.getCurrentContext().getCurrentTimestamp().getTime())));
+							.selectAll(User.DEFINITION_NAME, true, false)
+							.where(new And()
+									.eq(User.TEMPORARY_FLG, true)
+									.lt(User.END_DATE, new java.sql.Date(ExecuteContext.getCurrentContext()
+											.getCurrentTimestamp()
+											.getTime())));
 					org.iplass.mtp.entity.SearchResult<Entity> user = em.searchEntity(query);
 
 					//テンポラリーユーザー物理削除
-					for(Entity entity : user.getList() ){
+					for (Entity entity : user.getList()) {
 						em.delete(entity, new DeleteOption(false));
 					}
 				});
@@ -135,7 +139,7 @@ public class TempUserCleaner extends MtpSilentBatch {
 	 * @return tenantId
 	 */
 	public int getTenantId() {
-	    return tenantId;
+		return tenantId;
 	}
 
 	/**
@@ -143,7 +147,7 @@ public class TempUserCleaner extends MtpSilentBatch {
 	 * @param tenantId tenantId
 	 */
 	public void setTenantId(int tenantId) {
-	    this.tenantId = tenantId;
+		this.tenantId = tenantId;
 	}
 
 	@Override

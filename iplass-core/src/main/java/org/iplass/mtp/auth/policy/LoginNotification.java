@@ -26,7 +26,7 @@ import org.iplass.mtp.auth.policy.definition.NotificationType;
 public class LoginNotification extends AccountNotification {
 	private Credential credential;
 	private LoginFailedException exception;
-	
+
 	public LoginNotification(NotificationType type, String userOid, Credential credential, LoginFailedException exception) {
 		super(type, userOid);
 		this.credential = credential;

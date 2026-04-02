@@ -45,7 +45,7 @@ public class SingleNodeManager extends ItemNodeManager {
 		TopViewNode infoList = new TopViewNode("Information List", InformationParts.class.getName(), "", true, false, true);
 
 		// Root直下に表示
-		tree.addList(new TopViewNode[]{infoList, lastLogin}, tree.getRoot());
+		tree.addList(new TopViewNode[] { infoList, lastLogin }, tree.getRoot());
 	}
 
 }

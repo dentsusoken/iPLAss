@@ -57,7 +57,9 @@ public class MappingResultSerializer extends StdSerializer<MappingResult> {
 	@Override
 	public void serialize(MappingResult value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		gen.writeStartObject(value);
-		boolean writeNull = provider.getConfig().getDefaultPropertyInclusion().getValueInclusion() == Include.ALWAYS;
+		boolean writeNull = provider.getConfig()
+				.getDefaultPropertyInclusion()
+				.getValueInclusion() == Include.ALWAYS;
 		if (writeNull || value.getErrors() != null) {
 			gen.writeObjectField(PROP_ERRORS, value.getErrors());
 		}

@@ -27,18 +27,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.ActionMappingService;
-import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
+import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 import org.iplass.mtp.impl.web.actionmapping.cache.MetaCacheCriteria.CacheCriteriaRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ContentCache implements Serializable {
 	private static final long serialVersionUID = -1814955389132383329L;
@@ -89,14 +89,16 @@ public class ContentCache implements Serializable {
 	public long getLastModified(WebInvocationImpl invocation, ContentCacheContext cc, String lang) {
 		long lastModified = creationTime;
 		if (content != null) {
-			for (ContentBlock c: content) {
+			for (ContentBlock c : content) {
 				lastModified = c.lastModified(lastModified, invocation, cc, lang);
 			}
 		}
 
 		//layoutがある場合、そっちもチェック
 		if (layoutActionName != null && lastModified < Long.MAX_VALUE) {
-			ActionMappingRuntime amr = ServiceRegistry.getRegistry().getService(ActionMappingService.class).getRuntimeByName(layoutActionName);
+			ActionMappingRuntime amr = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class)
+					.getRuntimeByName(layoutActionName);
 			if (amr == null) {
 				return Long.MAX_VALUE;
 			}
@@ -250,7 +252,8 @@ public class ContentCache implements Serializable {
 
 //ここのしょりがあやしいか。。。
 			//layout利用の場合
-			ActionMappingService ams = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+			ActionMappingService ams = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime layout = ams.getRuntimeByName(getLayoutActionName());
 
 			WebRequestStack newStack = null;
@@ -288,7 +291,7 @@ public class ContentCache implements Serializable {
 			res.setStatus(getHttpStatus());
 		}
 		if (getHeader() != null) {
-			for (Header h: getHeader()) {
+			for (Header h : getHeader()) {
 				switch (h.getOpeType()) {
 				case ADD:
 					switch (h.getValType()) {
@@ -327,11 +330,10 @@ public class ContentCache implements Serializable {
 		}
 
 		if (getContent() != null) {
-			for (ContentBlock cb: getContent()) {
+			for (ContentBlock cb : getContent()) {
 				cb.writeTo(request);
 			}
 		}
 	}
-
 
 }

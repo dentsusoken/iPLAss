@@ -77,7 +77,8 @@ public class RdbQueueService implements Service {
 			useQueue = Boolean.valueOf(config.getValue("useQueue"));
 		}
 
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 		taskIdCounter = config.getDependentService("TaskIdCounter");
 		taskIdCounterForGroup = config.getDependentService("TaskIdCounterGrouping");
 
@@ -100,7 +101,8 @@ public class RdbQueueService implements Service {
 				Queue q = new Queue(qc, taskIdCounter, taskIdCounterForGroup, rdb, workerFactory);
 				queueMap.put(q.getName(), q);
 				queueIdMap.put(qc.getId(), q);
-				if (q.getName().equalsIgnoreCase(DEFAULT_QUEUE_NAME)) {
+				if (q.getName()
+						.equalsIgnoreCase(DEFAULT_QUEUE_NAME)) {
 					defaultQueue = q;
 				}
 			}
@@ -139,8 +141,10 @@ public class RdbQueueService implements Service {
 		if (useQueue && queueMap != null) {
 			logger.info("stopping queue worker...");
 			for (Map.Entry<String, Queue> e : queueMap.entrySet()) {
-				e.getValue().stopWorker();
-				logger.debug("stopped worker of queue:" + e.getValue().getName());
+				e.getValue()
+						.stopWorker();
+				logger.debug("stopped worker of queue:" + e.getValue()
+						.getName());
 			}
 			logger.info("stopping queue worker...done.");
 			//			queueMap = null;
@@ -184,7 +188,8 @@ public class RdbQueueService implements Service {
 
 	public void deleteHistoryByDate(Timestamp date, boolean isDirectTenant) {
 		if (date == null) {
-			Instant cutoffInstant = Instant.now().minus(historyHoldDay, ChronoUnit.DAYS);
+			Instant cutoffInstant = Instant.now()
+					.minus(historyHoldDay, ChronoUnit.DAYS);
 			date = Timestamp.from(cutoffInstant);
 		}
 

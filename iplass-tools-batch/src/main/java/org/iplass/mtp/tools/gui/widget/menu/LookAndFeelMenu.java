@@ -20,11 +20,6 @@
 
 package org.iplass.mtp.tools.gui.widget.menu;
 
-import java.awt.Frame;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -32,6 +27,11 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+
+import java.awt.Frame;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +56,8 @@ public class LookAndFeelMenu extends JMenu {
 						logger.debug("set LookAndFeel :" + info.getName());
 						try {
 							UIManager.setLookAndFeel(info.getClassName());
-							for(Window window: Frame.getWindows()) {
-							    SwingUtilities.updateComponentTreeUI(window);
+							for (Window window : Frame.getWindows()) {
+								SwingUtilities.updateComponentTreeUI(window);
 							}
 						} catch (Exception e1) {
 							e1.printStackTrace();
@@ -67,8 +67,9 @@ public class LookAndFeelMenu extends JMenu {
 				group.add(item);
 
 				add(item);
-				if (UIManager.getSystemLookAndFeelClassName().equals(info.getClassName())) {
-					item.setSelected(true);	//イベント発生せず
+				if (UIManager.getSystemLookAndFeelClassName()
+						.equals(info.getClassName())) {
+					item.setSelected(true); //イベント発生せず
 				}
 			}
 		}

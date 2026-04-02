@@ -27,9 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LoggingInfoStream extends InfoStream {
-	
+
 	static Logger logger = LoggerFactory.getLogger(LoggingInfoStream.class);
-	
+
 	@Override
 	public void close() throws IOException {
 	}

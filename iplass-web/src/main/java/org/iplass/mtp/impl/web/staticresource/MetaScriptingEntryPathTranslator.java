@@ -31,10 +31,10 @@ public class MetaScriptingEntryPathTranslator extends MetaEntryPathTranslator {
 	private static final long serialVersionUID = -9124402289926024011L;
 
 	private String script;
-	
+
 	public MetaScriptingEntryPathTranslator() {
 	}
-	
+
 	public MetaScriptingEntryPathTranslator(String script) {
 		this.script = script;
 	}
@@ -49,7 +49,9 @@ public class MetaScriptingEntryPathTranslator extends MetaEntryPathTranslator {
 
 	@Override
 	public EntryPathTranslator createEntryPathTranslator(String staticResourceName) {
-		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+		ScriptEngine se = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 		Script s = se.createScript(script, "ScriptingEntryPathTranslator_" + staticResourceName);
 		if (s.isInstantiateAs(EntryPathTranslator.class)) {
 			ScriptContext sc = se.newScriptContext();
@@ -58,18 +60,18 @@ public class MetaScriptingEntryPathTranslator extends MetaEntryPathTranslator {
 			return new ScriptingEntryPathTranslator(s, se);
 		}
 	}
-	
+
 	@Override
 	public EntryPathTranslatorDefinition currentConfig() {
 		ScriptingEntryPathTranslatorDefinition def = new ScriptingEntryPathTranslatorDefinition();
 		def.setScript(script);
 		return def;
 	}
-	
+
 	private class ScriptingEntryPathTranslator implements EntryPathTranslator {
 		private Script s;
 		private ScriptEngine se;
-		
+
 		private ScriptingEntryPathTranslator(Script s, ScriptEngine se) {
 			this.s = s;
 			this.se = se;
@@ -81,7 +83,7 @@ public class MetaScriptingEntryPathTranslator extends MetaEntryPathTranslator {
 			sc.setAttribute("requestPath", requestPath);
 			return (String) s.eval(sc);
 		}
-		
+
 	}
 
 }

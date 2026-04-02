@@ -43,6 +43,7 @@ public class DefragEntityInfo implements Serializable {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -50,6 +51,7 @@ public class DefragEntityInfo implements Serializable {
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
@@ -57,6 +59,7 @@ public class DefragEntityInfo implements Serializable {
 	public int getCount() {
 		return count;
 	}
+
 	public void setCount(int count) {
 		this.count = count;
 	}
@@ -64,6 +67,7 @@ public class DefragEntityInfo implements Serializable {
 	public boolean isError() {
 		return isError;
 	}
+
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
@@ -71,6 +75,7 @@ public class DefragEntityInfo implements Serializable {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
+
 	public void setErrorMessage(String message) {
 		this.errorMessage = message;
 	}

@@ -22,34 +22,37 @@ package org.iplass.mtp.view.generic.editor;
 
 import java.util.List;
 
+import org.iplass.adminconsole.view.annotation.InputType;
+import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
+import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
+import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlEnumValue;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
 
-import org.iplass.adminconsole.view.annotation.InputType;
-import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
-import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
-import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
-
 /**
  * 日付・時間型プロパティエディタのスーパークラス
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({DatePropertyEditor.class, TimePropertyEditor.class, TimestampPropertyEditor.class})
+@XmlSeeAlso({ DatePropertyEditor.class, TimePropertyEditor.class, TimestampPropertyEditor.class })
 public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 4666753985814020563L;
 
 	/** 表示タイプ */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum DateTimeDisplayType {
-		@XmlEnumValue("DateTime")DATETIME,
-		@XmlEnumValue("Label")LABEL,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("DateTime")
+		DATETIME,
+		@XmlEnumValue("Label")
+		LABEL,
+		@XmlEnumValue("Hidden")
+		HIDDEN
 	}
 
 	/**
@@ -62,13 +65,18 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * _30MIN:30分毎
 	 * </pre>
 	 */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum MinIntereval {
-		@XmlEnumValue("_1min")_1MIN,
-		@XmlEnumValue("_5min")_5MIN,
-		@XmlEnumValue("_10min")_10MIN,
-		@XmlEnumValue("_15min")_15MIN,
-		@XmlEnumValue("_30min")_30MIN;
+		@XmlEnumValue("_1min")
+		_1MIN,
+		@XmlEnumValue("_5min")
+		_5MIN,
+		@XmlEnumValue("_10min")
+		_10MIN,
+		@XmlEnumValue("_15min")
+		_15MIN,
+		@XmlEnumValue("_30min")
+		_30MIN;
 
 		/**
 		 * Enum値を数値に変換します。
@@ -76,13 +84,19 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 		 * @return 分の表示間隔
 		 */
 		public static int toInt(MinIntereval val) {
-			if (val == null) return 1;
+			if (val == null)
+				return 1;
 			switch (val) {
-				case _1MIN: return 1;
-				case _5MIN: return 5;
-				case _10MIN: return 10;
-				case _15MIN: return 15;
-				case _30MIN: return 30;
+			case _1MIN:
+				return 1;
+			case _5MIN:
+				return 5;
+			case _10MIN:
+				return 10;
+			case _15MIN:
+				return 15;
+			case _30MIN:
+				return 30;
 			}
 			return 1;
 		}
@@ -97,7 +111,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * NONE:非表示
 	 * </pre>
 	 */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum TimeDispRange {
 		SEC,
 		MIN,
@@ -110,12 +124,17 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 		 * @return 時を表示するか
 		 */
 		public static boolean isDispHour(TimeDispRange val) {
-			if (val == null) return true;
+			if (val == null)
+				return true;
 			switch (val) {
-				case SEC: return true;
-				case MIN: return true;
-				case HOUR: return true;
-				case NONE: return false;
+			case SEC:
+				return true;
+			case MIN:
+				return true;
+			case HOUR:
+				return true;
+			case NONE:
+				return false;
 			}
 			return false;
 		}
@@ -126,12 +145,17 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 		 * @return 分を表示するか
 		 */
 		public static boolean isDispMin(TimeDispRange val) {
-			if (val == null) return true;
+			if (val == null)
+				return true;
 			switch (val) {
-				case SEC: return true;
-				case MIN: return true;
-				case HOUR: return false;
-				case NONE: return false;
+			case SEC:
+				return true;
+			case MIN:
+				return true;
+			case HOUR:
+				return false;
+			case NONE:
+				return false;
 			}
 			return false;
 		}
@@ -142,12 +166,17 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 		 * @return 秒を表示するか
 		 */
 		public static boolean isDispSec(TimeDispRange val) {
-			if (val == null) return true;
+			if (val == null)
+				return true;
 			switch (val) {
-				case SEC: return true;
-				case MIN: return false;
-				case HOUR: return false;
-				case NONE: return false;
+			case SEC:
+				return true;
+			case MIN:
+				return false;
+			case HOUR:
+				return false;
+			case NONE:
+				return false;
 			}
 			return false;
 		}
@@ -155,131 +184,131 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 
 	/** 表示タイプ */
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_editor_DateTimePropertyEditor_displayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=DateTimeDisplayType.class,
-			required=true,
-			displayOrder=100,
-			description="画面に表示する方法を選択します。",
-			descriptionKey="generic_editor_DateTimePropertyEditor_displayTypeDescriptionKey"
+			displayName = "表示タイプ",
+			displayNameKey = "generic_editor_DateTimePropertyEditor_displayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = DateTimeDisplayType.class,
+			required = true,
+			displayOrder = 100,
+			description = "画面に表示する方法を選択します。",
+			descriptionKey = "generic_editor_DateTimePropertyEditor_displayTypeDescriptionKey"
 	)
 	private DateTimeDisplayType displayType;
 
 	/** 日付/時刻のフォーマット設定 */
 	@MetaFieldInfo(
-			displayName="日付/時刻のフォーマット設定",
-			displayNameKey="generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey",
-			description="検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
-			inputType=InputType.REFERENCE,
-			multiple=false,
-			referenceClass=DateTimeFormatSetting.class,
-			displayOrder=105,
-			descriptionKey="generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey"
+			displayName = "日付/時刻のフォーマット設定",
+			displayNameKey = "generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey",
+			description = "検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
+			inputType = InputType.REFERENCE,
+			multiple = false,
+			referenceClass = DateTimeFormatSetting.class,
+			displayOrder = 105,
+			descriptionKey = "generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT }
 	)
 	private DateTimeFormatSetting datetimeFormat;
 
 	/** 日付/時刻のフォーマットの多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="日付/時刻のフォーマットの多言語設定",
-			displayNameKey="generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingNameKey",
-			description="検索結果、詳細画面で表示する日付/時刻のフォーマットの多言語設定を行う。",
-			inputType=InputType.REFERENCE,
-			multiple=true,
-			referenceClass=LocalizedDateTimeFormatSetting.class,
-			displayOrder=110,
-			descriptionKey="generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingDescriptionKey"
+			displayName = "日付/時刻のフォーマットの多言語設定",
+			displayNameKey = "generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingNameKey",
+			description = "検索結果、詳細画面で表示する日付/時刻のフォーマットの多言語設定を行う。",
+			inputType = InputType.REFERENCE,
+			multiple = true,
+			referenceClass = LocalizedDateTimeFormatSetting.class,
+			displayOrder = 110,
+			descriptionKey = "generic_editor_LocalizedDateTimeFormatSetting_localizedDateTimeFormatSettingDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT }
 	)
-	private List<LocalizedDateTimeFormatSetting>  localizedDatetimeFormatList;
+	private List<LocalizedDateTimeFormatSetting> localizedDatetimeFormatList;
 
 	/** 検索条件の単一日指定 */
 	@MetaFieldInfo(
-			displayName="検索条件の単一日指定",
-			displayNameKey="generic_editor_DateTimePropertyEditor_singleDayConditionDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=120,
-			description="検索条件の指定を単一日(時)にするかを設定します。<br>" +
+			displayName = "検索条件の単一日指定",
+			displayNameKey = "generic_editor_DateTimePropertyEditor_singleDayConditionDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 120,
+			description = "検索条件の指定を単一日(時)にするかを設定します。<br>" +
 					"単一日とした場合、検索条件From非表示及び検索条件To非表示は無効になります。",
-			descriptionKey="generic_editor_DateTimePropertyEditor_singleDayConditionDescriptionKey"
+			descriptionKey = "generic_editor_DateTimePropertyEditor_singleDayConditionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean singleDayCondition;
 
 	/** 検索条件From非表示設定 */
 	@MetaFieldInfo(
-			displayName="検索条件From非表示",
-			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=130,
-			description="検索条件のFromを非表示にするかを設定します。",
-			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey"
+			displayName = "検索条件From非表示",
+			displayNameKey = "generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 130,
+			description = "検索条件のFromを非表示にするかを設定します。",
+			descriptionKey = "generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean hideSearchConditionFrom;
 
 	/** 検索条件To非表示設定 */
 	@MetaFieldInfo(
-			displayName="検索条件To非表示",
-			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=135,
-			description="検索条件のToを非表示にするかを設定します。",
-			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey"
+			displayName = "検索条件To非表示",
+			displayNameKey = "generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 135,
+			description = "検索条件のToを非表示にするかを設定します。",
+			descriptionKey = "generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean hideSearchConditionTo;
 
 	/** 検索条件範囲記号非表示設定 */
 	@MetaFieldInfo(
-			displayName="検索条件範囲記号非表示",
-			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=140,
-			description="検索条件の範囲記号を非表示にするかを設定します。FromまたはToが非表示の場合に有効になります。",
-			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDescriptionKey"
+			displayName = "検索条件範囲記号非表示",
+			displayNameKey = "generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 140,
+			description = "検索条件の範囲記号を非表示にするかを設定します。FromまたはToが非表示の場合に有効になります。",
+			descriptionKey = "generic_editor_DateTimePropertyEditor_hideSearchConditionRangeSymbolDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean hideSearchConditionRangeSymbol;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値を登録する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2000,
-			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値を登録する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2000,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean insertWithLabelValue = true;
 
 	/** Label形式の場合の更新制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値で更新する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=2010,
-			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値で更新する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 2010,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean updateWithLabelValue = false;
 
@@ -358,7 +387,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * @return 検索条件From非表示設定
 	 */
 	public boolean isHideSearchConditionFrom() {
-	    return hideSearchConditionFrom;
+		return hideSearchConditionFrom;
 	}
 
 	/**
@@ -366,7 +395,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * @param hideSearchConditionFrom 検索条件From非表示設定
 	 */
 	public void setHideSearchConditionFrom(boolean hideSearchConditionFrom) {
-	    this.hideSearchConditionFrom = hideSearchConditionFrom;
+		this.hideSearchConditionFrom = hideSearchConditionFrom;
 	}
 
 	/**
@@ -374,7 +403,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * @return 検索条件To非表示設定
 	 */
 	public boolean isHideSearchConditionTo() {
-	    return hideSearchConditionTo;
+		return hideSearchConditionTo;
 	}
 
 	/**
@@ -382,7 +411,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * @param hideSearchConditionTo 検索条件To非表示設定
 	 */
 	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
-	    this.hideSearchConditionTo = hideSearchConditionTo;
+		this.hideSearchConditionTo = hideSearchConditionTo;
 	}
 
 	/**

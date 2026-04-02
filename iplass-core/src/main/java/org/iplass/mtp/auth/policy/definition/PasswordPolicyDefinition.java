@@ -46,7 +46,12 @@ public class PasswordPolicyDefinition implements Serializable {
 	/** パスワードの拒否リスト。複数指定する場合は改行で区切ってください。 */
 	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
-	@MultiLang(itemKey="passwordPatternErrorMessage", itemGetter="getPasswordPatternErrorMessage", itemSetter="setPasswordPatternErrorMessage", multiLangGetter="getLocalizedPasswordPatternErrorMessageList", multiLangSetter="setLocalizedPasswordPatternErrorMessageList")
+	@MultiLang(
+			itemKey = "passwordPatternErrorMessage",
+			itemGetter = "getPasswordPatternErrorMessage",
+			itemSetter = "setPasswordPatternErrorMessage",
+			multiLangGetter = "getLocalizedPasswordPatternErrorMessageList",
+			multiLangSetter = "setLocalizedPasswordPatternErrorMessageList")
 	private String passwordPatternErrorMessage;
 	/** パスワードの複雑度エラーのメッセージ(Localized) */
 	private List<LocalizedStringDefinition> localizedPasswordPatternErrorMessageList;
@@ -205,7 +210,7 @@ public class PasswordPolicyDefinition implements Serializable {
 	public void setPasswordHistoryCount(int passwordHistoryCount) {
 		this.passwordHistoryCount = passwordHistoryCount;
 	}
-	
+
 	/**
 	 * 過去入力したパスワードを覚えておく期間（日）。
 	 * 履歴に残っているパスワードは設定できない。
@@ -314,7 +319,7 @@ public class PasswordPolicyDefinition implements Serializable {
 	public void setRandomPasswordLength(int randomPasswordLength) {
 		this.randomPasswordLength = randomPasswordLength;
 	}
-	
+
 	/**
 	 * 自動生成パスワードが有効な最大期間 （日）。0は無限。
 	 * @return

@@ -42,7 +42,7 @@ public class TreeViewGridColModelMapping implements Serializable {
 	 * @return 名前
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class TreeViewGridColModelMapping implements Serializable {
 	 * @param name 名前
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class TreeViewGridColModelMapping implements Serializable {
 	 * @return マッピング対象の名前
 	 */
 	public String getMappingName() {
-	    return mappingName;
+		return mappingName;
 	}
 
 	/**
@@ -66,6 +66,6 @@ public class TreeViewGridColModelMapping implements Serializable {
 	 * @param mappingName マッピング対象の名前
 	 */
 	public void setMappingName(String mappingName) {
-	    this.mappingName = mappingName;
+		this.mappingName = mappingName;
 	}
 }

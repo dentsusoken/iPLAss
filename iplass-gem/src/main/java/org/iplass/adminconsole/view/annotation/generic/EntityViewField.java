@@ -47,7 +47,7 @@ public @interface EntityViewField {
 	 * これを改善するため設定画面上へのフィールドの表示をフィルタするために利用する。
 	 * </p>
 	 */
-	FieldReferenceType[] referenceTypes() default {FieldReferenceType.ALL};
+	FieldReferenceType[] referenceTypes() default { FieldReferenceType.ALL };
 
 	/**
 	 * <p>起動トリガーのタイプを上書きする参照タイプ</p>

@@ -41,26 +41,29 @@ public class CreateMenuProcess implements TenantCreateProcess {
 
 	/** 権限情報Node子アイテム名	 */
 	private static final String[] PERMISSION_NODE_CHILDREN = {
-		"mtp/auth/Role", "mtp/auth/ActionPermission", "mtp/auth/WebApiPermission", "mtp/auth/EntityPermission", "mtp/auth/WorkflowPermission", "mtp/auth/CubePermission"};
+			"mtp/auth/Role", "mtp/auth/ActionPermission", "mtp/auth/WebApiPermission", "mtp/auth/EntityPermission", "mtp/auth/WorkflowPermission",
+			"mtp/auth/CubePermission" };
 
 	/** 基本情報Node名	 */
 	private static final String STANDARD_NODE_NAME = "standard_node";
 
 	/** 基本情報Node子アイテム名	 */
-	private static final String[] STANDARD_NODE_CHILDREN  = {
-		"mtp/auth/Group", "mtp/auth/Rank", "mtp/auth/User"
+	private static final String[] STANDARD_NODE_CHILDREN = {
+			"mtp/auth/Group", "mtp/auth/Rank", "mtp/auth/User"
 	};
 
 	/** 権限情報、基本情報以外のアイテム名	 */
-	private static final String[] OTHER_ITEMS  = {
-		"mtp/Information"
+	private static final String[] OTHER_ITEMS = {
+			"mtp/Information"
 	};
 
 	@Override
 	public boolean execute(TenantCreateParameter param, LogHandler logHandler) {
 
-		MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
-		MenuTreeManager mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
+		MenuItemManager mm = ManagerLocator.getInstance()
+				.getManager(MenuItemManager.class);
+		MenuTreeManager mtm = ManagerLocator.getInstance()
+				.getManager(MenuTreeManager.class);
 
 		MenuTree tree = new MenuTree();
 		tree.setName(DEFAULT_MENU_TREE);

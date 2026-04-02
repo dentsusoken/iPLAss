@@ -83,31 +83,34 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 		SmartGWTUtil.addHintToFormItem(txtFormatScript,
 				"<br/>"
 
-				+ "<div>" + rs("ui_metadata_entity_PropertyListGrid_exampleTerm")
-				+ "<p " + contentsStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
-				+ "</div>"
+						+ "<div>" + rs("ui_metadata_entity_PropertyListGrid_exampleTerm")
+						+ "<p " + contentsStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
+						+ "</div>"
 
-				+ "<div><p><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b></p>"
+						+ "<div><p><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b></p>"
 
-				+ "<div " + contentsStyle + ">"
+						+ "<div " + contentsStyle + ">"
 
-				+ "<table style=\"border-collapse:collapse;\">"
-				+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format")
-				+ "</th><th "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
+						+ "<table style=\"border-collapse:collapse;\">"
+						+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format")
+						+ "</th><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
 
-				+ "<tr><td " + tableStyle + ">nextVal()</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_nextNumberingNum") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">yyyy</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_year") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">MM</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_month") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">dd</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_day") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">HH</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_hour") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">mm</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_minute") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">ss</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_second") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">date</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_instansTimestamp") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">user</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_userInfo") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">entity</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entity") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">nextVal()</td><td " + tableStyle + ">"
+						+ rs("ui_metadata_entity_PropertyListGrid_nextNumberingNum") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">yyyy</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_year") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">MM</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_month") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">dd</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_day") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">HH</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_hour") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">mm</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_minute") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">ss</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_second") + "</td></tr>"
+						+ "<tr><td " + tableStyle + ">date</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_instansTimestamp")
+						+ "</td></tr>"
+						+ "<tr><td " + tableStyle + ">user</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_userInfo")
+						+ "</td></tr>"
+						+ "<tr><td " + tableStyle + ">entity</td><td " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entity")
+						+ "</td></tr>"
 
-				+ "</table></div></div>"
-				);
+						+ "</table></div></div>");
 
 		txtStartValue = new MtpTextItem();
 		txtStartValue.setTitle(rs("ui_metadata_entity_PropertyListGrid_startVal"));
@@ -160,18 +163,19 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 
 		savedPropertyName = record.getSavedName();
 
-		AutoNumberAttribute autoNumberAttribute = (AutoNumberAttribute)typeAttribute;
+		AutoNumberAttribute autoNumberAttribute = (AutoNumberAttribute) typeAttribute;
 
 		txtStartValue.setValue(autoNumberAttribute.getAutoNumberStartWith());
 		txtFixedNumber.setValue(autoNumberAttribute.getAutoNumberFixedNumber());
-		selNumberingType.setValue(autoNumberAttribute.getAutoNumberNumberingType().name());
+		selNumberingType.setValue(autoNumberAttribute.getAutoNumberNumberingType()
+				.name());
 		txtFormatScript.setValue(autoNumberAttribute.getAutoNumberFormatScript());
 	}
 
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		AutoNumberAttribute autoNumberAttribute = (AutoNumberAttribute)record.getTypeAttribute();
+		AutoNumberAttribute autoNumberAttribute = (AutoNumberAttribute) record.getTypeAttribute();
 
 		if (txtStartValue.getValue() != null) {
 			autoNumberAttribute.setAutoNumberStartWith(Long.parseLong(SmartGWTUtil.getStringValue(txtStartValue)));

@@ -42,7 +42,7 @@ public class WebAuthnPlugin extends DefaultMetaDataPlugin {
 
 	/** ノード名 */
 	private static final String NODE_NAME = "/WebAuthn";
-	
+
 	/** ノード表示名 */
 	private static final String NODE_DISPLAY_NAME = "WebAuthn(passkey)";
 
@@ -109,27 +109,30 @@ public class WebAuthnPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), WebAuthnDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+		service.deleteDefinition(TenantInfoHolder.getId(), WebAuthnDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
 
-			@Override
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_deleteWebAuthnTemplateComp"));
+					@Override
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_deleteWebAuthnTemplateComp"));
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_failedToDeleteWebAuthnTemplate") + result.getMessage());
-				}
-			}
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_failedToDeleteWebAuthnTemplate")
+									+ result.getMessage());
+						}
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_failedToDeleteWebAuthnTemplate") + caught.getMessage());
-			}
-		});
+					@Override
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_webauthn_webAuthnPlugin_failedToDeleteWebAuthnTemplate")
+								+ caught.getMessage());
+					}
+				});
 	}
 
 	@Override
@@ -139,7 +142,7 @@ public class WebAuthnPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[] {WebAuthnEditPane.class};
+		return new Class[] { WebAuthnEditPane.class };
 	}
 
 }

@@ -25,17 +25,17 @@ public class MetaDataConfig {
 	private boolean overwritable;
 	private boolean dataSharable;
 	private boolean permissionSharable;
-	
+
 	public MetaDataConfig() {
 	}
-	
+
 	public MetaDataConfig(boolean sharable, boolean overwritable, boolean dataSharable, boolean permissionSharable) {
 		this.sharable = sharable;
 		this.overwritable = overwritable;
 		this.dataSharable = dataSharable;
 		this.permissionSharable = permissionSharable;
 	}
-	
+
 	public boolean isPermissionSharable() {
 		return permissionSharable;
 	}
@@ -55,15 +55,15 @@ public class MetaDataConfig {
 	public boolean isOverwritable() {
 		return overwritable;
 	}
-	
+
 	public void setOverwritable(boolean overwritable) {
 		this.overwritable = overwritable;
 	}
-	
+
 	public boolean isSharable() {
 		return sharable;
 	}
-	
+
 	public void setSharable(boolean sharable) {
 		this.sharable = sharable;
 	}

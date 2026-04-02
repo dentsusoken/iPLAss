@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.query.prepared.PreparedQueryTemplate;
 import org.iplass.mtp.impl.query.prepared.PreparedQueryTemplateFactory;
 
 class EntityPermissionEntry {
-	
+
 	private String role;
 	private PreparedQueryTemplate condition;
 	private boolean isPermit;
@@ -42,32 +42,32 @@ class EntityPermissionEntry {
 		}
 		this.isPermit = isPermit;
 	}
-	
+
 	public String getRole() {
 		return role;
 	}
-	
+
 	public Condition getCondition(UserBinding user, TenantAuthorizeContext authContext) {
 		if (condition == null) {
 			return null;
 		}
-		
+
 		AuthLimitConditionBinding bind = new AuthLimitConditionBinding(
-				ExecuteContext.getCurrentContext().getCurrentTimestamp(),
+				ExecuteContext.getCurrentContext()
+						.getCurrentTimestamp(),
 				user,
 				SessionBinding.newSessionBinding(),
 				authContext);
-		
+
 		return condition.condition(bind);
 	}
-	
+
 	public boolean hasLimitCondition() {
 		return condition != null;
 	}
-	
+
 	public boolean isPermit() {
 		return isPermit;
 	}
-	
 
 }

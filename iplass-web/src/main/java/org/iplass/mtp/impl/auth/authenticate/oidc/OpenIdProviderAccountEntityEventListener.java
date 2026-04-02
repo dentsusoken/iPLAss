@@ -18,7 +18,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package org.iplass.mtp.impl.auth.authenticate.oidc;
 
 import org.iplass.mtp.entity.Entity;
@@ -28,10 +27,10 @@ import org.iplass.mtp.entity.UpdateOption;
 
 public class OpenIdProviderAccountEntityEventListener implements EntityEventListener {
 	public static final String DEFINITION_NAME = "mtp.auth.oidc.OpenIdProviderAccount";
-	
+
 	/** subjectId + "@" + openIdConnectDefinitionName*/
 	public static final String UNIQUE_KEY = "uniqueKey";
-	
+
 	public static final String OIDC_DEFINITION_NAME = "openIdConnectDefinitionName";
 	public static final String SUBJECT_ID = "subjectId";
 	public static final String SUBJECT_NAME = "subjectName";
@@ -41,42 +40,51 @@ public class OpenIdProviderAccountEntityEventListener implements EntityEventList
 	@Override
 	public void beforeValidate(Entity entity, EntityEventContext context) {
 		UpdateOption option = (UpdateOption) context.getAttribute(EntityEventContext.UPDATE_OPTION);
-		
+
 		if (option == null) {
 			//insert
 			entity.setValue(UNIQUE_KEY, OIDCAccountHandle.createSubjectUniqueKey(entity.getValue(SUBJECT_ID), entity.getValue(OIDC_DEFINITION_NAME)));
 			entity.setValue(USER_OID, ((Entity) entity.getValue(USER)).getOid());
 		}
 	}
-	
+
 	@Override
 	public boolean beforeUpdate(Entity entity, EntityEventContext context) {
 		UpdateOption option = (UpdateOption) context.getAttribute(EntityEventContext.UPDATE_OPTION);
 		Entity before = (Entity) context.getAttribute(EntityEventContext.BEFORE_UPDATE_ENTITY);
-		if (option.getUpdateProperties().contains(OIDC_DEFINITION_NAME)
-				|| option.getUpdateProperties().contains(SUBJECT_ID)) {
-			
+		if (option.getUpdateProperties()
+				.contains(OIDC_DEFINITION_NAME)
+				|| option.getUpdateProperties()
+						.contains(SUBJECT_ID)) {
+
 			String sub = before.getValue(SUBJECT_ID);
-			if (option.getUpdateProperties().contains(SUBJECT_ID)) {
+			if (option.getUpdateProperties()
+					.contains(SUBJECT_ID)) {
 				sub = entity.getValue(SUBJECT_ID);
 			}
 			String providerName = before.getValue(OIDC_DEFINITION_NAME);
-			if (option.getUpdateProperties().contains(OIDC_DEFINITION_NAME)) {
+			if (option.getUpdateProperties()
+					.contains(OIDC_DEFINITION_NAME)) {
 				providerName = entity.getValue(OIDC_DEFINITION_NAME);
 			}
 			entity.setValue(UNIQUE_KEY, OIDCAccountHandle.createSubjectUniqueKey(sub, providerName));
-			
-			if (!option.getUpdateProperties().contains(UNIQUE_KEY)) {
-				option.getUpdateProperties().add(UNIQUE_KEY);
+
+			if (!option.getUpdateProperties()
+					.contains(UNIQUE_KEY)) {
+				option.getUpdateProperties()
+						.add(UNIQUE_KEY);
 			}
 		}
-		if (option.getUpdateProperties().contains(USER)) {
+		if (option.getUpdateProperties()
+				.contains(USER)) {
 			entity.setValue(USER_OID, ((Entity) entity.getValue(USER)).getOid());
-			if (!option.getUpdateProperties().contains(USER_OID)) {
-				option.getUpdateProperties().add(USER_OID);
+			if (!option.getUpdateProperties()
+					.contains(USER_OID)) {
+				option.getUpdateProperties()
+						.add(USER_OID);
 			}
 		}
-		
+
 		return true;
 	}
 }

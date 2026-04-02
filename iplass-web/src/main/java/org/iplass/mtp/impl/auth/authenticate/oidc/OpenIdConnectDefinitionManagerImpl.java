@@ -28,9 +28,11 @@ import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-public class OpenIdConnectDefinitionManagerImpl extends AbstractTypedDefinitionManager<OpenIdConnectDefinition> implements OpenIdConnectDefinitionManager {
-	
-	private OpenIdConnectService service = ServiceRegistry.getRegistry().getService(OpenIdConnectService.class);
+public class OpenIdConnectDefinitionManagerImpl extends AbstractTypedDefinitionManager<OpenIdConnectDefinition>
+		implements OpenIdConnectDefinitionManager {
+
+	private OpenIdConnectService service = ServiceRegistry.getRegistry()
+			.getService(OpenIdConnectService.class);
 
 	@Override
 	public Class<OpenIdConnectDefinition> getDefinitionType() {
@@ -51,7 +53,8 @@ public class OpenIdConnectDefinitionManagerImpl extends AbstractTypedDefinitionM
 	@Override
 	public void saveClientSecret(String oidcDefinitionName, String clientSecret) {
 		OpenIdConnectRuntime r = service.getRuntimeByName(oidcDefinitionName);
-		service.saveClientSecret(r.getMetaData().getId(), clientSecret);
+		service.saveClientSecret(r.getMetaData()
+				.getId(), clientSecret);
 	}
 
 }

@@ -46,7 +46,7 @@ package org.iplass.mtp.entity;
  *
  */
 public interface PropertyValidator {
-	
+
 	/**
 	 * valueの値を検証するコードを実装します。
 	 * falseを返却した場合、検証エラーとなります。

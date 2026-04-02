@@ -29,9 +29,9 @@ import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext;
 
 class DefaultEntityAuthContext extends BuiltinEntityAuthContext {
-	
+
 	private boolean readOnly;
-	
+
 	DefaultEntityAuthContext(
 			String entityDefinitionName,
 			EnumMap<Action, EntityPermissionEntry[]> entityPermissionEntry,

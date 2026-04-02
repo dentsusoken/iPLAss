@@ -34,7 +34,6 @@ import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
-
 public class UpdPropertyIndexType extends Diff {
 
 	private MetaPrimitiveProperty previousProperty;
@@ -52,7 +51,7 @@ public class UpdPropertyIndexType extends Diff {
 
 	@Override
 	public void applyToData(Statement stmt, RdbAdapter rdb, int tenantId) throws SQLException {
-		
+
 		if (needDataModify()) {
 			boolean doExecute = false;
 
@@ -63,7 +62,7 @@ public class UpdPropertyIndexType extends Diff {
 			//今までの状態でIndexが残っている可能性もあるので、旧のIndexTypeにかかわらず削除は実施
 			if (previousProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 				MetaGRdbPropertyStore propStore = (MetaGRdbPropertyStore) previousProperty.getEntityStoreProperty();
-				if(propStore.isExternalIndex()) {
+				if (propStore.isExternalIndex()) {
 					IndexDeleteSql delSql = rdb.getUpdateSqlCreator(IndexDeleteSql.class);
 					stmt.addBatch(delSql.deleteByColName(tenantId, nextEntity.getId(), tableNamePostfixRuntime, propStore.getPageNo(),
 							propStore.getColumnName(), rdb.getRdbTypeAdapter(previousProperty.getType()), previousProperty.getIndexType(), rdb));
@@ -74,7 +73,7 @@ public class UpdPropertyIndexType extends Diff {
 			//nextのIndexの生成
 			if (nextProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore) {
 				MetaGRdbPropertyStore propStore = (MetaGRdbPropertyStore) nextProperty.getEntityStoreProperty();
-				if(propStore.isExternalIndex()) {
+				if (propStore.isExternalIndex()) {
 					BaseRdbTypeAdapter typeMapping = (BaseRdbTypeAdapter) rdb.getRdbTypeAdapter(nextProperty.getType());
 					//もし、このカラムが再利用カラムだったら、insertIndexするまえにdeleteIndex
 					//カラム数を拡張された場合は再利用カラムかどうか判断つかないので、一律事前に削除
@@ -106,12 +105,17 @@ public class UpdPropertyIndexType extends Diff {
 			return true;
 		}
 
-		if (!previousProperty.getType().isCompatibleTo(nextProperty.getType())) {
-			if (!(previousProperty.getType().isVirtual() && nextProperty.getType().isVirtual())) {
+		if (!previousProperty.getType()
+				.isCompatibleTo(nextProperty.getType())) {
+			if (!(previousProperty.getType()
+					.isVirtual()
+					&& nextProperty.getType()
+							.isVirtual())) {
 				return true;
 			}
 		}
-		if (!nextProperty.getType().isVirtual()) {
+		if (!nextProperty.getType()
+				.isVirtual()) {
 			if (nextProperty.getMultiplicity() != previousProperty.getMultiplicity()) {
 				return true;
 			}
@@ -122,7 +126,7 @@ public class UpdPropertyIndexType extends Diff {
 
 		return false;
 	}
-	
+
 	private boolean isExternalIndex(MetaPrimitiveProperty p) {
 		if (p.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 			return false;

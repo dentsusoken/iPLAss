@@ -25,8 +25,10 @@ import org.iplass.mtp.spi.ServiceInitListener;
 
 public interface LobStore extends ServiceInitListener<LobStoreService> {
 	public LobData create(int tenantId, long lobDataId);
+
 	public LobData load(int tenantId, long lobDataId);
+
 	public void remove(int tenantId, long lobDataId);
-	
+
 	public LobValidator getLobValidator();
 }

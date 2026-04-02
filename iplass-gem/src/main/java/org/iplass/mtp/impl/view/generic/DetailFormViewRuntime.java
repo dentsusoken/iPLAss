@@ -37,7 +37,6 @@ import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 
-
 public class DetailFormViewRuntime extends FormViewRuntime {
 	public static final String ENTITY_BINDING_NAME = "entity";
 	public static final String ENTITY_DEFINITION_BINDING_NAME = "entityDefinition";
@@ -64,26 +63,34 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 	public DetailFormViewRuntime(MetaDetailFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		scriptEngine = tc.getScriptEngine();
 		if (metaData.getCustomCopyScript() != null) {
 			String scriptName = null;
-			if (metaData.getName() == null || metaData.getName().isEmpty()) {
-				scriptName = SCRIPT_PREFIX_CUSTOM_COPY_SCRIPT + "_" + entityView.getMetaData().getId() + "_default";
+			if (metaData.getName() == null || metaData.getName()
+					.isEmpty()) {
+				scriptName = SCRIPT_PREFIX_CUSTOM_COPY_SCRIPT + "_" + entityView.getMetaData()
+						.getId() + "_default";
 			} else {
-				scriptName = SCRIPT_PREFIX_CUSTOM_COPY_SCRIPT + "_" + entityView.getMetaData().getId() + "_" + metaData.getName();
+				scriptName = SCRIPT_PREFIX_CUSTOM_COPY_SCRIPT + "_" + entityView.getMetaData()
+						.getId() + "_" + metaData.getName();
 			}
 
 			compiledCustomCopyScript = scriptEngine.createScript(metaData.getCustomCopyScript(), scriptName);
 		}
 		if (metaData.getInitScript() != null) {
 			String scriptName = null;
-			if (metaData.getName() == null || metaData.getName().isEmpty()) {
-				scriptName = SCRIPT_PREFIX_INIT_SCRIPT + "_" + entityView.getMetaData().getId() + "_default";
+			if (metaData.getName() == null || metaData.getName()
+					.isEmpty()) {
+				scriptName = SCRIPT_PREFIX_INIT_SCRIPT + "_" + entityView.getMetaData()
+						.getId() + "_default";
 			} else {
-				scriptName = SCRIPT_PREFIX_INIT_SCRIPT + "_" + entityView.getMetaData().getId() + "_" + metaData.getName();
+				scriptName = SCRIPT_PREFIX_INIT_SCRIPT + "_" + entityView.getMetaData()
+						.getId() + "_" + metaData.getName();
 			}
 
 			compiledInitScript = scriptEngine.createScript(metaData.getInitScript(), scriptName);
@@ -102,11 +109,13 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 		EntityContext ec = EntityContext.getCurrentContext();
 		EntityHandler eh = ec.getHandlerByName(entity.getDefinitionName());
 
-		UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
+		UserBinding user = AuthContextHolder.getAuthContext()
+				.newUserBinding();
 
 		ScriptContext sc = scriptEngine.newScriptContext();
 		sc.setAttribute(ENTITY_BINDING_NAME, entity);
-		sc.setAttribute(ENTITY_DEFINITION_BINDING_NAME, eh.getMetaData().currentConfig(ec));
+		sc.setAttribute(ENTITY_DEFINITION_BINDING_NAME, eh.getMetaData()
+				.currentConfig(ec));
 		sc.setAttribute(ENTITY_MANAGER_BINDING_NAME, em);
 		sc.setAttribute(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());
 		sc.setAttribute(SESSION_BINDING_NAME, SessionBinding.newSessionBinding());
@@ -125,7 +134,8 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 			EntityHandler eh = ec.getHandlerByName(definitionName);
 			ret = eh.newInstance();
 		}
-		UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
+		UserBinding user = AuthContextHolder.getAuthContext()
+				.newUserBinding();
 		ScriptContext sc = scriptEngine.newScriptContext();
 		sc.setAttribute(ENTITY_BINDING_NAME, ret);
 		sc.setAttribute(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());

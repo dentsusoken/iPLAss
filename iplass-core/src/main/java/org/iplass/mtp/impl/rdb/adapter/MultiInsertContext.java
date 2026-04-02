@@ -59,10 +59,10 @@ public class MultiInsertContext {
 			throw new SQLException("no sql added");
 		}
 		if (sqls.size() == 1) {
-			return new int[]{stmt.executeUpdate(sqls.get(0))};
+			return new int[] { stmt.executeUpdate(sqls.get(0)) };
 		}
 
-		for (String s: sqls) {
+		for (String s : sqls) {
 			stmt.addBatch(s);
 		}
 		return stmt.executeBatch();
@@ -72,7 +72,5 @@ public class MultiInsertContext {
 		sqls.add(sql);
 //		stmt.addBatch(sql);
 	}
-
-
 
 }

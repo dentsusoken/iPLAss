@@ -27,7 +27,7 @@ public class MetaMimeTypeMapping implements MetaData {
 
 	private String extension;
 	private String mimeType;
-	
+
 	public MetaMimeTypeMapping() {
 	}
 
@@ -35,7 +35,7 @@ public class MetaMimeTypeMapping implements MetaData {
 		this.extension = extension;
 		this.mimeType = mimeType;
 	}
-	
+
 	public String getExtension() {
 		return extension;
 	}

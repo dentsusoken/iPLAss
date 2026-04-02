@@ -23,12 +23,12 @@ package org.iplass.mtp.entity.definition.properties.selectvalue;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * SelectValueのグローバル定義。
@@ -46,7 +46,14 @@ public class SelectValueDefinition implements Definition {
 	private String displayName;
 	private String description;
 
-	@MultiLang(isMultiLangValue = false, itemKey = "selectValue", itemGetter = "getSelectValueList", itemSetter = "setSelectValueList", multiLangGetter = "getLocalizedSelectValueList", multiLangSetter = "setLocalizedSelectValueList", isSelectValue = true)
+	@MultiLang(
+			isMultiLangValue = false,
+			itemKey = "selectValue",
+			itemGetter = "getSelectValueList",
+			itemSetter = "setSelectValueList",
+			multiLangGetter = "getLocalizedSelectValueList",
+			multiLangSetter = "setLocalizedSelectValueList",
+			isSelectValue = true)
 	private List<SelectValue> selectValueList;
 	private List<LocalizedSelectValueDefinition> localizedSelectValueList;
 
@@ -58,7 +65,7 @@ public class SelectValueDefinition implements Definition {
 	 */
 	public SelectValue getSelectValue(String value) {
 		if (selectValueList != null) {
-			for (SelectValue s: selectValueList) {
+			for (SelectValue s : selectValueList) {
 				if (value.equals(s.getValue())) {
 					return s;
 				}
@@ -77,7 +84,7 @@ public class SelectValueDefinition implements Definition {
 	 */
 	public SelectValue getLocalizedSelectValue(String value, String locale) {
 		if (localizedSelectValueList != null) {
-			for (LocalizedSelectValueDefinition ls: localizedSelectValueList) {
+			for (LocalizedSelectValueDefinition ls : localizedSelectValueList) {
 				if (locale.equals(ls.getLocaleName())) {
 					SelectValue s = ls.getSelectValue(value);
 					if (s != null) {
@@ -96,40 +103,51 @@ public class SelectValueDefinition implements Definition {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public List<SelectValue> getSelectValueList() {
 		return selectValueList;
 	}
+
 	public void setSelectValueList(List<SelectValue> selectValueList) {
 		this.selectValueList = selectValueList;
 	}
+
 	public List<LocalizedSelectValueDefinition> getLocalizedSelectValueList() {
 		return localizedSelectValueList;
 	}
+
 	public void setLocalizedSelectValueList(
 			List<LocalizedSelectValueDefinition> localizedSelectValueList) {
 		this.localizedSelectValueList = localizedSelectValueList;
 	}
+
 	public void addSelectValue(SelectValue value) {
 		if (selectValueList == null) {
 			selectValueList = new ArrayList<SelectValue>();
 		}
 		selectValueList.add(value);
 	}
+
 	public void addLocalizedSelectValue(LocalizedSelectValueDefinition localizedSelectValue) {
 		if (localizedSelectValueList == null) {
 			localizedSelectValueList = new ArrayList<LocalizedSelectValueDefinition>();

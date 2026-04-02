@@ -31,28 +31,28 @@ import java.util.concurrent.Future;
  * @param <V>
  */
 public interface AsyncTaskFuture<V> extends Future<V> {
-	
+
 	/**
 	 * 非同期タスクのタスクid。
 	 * 
 	 * @return
 	 */
 	public long getTaskId();
-	
+
 	/**
 	 * 非同期タスクが格納（実行）されたキュー名。
 	 * 
 	 * @return
 	 */
 	public String getQueueName();
-	
+
 	/**
 	 * 非同期タスクの現在の実行ステータス。
 	 * 
 	 * @return
 	 */
 	public TaskStatus getStatus();
-	
+
 	/**
 	 * この非同期タスクをキャンセルする。<br>
 	 * ローカルスレッド実行ではない場合は、
@@ -75,6 +75,5 @@ public interface AsyncTaskFuture<V> extends Future<V> {
 	 * 
 	 */
 	public V get() throws InterruptedException, ExecutionException;
-	
 
 }

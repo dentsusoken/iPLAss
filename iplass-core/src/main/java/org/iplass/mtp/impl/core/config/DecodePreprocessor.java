@@ -28,13 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DecodePreprocessor implements ConfigPreprocessor {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(DecodePreprocessor.class);
-	
+
 	private PropertyValueCoder coder;
-	
+
 	public DecodePreprocessor() {
-		String cryptConfigFileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
+		String cryptConfigFileName = BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
 		if (cryptConfigFileName != null) {
 			coder = getPropertyValueCoder(cryptConfigFileName);
 		}
@@ -43,21 +44,21 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 	@Override
 	public ServiceDefinition preprocess(ServiceDefinition serviceDefinition) {
 		if (coder != null && serviceDefinition.getService() != null) {
-			for (ServiceConfig sc: serviceDefinition.getService()) {
+			for (ServiceConfig sc : serviceDefinition.getService()) {
 				decode(sc, coder);
 			}
 		}
 		return serviceDefinition;
 	}
-	
+
 	private void decode(ServiceConfig sc, PropertyValueCoder coder) {
 		if (sc.getProperty() != null) {
-			for (NameValue p: sc.getProperty()) {
+			for (NameValue p : sc.getProperty()) {
 				decode(p, coder);
 			}
 		}
 	}
-	
+
 	public void decode(NameValue nv, PropertyValueCoder coder) {
 		if (nv.isEncrypted()) {
 			if (nv.getValue() != null) {
@@ -68,17 +69,17 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 			}
 		}
 		if (nv.getProperty() != null) {
-			for (NameValue p: nv.getProperty()) {
+			for (NameValue p : nv.getProperty()) {
 				decode(p, coder);
 			}
 		}
 		if (nv.getArg() != null) {
-			for (NameValue p: nv.getArg()) {
+			for (NameValue p : nv.getArg()) {
 				decode(p, coder);
 			}
 		}
 	}
-	
+
 	private PropertyValueCoder getPropertyValueCoder(String fileName) {
 		Properties prop = new Properties();
 		try {
@@ -91,10 +92,11 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 		} catch (IOException e) {
 			throw new ServiceConfigrationException("can not load CryptConfigFile", e);
 		}
-		
+
 		try {
 			String propertyValueCoderName = prop.getProperty(PropertyValueCoder.PROPERTY_VALUE_CODER, DefaultPropertyValueCoder.class.getName());
-			PropertyValueCoder coder = (PropertyValueCoder) Class.forName(propertyValueCoderName).newInstance();
+			PropertyValueCoder coder = (PropertyValueCoder) Class.forName(propertyValueCoderName)
+					.newInstance();
 			coder.open(prop);
 			return coder;
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {

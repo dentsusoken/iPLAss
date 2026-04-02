@@ -20,9 +20,8 @@
 
 package org.iplass.mtp.view.treeview;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * ツリービューにEntityの参照を表示するための定義情報

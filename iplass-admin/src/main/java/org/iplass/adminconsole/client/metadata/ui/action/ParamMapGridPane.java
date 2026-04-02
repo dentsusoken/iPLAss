@@ -70,23 +70,23 @@ public class ParamMapGridPane extends VLayout {
 		Label captionHint = new Label();
 		SmartGWTUtil.addHintToLabel(captionHint,
 				"<style type=\"text/css\"><!--"
-				+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
-				+ "ul.notes li{padding:5px 0px;}"
-				+ "ul.notes li span.strong {text-decoration:underline;color:red}"
-				+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
-				+ "--></style>"
-				+ "<h3>Notes</h3>"
-				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_action_ParamMapGridPane_actionPathParamComment1")
-				+ AdminClientMessageUtil.getString("ui_metadata_action_ParamMapGridPane_actionPathParamComment2")
-				+ AdminClientMessageUtil.getString("ui_metadata_action_ParamMapGridPane_actionPathParamComment3")
-				+ "</ul>");
+						+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
+						+ "ul.notes li{padding:5px 0px;}"
+						+ "ul.notes li span.strong {text-decoration:underline;color:red}"
+						+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
+						+ "--></style>"
+						+ "<h3>Notes</h3>"
+						+ "<ul class=\"notes\">"
+						+ AdminClientMessageUtil.getString("ui_metadata_action_ParamMapGridPane_actionPathParamComment1")
+						+ AdminClientMessageUtil.getString("ui_metadata_action_ParamMapGridPane_actionPathParamComment2")
+						+ AdminClientMessageUtil.getString("ui_metadata_action_ParamMapGridPane_actionPathParamComment3")
+						+ "</ul>");
 		captionComposit.addMember(captionHint);
 
 		grid = new ParamMapGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editMap((ListGridRecord)event.getRecord());
+				editMap((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -115,13 +115,13 @@ public class ParamMapGridPane extends VLayout {
 	}
 
 	public void setParamMap(ParamMapDefinition[] paramMap) {
-		grid.setData(new ListGridRecord[]{});
+		grid.setData(new ListGridRecord[] {});
 		if (paramMap != null) {
 			List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 			for (ParamMapDefinition param : paramMap) {
 				records.add(createRecord(param, null));
 			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
+			grid.setData(records.toArray(new ListGridRecord[] {}));
 		}
 	}
 
@@ -150,7 +150,7 @@ public class ParamMapGridPane extends VLayout {
 		ParamMapDefinition[] maps = new ParamMapDefinition[records.length];
 		int i = 0;
 		for (ListGridRecord record : records) {
-			ParamMapDefinition paramMap = (ParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+			ParamMapDefinition paramMap = (ParamMapDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 			maps[i] = paramMap;
 			i++;
 		}
@@ -192,7 +192,7 @@ public class ParamMapGridPane extends VLayout {
 		});
 
 		if (record != null) {
-			dialog.setParamMap((ParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+			dialog.setParamMap((ParamMapDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 		}
 		dialog.show();
 	}
@@ -207,14 +207,14 @@ public class ParamMapGridPane extends VLayout {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 

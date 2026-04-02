@@ -85,7 +85,7 @@ public class AsyncTaskDS extends AbstractAdminDataSource {
 				final long starttime2 = System.currentTimeMillis();
 
 				List<ListGridRecord> records = createRecord(result);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 
@@ -119,9 +119,11 @@ public class AsyncTaskDS extends AbstractAdminDataSource {
 			ListGridRecord record = new ListGridRecord();
 			record.setAttribute("taskId", task.getTaskId());
 			record.setAttribute("groupingKey", task.getGroupingKey());
-			record.setAttribute("status", task.getStatus().name());
+			record.setAttribute("status", task.getStatus()
+					.name());
 			record.setAttribute("retryCount", task.getRetryCount());
-			record.setAttribute("exceptionHandlingMode", task.getExceptionHandlingMode().name());
+			record.setAttribute("exceptionHandlingMode", task.getExceptionHandlingMode()
+					.name());
 			list.add(record);
 		}
 		return list;

@@ -31,15 +31,14 @@ import org.iplass.mtp.entity.interceptor.EntityValidateInvocation;
 import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
-
 public class EntityValidateInvocationImpl extends EntityInvocationImpl<ValidateResult> implements EntityValidateInvocation {
-	
+
 	private Entity entity;
 	private List<String> validatePropertyList;
 	private UpdateOption updateOption;
 	private InsertOption insertOption;
-	
-	public EntityValidateInvocationImpl (
+
+	public EntityValidateInvocationImpl(
 			Entity entity, List<String> validatePropertyList, UpdateOption updateOption,
 			EntityInterceptor[] entityInterceptors,
 			EntityHandler entityHandler) {
@@ -48,8 +47,8 @@ public class EntityValidateInvocationImpl extends EntityInvocationImpl<ValidateR
 		this.validatePropertyList = validatePropertyList;
 		this.updateOption = updateOption;
 	}
-	
-	public EntityValidateInvocationImpl (
+
+	public EntityValidateInvocationImpl(
 			Entity entity, InsertOption insertOption,
 			EntityInterceptor[] entityInterceptors,
 			EntityHandler entityHandler) {
@@ -57,26 +56,27 @@ public class EntityValidateInvocationImpl extends EntityInvocationImpl<ValidateR
 		this.entity = entity;
 		this.insertOption = insertOption;
 	}
-	
+
 	public Entity getEntity() {
 		return entity;
 	}
-	
+
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
-	
+
 	public List<String> getValidatePropertyList() {
 		return validatePropertyList;
 	}
+
 	public void setValidatePropertyList(List<String> validatePropertyList) {
 		this.validatePropertyList = validatePropertyList;
 	}
-	
+
 	public UpdateOption getUpdateOption() {
 		return updateOption;
 	}
-	
+
 	public InsertOption getInsertOption() {
 		return insertOption;
 	}
@@ -91,5 +91,5 @@ public class EntityValidateInvocationImpl extends EntityInvocationImpl<ValidateR
 	public InvocationType getType() {
 		return InvocationType.VALIDATE;
 	}
-	
+
 }

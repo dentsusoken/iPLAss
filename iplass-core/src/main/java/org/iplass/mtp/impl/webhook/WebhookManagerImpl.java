@@ -29,9 +29,10 @@ import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 
 public class WebhookManagerImpl implements WebhookManager {
 
-	private WebhookService webhookService = ServiceRegistry.getRegistry().getService(WebhookService.class);
-	private WebhookEndpointService webhookEndpointService = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
-
+	private WebhookService webhookService = ServiceRegistry.getRegistry()
+			.getService(WebhookService.class);
+	private WebhookEndpointService webhookEndpointService = ServiceRegistry.getRegistry()
+			.getService(WebhookEndpointService.class);
 
 	@Override
 	public Webhook createWebhook(String webhookDefinitionName, Map<String, Object> binding, String endpointDefinitionName) {

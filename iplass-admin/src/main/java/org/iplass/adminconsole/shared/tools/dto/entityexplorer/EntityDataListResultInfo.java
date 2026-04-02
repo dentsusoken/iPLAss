@@ -27,7 +27,6 @@ import java.util.List;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
-
 public class EntityDataListResultInfo implements Serializable {
 
 	/** シリアルバージョンNo */
@@ -42,7 +41,6 @@ public class EntityDataListResultInfo implements Serializable {
 	private boolean isError;
 	private List<String> logMessages;
 
-
 	/**
 	 * コンストラクタ
 	 */
@@ -50,7 +48,6 @@ public class EntityDataListResultInfo implements Serializable {
 		isError = false;
 		logMessages = new ArrayList<String>();
 	}
-
 
 	public void setDefinitionName(String definitionName) {
 		this.definitionName = definitionName;

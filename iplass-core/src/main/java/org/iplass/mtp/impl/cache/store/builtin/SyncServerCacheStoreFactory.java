@@ -149,97 +149,105 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 			this.eventNameRemoveByIndex = CLUSTER_EVENT_NAME_REMOVE_BY_INDEX + namespace;
 			this.wrapped = wrapped;
 			this.cel = new ClusterEventListener() {
-					@Override
-					public void onMessage(Message msg) {
-						if (msg.getEventName().startsWith(CLUSTER_EVENT_NAME_MARK_DIRTY)) {
-							Object key = cacheKeyResolver.toCacheKey(msg.getParameter(CLUSTER_MESSAGE_CACHE_KEY));
-							Object[] index = null;
-							if (getIndexCount() > 0) {
-								index = new Object[getIndexCount()];
-								for (int i = 0; i < index.length; i++) {
-									String iVal = msg.getParameter(CLUSTER_MESSAGE_INDEX_PREFIX + i);
-									if (iVal != null) {
-										index[i] = cacheIndexResolver.get(i).toCacheKey(iVal);
-									}
+				@Override
+				public void onMessage(Message msg) {
+					if (msg.getEventName()
+							.startsWith(CLUSTER_EVENT_NAME_MARK_DIRTY)) {
+						Object key = cacheKeyResolver.toCacheKey(msg.getParameter(CLUSTER_MESSAGE_CACHE_KEY));
+						Object[] index = null;
+						if (getIndexCount() > 0) {
+							index = new Object[getIndexCount()];
+							for (int i = 0; i < index.length; i++) {
+								String iVal = msg.getParameter(CLUSTER_MESSAGE_INDEX_PREFIX + i);
+								if (iVal != null) {
+									index[i] = cacheIndexResolver.get(i)
+											.toCacheKey(iVal);
 								}
 							}
+						}
 
-							CacheEntry entry = new CacheEntry(key, null, 0, index);
-							List<CacheEventListener> cacheEventListenerList = wrapped.getListeners();
+						CacheEntry entry = new CacheEntry(key, null, 0, index);
+						List<CacheEventListener> cacheEventListenerList = wrapped.getListeners();
 
-							wrapped.remove(key);
-							notifyRemoveCache(entry, cacheEventListenerList, listener);
+						wrapped.remove(key);
+						notifyRemoveCache(entry, cacheEventListenerList, listener);
 
-							if (logger.isDebugEnabled()) {
-								logger.debug("remove cache entry by cluster message.namespace=" + namespace + ", key=" + key);
-							}
+						if (logger.isDebugEnabled()) {
+							logger.debug("remove cache entry by cluster message.namespace=" + namespace + ", key=" + key);
+						}
 
-							// ネガティブキャッシュ削除
-							if (null != index) {
-								for (int i = 0; i < index.length; i++) {
-									Object indexValue = index[i];
-									if (null != indexValue) {
-										// インデックス検索を実施する。複数キャッシュを許容している可能性があるので、List 検索する
-										List<CacheEntry> cacheEntryList = wrapped.getListByIndex(i, indexValue);
-										if (null != cacheEntryList) {
-											for (CacheEntry cacheEntry : cacheEntryList) {
-												if (null != cacheEntry && cacheEntry.getKey() instanceof NullKey) {
-													// 対象キャッシュがネガティブキャッシュの場合は削除
-													wrapped.remove(cacheEntry);
-													notifyRemoveCache(cacheEntry, cacheEventListenerList, listener);
-													logger.debug("remove negative cache entry by cluster message.namespace={}, key={}, indexKey={}, indexValue={}, negativeCacheKey={}",
-															namespace, key, i, indexValue, cacheEntry.getKey());
-												}
+						// ネガティブキャッシュ削除
+						if (null != index) {
+							for (int i = 0; i < index.length; i++) {
+								Object indexValue = index[i];
+								if (null != indexValue) {
+									// インデックス検索を実施する。複数キャッシュを許容している可能性があるので、List 検索する
+									List<CacheEntry> cacheEntryList = wrapped.getListByIndex(i, indexValue);
+									if (null != cacheEntryList) {
+										for (CacheEntry cacheEntry : cacheEntryList) {
+											if (null != cacheEntry && cacheEntry.getKey() instanceof NullKey) {
+												// 対象キャッシュがネガティブキャッシュの場合は削除
+												wrapped.remove(cacheEntry);
+												notifyRemoveCache(cacheEntry, cacheEventListenerList, listener);
+												logger.debug(
+														"remove negative cache entry by cluster message.namespace={}, key={}, indexKey={}, indexValue={}, negativeCacheKey={}",
+														namespace, key, i, indexValue, cacheEntry.getKey());
 											}
 										}
 									}
 								}
 							}
+						}
 
-						} else if (msg.getEventName().startsWith(CLUSTER_EVENT_NAME_REMOVE_BY_INDEX)) {
-							int indexKey = Integer.parseInt(msg.getParameter(CLUSTER_MESSAGE_INDEX_KEY));
-							String iValStr = msg.getParameter(CLUSTER_MESSAGE_INDEX_VALUE);
-							if (iValStr != null) {
-								Object iVal = cacheIndexResolver.get(indexKey).toCacheKey(iValStr);
-								wrapped.removeByIndex(indexKey, iVal);
-								if (logger.isDebugEnabled()) {
-									logger.debug("remove cache entry by cluster message.namespace=" + namespace + ", indexKey=" + indexKey + ", indexValue=" + iVal);
-								}
-							}
-						} else {
-							wrapped.removeAll();
-							if (listener != null) {
-								listener.removeAll(namespace);
-							}
+					} else if (msg.getEventName()
+							.startsWith(CLUSTER_EVENT_NAME_REMOVE_BY_INDEX)) {
+						int indexKey = Integer.parseInt(msg.getParameter(CLUSTER_MESSAGE_INDEX_KEY));
+						String iValStr = msg.getParameter(CLUSTER_MESSAGE_INDEX_VALUE);
+						if (iValStr != null) {
+							Object iVal = cacheIndexResolver.get(indexKey)
+									.toCacheKey(iValStr);
+							wrapped.removeByIndex(indexKey, iVal);
 							if (logger.isDebugEnabled()) {
-								logger.debug("remove all cache entry by cluster message.namespace=" + namespace);
+								logger.debug("remove cache entry by cluster message.namespace=" + namespace + ", indexKey=" + indexKey + ", indexValue="
+										+ iVal);
 							}
 						}
-					}
-
-					/**
-					 * キャッシュエントリ削除の通知
-					 * @param entry 削除対象のキャッシュエントリ
-					 * @param cacheEventListenerList CacheStoreが管理しているキャッシュイベントリスナ
-					 * @param syncServerCacheEventListener SyncServerCacheStoreFactoryで管理しているキャッシュイベントリスナ
-					 */
-					private void notifyRemoveCache(CacheEntry entry, List<CacheEventListener> cacheEventListenerList,
-							SyncServerCacheEventListener syncServerCacheEventListener) {
-
-						if (cacheEventListenerList.size() > 0) {
-							CacheInvalidateEvent e = new CacheInvalidateEvent(entry);
-							for (CacheEventListener l : cacheEventListenerList) {
-								l.invalidated(e);
-							}
+					} else {
+						wrapped.removeAll();
+						if (listener != null) {
+							listener.removeAll(namespace);
 						}
-						if (syncServerCacheEventListener != null) {
-							syncServerCacheEventListener.markDirty(namespace, entry);
+						if (logger.isDebugEnabled()) {
+							logger.debug("remove all cache entry by cluster message.namespace=" + namespace);
 						}
 					}
+				}
+
+				/**
+				 * キャッシュエントリ削除の通知
+				 * @param entry 削除対象のキャッシュエントリ
+				 * @param cacheEventListenerList CacheStoreが管理しているキャッシュイベントリスナ
+				 * @param syncServerCacheEventListener SyncServerCacheStoreFactoryで管理しているキャッシュイベントリスナ
+				 */
+				private void notifyRemoveCache(CacheEntry entry, List<CacheEventListener> cacheEventListenerList,
+						SyncServerCacheEventListener syncServerCacheEventListener) {
+
+					if (cacheEventListenerList.size() > 0) {
+						CacheInvalidateEvent e = new CacheInvalidateEvent(entry);
+						for (CacheEventListener l : cacheEventListenerList) {
+							l.invalidated(e);
+						}
+					}
+					if (syncServerCacheEventListener != null) {
+						syncServerCacheEventListener.markDirty(namespace, entry);
+					}
+				}
 			};
 
-			ServiceRegistry.getRegistry().getService(ClusterService.class).registerListener(
-					new String[]{eventNameMarkDirty, eventNameClearAll, eventNameRemoveByIndex}, cel);
+			ServiceRegistry.getRegistry()
+					.getService(ClusterService.class)
+					.registerListener(
+							new String[] { eventNameMarkDirty, eventNameClearAll, eventNameRemoveByIndex }, cel);
 		}
 
 		@Override
@@ -272,10 +280,10 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 				computed[0] = true;
 				return mappingFunction.apply(k);
 			});
-			
+
 			//通知は値がnullではない状態から変更された場合に限定する
 			//if (computed[0] && entry != null) {
-				//sendByKeyEvent(entry);
+			//sendByKeyEvent(entry);
 			//}
 			return entry;
 		}
@@ -287,10 +295,10 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 				old[0] = v;
 				return remappingFunction.apply(k, v);
 			});
-			
+
 			if (entry != old[0] && !noClusterEventOnPut && old[0] != null) {
 				//通知は値がnullではない状態から変更された場合に限定する
-				sendByKeyEvent((entry != null)? entry: old[0]);
+				sendByKeyEvent((entry != null) ? entry : old[0]);
 			}
 			return entry;
 		}
@@ -344,7 +352,9 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 		public void removeAll() {
 			wrapped.removeAll();
 			Message msg = new Message(eventNameClearAll);
-			ServiceRegistry.getRegistry().getService(ClusterService.class).sendMessage(msg);
+			ServiceRegistry.getRegistry()
+					.getService(ClusterService.class)
+					.sendMessage(msg);
 		}
 
 		@Override
@@ -380,11 +390,14 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 			if (getIndexCount() > 0) {
 				for (int i = 0; i < getIndexCount(); i++) {
 					if (entry.getIndexValue(i) != null) {
-						msg.addParameter(CLUSTER_MESSAGE_INDEX_PREFIX + i, cacheIndexResolver.get(i).toString(entry.getIndexValue(i)));
+						msg.addParameter(CLUSTER_MESSAGE_INDEX_PREFIX + i, cacheIndexResolver.get(i)
+								.toString(entry.getIndexValue(i)));
 					}
 				}
 			}
-			ServiceRegistry.getRegistry().getService(ClusterService.class).sendMessage(msg);
+			ServiceRegistry.getRegistry()
+					.getService(ClusterService.class)
+					.sendMessage(msg);
 		}
 
 		@Override
@@ -404,10 +417,13 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 			Message msg = new Message(eventNameRemoveByIndex);
 			msg.addParameter(CLUSTER_MESSAGE_INDEX_KEY, Integer.toString(indexKey));
 			if (indexValue != null) {
-				String iValStr = cacheIndexResolver.get(indexKey).toString(indexValue);
+				String iValStr = cacheIndexResolver.get(indexKey)
+						.toString(indexValue);
 				msg.addParameter(CLUSTER_MESSAGE_INDEX_VALUE, iValStr);
 			}
-			ServiceRegistry.getRegistry().getService(ClusterService.class).sendMessage(msg);
+			ServiceRegistry.getRegistry()
+					.getService(ClusterService.class)
+					.sendMessage(msg);
 			return ret;
 		}
 
@@ -436,8 +452,10 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 
 		@Override
 		public void destroy() {
-			ServiceRegistry.getRegistry().getService(ClusterService.class).removeListener(
-					new String[]{eventNameMarkDirty, eventNameClearAll, eventNameRemoveByIndex}, cel);
+			ServiceRegistry.getRegistry()
+					.getService(ClusterService.class)
+					.removeListener(
+							new String[] { eventNameMarkDirty, eventNameClearAll, eventNameRemoveByIndex }, cel);
 			wrapped.destroy();
 		}
 

@@ -64,26 +64,33 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(TransactionLocalQueryCacheInterceptor.class);
 
-	private CacheService cacheService = ServiceRegistry.getRegistry().getService(CacheService.class);
-	
+	private CacheService cacheService = ServiceRegistry.getRegistry()
+			.getService(CacheService.class);
+
 	private CacheStore getCache(boolean withCreate, CacheScope scope) {
-		switch(scope) {
+		switch (scope) {
 		case GLOBAL_KEEP:
 		case GLOBAL_RELOAD:
 			//KEEP、RELOADの場合、INDEXを利用しないのでCacheStoreを分ける
 			return cacheService.getCache(EntityCacheInterceptor.KEEP_QUERY_CACHE_NAMESPACE_PREFIX
-					+ ExecuteContext.getCurrentContext().getClientTenantId(), withCreate);
+					+ ExecuteContext.getCurrentContext()
+							.getClientTenantId(),
+					withCreate);
 		default:
 			return cacheService.getCache(EntityCacheInterceptor.QUERY_CACHE_NAMESPACE_PREFIX
-					+ ExecuteContext.getCurrentContext().getClientTenantId(), withCreate);
+					+ ExecuteContext.getCurrentContext()
+							.getClientTenantId(),
+					withCreate);
 		}
 	}
 
 	private void notifyUpdate(EntityInvocation<?> invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
-		if (eh.getMetaData().isQueryCache()) {
+		if (eh.getMetaData()
+				.isQueryCache()) {
 			CacheStore cache = getCache(true, CacheScope.GLOBAL);
-			cache.removeByIndex(0, eh.getMetaData().getName());
+			cache.removeByIndex(0, eh.getMetaData()
+					.getName());
 		}
 	}
 
@@ -108,11 +115,14 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 
 	private CacheHint hasCacheHintAndEnableCache(Query q, EntityInvocation<?> inv) {
 		EntityHandler primaryEh = ((EntityInvocationImpl<?>) inv).getEntityHandler();
-		if (primaryEh != null && primaryEh.getMetaData().isQueryCache()) {
-			if (q.getSelect() != null && q.getSelect().getHintComment() != null) {
-				HintComment hc = q.getSelect().getHintComment();
+		if (primaryEh != null && primaryEh.getMetaData()
+				.isQueryCache()) {
+			if (q.getSelect() != null && q.getSelect()
+					.getHintComment() != null) {
+				HintComment hc = q.getSelect()
+						.getHintComment();
 				if (hc.getHintList() != null) {
-					for (Hint h: hc.getHintList()) {
+					for (Hint h : hc.getHintList()) {
 						if (h instanceof CacheHint) {
 							CacheScope cs = ((CacheHint) h).getScope();
 							if (cs == CacheScope.GLOBAL || cs == CacheScope.GLOBAL_KEEP || cs == CacheScope.GLOBAL_RELOAD) {
@@ -131,12 +141,13 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 		if (defNameList == null || defNameList.length == 0) {
 			return false;
 		}
-		for (String defName: defNameList) {
+		for (String defName : defNameList) {
 			EntityHandler eh = ec.getHandlerByName(defName);
 			if (eh == null) {
 				return false;
 			}
-			if (!eh.getMetaData().isQueryCache()) {
+			if (!eh.getMetaData()
+					.isQueryCache()) {
 				return false;
 			}
 		}
@@ -151,7 +162,8 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 
 	@Override
 	public void query(EntityQueryInvocation invocation) {
-		if (invocation.getSearchOption().getResultMode() == ResultMode.STREAM) {
+		if (invocation.getSearchOption()
+				.getResultMode() == ResultMode.STREAM) {
 			invocation.proceed();
 		} else {
 			Query q = invocation.getQuery();
@@ -174,12 +186,14 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 			if (hint != null && usedEntityDefs != null) {
 				Predicate<?> callback = invocation.getPredicate();
 				CacheStore store = getCache(true, hint.getScope());
-				QueryCacheKey key = new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity(), false);
+				QueryCacheKey key = new QueryCacheKey(q, invocation.getSearchOption()
+						.isReturnStructuredEntity(), false);
 				CacheEntry ce = store.get(key);
 				if (isInvalidQueryCache(invocation, ce)) {
 					if (hint.getScope() == CacheScope.GLOBAL_RELOAD) {
 						ce = store.computeIfAbsentWithAutoReload(key, (k, v) -> {
-							if (AuthContext.getCurrentContext().isPrivileged()) {
+							if (AuthContext.getCurrentContext()
+									.isPrivileged()) {
 								return reloadQueryCache(k);
 							} else {
 								return AuthContext.doPrivileged(() -> {
@@ -188,7 +202,8 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 							}
 						});
 						//countOnlyのキャッシュをクリア
-						store.remove(new QueryCacheKey(q, invocation.getSearchOption().isReturnStructuredEntity(), true));
+						store.remove(new QueryCacheKey(q, invocation.getSearchOption()
+								.isReturnStructuredEntity(), true));
 					} else {
 						ce = store.compute(key, (k, v) -> {
 							return loadQueryCacheIfInvalid(invocation, q, hint, usedEntityDefs, v);
@@ -209,32 +224,34 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 	}
 
 	private CacheEntry reloadQueryCache(Object k) {
-			Query reloadQuery = ((QueryCacheKey) k).query.copy();
-			HintComment hc = reloadQuery.getSelect().getHintComment();
-			CacheHint ch = null;
-			for (Hint h : hc.getHintList()) {
-				if (h instanceof CacheHint) {
-					ch = (CacheHint) h;
-					break;
-				}
+		Query reloadQuery = ((QueryCacheKey) k).query.copy();
+		HintComment hc = reloadQuery.getSelect()
+				.getHintComment();
+		CacheHint ch = null;
+		for (Hint h : hc.getHintList()) {
+			if (h instanceof CacheHint) {
+				ch = (CacheHint) h;
+				break;
 			}
-			hc.getHintList().removeIf(h -> h instanceof CacheHint);
-			
-			reloadQuery.localized(false);
-			SearchOption so = new SearchOption();
-			so.setNotifyListeners(false);
-			so.setReturnStructuredEntity(((QueryCacheKey) k).returnStructuredEntity);
-			
-			EntityManager em = ManagerLocator.manager(EntityManager.class);
-			ArrayList<Object> list = new ArrayList<>();
-			em.search(reloadQuery,so, row -> {
-				list.add(row);
-				return true;
-			});
-			QueryCache qc = new QueryCache(list.size(), list, InvocationType.SEARCH, -1);
-			CacheEntry newCe = new CacheEntry(k, qc, (Object[]) null);
-			newCe.setTimeToLive(TimeUnit.SECONDS.toMillis(ch.getTTL()));
-			return newCe;
+		}
+		hc.getHintList()
+				.removeIf(h -> h instanceof CacheHint);
+
+		reloadQuery.localized(false);
+		SearchOption so = new SearchOption();
+		so.setNotifyListeners(false);
+		so.setReturnStructuredEntity(((QueryCacheKey) k).returnStructuredEntity);
+
+		EntityManager em = ManagerLocator.manager(EntityManager.class);
+		ArrayList<Object> list = new ArrayList<>();
+		em.search(reloadQuery, so, row -> {
+			list.add(row);
+			return true;
+		});
+		QueryCache qc = new QueryCache(list.size(), list, InvocationType.SEARCH, -1);
+		CacheEntry newCe = new CacheEntry(k, qc, (Object[]) null);
+		newCe.setTimeToLive(TimeUnit.SECONDS.toMillis(ch.getTTL()));
+		return newCe;
 	}
 
 	private CacheEntry loadQueryCacheIfInvalid(EntityQueryInvocation invocation, Query q, CacheHint hint,
@@ -249,7 +266,8 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 			invocation.proceed();
 
 			QueryCache qc = new QueryCache(list.size(), list, invocation.getType(), hint.getTTL());
-			CacheEntry newCe = new CacheEntry(new QueryCacheKey(q.copy(), invocation.getSearchOption().isReturnStructuredEntity(), false), qc, (Object) usedEntityDefs);
+			CacheEntry newCe = new CacheEntry(new QueryCacheKey(q.copy(), invocation.getSearchOption()
+					.isReturnStructuredEntity(), false), qc, (Object) usedEntityDefs);
 			if (hint.getTTL() > 0) {
 				newCe.setTimeToLive(TimeUnit.SECONDS.toMillis(hint.getTTL()));
 			}
@@ -304,11 +322,12 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 				key = new QueryCacheKey(q, false, true);
 				ce = store.get(key);
 			}
-			
+
 			if (isInvalidCountCache(ce)) {
 				if (hint.getScope() == CacheScope.GLOBAL_RELOAD) {
 					ce = store.computeIfAbsentWithAutoReload(key, (k, v) -> {
-						if (AuthContext.getCurrentContext().isPrivileged()) {
+						if (AuthContext.getCurrentContext()
+								.isPrivileged()) {
 							return reloadCountCache(k);
 						} else {
 							return AuthContext.doPrivileged(() -> {
@@ -337,7 +356,8 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 
 	private CacheEntry reloadCountCache(Object k) {
 		Query reloadQuery = ((QueryCacheKey) k).query.copy();
-		HintComment hc = reloadQuery.getSelect().getHintComment();
+		HintComment hc = reloadQuery.getSelect()
+				.getHintComment();
 		CacheHint ch = null;
 		for (Hint h : hc.getHintList()) {
 			if (h instanceof CacheHint) {
@@ -345,12 +365,13 @@ class QueryCacheInterceptor extends EntityInterceptorAdapter {
 				break;
 			}
 		}
-		hc.getHintList().removeIf(h -> h instanceof CacheHint);
-		
+		hc.getHintList()
+				.removeIf(h -> h instanceof CacheHint);
+
 		reloadQuery.localized(false);
 		EntityManager em = ManagerLocator.manager(EntityManager.class);
 		int count = em.count(reloadQuery);
-		
+
 		QueryCache qc = new QueryCache(count, null, InvocationType.COUNT, -1);
 		CacheEntry newCe = new CacheEntry(k, qc, (Object[]) null);
 		newCe.setTimeToLive(TimeUnit.SECONDS.toMillis(ch.getTTL()));

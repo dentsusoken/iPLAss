@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.tools.gui.partition;
 
-import java.awt.EventQueue;
-
 import javax.swing.UIManager;
+
+import java.awt.EventQueue;
 
 import org.iplass.mtp.tools.batch.partition.PostgreSQLPartitionBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
@@ -43,7 +43,7 @@ public class MySQLPartitionManagerApp {
 			public void run() {
 				try {
 					PartitionManagerApp frame = new PartitionManagerApp(new PostgreSQLPartitionBatch(TenantBatchExecMode.GUI.name()));
-					frame.setLocationRelativeTo(null);	// 中央表示
+					frame.setLocationRelativeTo(null); // 中央表示
 					frame.setTitle("MySQL Partition Manager");
 					frame.setVisible(true);
 				} catch (Exception e) {

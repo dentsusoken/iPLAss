@@ -52,16 +52,16 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @WebApi(
-	name=DeleteListCommand.WEBAPI_NAME,
-	displayName="選択削除",
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	results={Constants.MESSAGE},
-	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
-	checkXRequestedWithHeader=true
+		name = DeleteListCommand.WEBAPI_NAME,
+		displayName = "選択削除",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.MESSAGE },
+		tokenCheck = @WebApiTokenCheck(consume = false, useFixedToken = true),
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/delete/DeleteListCommand", displayName="選択削除")
+@CommandClass(name = "gem/generic/delete/DeleteListCommand", displayName = "選択削除")
 public final class DeleteListCommand extends DeleteCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteListCommand.class);
@@ -75,14 +75,16 @@ public final class DeleteListCommand extends DeleteCommandBase {
 
 		//削除対象の取得
 		String[] oidArray = null;
-		Object val = request.getParamMap().get(Constants.OID);
+		Object val = request.getParamMap()
+				.get(Constants.OID);
 		if (val instanceof String) {
-			oidArray = new String[]{(String)val};
+			oidArray = new String[] { (String) val };
 		} else if (val instanceof ArrayList<?>) {
 			ArrayList<?> list = (ArrayList<?>) val;
 			oidArray = new String[list.size()];
 			for (int i = 0; i < list.size(); i++) {
-				oidArray[i] = list.get(i).toString();
+				oidArray[i] = list.get(i)
+						.toString();
 			}
 		}
 
@@ -101,7 +103,8 @@ public final class DeleteListCommand extends DeleteCommandBase {
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		try {
 			//削除前の処理を呼び出します。
-			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(entities);
+			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler()
+					.beforeOperation(entities);
 			List<ValidateError> errors = bulkContext.getErrors();
 			entities = bulkContext.getEntities();
 
@@ -129,7 +132,10 @@ public final class DeleteListCommand extends DeleteCommandBase {
 							} else {
 								request.setAttribute(Constants.MESSAGE, ret.getMessage());
 							}
-							ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().rollback();
+							ManagerLocator.getInstance()
+									.getManager(TransactionManager.class)
+									.currentTransaction()
+									.rollback();
 							break;
 						}
 					}
@@ -137,7 +143,8 @@ public final class DeleteListCommand extends DeleteCommandBase {
 			}
 
 			//削除後の処理を呼び出します。
-			context.getDeleteInterrupterHandler().afterOperation(entities);
+			context.getDeleteInterrupterHandler()
+					.afterOperation(entities);
 		} catch (ApplicationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);

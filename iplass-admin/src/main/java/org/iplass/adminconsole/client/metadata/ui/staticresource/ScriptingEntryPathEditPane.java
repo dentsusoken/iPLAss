@@ -58,7 +58,7 @@ public class ScriptingEntryPathEditPane extends EntryPathTypeEditPane<ScriptingE
 		form = new DynamicForm();
 		form.setWidth100();
 		form.setHeight100();
-		form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(50, "*", "*");
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
@@ -66,7 +66,8 @@ public class ScriptingEntryPathEditPane extends EntryPathTypeEditPane<ScriptingE
 		editScript.setStartRow(false);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_staticresource_ScriptingEntryPathEditPane_displayDialogEditScript")));
+		editScript.setPrompt(SmartGWTUtil
+				.getHoverString(AdminClientMessageUtil.getString("ui_metadata_staticresource_ScriptingEntryPathEditPane_displayDialogEditScript")));
 		editScript.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -80,6 +81,7 @@ public class ScriptingEntryPathEditPane extends EntryPathTypeEditPane<ScriptingE
 							public void onSave(String text) {
 								scriptField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}

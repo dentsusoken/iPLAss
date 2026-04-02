@@ -40,7 +40,6 @@ public interface FCMConstants {
 	public static final String FAILURE = "failure";
 	public static final String CANONICAL_IDS = "canonical_ids";
 
-
 	public static final String RESULTS = "results";
 
 	public static final String ERROR_UNVAILABLE = "Unavailable";

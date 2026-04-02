@@ -94,7 +94,8 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		}
 
 		if (definition.getClientType() != null) {
-			selClientType.setValue(definition.getClientType().name());
+			selClientType.setValue(definition.getClientType()
+					.name());
 		} else {
 			selClientType.setValue("");
 		}
@@ -111,7 +112,8 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		if (definition.getGrantTypes() != null) {
 			for (GrantType type : definition.getGrantTypes()) {
 				if (mapGrantTypeItems.get(type) != null) {
-					mapGrantTypeItems.get(type).setValue(true);
+					mapGrantTypeItems.get(type)
+							.setValue(true);
 				}
 			}
 		}
@@ -180,7 +182,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		//入力部分
 		form = new DynamicForm();
 		form.setWidth100();
-		form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(5); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(100, 300, 100, 300, "*");
 		form.setMargin(5);
 
@@ -199,7 +201,8 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		txaRedirectUris.setBrowserSpellCheck(false);
 		txaRedirectUris.setColSpan(3);
 		txaRedirectUris.setStartRow(true);
-		txaRedirectUris.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUris")));
+		txaRedirectUris.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_redirectUris")));
 
 		txtSectorIdentifierUri = new TextItem();
 		txtSectorIdentifierUri.setTitle("Sector Identifier URI");
@@ -218,11 +221,13 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		formGrantType.setCellPadding(0);
 		for (GrantType grantType : GrantType.values()) {
 			CheckboxItem chkGrantType = new CheckboxItem();
-			chkGrantType.setTitle(grantType.name().replaceAll("_", " "));
+			chkGrantType.setTitle(grantType.name()
+					.replaceAll("_", " "));
 			chkGrantType.setShowTitle(false);
 			mapGrantTypeItems.put(grantType, chkGrantType);
 		}
-		formGrantType.setItems(mapGrantTypeItems.values().toArray(new CheckboxItem[0]));
+		formGrantType.setItems(mapGrantTypeItems.values()
+				.toArray(new CheckboxItem[0]));
 		canvasGrantTypes.setCanvas(formGrantType);
 		canvasGrantTypes.setColSpan(3);
 		canvasGrantTypes.setStartRow(true);
@@ -248,7 +253,8 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		txaContacts.setBrowserSpellCheck(false);
 		txaContacts.setColSpan(3);
 		txaContacts.setStartRow(true);
-		txaContacts.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_contacts")));
+		txaContacts.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientAttributePane_contacts")));
 
 		txtTosUri = new TextItem();
 		txtTosUri.setTitle("Terms Of Service URI");

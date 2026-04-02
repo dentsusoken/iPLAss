@@ -36,7 +36,7 @@ public class PercentRank extends WindowRankFunction {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	@Override
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
@@ -60,7 +60,7 @@ public class PercentRank extends WindowRankFunction {
 		super.orderBy(sortSpec);
 		return this;
 	}
-	
+
 	@Override
 	protected String getFuncName() {
 		return "percent_rank";

@@ -41,6 +41,5 @@ public class UploadFileSizeOverException extends ApplicationException {
 	public UploadFileSizeOverException(Throwable cause) {
 		super(cause);
 	}
-	
 
 }

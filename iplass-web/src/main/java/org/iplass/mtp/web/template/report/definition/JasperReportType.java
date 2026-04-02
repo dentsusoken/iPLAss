@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.web.template.report.definition;
 
-
 /**
  * <% if (doclang == "ja") {%>
  * <p>Jasper帳票出力用テンプレートファイルのTemplate定義</p>

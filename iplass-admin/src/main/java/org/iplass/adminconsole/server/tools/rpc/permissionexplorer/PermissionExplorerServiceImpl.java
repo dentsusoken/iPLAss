@@ -64,9 +64,12 @@ public class PermissionExplorerServiceImpl extends XsrfProtectedServiceServlet i
 	private static final Logger logger = LoggerFactory.getLogger(PermissionExplorerServiceImpl.class);
 
 	private EntityManager em = AdminEntityManager.getInstance();
-	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private ActionMappingDefinitionManager adm = ManagerLocator.getInstance().getManager(ActionMappingDefinitionManager.class);
-	private WebApiDefinitionManager wadm = ManagerLocator.getInstance().getManager(WebApiDefinitionManager.class);
+	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
+	private ActionMappingDefinitionManager adm = ManagerLocator.getInstance()
+			.getManager(ActionMappingDefinitionManager.class);
+	private WebApiDefinitionManager wadm = ManagerLocator.getInstance()
+			.getManager(WebApiDefinitionManager.class);
 
 	@Override
 	public EntityDataTransferTypeList entityDataTypeWhiteList(EntityDataTransferTypeList param) {
@@ -75,158 +78,164 @@ public class PermissionExplorerServiceImpl extends XsrfProtectedServiceServlet i
 
 	@Override
 	public List<Entity> getRoleList(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Entity>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Entity>>() {
 
-			@Override
-			public List<Entity> call() {
+					@Override
+					public List<Entity> call() {
 
-				//参照Propertyは取得しない
-				Query query = new Query();
-				query.selectAll("mtp.auth.Role", true, false, false, false).order(new SortSpec("code", SortType.ASC));
-				SearchResult<Entity> searchResult = em.searchEntity(query);
-				return searchResult.getList();
-			}
-		});
+						//参照Propertyは取得しない
+						Query query = new Query();
+						query.selectAll("mtp.auth.Role", true, false, false, false)
+								.order(new SortSpec("code", SortType.ASC));
+						SearchResult<Entity> searchResult = em.searchEntity(query);
+						return searchResult.getList();
+					}
+				});
 	}
 
 	@Override
 	public Entity loadRoleData(int tenantId, final String oid) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Entity>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Entity>() {
 
-			@Override
-			public Entity call() {
-				//参照Propertyは取得、非参照Propertyは取得しない
-				Entity role = em.load(oid, "mtp.auth.Role", new LoadOption(true, false));
+					@Override
+					public Entity call() {
+						//参照Propertyは取得、非参照Propertyは取得しない
+						Entity role = em.load(oid, "mtp.auth.Role", new LoadOption(true, false));
 
-				if (role != null) {
-					//登録済のRoleConditionの取得
-					List<Entity> storedCondition = getRoleCondition(oid);
-					List<Entity> conditionList = new ArrayList<>();
-					for (Entity conditionOid : storedCondition) {
-						//ロードしてRoleに追加
-						Entity condition = em.load(conditionOid.getOid(), "mtp.auth.RoleCondition", new LoadOption(false, false));
-						if (condition != null) {
-							conditionList.add(condition);
+						if (role != null) {
+							//登録済のRoleConditionの取得
+							List<Entity> storedCondition = getRoleCondition(oid);
+							List<Entity> conditionList = new ArrayList<>();
+							for (Entity conditionOid : storedCondition) {
+								//ロードしてRoleに追加
+								Entity condition = em.load(conditionOid.getOid(), "mtp.auth.RoleCondition", new LoadOption(false, false));
+								if (condition != null) {
+									conditionList.add(condition);
+								}
+							}
+							if (!conditionList.isEmpty()) {
+								role.setValue("condition", conditionList.toArray(new Entity[] {}));
+							}
 						}
+						return role;
 					}
-					if (!conditionList.isEmpty()) {
-						role.setValue("condition", conditionList.toArray(new Entity[]{}));
-					}
-				}
-				return role;
-			}
-		});
+				});
 	}
 
 	@Override
 	public void updateRoleData(int tenantId, final UpdateRoleInfo storeInfo) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
+					@Override
+					public Void call() {
 
-				int insertCount = 0;
-				int updateCount = 0;
-				int deleteCount = 0;
+						int insertCount = 0;
+						int updateCount = 0;
+						int deleteCount = 0;
 
-				//Roleの追加 or 更新
-				UpdateOption roleOption = null;
-				for (Entity role : storeInfo.getStoreEntityList()) {
-					if (StringUtil.isEmpty(role.getOid())) {
-						//Roleの追加
-						String oid = em.insert(role);
-						insertCount++;
-						role.setOid(oid);
+						//Roleの追加 or 更新
+						UpdateOption roleOption = null;
+						for (Entity role : storeInfo.getStoreEntityList()) {
+							if (StringUtil.isEmpty(role.getOid())) {
+								//Roleの追加
+								String oid = em.insert(role);
+								insertCount++;
+								role.setOid(oid);
 
-						//Roleを追加時はConditionも無条件で追加
-						Entity[] insertCondition = role.getValue("condition");
-						if (insertCondition != null) {
-							for (Entity condition : insertCondition) {
-								condition.setValue("role", role);
-								em.insert(condition);
-							}
-						}
-					} else {
-						//Roleの更新
-						Entity storedRole = em.load(role.getOid(), "mtp.auth.Role", new LoadOption(false, false));
-						if (storedRole != null) {
-							role.setVersion(storedRole.getVersion());
-						}
-						if (roleOption == null) {
-							roleOption = UpdateOption.allPropertyUpdateOption("mtp.auth.Role", false);
-						}
-						em.update(role, roleOption);
-						updateCount++;
-
-						//登録済のRoleConditionの取得
-						List<Entity> storedConditionList = getRoleCondition(role.getOid());
-						//更新対象のRoleConditionの取得
-						Entity[] updateConditionList = role.getValue("condition");
-
-						//RoleConditionの追加または更新処理
-						if (updateConditionList != null) {
-							for (Entity condition : updateConditionList) {
-								condition.setValue("role", role);
-								if (condition.getOid() == null) {
-									//追加
-									em.insert(condition);
-								} else {
-									boolean isExists = false;
-									UpdateOption conditionOption = null;
-									for (Entity storedCondition : storedConditionList) {
-										if (condition.getOid().equals(storedCondition.getOid())) {
-											//更新
-											isExists = true;
-											condition.setVersion(storedCondition.getVersion());
-											if (conditionOption == null) {
-												conditionOption = UpdateOption.allPropertyUpdateOption("mtp.auth.RoleCondition", false);
-											}
-											em.update(condition, conditionOption);
-											break;
-										}
-									}
-									if (!isExists) {
-										//念のため追加
+								//Roleを追加時はConditionも無条件で追加
+								Entity[] insertCondition = role.getValue("condition");
+								if (insertCondition != null) {
+									for (Entity condition : insertCondition) {
+										condition.setValue("role", role);
 										em.insert(condition);
 									}
 								}
-							}
-						}
+							} else {
+								//Roleの更新
+								Entity storedRole = em.load(role.getOid(), "mtp.auth.Role", new LoadOption(false, false));
+								if (storedRole != null) {
+									role.setVersion(storedRole.getVersion());
+								}
+								if (roleOption == null) {
+									roleOption = UpdateOption.allPropertyUpdateOption("mtp.auth.Role", false);
+								}
+								em.update(role, roleOption);
+								updateCount++;
 
-						//RoleConditionの削除処理
-						for (Entity storedCondition : storedConditionList) {
-							boolean isExists = false;
-							if (updateConditionList != null) {
-								for (Entity condition : updateConditionList) {
-									if (storedCondition.getOid().equals(condition.getOid())) {
-										isExists = true;
-										break;
+								//登録済のRoleConditionの取得
+								List<Entity> storedConditionList = getRoleCondition(role.getOid());
+								//更新対象のRoleConditionの取得
+								Entity[] updateConditionList = role.getValue("condition");
+
+								//RoleConditionの追加または更新処理
+								if (updateConditionList != null) {
+									for (Entity condition : updateConditionList) {
+										condition.setValue("role", role);
+										if (condition.getOid() == null) {
+											//追加
+											em.insert(condition);
+										} else {
+											boolean isExists = false;
+											UpdateOption conditionOption = null;
+											for (Entity storedCondition : storedConditionList) {
+												if (condition.getOid()
+														.equals(storedCondition.getOid())) {
+													//更新
+													isExists = true;
+													condition.setVersion(storedCondition.getVersion());
+													if (conditionOption == null) {
+														conditionOption = UpdateOption.allPropertyUpdateOption("mtp.auth.RoleCondition", false);
+													}
+													em.update(condition, conditionOption);
+													break;
+												}
+											}
+											if (!isExists) {
+												//念のため追加
+												em.insert(condition);
+											}
+										}
+									}
+								}
+
+								//RoleConditionの削除処理
+								for (Entity storedCondition : storedConditionList) {
+									boolean isExists = false;
+									if (updateConditionList != null) {
+										for (Entity condition : updateConditionList) {
+											if (storedCondition.getOid()
+													.equals(condition.getOid())) {
+												isExists = true;
+												break;
+											}
+										}
+									}
+									if (!isExists) {
+										em.delete(storedCondition, new DeleteOption(false));
 									}
 								}
 							}
-							if (!isExists) {
-								em.delete(storedCondition, new DeleteOption(false));
-							}
 						}
+
+						//Roleの削除
+						for (String oid : storeInfo.getRemoveOidList()) {
+							Entity delRole = em.load(oid, "mtp.auth.Role");
+							if (delRole != null) {
+								em.delete(delRole, new DeleteOption(false));
+								deleteCount++;
+							}
+							//FIXME RoleCondition、各種RolePermissionは削除必要？
+						}
+
+						logger.debug("role update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
+						return null;
 					}
-				}
 
-				//Roleの削除
-				for (String oid: storeInfo.getRemoveOidList()) {
-					Entity delRole = em.load(oid, "mtp.auth.Role");
-					if (delRole != null) {
-						em.delete(delRole, new DeleteOption(false));
-						deleteCount++;
-					}
-					//FIXME RoleCondition、各種RolePermissionは削除必要？
-				}
-
-				logger.debug("role update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
-				return null;
-			}
-
-		});
+				});
 
 	}
 
@@ -239,360 +248,368 @@ public class PermissionExplorerServiceImpl extends XsrfProtectedServiceServlet i
 	private List<Entity> getRoleCondition(String roleOid) {
 		Query query = new Query();
 		query.select(Entity.OID, Entity.VERSION)
-			.from("mtp.auth.RoleCondition")
-			.where(new Equals("role.oid", roleOid));
-		return em.searchEntity(query).getList();
+				.from("mtp.auth.RoleCondition")
+				.where(new Equals("role.oid", roleOid));
+		return em.searchEntity(query)
+				.getList();
 	}
 
 	@Override
 	public PermissionSearchResult getAllEntityPermissionData(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<PermissionSearchResult>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<PermissionSearchResult>() {
 
-			@Override
-			public PermissionSearchResult call() {
+					@Override
+					public PermissionSearchResult call() {
 
-				// EntityDefinitionデータ
-				List<DefinitionSummary> definitionNmaeList = edm.definitionNameList();
+						// EntityDefinitionデータ
+						List<DefinitionSummary> definitionNmaeList = edm.definitionNameList();
 
-				// EntityPermissionデータ
-				Query query = new Query();
-				query.select("oid", "name", "description", "version", "updateDate",
-						"role.code", "role.name",
-						"targetEntity",
-						"canCreate", "createCondition", "createPropertyControlType", "createPropertyList",
-						"canReference", "referenceCondition", "referencePropertyControlType", "referencePropertyList",
-						"canUpdate", "updateCondition", "updatePropertyControlType", "updatePropertyList",
-						"canDelete", "deleteCondition")
-						.from("mtp.auth.EntityPermission")
-						.order(new SortSpec("targetEntity", SortType.ASC),
-								new SortSpec("role.code", SortType.ASC));
+						// EntityPermissionデータ
+						Query query = new Query();
+						query.select("oid", "name", "description", "version", "updateDate",
+								"role.code", "role.name",
+								"targetEntity",
+								"canCreate", "createCondition", "createPropertyControlType", "createPropertyList",
+								"canReference", "referenceCondition", "referencePropertyControlType", "referencePropertyList",
+								"canUpdate", "updateCondition", "updatePropertyControlType", "updatePropertyList",
+								"canDelete", "deleteCondition")
+								.from("mtp.auth.EntityPermission")
+								.order(new SortSpec("targetEntity", SortType.ASC),
+										new SortSpec("role.code", SortType.ASC));
 
-				SearchResult<Entity> searchResult = em.searchEntity(query);
+						SearchResult<Entity> searchResult = em.searchEntity(query);
 
-				List<PermissionInfo> permissionList = new ArrayList<PermissionInfo>();
+						List<PermissionInfo> permissionList = new ArrayList<PermissionInfo>();
 
-				for (DefinitionSummary definitionNmae : definitionNmaeList) {
-					PermissionInfo permissionInfo = new PermissionInfo();
-					String definitionName = definitionNmae.getName();
+						for (DefinitionSummary definitionNmae : definitionNmaeList) {
+							PermissionInfo permissionInfo = new PermissionInfo();
+							String definitionName = definitionNmae.getName();
 
-					permissionInfo.setDefinitionName(definitionName);
-					permissionInfo.setDisplayName(definitionNmae.getDisplayName());
+							permissionInfo.setDefinitionName(definitionName);
+							permissionInfo.setDisplayName(definitionNmae.getDisplayName());
 
-					List<RolePermissionInfo> rolePermissionList = new ArrayList<>();
-					for (Entity permission : searchResult.getList()) {
-						if (definitionName.equals(permission.getValue("targetEntity"))) {
-							RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
-							rolePermissionInfo.setPermission(permission);
-							rolePermissionList.add(rolePermissionInfo);
+							List<RolePermissionInfo> rolePermissionList = new ArrayList<>();
+							for (Entity permission : searchResult.getList()) {
+								if (definitionName.equals(permission.getValue("targetEntity"))) {
+									RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
+									rolePermissionInfo.setPermission(permission);
+									rolePermissionList.add(rolePermissionInfo);
+								}
+							}
+							permissionInfo.setRolePermissionList(rolePermissionList);
+
+							permissionList.add(permissionInfo);
 						}
+
+						PermissionSearchResult result = new PermissionSearchResult();
+						result.setPermissionList(permissionList);
+						return result;
 					}
-					permissionInfo.setRolePermissionList(rolePermissionList);
-
-					permissionList.add(permissionInfo);
-				}
-
-				PermissionSearchResult result = new PermissionSearchResult();
-				result.setPermissionList(permissionList);
-				return result;
-			}
-		});
+				});
 	}
 
 	@Override
 	public void updateEntityPermissionData(int tenantId, final List<PermissionInfo> permissionList) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
+					@Override
+					public Void call() {
 
-				int insertCount = 0;
-				int updateCount = 0;
-				int deleteCount = 0;
+						int insertCount = 0;
+						int updateCount = 0;
+						int deleteCount = 0;
 
-				UpdateOption updateOption = null;
-				DeleteOption deleteOption = null;
-				for (PermissionInfo permissionInfo : permissionList) {
-					if (permissionInfo.getRolePermissionList() != null) {
-						for (RolePermissionInfo rolePermissionInfo : permissionInfo.getRolePermissionList()) {
-							if (RolePermissionInfo.INSERT.equals(rolePermissionInfo.getStatus())) {
-								em.insert(rolePermissionInfo.getPermission());
-								insertCount++;
-							} else if (RolePermissionInfo.UPDATE.equals(rolePermissionInfo.getStatus())) {
-								if (updateOption == null) {
-									updateOption = new UpdateOption();
-									updateOption.setUpdateProperties(
-											"name", "description",
-											"canReference", "referenceCondition", "referencePropertyControlType", "referencePropertyList",
-											"canCreate", "createCondition", "createPropertyControlType", "createPropertyList",
-											"canUpdate", "updateCondition", "updatePropertyControlType", "updatePropertyList",
-											"canDelete", "deleteCondition"
-											);
+						UpdateOption updateOption = null;
+						DeleteOption deleteOption = null;
+						for (PermissionInfo permissionInfo : permissionList) {
+							if (permissionInfo.getRolePermissionList() != null) {
+								for (RolePermissionInfo rolePermissionInfo : permissionInfo.getRolePermissionList()) {
+									if (RolePermissionInfo.INSERT.equals(rolePermissionInfo.getStatus())) {
+										em.insert(rolePermissionInfo.getPermission());
+										insertCount++;
+									} else if (RolePermissionInfo.UPDATE.equals(rolePermissionInfo.getStatus())) {
+										if (updateOption == null) {
+											updateOption = new UpdateOption();
+											updateOption.setUpdateProperties(
+													"name", "description",
+													"canReference", "referenceCondition", "referencePropertyControlType", "referencePropertyList",
+													"canCreate", "createCondition", "createPropertyControlType", "createPropertyList",
+													"canUpdate", "updateCondition", "updatePropertyControlType", "updatePropertyList",
+													"canDelete", "deleteCondition");
+										}
+										em.update(rolePermissionInfo.getPermission(), updateOption);
+										updateCount++;
+									} else if (RolePermissionInfo.DELETE.equals(rolePermissionInfo.getStatus())) {
+										if (deleteOption == null) {
+											deleteOption = new DeleteOption(true);
+										}
+										em.delete(rolePermissionInfo.getPermission(), deleteOption);
+										deleteCount++;
+									}
 								}
-								em.update(rolePermissionInfo.getPermission(), updateOption);
-								updateCount++;
-							} else if (RolePermissionInfo.DELETE.equals(rolePermissionInfo.getStatus())) {
-								if (deleteOption == null) {
-									deleteOption = new DeleteOption(true);
-								}
-								em.delete(rolePermissionInfo.getPermission(), deleteOption);
-								deleteCount++;
 							}
 						}
-					}
-				}
 
-				logger.debug("entity permission update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
-				return null;
-			}
-		});
+						logger.debug(
+								"entity permission update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public PermissionSearchResult getAllActionPermissionData(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<PermissionSearchResult>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<PermissionSearchResult>() {
 
-			@Override
-			public PermissionSearchResult call() {
+					@Override
+					public PermissionSearchResult call() {
 
-				// WorkflowDefinitionデータ
-				List<DefinitionSummary> definitionNmaeList = adm.definitionSummaryList();
+						// WorkflowDefinitionデータ
+						List<DefinitionSummary> definitionNmaeList = adm.definitionSummaryList();
 
-				// WorkflowPermissionデータ
-				Query query = new Query();
-				query.select("oid", "name", "description", "version", "updateDate",
-						"role.code", "role.name",
-						"targetAction",
-						"conditionExpression")
-					.from("mtp.auth.ActionPermission")
-					.order(new SortSpec("targetAction", SortType.ASC), new SortSpec("role.code", SortType.ASC));
+						// WorkflowPermissionデータ
+						Query query = new Query();
+						query.select("oid", "name", "description", "version", "updateDate",
+								"role.code", "role.name",
+								"targetAction",
+								"conditionExpression")
+								.from("mtp.auth.ActionPermission")
+								.order(new SortSpec("targetAction", SortType.ASC), new SortSpec("role.code", SortType.ASC));
 
-				SearchResult<Entity> searchResult = em.searchEntity(query);
+						SearchResult<Entity> searchResult = em.searchEntity(query);
 
-				List<PermissionInfo> permissionList = new ArrayList<PermissionInfo>();
+						List<PermissionInfo> permissionList = new ArrayList<PermissionInfo>();
 
-				for (DefinitionSummary definitionNmae : definitionNmaeList) {
-					PermissionInfo permissionInfo = new PermissionInfo();
-					String definitionName = definitionNmae.getName();
+						for (DefinitionSummary definitionNmae : definitionNmaeList) {
+							PermissionInfo permissionInfo = new PermissionInfo();
+							String definitionName = definitionNmae.getName();
 
-					permissionInfo.setDefinitionName(definitionName);
-					permissionInfo.setDisplayName(definitionNmae.getDisplayName());
+							permissionInfo.setDefinitionName(definitionName);
+							permissionInfo.setDisplayName(definitionNmae.getDisplayName());
 
-					List<RolePermissionInfo> rolePermissionList = new ArrayList<>();
-					for (Entity permission : searchResult.getList()) {
-						if (definitionName.equals(permission.getValue("targetAction"))) {
-							RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
-							rolePermissionInfo.setPermission(permission);
-							rolePermissionList.add(rolePermissionInfo);
+							List<RolePermissionInfo> rolePermissionList = new ArrayList<>();
+							for (Entity permission : searchResult.getList()) {
+								if (definitionName.equals(permission.getValue("targetAction"))) {
+									RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
+									rolePermissionInfo.setPermission(permission);
+									rolePermissionList.add(rolePermissionInfo);
+								}
+							}
+							permissionInfo.setRolePermissionList(rolePermissionList);
+							permissionList.add(permissionInfo);
 						}
-					}
-					permissionInfo.setRolePermissionList(rolePermissionList);
-					permissionList.add(permissionInfo);
-				}
 
-				Map<String, PermissionInfo> wildCardPermissionMap = new HashMap<>();
+						Map<String, PermissionInfo> wildCardPermissionMap = new HashMap<>();
 
-				for (Entity permission : searchResult.getList()) {
-					String targetAction = permission.getValue("targetAction");
+						for (Entity permission : searchResult.getList()) {
+							String targetAction = permission.getValue("targetAction");
 
-					if (targetAction.endsWith("*")) {
-						PermissionInfo permissionInfo = wildCardPermissionMap.get(targetAction);
-						if (permissionInfo == null) {
-							permissionInfo = new PermissionInfo();
-							permissionInfo.setDefinitionName(targetAction);
-							permissionInfo.setDisplayName(targetAction);
-							wildCardPermissionMap.put(targetAction, permissionInfo);
+							if (targetAction.endsWith("*")) {
+								PermissionInfo permissionInfo = wildCardPermissionMap.get(targetAction);
+								if (permissionInfo == null) {
+									permissionInfo = new PermissionInfo();
+									permissionInfo.setDefinitionName(targetAction);
+									permissionInfo.setDisplayName(targetAction);
+									wildCardPermissionMap.put(targetAction, permissionInfo);
+								}
+								RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
+								rolePermissionInfo.setPermission(permission);
+								permissionInfo.addRolePermission(rolePermissionInfo);
+							}
 						}
-						RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
-						rolePermissionInfo.setPermission(permission);
-						permissionInfo.addRolePermission(rolePermissionInfo);
-					}
-				}
 
-				PermissionSearchResult result = new PermissionSearchResult();
-				result.setPermissionList(permissionList);
-				if (wildCardPermissionMap.values() != null) {
-					result.setWildCardPermissionList(new ArrayList<>(wildCardPermissionMap.values()));
-				}
-				return result;
-			}
-		});
+						PermissionSearchResult result = new PermissionSearchResult();
+						result.setPermissionList(permissionList);
+						if (wildCardPermissionMap.values() != null) {
+							result.setWildCardPermissionList(new ArrayList<>(wildCardPermissionMap.values()));
+						}
+						return result;
+					}
+				});
 	}
 
 	@Override
 	public void updateActionPermissionData(int tenantId, final List<PermissionInfo> permissionList) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
+					@Override
+					public Void call() {
 
-				int insertCount = 0;
-				int updateCount = 0;
-				int deleteCount = 0;
+						int insertCount = 0;
+						int updateCount = 0;
+						int deleteCount = 0;
 
-				UpdateOption updateOption = null;
-				DeleteOption deleteOption = null;
-				for (PermissionInfo permissionInfo : permissionList) {
-					if (permissionInfo.getRolePermissionList() != null) {
-						for (RolePermissionInfo rolePermissionInfo : permissionInfo.getRolePermissionList()) {
-							if (RolePermissionInfo.INSERT.equals(rolePermissionInfo.getStatus())) {
-								em.insert(rolePermissionInfo.getPermission());
-								insertCount++;
-							} else if (RolePermissionInfo.UPDATE.equals(rolePermissionInfo.getStatus())) {
-								if (updateOption == null) {
-									updateOption = new UpdateOption();
-									updateOption.setUpdateProperties(
-											"name", "description",
-											"conditionExpression"
-											);
+						UpdateOption updateOption = null;
+						DeleteOption deleteOption = null;
+						for (PermissionInfo permissionInfo : permissionList) {
+							if (permissionInfo.getRolePermissionList() != null) {
+								for (RolePermissionInfo rolePermissionInfo : permissionInfo.getRolePermissionList()) {
+									if (RolePermissionInfo.INSERT.equals(rolePermissionInfo.getStatus())) {
+										em.insert(rolePermissionInfo.getPermission());
+										insertCount++;
+									} else if (RolePermissionInfo.UPDATE.equals(rolePermissionInfo.getStatus())) {
+										if (updateOption == null) {
+											updateOption = new UpdateOption();
+											updateOption.setUpdateProperties(
+													"name", "description",
+													"conditionExpression");
+										}
+										em.update(rolePermissionInfo.getPermission(), updateOption);
+										updateCount++;
+									} else if (RolePermissionInfo.DELETE.equals(rolePermissionInfo.getStatus())) {
+										if (deleteOption == null) {
+											deleteOption = new DeleteOption(true);
+										}
+										em.delete(rolePermissionInfo.getPermission(), deleteOption);
+										deleteCount++;
+									}
 								}
-								em.update(rolePermissionInfo.getPermission(), updateOption);
-								updateCount++;
-							} else if (RolePermissionInfo.DELETE.equals(rolePermissionInfo.getStatus())) {
-								if (deleteOption == null) {
-									deleteOption = new DeleteOption(true);
-								}
-								em.delete(rolePermissionInfo.getPermission(), deleteOption);
-								deleteCount++;
 							}
 						}
-					}
-				}
 
-				logger.debug("action permission update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
-				return null;
-			}
-		});
+						logger.debug(
+								"action permission update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public PermissionSearchResult getAllWebApiPermissionData(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<PermissionSearchResult>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<PermissionSearchResult>() {
 
-			@Override
-			public PermissionSearchResult call() {
+					@Override
+					public PermissionSearchResult call() {
 
-				// WorkflowDefinitionデータ
-				List<DefinitionSummary> definitionNmaeList = wadm.definitionSummaryList();
+						// WorkflowDefinitionデータ
+						List<DefinitionSummary> definitionNmaeList = wadm.definitionSummaryList();
 
-				// WorkflowPermissionデータ
-				Query query = new Query();
-				query.select("oid", "name", "description", "version", "updateDate",
-						"role.code", "role.name",
-						"targetWebApi",
-						"conditionExpression")
-					.from("mtp.auth.WebApiPermission")
-					.order(new SortSpec("targetWebApi", SortType.ASC), new SortSpec("role.code", SortType.ASC));
+						// WorkflowPermissionデータ
+						Query query = new Query();
+						query.select("oid", "name", "description", "version", "updateDate",
+								"role.code", "role.name",
+								"targetWebApi",
+								"conditionExpression")
+								.from("mtp.auth.WebApiPermission")
+								.order(new SortSpec("targetWebApi", SortType.ASC), new SortSpec("role.code", SortType.ASC));
 
-				SearchResult<Entity> searchResult = em.searchEntity(query);
+						SearchResult<Entity> searchResult = em.searchEntity(query);
 
-				List<PermissionInfo> permissionList = new ArrayList<PermissionInfo>();
+						List<PermissionInfo> permissionList = new ArrayList<PermissionInfo>();
 
-				for (DefinitionSummary definitionNmae : definitionNmaeList) {
-					PermissionInfo permissionInfo = new PermissionInfo();
-					String definitionName = definitionNmae.getName();
+						for (DefinitionSummary definitionNmae : definitionNmaeList) {
+							PermissionInfo permissionInfo = new PermissionInfo();
+							String definitionName = definitionNmae.getName();
 
-					permissionInfo.setDefinitionName(definitionName);
-					permissionInfo.setDisplayName(definitionNmae.getDisplayName());
+							permissionInfo.setDefinitionName(definitionName);
+							permissionInfo.setDisplayName(definitionNmae.getDisplayName());
 
-					List<RolePermissionInfo> rolePermissionList = new ArrayList<>();
-					for (Entity permission : searchResult.getList()) {
-						if (definitionName.equals(permission.getValue("targetWebApi"))) {
-							RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
-							rolePermissionInfo.setPermission(permission);
-							rolePermissionList.add(rolePermissionInfo);
+							List<RolePermissionInfo> rolePermissionList = new ArrayList<>();
+							for (Entity permission : searchResult.getList()) {
+								if (definitionName.equals(permission.getValue("targetWebApi"))) {
+									RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
+									rolePermissionInfo.setPermission(permission);
+									rolePermissionList.add(rolePermissionInfo);
+								}
+							}
+							permissionInfo.setRolePermissionList(rolePermissionList);
+							permissionList.add(permissionInfo);
 						}
-					}
-					permissionInfo.setRolePermissionList(rolePermissionList);
-					permissionList.add(permissionInfo);
-				}
 
-				Map<String, PermissionInfo> wildCardPermissionMap = new HashMap<>();
+						Map<String, PermissionInfo> wildCardPermissionMap = new HashMap<>();
 
-				for (Entity permission : searchResult.getList()) {
-					String targetAction = permission.getValue("targetWebApi");
+						for (Entity permission : searchResult.getList()) {
+							String targetAction = permission.getValue("targetWebApi");
 
-					if (targetAction.endsWith("*")) {
-						PermissionInfo permissionInfo = wildCardPermissionMap.get(targetAction);
-						if (permissionInfo == null) {
-							permissionInfo = new PermissionInfo();
-							permissionInfo.setDefinitionName(targetAction);
-							permissionInfo.setDisplayName(targetAction);
-							wildCardPermissionMap.put(targetAction, permissionInfo);
+							if (targetAction.endsWith("*")) {
+								PermissionInfo permissionInfo = wildCardPermissionMap.get(targetAction);
+								if (permissionInfo == null) {
+									permissionInfo = new PermissionInfo();
+									permissionInfo.setDefinitionName(targetAction);
+									permissionInfo.setDisplayName(targetAction);
+									wildCardPermissionMap.put(targetAction, permissionInfo);
+								}
+								RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
+								rolePermissionInfo.setPermission(permission);
+								permissionInfo.addRolePermission(rolePermissionInfo);
+							}
 						}
-						RolePermissionInfo rolePermissionInfo = new RolePermissionInfo();
-						rolePermissionInfo.setPermission(permission);
-						permissionInfo.addRolePermission(rolePermissionInfo);
-					}
-				}
 
-				PermissionSearchResult result = new PermissionSearchResult();
-				result.setPermissionList(permissionList);
-				if (wildCardPermissionMap.values() != null) {
-					result.setWildCardPermissionList(new ArrayList<>(wildCardPermissionMap.values()));
-				}
-				return result;
-			}
-		});
+						PermissionSearchResult result = new PermissionSearchResult();
+						result.setPermissionList(permissionList);
+						if (wildCardPermissionMap.values() != null) {
+							result.setWildCardPermissionList(new ArrayList<>(wildCardPermissionMap.values()));
+						}
+						return result;
+					}
+				});
 	}
 
 	@Override
 	public void updateWebApiPermissionData(int tenantId, final List<PermissionInfo> permissionList) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
+					@Override
+					public Void call() {
 
-				int insertCount = 0;
-				int updateCount = 0;
-				int deleteCount = 0;
+						int insertCount = 0;
+						int updateCount = 0;
+						int deleteCount = 0;
 
-				UpdateOption updateOption = null;
-				DeleteOption deleteOption = null;
-				for (PermissionInfo permissionInfo : permissionList) {
-					if (permissionInfo.getRolePermissionList() != null) {
-						for (RolePermissionInfo rolePermissionInfo : permissionInfo.getRolePermissionList()) {
-							if (RolePermissionInfo.INSERT.equals(rolePermissionInfo.getStatus())) {
-								em.insert(rolePermissionInfo.getPermission());
-								insertCount++;
-							} else if (RolePermissionInfo.UPDATE.equals(rolePermissionInfo.getStatus())) {
-								if (updateOption == null) {
-									updateOption = new UpdateOption();
-									updateOption.setUpdateProperties(
-											"name", "description",
-											"conditionExpression"
-											);
+						UpdateOption updateOption = null;
+						DeleteOption deleteOption = null;
+						for (PermissionInfo permissionInfo : permissionList) {
+							if (permissionInfo.getRolePermissionList() != null) {
+								for (RolePermissionInfo rolePermissionInfo : permissionInfo.getRolePermissionList()) {
+									if (RolePermissionInfo.INSERT.equals(rolePermissionInfo.getStatus())) {
+										em.insert(rolePermissionInfo.getPermission());
+										insertCount++;
+									} else if (RolePermissionInfo.UPDATE.equals(rolePermissionInfo.getStatus())) {
+										if (updateOption == null) {
+											updateOption = new UpdateOption();
+											updateOption.setUpdateProperties(
+													"name", "description",
+													"conditionExpression");
+										}
+										em.update(rolePermissionInfo.getPermission(), updateOption);
+										updateCount++;
+									} else if (RolePermissionInfo.DELETE.equals(rolePermissionInfo.getStatus())) {
+										if (deleteOption == null) {
+											deleteOption = new DeleteOption(true);
+										}
+										em.delete(rolePermissionInfo.getPermission(), deleteOption);
+										deleteCount++;
+									}
 								}
-								em.update(rolePermissionInfo.getPermission(), updateOption);
-								updateCount++;
-							} else if (RolePermissionInfo.DELETE.equals(rolePermissionInfo.getStatus())) {
-								if (deleteOption == null) {
-									deleteOption = new DeleteOption(true);
-								}
-								em.delete(rolePermissionInfo.getPermission(), deleteOption);
-								deleteCount++;
 							}
 						}
-					}
-				}
 
-				logger.debug("webapi permission update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
-				return null;
-			}
-		});
+						logger.debug(
+								"webapi permission update completed. insert:" + insertCount + ", update:" + updateCount + ", delete:" + deleteCount);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public void dummyConnect(int tenantId) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				return null;
-			}
-		});
+					@Override
+					public Void call() {
+						return null;
+					}
+				});
 	}
 
 }

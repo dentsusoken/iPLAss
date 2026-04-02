@@ -27,12 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
-
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.RequestContextWrapper;
@@ -54,7 +48,11 @@ import org.iplass.mtp.web.template.definition.GroovyTemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
 import groovy.lang.MissingPropertyException;
-
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 public class MetaGroovyTemplate extends MetaTemplate {
 
@@ -107,9 +105,13 @@ public class MetaGroovyTemplate extends MetaTemplate {
 	private GroovyTemplate compileScript(String source) {
 		if (source != null) {
 			//TODO 全部"_"へ変換しているがこれでよい？
-			String templateName = "_" + getId().replace("-", "_").replace("/", "_").replace(".", "_");
-			TenantContext tenantContext = ExecuteContext.getCurrentContext().getTenantContext();
-			return GroovyTemplateCompiler.compile(source, templateName, WebGTmplBase.class.getName(), (GroovyScriptEngine) tenantContext.getScriptEngine());
+			String templateName = "_" + getId().replace("-", "_")
+					.replace("/", "_")
+					.replace(".", "_");
+			TenantContext tenantContext = ExecuteContext.getCurrentContext()
+					.getTenantContext();
+			return GroovyTemplateCompiler.compile(source, templateName, WebGTmplBase.class.getName(),
+					(GroovyScriptEngine) tenantContext.getScriptEngine());
 		}
 		return null;
 	}
@@ -151,7 +153,8 @@ public class MetaGroovyTemplate extends MetaTemplate {
 			checkState();
 
 			GroovyTemplate _template = template;
-			String lang = ExecuteContext.getCurrentContext().getLanguage();
+			String lang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 
 			if (templateMap.get(lang) != null) {
 				_template = templateMap.get(lang);
@@ -260,7 +263,8 @@ public class MetaGroovyTemplate extends MetaTemplate {
 			} catch (MissingPropertyException e) {
 				Object val = reqCon.getAttribute(name);
 				if (val == null && reqCon.getSession(false) != null) {
-					val = reqCon.getSession(false).getAttribute(name);
+					val = reqCon.getSession(false)
+							.getAttribute(name);
 				}
 				if (val == null) {
 					throw e;
@@ -276,7 +280,8 @@ public class MetaGroovyTemplate extends MetaTemplate {
 				ret = reqCon.getAttribute(name) != null;
 			}
 			if (!ret && reqCon.getSession(false) != null) {
-				ret = reqCon.getSession(false).getAttribute(name) != null;
+				ret = reqCon.getSession(false)
+						.getAttribute(name) != null;
 			}
 			return ret;
 		}

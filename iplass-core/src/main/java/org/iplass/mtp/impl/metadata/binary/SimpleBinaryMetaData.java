@@ -44,12 +44,13 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 	private byte[] inMemory;
 	private Path tempPath;
 	private volatile SoftReference<byte[]> cache;
-	
-	protected BinaryMetaDataService service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
-	
+
+	protected BinaryMetaDataService service = ServiceRegistry.getRegistry()
+			.getService(BinaryMetaDataService.class);
+
 	public SimpleBinaryMetaData() {
 	}
-	
+
 	public SimpleBinaryMetaData(String name) {
 		this.name = name;
 	}
@@ -62,7 +63,7 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't copy BinaryMetaData's source/tempFile:" + source + "/" + tempPath, e);
 		}
 	}
-	
+
 	public SimpleBinaryMetaData(BinaryDefinition def) {
 		this.name = def.getName();
 		try (OutputStream os = getOutputStream();
@@ -72,7 +73,7 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't copy BinaryMetaData's definition/tempFile:" + def.getName() + "/" + tempPath, e);
 		}
 	}
-	
+
 	@Override
 	public BinaryDefinition currentConfig() {
 		return new RefBinaryDefinition(this);
@@ -81,12 +82,12 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 	public Path getTempPath() {
 		return tempPath;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public long getSize() {
 		return size;
@@ -97,7 +98,7 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 		if (inMemory != null) {
 			return new ByteArrayInputStream(inMemory);
 		}
-		
+
 		SoftReference<byte[]> refCache = cache;
 		if (refCache != null) {
 			byte[] bd = refCache.get();
@@ -105,11 +106,11 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 				return new ByteArrayInputStream(bd);
 			}
 		}
-		
+
 		if (tempPath == null) {
 			return null;
 		}
-		
+
 		try {
 			if (size > service.getCacheMemoryThreshold()) {
 				return Files.newInputStream(tempPath);
@@ -121,7 +122,7 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 						throw new IOException("unmatch size:" + size + " != " + "Files.length:" + len);
 					}
 				}
-				
+
 				cache = new SoftReference<byte[]>(bd);
 				return new ByteArrayInputStream(bd);
 			}
@@ -129,7 +130,6 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't open/read BinaryMetaData's tempFile:" + tempPath, e);
 		}
 	}
-	
 
 	@Override
 	public OutputStream getOutputStream() {
@@ -139,7 +139,7 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't open/write BinaryMetaData's tempFile:" + tempPath, e);
 		}
 	}
-	
+
 	private Path initTempFile() throws IOException {
 		if (tempPath != null) {
 			Files.deleteIfExists(tempPath);
@@ -148,14 +148,15 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 		tempPath = Files.createTempFile(tempDir, "sbmd_", ".tmp");
 		return tempPath;
 	}
-	
+
 	private class SimpleBinaryMetaDataOutputStream extends FilterOutputStream {
-		
+
 		private boolean isInMemory;
 		private boolean flushed;
-		
+
 		private SimpleBinaryMetaDataOutputStream() throws IOException {
-			super(service.getKeepInMemoryThreshold() > 0 ? new ByteArrayOutputStream(service.getKeepInMemoryThreshold()): Files.newOutputStream(initTempFile()));
+			super(service.getKeepInMemoryThreshold() > 0 ? new ByteArrayOutputStream(service.getKeepInMemoryThreshold())
+					: Files.newOutputStream(initTempFile()));
 			isInMemory = service.getKeepInMemoryThreshold() > 0;
 		}
 
@@ -166,7 +167,7 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 			checkSize();
 			out.write(b);
 		}
-		
+
 		private void checkSize() throws IOException {
 			flushed = false;
 			if (isInMemory && size > service.getKeepInMemoryThreshold()) {
@@ -251,7 +252,8 @@ public class SimpleBinaryMetaData implements BinaryMetaData, Externalizable {
 	@Override
 	public void readExternal(ObjectInput in) throws IOException,
 			ClassNotFoundException {
-		service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(BinaryMetaDataService.class);
 		name = in.readUTF();
 		size = in.readLong();
 		if (service.getKeepInMemoryThreshold() < size) {

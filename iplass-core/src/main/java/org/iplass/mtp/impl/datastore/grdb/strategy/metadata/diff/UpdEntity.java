@@ -43,7 +43,6 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class UpdEntity extends Diff {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdEntity.class);
@@ -88,12 +87,13 @@ public class UpdEntity extends Diff {
 		List<MetaProperty> nextPropList = getEmptyListIfNull(nextEntity.getDeclaredPropertyList());
 		nextEntity.setDeclaredPropertyList(nextPropList);//TODO 空のListでMetaEntity側で初期化する？
 		List<MetaProperty> previousPropList = new ArrayList<MetaProperty>(getEmptyListIfNull(previousEntity.getDeclaredPropertyList()));
-		for (MetaProperty np: nextPropList) {
+		for (MetaProperty np : nextPropList) {
 			boolean isMatched = false;
 			Iterator<MetaProperty> ppIt = previousPropList.iterator();
 			while (ppIt.hasNext()) {
 				MetaProperty pp = ppIt.next();
-				if (pp.getId().equals(np.getId())) {
+				if (pp.getId()
+						.equals(np.getId())) {
 					isMatched = true;
 					addUpd(pp, np);
 					ppIt.remove();
@@ -105,7 +105,7 @@ public class UpdEntity extends Diff {
 			}
 		}
 
-		for (MetaProperty dp: previousPropList) {
+		for (MetaProperty dp : previousPropList) {
 			addDel(dp);
 		}
 	}
@@ -114,6 +114,7 @@ public class UpdEntity extends Diff {
 		DelProperty delP = new DelProperty(del);
 		propertyList.add(delP);
 	}
+
 	private void addIns(MetaProperty ins) {
 		if (ins instanceof MetaPrimitiveProperty) {
 			InsProperty insP = new InsProperty((MetaPrimitiveProperty) ins, nextEntity, colResolver, dataStore);
@@ -123,6 +124,7 @@ public class UpdEntity extends Diff {
 			propertyList.add(insR);
 		}
 	}
+
 	private void addUpd(MetaProperty pre, MetaProperty next) {
 		if (!pre.equals(next) || isMappingChanged(next.getId())) {
 			logger.debug("diff update (prev:{} next:{})", pre.getName(), next.getName());
@@ -140,18 +142,20 @@ public class UpdEntity extends Diff {
 			}
 		}
 	}
+
 	private boolean isMappingChanged(String propId) {
 		String preMappedCol = mappedColName((MetaSchemalessRdbStoreMapping) previousEntity.getStoreMapping(), propId);
 		String nextMappedCol = mappedColName((MetaSchemalessRdbStoreMapping) nextEntity.getStoreMapping(), propId);
 		return !preMappedCol.equals(nextMappedCol);
 	}
+
 	private String mappedColName(MetaSchemalessRdbStoreMapping map, String propId) {
 		if (map == null) {
 			return "";
 		} else {
 			List<MetaRdbColumnMapping> list = map.getColumnMappingList();
 			if (list != null) {
-				for (MetaRdbColumnMapping cm: list) {
+				for (MetaRdbColumnMapping cm : list) {
 					if (propId.equals(cm.getPropertyId())) {
 						return cm.getColumnName();
 					}
@@ -161,12 +165,11 @@ public class UpdEntity extends Diff {
 		}
 	}
 
-
 	@Override
 	public void applyToData(Statement stmt, RdbAdapter rdb, int tenantId) throws SQLException {
 		if (needDataModify()) {
 
-			ObjStoreMaintenanceSql sc =rdb.getUpdateSqlCreator(ObjStoreMaintenanceSql.class);
+			ObjStoreMaintenanceSql sc = rdb.getUpdateSqlCreator(ObjStoreMaintenanceSql.class);
 			MetaGRdbEntityStore storeDef = (MetaGRdbEntityStore) nextEntity.getEntityStoreDefinition();
 			String tableNamePostfixRuntime = dataStore.getTableNamePostfix(nextEntity.getName(), storeDef.getTableNamePostfix());
 
@@ -175,7 +178,8 @@ public class UpdEntity extends Diff {
 				//TODO ORA-01792の発生を防ぐように実装が必要。。。
 			case NO_SUPPORT:
 				//まずはpageNo=0を更新
-				List<ColCopy> ccl = colResolver.getColContext().getColCopyList(0);
+				List<ColCopy> ccl = colResolver.getColContext()
+						.getColCopyList(0);
 				stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
 				stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), 0, ccl, tableNamePostfixRuntime, rdb));
 
@@ -192,7 +196,8 @@ public class UpdEntity extends Diff {
 
 				//pageNo=1以降を更新
 				for (int i = 1; i <= nextPageNo; i++) {
-					ccl = colResolver.getColContext().getColCopyList(i);
+					ccl = colResolver.getColContext()
+							.getColCopyList(i);
 					if (ccl != null) {
 						stmt.executeUpdate(sc.updateCol(tenantId, nextEntity.getId(), storeDef.getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
 						stmt.executeUpdate(sc.updateColRB(tenantId, nextEntity.getId(), storeDef.getVersion(), i, ccl, tableNamePostfixRuntime, rdb));
@@ -219,7 +224,8 @@ public class UpdEntity extends Diff {
 				@SuppressWarnings("unchecked")
 				List<ColCopy>[] ccls = new List[nextPageNo + 1];
 				for (int i = 0; i <= nextPageNo; i++) {
-					ccls[i] = colResolver.getColContext().getColCopyList(i);
+					ccls[i] = colResolver.getColContext()
+							.getColCopyList(i);
 				}
 				stmt.executeUpdate(sc.updateColDirectJoin(tenantId, nextEntity.getId(), storeDef.getVersion(), ccls, tableNamePostfixRuntime, rdb));
 				stmt.executeUpdate(sc.updateColDirectJoinRB(tenantId, nextEntity.getId(), storeDef.getVersion(), ccls, tableNamePostfixRuntime, rdb));
@@ -229,7 +235,7 @@ public class UpdEntity extends Diff {
 			}
 
 			if (propertyList != null) {
-				for (Diff p: propertyList) {
+				for (Diff p : propertyList) {
 					p.applyToData(stmt, rdb, tenantId);
 				}
 			}
@@ -249,7 +255,8 @@ public class UpdEntity extends Diff {
 		MetaGRdbEntityStore nextStoreDef = colResolver.getMetaStore();
 		nextStoreDef.setVersion(preStoreDef.getVersion() + 1);
 
-		if (isNotForceRegenerateTableNamePostfix() && previousStorage.getStorageSpaceName().equals(storage.getStorageSpaceName())) {
+		if (isNotForceRegenerateTableNamePostfix() && previousStorage.getStorageSpaceName()
+				.equals(storage.getStorageSpaceName())) {
 			nextStoreDef.setTableNamePostfix(preStoreDef.getTableNamePostfix());
 		} else {
 			// 強制的なテーブル名接尾辞の再生成しないが false もしくは、ストレージスペース名が異なる場合
@@ -258,7 +265,7 @@ public class UpdEntity extends Diff {
 		nextEntity.setEntityStoreDefinition(nextStoreDef);
 
 		if (propertyList != null) {
-			for (Diff p: propertyList) {
+			for (Diff p : propertyList) {
 				p.modifyMetaData();
 			}
 		}
@@ -272,13 +279,14 @@ public class UpdEntity extends Diff {
 		if (nextPageNo > prePageNo) {
 			return true;
 		}
-		if (colResolver.getColContext().hasColCopy()) {
+		if (colResolver.getColContext()
+				.hasColCopy()) {
 			return true;
 		}
 
 		boolean isDataModify = false;
 		if (propertyList != null) {
-			for (Diff p: propertyList) {
+			for (Diff p : propertyList) {
 				isDataModify |= p.needDataModify();
 			}
 		}

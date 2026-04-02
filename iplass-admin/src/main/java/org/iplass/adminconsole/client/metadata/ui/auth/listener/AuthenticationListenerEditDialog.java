@@ -114,7 +114,8 @@ public class AuthenticationListenerEditDialog extends MtpDialog {
 	public void setDefinition(AccountNotificationListenerDefinition definition) {
 		this.curDefinition = definition;
 
-		slctTypeField.setValue(AuthenticationListenerType.valueOf(definition).name());
+		slctTypeField.setValue(AuthenticationListenerType.valueOf(definition)
+				.name());
 
 		if (typeEditPane != null) {
 			if (container.contains(typeEditPane)) {

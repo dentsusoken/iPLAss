@@ -26,7 +26,6 @@ import org.iplass.mtp.impl.fulltextsearch.sql.DeleteLogTable.Status;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class DeleteLogInsertSql extends UpdateSqlHandler {
 
 	public String toSql(int tenantId, String defId, String objId, long objVer, Status status, Timestamp sysdate, RdbAdapter rdb) {

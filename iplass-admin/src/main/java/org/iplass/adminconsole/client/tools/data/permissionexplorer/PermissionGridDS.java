@@ -53,6 +53,7 @@ public abstract class PermissionGridDS extends AbstractAdminDataSource {
 	}
 
 	public abstract String getColRoleCode(int col);
+
 	public abstract int getColRoleCodeIndex(int col);
 
 	protected void setDataSourceField() {
@@ -79,7 +80,7 @@ public abstract class PermissionGridDS extends AbstractAdminDataSource {
 		fields.addAll(codeFieldList);
 		fields.addAll(dataFieldList);
 
-		setFields(fields.toArray(new DataSourceField[]{}));
+		setFields(fields.toArray(new DataSourceField[] {}));
 	}
 
 	protected List<String> getRoleCodeList() {
@@ -99,7 +100,6 @@ public abstract class PermissionGridDS extends AbstractAdminDataSource {
 	public String getPermissionConfiguredSummaryText(Entity permission) {
 		return AdminClientMessageUtil.getString("datasource_tools_permissionexplorer_PermissionGridDS_configured");
 	}
-
 
 	public String getPermissionEditingSummaryText(Entity permission) {
 		return AdminClientMessageUtil.getString("datasource_tools_permissionexplorer_PermissionGridDS_editing");

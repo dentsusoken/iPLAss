@@ -78,7 +78,7 @@ public class MetaJasperReportType extends MetaReportType {
 
 	@Override
 	public void applyConfig(ReportType reportType) {
-		JasperReportType def = (JasperReportType)reportType;
+		JasperReportType def = (JasperReportType) reportType;
 		fillFrom(def);
 
 		if (def.getParamMap() != null) {
@@ -130,11 +130,11 @@ public class MetaJasperReportType extends MetaReportType {
 	public ReportTypeRuntime createRuntime() {
 		return new JasperReportTypeRuntime();
 	}
-	
+
 	public class JasperReportTypeRuntime extends ReportTypeRuntime {
 		public JasperReportTypeRuntime() {
 		}
-		
+
 		@Override
 		public MetaJasperReportType getMetaData() {
 			return MetaJasperReportType.this;
@@ -143,7 +143,7 @@ public class MetaJasperReportType extends MetaReportType {
 		@Override
 		public void setParam(ReportingOutputModel createOutputModel) {
 			JasperReportingOutputModel model = (JasperReportingOutputModel) createOutputModel;
-			
+
 			model.setDataSourceAttributeName(dataSourceAttributeName);
 			if (paramMap != null) {
 				model.setMaps(paramMap);

@@ -35,13 +35,13 @@ import org.iplass.mtp.spi.Config;
  * @author lisf06
  *
  */
-public class WebhookAuthTokenHandler extends AuthTokenHandler{
+public class WebhookAuthTokenHandler extends AuthTokenHandler {
 
 	public static final String BASIC_AUTHENTICATION_TYPE = "WHBA";
 	public static final String BEARER_AUTHENTICATION_TYPE = "WHBT";
 	public static final String HMAC_AUTHENTICATION_TYPE = "WHHM";
 	public static final String CUSTOM_AUTHENTICATION_TYPE = "WHCT";
-	public static final String TYPE_WEBHOOK_AUTHTOKEN_HANDLER="WEBHOOKATH";
+	public static final String TYPE_WEBHOOK_AUTHTOKEN_HANDLER = "WEBHOOKATH";
 
 	@Override
 	public void inited(AuthTokenService service, Config config) {
@@ -55,7 +55,7 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
 		info.setStartDate(authToken.getStartDate());
-		
+
 		return info;
 	}
 
@@ -64,15 +64,15 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 	 * 対応の認証の情報Stringを取得
 	 * basicはbase64(userName:Password)形式、そのまま使える
 	 * */
-	public String getSecret(final int tenantId,final String series,final String type) {
+	public String getSecret(final int tenantId, final String series, final String type) {
 		checkTypeValidity(type);
 		AuthToken token = authTokenStore().getBySeries(tenantId, type, series);
-		if(token ==null) {
+		if (token == null) {
 			return null;
 		}
 		return token.getToken();
 	}
-	
+
 	/**
 	 * raw data -> database
 	 * 外側でseries生成してください
@@ -83,7 +83,7 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		AuthToken token = new AuthToken(tenantId, type, metaDataId, series, tokenSecret, "", startDate, null);
 		authTokenStore().create(token);
 	}
-	
+
 	/**
 	 * raw data -> database
 	 */
@@ -94,7 +94,7 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		AuthToken newToken = new AuthToken(tenantId, typeCode, metaDataId, series, tokenSecret, "", startDate, null);
 		authTokenStore().update(newToken, oldToken);
 	}
-	
+
 	/**
 	 * raw data -> database
 	 * 特定のデータを削除する
@@ -103,6 +103,7 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		checkTypeValidity(typeCode);
 		authTokenStore().deleteBySeries(tenantId, typeCode, series);
 	}
+
 	/**
 	 * do not use
 	 * */

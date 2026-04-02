@@ -32,7 +32,7 @@ import org.iplass.mtp.command.RequestContext;
  *
  */
 public interface CustomTokenIntrospector {
-	
+
 	/**
 	 * introspectionリクエストのレスポンスをカスタマイズするよう実装します。
 	 * 

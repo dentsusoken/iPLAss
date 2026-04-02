@@ -30,17 +30,19 @@ import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManag
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebhookEndpointDefinition> implements WebhookEndpointDefinitionManager{
+public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebhookEndpointDefinition>
+		implements WebhookEndpointDefinitionManager {
 	private static final Logger logger = LoggerFactory.getLogger(WebhookEndpointDefinitionManager.class);
 	private WebhookEndpointService service;
-	
+
 	public WebhookEndpointDefinitionManagerImpl() {
-		this.service = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
+		this.service = ServiceRegistry.getRegistry()
+				.getService(WebhookEndpointService.class);
 	}
-	
+
 	@Override
 	public Class<WebhookEndpointDefinition> getDefinitionType() {
-		return WebhookEndpointDefinition.class; 
+		return WebhookEndpointDefinition.class;
 	}
 
 	/**
@@ -49,18 +51,20 @@ public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitio
 	@Override
 	public DefinitionModifyResult remove(String definitionName) {
 		WebhookEndpointDefinition definition = super.get(definitionName);
-		
+
 		WebhookEndpointService weps = (WebhookEndpointService) getService();
 		try {
 			weps.deleteSecurityTokenByDefinitionName(definition.getName());
 		} catch (Exception e) {
-			logger.warn("Exception occured while removing the data from Database for :"+definitionName+". Caused by: "+e.getCause()+". With following message : "+e.getCause().getMessage());
+			logger.warn("Exception occured while removing the data from Database for :" + definitionName + ". Caused by: " + e.getCause()
+					+ ". With following message : " + e.getCause()
+							.getMessage());
 			throw (RuntimeException) e;
 		}
-		
+
 		return super.remove(definitionName);
 	}
-	
+
 	/**
 	 * <p>updateToken</p> 
 	 *  トークンタイプ:WHHM,WHBT,WHBA
@@ -68,20 +72,20 @@ public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitio
 	 * */
 	@Override
 	public void modifySecurityToken(int tenantId, String definitionName, String secret, String tokenType) {
-		if(tokenType==null) {
+		if (tokenType == null) {
 			throw new RuntimeException("null TokenType");
 		}
-		if( WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE.equals(tokenType)){
-			service.updateHmacSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		if (WebhookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE.equals(tokenType)) {
+			service.updateHmacSecurityTokenByDefinitionName(tenantId, definitionName, secret);
 		}
-		if( WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE.equals(tokenType)){
-			service.updateBearerSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		if (WebhookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE.equals(tokenType)) {
+			service.updateBearerSecurityTokenByDefinitionName(tenantId, definitionName, secret);
 		}
-		if( WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE.equals(tokenType)){
-			service.updateBasicSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		if (WebhookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE.equals(tokenType)) {
+			service.updateBasicSecurityTokenByDefinitionName(tenantId, definitionName, secret);
 		}
-		if( WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE.equals(tokenType)){
-			service.updateCustomSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		if (WebhookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE.equals(tokenType)) {
+			service.updateCustomSecurityTokenByDefinitionName(tenantId, definitionName, secret);
 		}
 	}
 

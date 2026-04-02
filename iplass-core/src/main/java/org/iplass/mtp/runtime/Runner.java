@@ -36,7 +36,7 @@ import org.iplass.mtp.command.RequestContext;
  *
  */
 public interface Runner {
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 指定のテナントURLでロジックを実行するよう設定します。
@@ -48,7 +48,7 @@ public interface Runner {
 	 * @return
 	 */
 	public Runner withTenant(String tenantUrl);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 指定のテナントIDでロジックを実行するよう設定します。
@@ -60,7 +60,7 @@ public interface Runner {
 	 * @return
 	 */
 	public Runner withTenant(Integer tenantId);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 指定のcredentialでログインしてロジックを実行するよう設定します。
@@ -72,7 +72,7 @@ public interface Runner {
 	 * @return
 	 */
 	public Runner withAuth(Credential credential);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 指定の言語でロジックを実行するよう設定します。
@@ -84,8 +84,7 @@ public interface Runner {
 	 * @return
 	 */
 	public Runner withLang(String lang);
-	
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * ロジックを実行します。
@@ -96,7 +95,7 @@ public interface Runner {
 	 * @param r
 	 */
 	public void run(Runnable r);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * ロジックを実行します。
@@ -108,7 +107,7 @@ public interface Runner {
 	 * @return
 	 */
 	public <T> T run(Supplier<T> s);
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * CommandInvokerを経由して指定のcommandNameのCommandを実行します。
@@ -121,5 +120,5 @@ public interface Runner {
 	 * @return
 	 */
 	public String run(String commandName, RequestContext request);
-	
+
 }

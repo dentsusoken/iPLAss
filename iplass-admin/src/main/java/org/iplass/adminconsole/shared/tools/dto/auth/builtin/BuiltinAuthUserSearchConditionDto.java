@@ -32,7 +32,6 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	private int limit;
 	private int offset;
 
-
 	//-------------------------
 	//Specific
 	//-------------------------
@@ -59,14 +58,13 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 
 	private String directWhere;
 
-
-
 	/**
 	 * @return searchType
 	 */
 	public BuiltinAuthUserSearchType getSearchType() {
 		return searchType;
 	}
+
 	/**
 	 * @param searchType セットする searchType
 	 */
@@ -74,25 +72,27 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 		this.searchType = searchType;
 	}
 
-
 	/**
 	 * @return limit
 	 */
 	public int getLimit() {
 		return limit;
 	}
+
 	/**
 	 * @param limit セットする limit
 	 */
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
+
 	/**
 	 * @return offset
 	 */
 	public int getOffset() {
 		return offset;
 	}
+
 	/**
 	 * @param offset セットする offset
 	 */
@@ -100,14 +100,13 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 		this.offset = offset;
 	}
 
-
-
 	/**
 	 * @return specificType
 	 */
 	public BuiltinAuthUserSpecificType getSpecificType() {
 		return specificType;
 	}
+
 	/**
 	 * @param specificType セットする specificType
 	 */
@@ -118,6 +117,7 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	public String getLockedUserPolicyName() {
 		return lockedUserPolicyName;
 	}
+
 	public void setLockedUserPolicyName(String lockedUserPolicyName) {
 		this.lockedUserPolicyName = lockedUserPolicyName;
 	}
@@ -125,6 +125,7 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	public String getPasswordRemainDaysPolicyName() {
 		return passwordRemainDaysPolicyName;
 	}
+
 	public void setPasswordRemainDaysPolicyName(
 			String passwordRemainDaysPolicyName) {
 		this.passwordRemainDaysPolicyName = passwordRemainDaysPolicyName;
@@ -136,18 +137,21 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	public BuiltinAuthUserSearchOperator getPasswordRemainDaysOparator() {
 		return passwordRemainDaysOparator;
 	}
+
 	/**
 	 * @param passwordRemainDaysOparator セットする passwordRemainDaysOparator
 	 */
 	public void setPasswordRemainDaysOparator(BuiltinAuthUserSearchOperator passwordRemainDaysOparator) {
 		this.passwordRemainDaysOparator = passwordRemainDaysOparator;
 	}
+
 	/**
 	 * @return passwordRemainDays
 	 */
 	public int getPasswordRemainDays() {
 		return passwordRemainDays;
 	}
+
 	/**
 	 * @param passwordRemainDays セットする passwordRemainDays
 	 */
@@ -161,18 +165,21 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	public Date getLastLoginFrom() {
 		return lastLoginFrom;
 	}
+
 	/**
 	 * @param lastLoginFrom セットする lastLoginFrom
 	 */
 	public void setLastLoginFrom(Date lastLoginFrom) {
 		this.lastLoginFrom = lastLoginFrom;
 	}
+
 	/**
 	 * @return lastLoginTo
 	 */
 	public Date getLastLoginTo() {
 		return lastLoginTo;
 	}
+
 	/**
 	 * @param lastLoginTo セットする lastLoginTo
 	 */
@@ -180,39 +187,41 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 		this.lastLoginTo = lastLoginTo;
 	}
 
-
-
-
 	/**
 	 * @return accountId
 	 */
 	public String getAccountId() {
 		return accountId;
 	}
+
 	/**
 	 * @param accountId セットする accountId
 	 */
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 	}
+
 	/**
 	 * @return name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @param name セットする name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * @return mail
 	 */
 	public String getMail() {
 		return mail;
 	}
+
 	/**
 	 * @param mail セットする mail
 	 */
@@ -226,18 +235,21 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	public BuiltinAuthUserSearchOperator getValidTermRemainDaysOparator() {
 		return validTermRemainDaysOparator;
 	}
+
 	/**
 	 * @param validTermRemainDaysOparator セットする validTermRemainDaysOparator
 	 */
 	public void setValidTermRemainDaysOparator(BuiltinAuthUserSearchOperator validTermRemainDaysOparator) {
 		this.validTermRemainDaysOparator = validTermRemainDaysOparator;
 	}
+
 	/**
 	 * @return validTermRemainDays
 	 */
 	public int getValidTermRemainDays() {
 		return validTermRemainDays;
 	}
+
 	/**
 	 * @param validTermRemainDays セットする validTermRemainDays
 	 */
@@ -248,6 +260,7 @@ public class BuiltinAuthUserSearchConditionDto implements Serializable {
 	public String getDirectWhere() {
 		return directWhere;
 	}
+
 	public void setDirectWhere(String directWhere) {
 		this.directWhere = directWhere;
 	}

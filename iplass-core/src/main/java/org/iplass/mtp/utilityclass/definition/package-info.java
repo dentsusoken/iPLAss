@@ -19,10 +19,10 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/utilityclass",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/utilityclass", prefix="def-util")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/utilityclass",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/utilityclass", prefix = "def-util")
+		}
 )
 
 package org.iplass.mtp.utilityclass.definition;

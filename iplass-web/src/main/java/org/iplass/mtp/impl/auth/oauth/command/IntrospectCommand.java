@@ -22,11 +22,6 @@ package org.iplass.mtp.impl.auth.oauth.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
-
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -51,49 +46,61 @@ import org.iplass.mtp.webapi.definition.StateType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebApi(name="oauth/introspect",
-	accepts=RequestType.REST_FORM,
-	methods=MethodType.POST,
-	checkXRequestedWithHeader=false,
-	privileged=true,
-	state=StateType.STATELESS,
-	responseType="application/json"
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+
+@WebApi(
+		name = "oauth/introspect",
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		checkXRequestedWithHeader = false,
+		privileged = true,
+		state = StateType.STATELESS,
+		responseType = "application/json"
 )
-@CommandClass(name="mtp/oauth/IntrospectCommand", displayName="OAuth2.0 Introspection Endpoint")
+@CommandClass(name = "mtp/oauth/IntrospectCommand", displayName = "OAuth2.0 Introspection Endpoint")
 public class IntrospectCommand implements Command, OAuthEndpointConstants {
-	
+
 	static final String STAT_SUCCESS = "SUCCESS";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(IntrospectCommand.class);
-	
-	private OAuthAuthorizationService authService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-	private OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
-	private OAuthResourceServerService rsService = ServiceRegistry.getRegistry().getService(OAuthResourceServerService.class);
-	
+
+	private OAuthAuthorizationService authService = ServiceRegistry.getRegistry()
+			.getService(OAuthAuthorizationService.class);
+	private OAuthClientService clientService = ServiceRegistry.getRegistry()
+			.getService(OAuthClientService.class);
+	private OAuthResourceServerService rsService = ServiceRegistry.getRegistry()
+			.getService(OAuthResourceServerService.class);
+
 	@Override
 	public String execute(RequestContext request) {
 		OAuthResourceServerRuntime resourceServer = validateResourceServer(request);
-		
+
 		String token = request.getParam(PARAM_TOKEN);
 		//一旦、tokenTypeはaccess_tokenに限定する（ResourceServerからの利用のみ想定。RefreshTokenはResourceServerに渡さない）
 		//String tokenTypeHint = StringUtil.stripToNull(request.getParam(PARAM_TOKEN_TYPE_HINT));
-		
+
 		Object entity = introspect(request, token, resourceServer);
-		ResponseBuilder res = Response.ok().type(MediaType.APPLICATION_JSON_TYPE.withCharset("UTF-8")).entity(entity);
+		ResponseBuilder res = Response.ok()
+				.type(MediaType.APPLICATION_JSON_TYPE.withCharset("UTF-8"))
+				.entity(entity);
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, res);
 		return STAT_SUCCESS;
 	}
-	
+
 	private Object introspect(RequestContext request, String tokenStr, OAuthResourceServerRuntime resourceServer) {
 		try {
-			AccessToken accessToken = authService.getAccessTokenStore().getAccessToken(tokenStr);
+			AccessToken accessToken = authService.getAccessTokenStore()
+					.getAccessToken(tokenStr);
 			if (accessToken == null) {
 				return inactiveResponseEntity();
 			}
 			if (accessToken.getExpiresIn() <= 0) {
 				return inactiveResponseEntity();
 			}
-			
+
 			OAuthClientRuntime client = clientService.getRuntimeByName(accessToken.getClientId());
 			if (client == null) {
 				return inactiveResponseEntity();
@@ -102,14 +109,14 @@ public class IntrospectCommand implements Command, OAuthEndpointConstants {
 			if (server == null) {
 				return inactiveResponseEntity();
 			}
-			
+
 			Map<String, Object> res = resourceServer.toResponseMap(request, accessToken, server);
 			if (res == null) {
 				return inactiveResponseEntity();
 			}
-			
+
 			return res;
-			
+
 		} catch (RuntimeException e) {
 			if (logger.isDebugEnabled()) {
 				logger.error(e.toString(), e);
@@ -117,31 +124,31 @@ public class IntrospectCommand implements Command, OAuthEndpointConstants {
 				logger.error(e.toString());
 			}
 		}
-		
+
 		return inactiveResponseEntity();
 	}
-	
-	
+
 	private OAuthResourceServerRuntime validateResourceServer(RequestContext request) {
 		IdPasswordCredential clientCredential = CommandUtil.clientCredential(request);
 		if (clientCredential == null) {
 			throw new WebApplicationException(CommandUtil.buildErrorResponse(OAuthConstants.ERROR_INVALID_CLIENT, null, null));
 		}
-		
+
 		OAuthResourceServerRuntime resourceServer = rsService.getRuntimeByName(clientCredential.getId());
 		if (resourceServer == null
 				|| !resourceServer.validateCredential(clientCredential)) {
 			if (clientCredential.getAuthenticationFactor(BasicAuthUtil.AUTH_SCHEME_BASIC) != null) {
-				throw new WWWAuthenticateException(BasicAuthUtil.AUTH_SCHEME_BASIC, null, CommandUtil.errorMsg(OAuthConstants.ERROR_INVALID_CLIENT, null, null));
+				throw new WWWAuthenticateException(BasicAuthUtil.AUTH_SCHEME_BASIC, null,
+						CommandUtil.errorMsg(OAuthConstants.ERROR_INVALID_CLIENT, null, null));
 			} else {
 				throw new WebApplicationException(CommandUtil.buildErrorResponse(OAuthConstants.ERROR_INVALID_CLIENT, null, null));
 			}
 		}
-		
+
 		return resourceServer;
 
 	}
-	
+
 	private Object inactiveResponseEntity() {
 		Map<String, Object> res = new HashMap<>();
 		res.put("active", false);

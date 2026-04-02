@@ -53,11 +53,11 @@ public class BooleanPropertySearchCondition extends PropertySearchCondition {
 			PropertyEditor editor, Object value, String parent) {
 		super(definition, editor, value, parent);
 	}
-	
+
 	@Override
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<>();
-		String value = (String)getValue();
+		String value = (String) getValue();
 		BooleanPropertyEditor editor = (BooleanPropertyEditor) getEditor();
 		// 「値なし」を検索条件の選択肢に追加するか
 		if (editor.isIsNullSearchEnabled() && Constants.ISNULL_VALUE.equals(value)) {
@@ -88,7 +88,8 @@ public class BooleanPropertySearchCondition extends PropertySearchCondition {
 
 	private boolean string2Boolean(String str) {
 		//nullは無い筈
-		if (StringUtil.isBlank(str)) return false;
+		if (StringUtil.isBlank(str))
+			return false;
 
 		//true=1、false=0
 		if ("true".equals(str.toLowerCase())) {

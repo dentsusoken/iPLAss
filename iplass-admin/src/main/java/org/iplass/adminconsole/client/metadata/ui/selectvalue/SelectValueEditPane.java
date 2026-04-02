@@ -119,7 +119,8 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -199,8 +200,10 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (SelectValueDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		selectValueAttributePane.setDefinition(curDefinition);
@@ -219,17 +222,17 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_saveConfirmComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					final SelectValueDefinition definition = curDefinition;
-					commonSection.getEditDefinition(definition);
-					selectValueAttributePane.getEditDefinition(definition);
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							final SelectValueDefinition definition = curDefinition;
+							commonSection.getEditDefinition(definition);
+							selectValueAttributePane.getEditDefinition(definition);
 
-					updateDefinition(definition, true);
-				}
-			}
-		});
+							updateDefinition(definition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -238,17 +241,16 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 	private void cancelDefinition() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValueEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**
@@ -318,13 +320,13 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			selectGrid.setOverflow(Overflow.VISIBLE);
 			selectGrid.setBodyOverflow(Overflow.VISIBLE);
 
-			selectGrid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+			selectGrid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-			selectGrid.setCanResizeFields(true);	//列幅変更可
-			selectGrid.setCanSort(false);			//ソート不可
-			selectGrid.setCanGroupBy(false);		//Group化不可
-			selectGrid.setCanPickFields(false);	//列の選択不可
-			selectGrid.setCanAutoFitFields(false);	//列幅の自動調整不可(崩れるので)
+			selectGrid.setCanResizeFields(true); //列幅変更可
+			selectGrid.setCanSort(false); //ソート不可
+			selectGrid.setCanGroupBy(false); //Group化不可
+			selectGrid.setCanPickFields(false); //列の選択不可
+			selectGrid.setCanAutoFitFields(false); //列幅の自動調整不可(崩れるので)
 
 			//grid内でのD&Dでの並べ替えを許可
 			selectGrid.setCanDragRecordsOut(true);
@@ -339,7 +341,7 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			selectGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					startSelectValueEdit(false, selectGrid, (SelectValueListGridRecord)event.getRecord());
+					startSelectValueEdit(false, selectGrid, (SelectValueListGridRecord) event.getRecord());
 				}
 			});
 
@@ -367,7 +369,6 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			selectBtnLayout.addMember(addSel);
 			selectBtnLayout.addMember(delSel);
 
-
 			addMember(SmartGWTUtil.titleLabel("Values"));
 			addMember(selectGrid);
 			addMember(selectBtnLayout);
@@ -376,10 +377,11 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 
 		public void setDefinition(SelectValueDefinition definition) {
 
-			selectGrid.setData(new ListGridRecord[]{});
+			selectGrid.setData(new ListGridRecord[] {});
 
 			//Select固有項目の値を画面部品に設定
-			if (definition.getSelectValueList() != null && definition.getSelectValueList().size() > 0) {
+			if (definition.getSelectValueList() != null && definition.getSelectValueList()
+					.size() > 0) {
 				List<SelectValue> svList = definition.getSelectValueList();
 				List<LocalizedSelectValueDefinition> allLsvdList = definition.getLocalizedSelectValueList();
 				SelectValueListGridRecord[] selRecords = new SelectValueListGridRecord[svList.size()];
@@ -390,9 +392,11 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 					List<LocalizedStringDefinition> lsdList = new ArrayList<LocalizedStringDefinition>();
 					for (LocalizedSelectValueDefinition lsvd : allLsvdList) {
 
-						if (lsvd.getSelectValueList() != null && lsvd.getSelectValueList().size() > 0) {
+						if (lsvd.getSelectValueList() != null && lsvd.getSelectValueList()
+								.size() > 0) {
 							for (SelectValue lsv : lsvd.getSelectValueList()) {
-								if (sv.getValue().equals(lsv.getValue())) {
+								if (sv.getValue()
+										.equals(lsv.getValue())) {
 									LocalizedStringDefinition lsd = new LocalizedStringDefinition();
 									lsd.setLocaleName(lsvd.getLocaleName());
 									lsd.setStringValue(lsv.getDisplayName());
@@ -422,7 +426,7 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			}
 
 			for (ListGridRecord record : selectGrid.getRecords()) {
-				SelectValueListGridRecord sRecord = (SelectValueListGridRecord)record;
+				SelectValueListGridRecord sRecord = (SelectValueListGridRecord) record;
 				SelectValue sv = new SelectValue(sRecord.getSelectValue(), sRecord.getDispName());
 				svList.add(sv);
 

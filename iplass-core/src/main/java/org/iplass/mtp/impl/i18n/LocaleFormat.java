@@ -120,7 +120,6 @@ public class LocaleFormat implements Serializable, Cloneable {
 
 	private boolean lastNameIsFirst;
 
-
 	public List<String> getLocale() {
 		return locale;
 	}
@@ -268,6 +267,5 @@ public class LocaleFormat implements Serializable, Cloneable {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 }

@@ -59,12 +59,13 @@ public class LobHandler {
 		ServiceRegistry sr = ServiceRegistry.getRegistry();
 		SessionService sessionService = sr.getService(SessionService.class);
 		EntityService ehService = sr.getService(EntityService.class);
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		LobStoreService lobStoreService = sr.getService(LobStoreService.class);
 
 		handlerMap = new HashMap<String, LobHandler>();
 		Map<String, LobStore> lobStoreMap = lobStoreService.getLobStoreMap();
-		for (Map.Entry<String, LobStore> e: lobStoreMap.entrySet()) {
+		for (Map.Entry<String, LobStore> e : lobStoreMap.entrySet()) {
 			handlerMap.put(e.getKey(), new LobHandler(e.getValue(), lobStoreService, sessionService, ehService, em));
 		}
 		defaultLobHandler = new LobHandler(lobStoreService.getDefaultLobStore(), lobStoreService, sessionService, ehService, em);
@@ -89,7 +90,6 @@ public class LobHandler {
 	private EntityService ehService;
 	private EntityManager em;
 
-
 	public LobHandler(LobStore lobStore, LobStoreService lobStoreService, SessionService sessionService, EntityService ehService, EntityManager em) {
 		this.lobStore = lobStore;
 		this.lobStoreService = lobStoreService;
@@ -101,7 +101,9 @@ public class LobHandler {
 
 	public boolean canAccess(Lob lob) {
 		if (lob.getDefinitionId() == null) {//テンポラリの場合、自身のセッションのもののみ参照可能
-			if (!sessionService.getSession(true).getId().equals(lob.getSessionId())) {
+			if (!sessionService.getSession(true)
+					.getId()
+					.equals(lob.getSessionId())) {
 				return false;
 			}
 		} else {
@@ -118,7 +120,8 @@ public class LobHandler {
 			String entityDefName = null;
 			String propDefName = null;
 			EntityHandler eh = ehService.getRuntimeById(lob.getDefinitionId());
-			entityDefName = eh.getMetaData().getName();
+			entityDefName = eh.getMetaData()
+					.getName();
 			PropertyHandler ph = eh.getPropertyById(lob.getPropertyId(), EntityContext.getCurrentContext());
 			propDefName = ph.getName();
 
@@ -130,11 +133,13 @@ public class LobHandler {
 			}
 			EntityPropertyPermission propPerm = new EntityPropertyPermission(entityDefName, propDefName, EntityPropertyPermission.Action.REFERENCE);
 			if (!eac.isPermit(propPerm, user)) {
-				throw new NoPermissionException(resourceString("impl.lob.LobHandler.noPermission", EntityPropertyPermission.Action.REFERENCE.toString()));
+				throw new NoPermissionException(
+						resourceString("impl.lob.LobHandler.noPermission", EntityPropertyPermission.Action.REFERENCE.toString()));
 			}
 			//データ範囲のチェック
 			if (eac.hasLimitCondition(perm, user)) {
-				Query q = new Query().select(Entity.OID).from(entityDefName)
+				Query q = new Query().select(Entity.OID)
+						.from(entityDefName)
 						.where(new Equals(Entity.OID, lob.getOid()));
 				if (eh.isVersioned()) {
 					q.versioned();
@@ -155,7 +160,8 @@ public class LobHandler {
 			return null;
 		}
 
-		Lob copy = new Lob(src.getTenantId(), -1, src.getName(), src.getType(), defId, propId, oid, version, null, Lob.STATE_VALID, src.getLobDataId(), lobStore, lobStoreService);
+		Lob copy = new Lob(src.getTenantId(), -1, src.getName(), src.getType(), defId, propId, oid, version, null, Lob.STATE_VALID, src.getLobDataId(),
+				lobStore, lobStoreService);
 		copy = dao.create(copy, lobStore);
 		//参照カウントアップ
 		if (!dao.refCountUp(copy.getTenantId(), copy.getLobDataId(), 1)) {
@@ -166,24 +172,29 @@ public class LobHandler {
 	}
 
 	public Lob[] getBinaryReference(long[] lobId, EntityContext context) {
-		return dao.search(ExecuteContext.getCurrentContext().getClientTenantId(), lobId, lobStore);
+		return dao.search(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), lobId, lobStore);
 	}
 
 	public Lob getBinaryData(long lobId) {
-		return dao.load(ExecuteContext.getCurrentContext().getClientTenantId(), lobId, lobStore);
+		return dao.load(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), lobId, lobStore);
 	}
 
 	public Lob crateBinaryDataTemporary(String name, String type, String sessionId) {
-		return dao.crateTemporary(ExecuteContext.getCurrentContext().getClientTenantId(), name, type, sessionId, lobStore);
+		return dao.crateTemporary(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), name, type, sessionId, lobStore);
 	}
 
 	public Lob createBinaryData(String name, String type, String defId, String propId, String oid, Long version) {
-		return dao.create(ExecuteContext.getCurrentContext().getClientTenantId(), name, type, defId, propId, oid, version, lobStore);
+		return dao.create(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), name, type, defId, propId, oid, version, lobStore);
 	}
 
 	public boolean markPersistenceBinaryData(long lobId, String sessionId,
 			String defId, String propId, String oid, Long version) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		Lob bin = dao.loadWithLock(tenantId, lobId, null, null, null, null, null, lobStore);
 		if (bin == null) {
 			return false;
@@ -207,12 +218,14 @@ public class LobHandler {
 	}
 
 	public boolean updateBinaryDataInfo(long lobId, String name, String type) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		return dao.updateBinaryDataInfo(tenantId, lobId, name, type);
 	}
 
 	public void removeBinaryData(long lobId) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		Lob forLock = dao.loadWithLock(tenantId, lobId, null, null, null, null, null, lobStore);
 		if (forLock != null) {
 			dao.remove(tenantId, lobId);
@@ -228,10 +241,12 @@ public class LobHandler {
 
 		if (bin.getDefinitionId() != null) {//既にEntityとして保存されている場合
 			EntityHandler eh = context.getHandlerById(bin.getDefinitionId());
-			String defName = eh.getMetaData().getName();
+			String defName = eh.getMetaData()
+					.getName();
 			String propName = null;
-			for (PropertyHandler ph: eh.getPropertyList(context)) {
-				if (ph.getId().equals(bin.getPropertyId())) {
+			for (PropertyHandler ph : eh.getPropertyList(context)) {
+				if (ph.getId()
+						.equals(bin.getPropertyId())) {
 					propName = ph.getName();
 					break;
 				}
@@ -249,27 +264,29 @@ public class LobHandler {
 	public static void cleanTemporaryBinaryData() {
 
 		//TODO 1件ずつのループだが、微妙か、、、削除対象を確定しなければならないので1回はlobIDをselectする必要あり。（sqlで、update<-selectだとファントムリードが発生するので。）
-		final int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		final int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 
-		LobStoreService lobStoreService = ServiceRegistry.getRegistry().getService(LobStoreService.class);
+		LobStoreService lobStoreService = ServiceRegistry.getRegistry()
+				.getService(LobStoreService.class);
 		final LobDao dao = lobStoreService.getLobDao();
 
 		//保存日数以上経過しているテンポラリを取得
 		final List<long[]> cleanupTarget = dao.getLobIdListForCleanTemporary(-1 * lobStoreService.getTemporaryKeepDay(), tenantId);
 
 		int limit = lobStoreService.getCleanCommitLimit() > 0 ? lobStoreService.getCleanCommitLimit() : 100;
-		for (int offset = 0; offset < cleanupTarget.size(); offset+=limit) {
+		for (int offset = 0; offset < cleanupTarget.size(); offset += limit) {
 			final int offsetFinal = offset;
 			try {
 				Transaction.requiresNew(t -> {
-					int end = (offsetFinal + limit < cleanupTarget.size()) ? offsetFinal + limit: cleanupTarget.size();
+					int end = (offsetFinal + limit < cleanupTarget.size()) ? offsetFinal + limit : cleanupTarget.size();
 					for (int i = offsetFinal; i < end; i++) {
 						dao.remove(tenantId, cleanupTarget.get(i)[0]);
 						if (cleanupTarget.get(i)[1] != Lob.IS_NEW) {
 							//ここでは、カウントダウンのみ。実テーブル削除はクリーンナップ処理で。
 							dao.refCountUp(tenantId, cleanupTarget.get(i)[1], -1);
 						}
-					};
+					} ;
 				});
 			} catch (RuntimeException e) {
 				logger.error("crean up temporary lob process failed:offset=" + offset + ". try to cleanup next offset...", e);
@@ -282,28 +299,31 @@ public class LobHandler {
 	 */
 	public static void cleanLobData() {
 
-		final int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		final int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 
-		LobStoreService lobStoreService = ServiceRegistry.getRegistry().getService(LobStoreService.class);
+		LobStoreService lobStoreService = ServiceRegistry.getRegistry()
+				.getService(LobStoreService.class);
 		final LobDao dao = lobStoreService.getLobDao();
 		Map<String, LobStore> lobStoreMap = lobStoreService.getLobStoreMap();
 
 		final List<Long> lobDataIdList = dao.getLobDataIdListForClean(-1 * lobStoreService.getInvalidKeepDay(), tenantId);
 
 		int limit = lobStoreService.getCleanCommitLimit() > 0 ? lobStoreService.getCleanCommitLimit() : 100;
-		for (int offset = 0; offset < lobDataIdList.size(); offset+=limit) {
+		for (int offset = 0; offset < lobDataIdList.size(); offset += limit) {
 			final int offsetFinal = offset;
 			try {
 				Transaction.requiresNew(t -> {
-						int end = (offsetFinal + limit < lobDataIdList.size()) ? offsetFinal + limit: lobDataIdList.size();
-						for (int i = offsetFinal; i < end; i++) {
-							Long lobDataId = lobDataIdList.get(i);
-							dao.removeData(tenantId, lobDataId);
-							for (Map.Entry<String, LobStore> le: lobStoreMap.entrySet()) {
-								le.getValue().remove(tenantId, lobDataId);
-							}
+					int end = (offsetFinal + limit < lobDataIdList.size()) ? offsetFinal + limit : lobDataIdList.size();
+					for (int i = offsetFinal; i < end; i++) {
+						Long lobDataId = lobDataIdList.get(i);
+						dao.removeData(tenantId, lobDataId);
+						for (Map.Entry<String, LobStore> le : lobStoreMap.entrySet()) {
+							le.getValue()
+									.remove(tenantId, lobDataId);
 						}
-						return null;
+					}
+					return null;
 				});
 
 			} catch (RuntimeException e) {
@@ -319,12 +339,14 @@ public class LobHandler {
 	}
 
 	public void removeBinaryDataByRbid(long rbid) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		List<Long> lobIdList = dao.getLobIdByRbid(tenantId, rbid);
-		for (Long lobId: lobIdList) {
+		for (Long lobId : lobIdList) {
 			removeBinaryData(lobId);
 		}
-		dao.removeFromRecycleBin(ExecuteContext.getCurrentContext().getClientTenantId(), rbid);
+		dao.removeFromRecycleBin(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), rbid);
 	}
 
 	public int removeBinaryDataByDefId(int tenantId, String defId) {
@@ -336,16 +358,16 @@ public class LobHandler {
 		int allCount = 0;
 
 		//TODO とりあえず、100件単位でcommit。パラメータ化。
-		for (int offset = 0; offset < markTarget.size(); offset+=100) {
+		for (int offset = 0; offset < markTarget.size(); offset += 100) {
 			final int offsetFinal = offset;
 			try {
 				allCount += Transaction.requiresNew(t -> {
-						int count = 0;
-						for (int i = offsetFinal; i < markTarget.size(); i++) {
-							removeBinaryData(markTarget.get(i));
-							count++;
-						}
-						return count;
+					int count = 0;
+					for (int i = offsetFinal; i < markTarget.size(); i++) {
+						removeBinaryData(markTarget.get(i));
+						count++;
+					}
+					return count;
 				});
 			} catch (RuntimeException e) {
 				//残っても問題は起こらないので、ログのみ出力
@@ -370,31 +392,34 @@ public class LobHandler {
 		int allCount = 0;
 
 		//TODO とりあえず、100件単位でcommit。パラメータ化。
-		for (int offset = 0; offset < markTarget.size(); offset+=100) {
+		for (int offset = 0; offset < markTarget.size(); offset += 100) {
 			final int offsetFinal = offset;
 			try {
 				allCount += Transaction.requiresNew(t -> {
-						int count = 0;
-						for (int i = offsetFinal; i < markTarget.size(); i++) {
-							removeBinaryData(markTarget.get(i));
-							count++;
-						}
-						return count;
+					int count = 0;
+					for (int i = offsetFinal; i < markTarget.size(); i++) {
+						removeBinaryData(markTarget.get(i));
+						count++;
+					}
+					return count;
 				});
 			} catch (RuntimeException e) {
 				//残っても問題は起こらないので、ログのみ出力
-				logger.error("mark for clean lob process failed:defId=" + eh.getMetaData().getId() + ",offset=" + offset + ". try to mark next offset...", e);
+				logger.error("mark for clean lob process failed:defId=" + eh.getMetaData()
+						.getId() + ",offset=" + offset + ". try to mark next offset...", e);
 			}
 		}
 		return allCount;
 	}
 
 	public void markToRecycleBin(long lobId, long rbid) {
-		dao.markToRecycleBin(ExecuteContext.getCurrentContext().getClientTenantId(), lobId, rbid);
+		dao.markToRecycleBin(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), lobId, rbid);
 	}
 
 	public void markRestoreFromRecycleBin(long rbid) {
-		dao.markRestoreFromRecycleBin(ExecuteContext.getCurrentContext().getClientTenantId(), rbid);
+		dao.markRestoreFromRecycleBin(ExecuteContext.getCurrentContext()
+				.getClientTenantId(), rbid);
 	}
 
 	/**
@@ -405,34 +430,35 @@ public class LobHandler {
 
 		final int LIMIT = 1000;
 
-		final int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		final int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 
 		long allCount = 0;
 
 		final List<Long> lobDataIdList = dao.getLobDataIdListForLobStoreSizeUpdate(tenantId);
 
 		//TODO commit分割。パラメータ化。
-		for (int offset = 0; offset < lobDataIdList.size(); offset+=LIMIT) {
+		for (int offset = 0; offset < lobDataIdList.size(); offset += LIMIT) {
 			final int offsetFinal = offset;
 			try {
 				allCount += Transaction.requiresNew(t -> {
-						int updateCount = 0;
-						int limit = Math.min(offsetFinal + LIMIT, lobDataIdList.size());
-						for (int i = offsetFinal; i < limit; i++) {
-							long lobDataId = lobDataIdList.get(i);
+					int updateCount = 0;
+					int limit = Math.min(offsetFinal + LIMIT, lobDataIdList.size());
+					for (int i = offsetFinal; i < limit; i++) {
+						long lobDataId = lobDataIdList.get(i);
 
-							LobData lobData = lobStore.load(tenantId, lobDataId);
-							//LobStoreテーブルベースでdataIDを取得しているので別のLobStoreのIDである可能性がある
-							//このため、nullチェックかつサイズチェックを実施
-							//(開発環境などでは、テナントごとにLobStoreが異なることもあるため存在しない可能性あり)
-							//loadでは存在チェックを行なっていないので、LobDataがnullということはないが念のためチェック。
-							//存在チェックはサイズでチェック(存在しないと0)
-							if (lobData != null && lobData.getSize() > 0) {
-								dao.updateLobStoreSize(tenantId, lobDataId, lobData.getSize());
-								updateCount++;
-							}
+						LobData lobData = lobStore.load(tenantId, lobDataId);
+						//LobStoreテーブルベースでdataIDを取得しているので別のLobStoreのIDである可能性がある
+						//このため、nullチェックかつサイズチェックを実施
+						//(開発環境などでは、テナントごとにLobStoreが異なることもあるため存在しない可能性あり)
+						//loadでは存在チェックを行なっていないので、LobDataがnullということはないが念のためチェック。
+						//存在チェックはサイズでチェック(存在しないと0)
+						if (lobData != null && lobData.getSize() > 0) {
+							dao.updateLobStoreSize(tenantId, lobDataId, lobData.getSize());
+							updateCount++;
 						}
-						return updateCount;
+					}
+					return updateCount;
 				});
 
 			} catch (RuntimeException e) {

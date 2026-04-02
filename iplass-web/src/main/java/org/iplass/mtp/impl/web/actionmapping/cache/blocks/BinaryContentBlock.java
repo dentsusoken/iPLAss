@@ -22,18 +22,18 @@ package org.iplass.mtp.impl.web.actionmapping.cache.blocks;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentBlock;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
 
+import jakarta.servlet.ServletException;
+
 public class BinaryContentBlock implements ContentBlock {
 	private static final long serialVersionUID = 773587476554049941L;
-	
+
 	private final byte[] content;
-	
+
 	public BinaryContentBlock(byte[] content) {
 		this.content = content;
 	}
@@ -46,7 +46,9 @@ public class BinaryContentBlock implements ContentBlock {
 	public void writeTo(WebRequestStack request) throws IOException,
 			ServletException {
 		if (content != null) {
-			request.getResponse().getOutputStream().write(content);
+			request.getResponse()
+					.getOutputStream()
+					.write(content);
 		}
 	}
 

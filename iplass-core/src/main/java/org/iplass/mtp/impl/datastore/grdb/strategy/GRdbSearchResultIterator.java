@@ -45,9 +45,8 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class GRdbSearchResultIterator implements SearchResultIterator {
-	
+
 	private ResultSet rs;
 	private EntityHandler dataModelHandler;
 	private EntityContext context;
@@ -56,14 +55,14 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 	private RdbBaseValueTypeResolver resolver;
 	private IdentityHashMap<ValueExpression, SelectCol> colMap;
 	private List<SelectCol> colList;
-	
+
 	private static class SelectCol {
 		ValueExpression val;
 		int colNum;
 		GRdbPropertyStoreRuntime colDef;
 		BaseRdbTypeAdapter adapter;
 	}
-	
+
 	public GRdbSearchResultIterator(ResultSet rs, EntityHandler dataModelHandler, EntityContext context, Query query, RdbAdapter rdb) {
 		this.rs = rs;
 		this.context = context;
@@ -73,17 +72,18 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 		resolver = new RdbBaseValueTypeResolver(dataModelHandler, context, rdb);
 		createCol();
 	}
-	
+
 	private void createCol() {
-		List<ValueExpression> select = query.getSelect().getSelectValues();
+		List<ValueExpression> select = query.getSelect()
+				.getSelectValues();
 		colMap = new IdentityHashMap<>(select.size());
 		colList = new ArrayList<>(select.size());
 		int res = 1;
-		for (ValueExpression v: select) {
+		for (ValueExpression v : select) {
 			SelectCol col = new SelectCol();
 			col.val = v;
 			col.colNum = res;
-			
+
 			if (!(v instanceof EntityField)) {
 				PropertyType type = resolver.resolve(v);
 				if (type != null) {
@@ -104,12 +104,12 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 				}
 				res += col.colDef.getColCount();
 			}
-			
+
 			colMap.put(v, col);
 			colList.add(col);
 		}
 	}
-	
+
 	public void close() {
 		Statement stmt = null;
 		Connection con = null;
@@ -139,19 +139,19 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 			}
 		}
 	}
-	
+
 	public Object getValue(ValueExpression propName) {
-		
+
 		SelectCol col = colMap.get(propName);
 		if (col == null) {
 			throw new EntityRuntimeException(propName + " is not contains select clause.");
 		}
-		
+
 		return getValueImpl(col);
 	}
-	
+
 	private Object getValueImpl(SelectCol col) {
-		
+
 		try {
 			if (col.colDef != null) {
 				return col.colDef.fromDataStore(rs, col.colNum);

@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
 
 public class ReferencePropertyHandler extends PropertyHandler {
-	
+
 	private PreparedQuery asOfExpression;
 
 	public ReferencePropertyHandler(MetaReferenceProperty meta, MetaEntity metaEntity) {
@@ -44,7 +44,7 @@ public class ReferencePropertyHandler extends PropertyHandler {
 	public EntityHandler getReferenceEntityHandler(EntityContext ctx) {
 		return ctx.getHandlerById(((MetaReferenceProperty) metaData).getReferenceEntityMetaDataId());
 	}
-	
+
 	public ValueExpression getAsOfExpression() {
 		if (asOfExpression == null) {
 			return null;
@@ -68,9 +68,10 @@ public class ReferencePropertyHandler extends PropertyHandler {
 			//参照Entityが取得できない場合はnull
 			return null;
 		}
-		for (PropertyHandler ph: mappedByEntity.getDeclaredPropertyList()) {
+		for (PropertyHandler ph : mappedByEntity.getDeclaredPropertyList()) {
 			if (ph instanceof ReferencePropertyHandler) {
-				if (ph.getId().equals(meta.getMappedByPropertyMetaDataId())) {
+				if (ph.getId()
+						.equals(meta.getMappedByPropertyMetaDataId())) {
 					return (ReferencePropertyHandler) ph;
 				}
 			}
@@ -91,9 +92,10 @@ public class ReferencePropertyHandler extends PropertyHandler {
 			//参照Entityが取得できない場合はnull
 			return null;
 		}
-		for (PropertyHandler ph: mappedByEntity.getDeclaredPropertyList()) {
+		for (PropertyHandler ph : mappedByEntity.getDeclaredPropertyList()) {
 			if (ph instanceof ReferencePropertyHandler) {
-				if (getId().equals(((ReferencePropertyHandler) ph).getMetaData().getMappedByPropertyMetaDataId())) {
+				if (getId().equals(((ReferencePropertyHandler) ph).getMetaData()
+						.getMappedByPropertyMetaDataId())) {
 					return (ReferencePropertyHandler) ph;
 				}
 			}

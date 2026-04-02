@@ -37,7 +37,7 @@ public class LesserEqual extends ComparisonPredicate {
 
 	public LesserEqual() {
 	}
-	
+
 	public LesserEqual(String propertyName, Object valueLiteral) {
 		super(propertyName, valueLiteral);
 	}
@@ -63,9 +63,9 @@ public class LesserEqual extends ComparisonPredicate {
 	protected String getOpString() {
 		return "<=";
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-
 
 }

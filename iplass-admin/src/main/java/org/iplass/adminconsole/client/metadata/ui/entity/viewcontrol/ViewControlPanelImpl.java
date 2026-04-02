@@ -88,7 +88,8 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -134,11 +135,13 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 			}
 
 			curDefinition = (EntityView) entry.getDefinition();
-			curVersion = entry.getDefinitionInfo().getVersion();
-			curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+			curVersion = entry.getDefinitionInfo()
+					.getVersion();
+			curDefinitionId = entry.getDefinitionInfo()
+					.getObjDefId();
 
 			//作成済みのView名を取得
-			List<String> detailViewNames = Arrays.asList(curDefinition.getDetailFormViewNames()) ;
+			List<String> detailViewNames = Arrays.asList(curDefinition.getDetailFormViewNames());
 			List<String> searchViewNames = Arrays.asList(curDefinition.getSearchFormViewNames());
 			List<String> bulkViewNames = Arrays.asList(curDefinition.getBulkFormViewNames());
 
@@ -204,7 +207,7 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 			}
 		}
 
-		private void createEntityView(final EntityView  definition) {
+		private void createEntityView(final EntityView definition) {
 			SmartGWTUtil.showSaveProgress();
 			service.createDefinition(TenantInfoHolder.getId(), definition, new MetaDataUpdateCallback() {
 				@Override
@@ -223,7 +226,7 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 			});
 		}
 
-		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
+		private void updateEntityView(final EntityView definition, boolean checkVersion) {
 			SmartGWTUtil.showSaveProgress();
 			service.updateDefinition(TenantInfoHolder.getId(), definition, curVersion, checkVersion, new MetaDataUpdateCallback() {
 
@@ -245,12 +248,14 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 
 						@Override
 						public void onFailure(Throwable caught) {
-							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_viewcontrol_ViewControlPanelImpl_failedEntityView") + caught.getMessage());
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_viewcontrol_ViewControlPanelImpl_failedEntityView")
+									+ caught.getMessage());
 						}
 
 						@Override
 						public void onSuccess(DefinitionEntry result) {
-							curVersion = result.getDefinitionInfo().getVersion();
+							curVersion = result.getDefinitionInfo()
+									.getVersion();
 						}
 
 					});
@@ -268,15 +273,15 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_viewcontrol_ViewControlPanelImpl_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_entity_viewcontrol_ViewControlPanelImpl_cancelCautionComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_entity_viewcontrol_ViewControlPanelImpl_cancelCautionComment"),
+					new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+							}
+						}
+					});
 		}
 	}
 

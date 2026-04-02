@@ -42,71 +42,85 @@ public class NewTokenCreationStrategy implements TokenCreationStrategy {
 
 	@Override
 	public AuthToken create(OAuthClientRuntime client, AccessTokenHandler handler, String userUniqueId, AccessTokenInfo accessTokenInfo) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		String series = handler.newSeriesString(userUniqueId, null, accessTokenInfo);
-		
+
 		AuthToken at = Transaction.requiresNew(t -> {
-				//delete/insert
-				AuthToken storeToken = handler.authTokenStore().getBySeries(tenantId, handler.getType(), series);
-				AccessTokenInfo mergedAccessTokenInfo = accessTokenInfo;
-				if (storeToken != null) {
-					AccessTokenMement atm = (AccessTokenMement) storeToken.getDetails();
-					
-					//念のためハッシュ衝突をチェック
-					if (!atm.getResouceOwnerId().equals(userUniqueId)
-							|| !client.getMetaData().getId().equals(atm.getClientMetaDataId())) {
-						throw new SystemException("AccessToken's series hash may have collision: client=" + atm.getClientMetaDataId() + " ,series=" + series);
-					}
-					
-					HashSet<String> mergedScopes = new HashSet<>();
-					if (atm.getGrantedScopes() != null) {
-						mergedScopes.addAll(atm.getGrantedScopes());
-					}
-					mergedScopes.addAll(accessTokenInfo.getGrantedScopes());
-					
-					mergedAccessTokenInfo = new AccessTokenInfo();
-					mergedAccessTokenInfo.setClientName(accessTokenInfo.getClientName());
-					mergedAccessTokenInfo.setGrantedScopes(new ArrayList<>(mergedScopes));
-					
-					handler.authTokenStore().deleteBySeries(tenantId, handler.getType(), series);
+			//delete/insert
+			AuthToken storeToken = handler.authTokenStore()
+					.getBySeries(tenantId, handler.getType(), series);
+			AccessTokenInfo mergedAccessTokenInfo = accessTokenInfo;
+			if (storeToken != null) {
+				AccessTokenMement atm = (AccessTokenMement) storeToken.getDetails();
+
+				//念のためハッシュ衝突をチェック
+				if (!atm.getResouceOwnerId()
+						.equals(userUniqueId)
+						|| !client.getMetaData()
+								.getId()
+								.equals(atm.getClientMetaDataId())) {
+					throw new SystemException(
+							"AccessToken's series hash may have collision: client=" + atm.getClientMetaDataId() + " ,series=" + series);
 				}
-				
-				AuthToken newToken = handler.newAuthToken(userUniqueId, null, mergedAccessTokenInfo);
-				handler.authTokenStore().create(newToken);
-				return newToken;
-			});
-		
+
+				HashSet<String> mergedScopes = new HashSet<>();
+				if (atm.getGrantedScopes() != null) {
+					mergedScopes.addAll(atm.getGrantedScopes());
+				}
+				mergedScopes.addAll(accessTokenInfo.getGrantedScopes());
+
+				mergedAccessTokenInfo = new AccessTokenInfo();
+				mergedAccessTokenInfo.setClientName(accessTokenInfo.getClientName());
+				mergedAccessTokenInfo.setGrantedScopes(new ArrayList<>(mergedScopes));
+
+				handler.authTokenStore()
+						.deleteBySeries(tenantId, handler.getType(), series);
+			}
+
+			AuthToken newToken = handler.newAuthToken(userUniqueId, null, mergedAccessTokenInfo);
+			handler.authTokenStore()
+					.create(newToken);
+			return newToken;
+		});
+
 		return at;
 	}
 
 	@Override
 	public AuthToken create(OAuthClientRuntime client, AccessTokenHandler handler, OpaqueRefreshToken refreshToken) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		String series = refreshToken.getSeries();
-		
+
 		AuthToken at = Transaction.requiresNew(t -> {
-				AuthToken storeToken = handler.authTokenStore().getBySeries(tenantId, handler.getType(), series);
-				if (storeToken == null) {
-					//ユーザー操作によるToken削除の可能性などあり
-					return null;
-				}
-				AccessTokenMement atm = (AccessTokenMement) storeToken.getDetails();
-				
-				//念のためハッシュ衝突をチェック(clientのみ)
-				if (!client.getMetaData().getId().equals(atm.getClientMetaDataId())) {
-					throw new SystemException("AccessToken's series hash may have collision: client=" + atm.getClientMetaDataId() + " ,series=" + series);
-				}
-				
-				//update token and expires
-				AccessTokenInfo newAccessTokenInfo = new AccessTokenInfo();
-				newAccessTokenInfo.setClientName(client.getMetaData().getName());
-				newAccessTokenInfo.setGrantedScopes(new ArrayList<>(atm.getGrantedScopes()));
-				AuthToken newToken = handler.newAuthToken(storeToken.getOwnerId(), null, newAccessTokenInfo);
-				handler.authTokenStore().update(newToken, storeToken);
-				
-				return newToken;
-			});
-		
+			AuthToken storeToken = handler.authTokenStore()
+					.getBySeries(tenantId, handler.getType(), series);
+			if (storeToken == null) {
+				//ユーザー操作によるToken削除の可能性などあり
+				return null;
+			}
+			AccessTokenMement atm = (AccessTokenMement) storeToken.getDetails();
+
+			//念のためハッシュ衝突をチェック(clientのみ)
+			if (!client.getMetaData()
+					.getId()
+					.equals(atm.getClientMetaDataId())) {
+				throw new SystemException("AccessToken's series hash may have collision: client=" + atm.getClientMetaDataId() + " ,series=" + series);
+			}
+
+			//update token and expires
+			AccessTokenInfo newAccessTokenInfo = new AccessTokenInfo();
+			newAccessTokenInfo.setClientName(client.getMetaData()
+					.getName());
+			newAccessTokenInfo.setGrantedScopes(new ArrayList<>(atm.getGrantedScopes()));
+			AuthToken newToken = handler.newAuthToken(storeToken.getOwnerId(), null, newAccessTokenInfo);
+			handler.authTokenStore()
+					.update(newToken, storeToken);
+
+			return newToken;
+		});
+
 		return at;
 	}
 

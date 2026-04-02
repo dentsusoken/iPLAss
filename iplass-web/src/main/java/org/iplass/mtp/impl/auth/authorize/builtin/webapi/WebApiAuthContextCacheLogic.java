@@ -44,7 +44,8 @@ class WebApiAuthContextCacheLogic extends AuthorizationContextCacheLogic {
 	public static final String WEB_API_CONDITION = "conditionExpression";
 	public static final String WEB_API_ROLE = "role";
 
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 
 	WebApiAuthContextCacheLogic(TenantAuthorizeContext authorizeContext) {
 		super(authorizeContext);

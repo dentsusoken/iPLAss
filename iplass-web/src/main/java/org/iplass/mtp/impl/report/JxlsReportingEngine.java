@@ -40,8 +40,8 @@ public class JxlsReportingEngine implements ReportingEngine {
 
 	private static final String SESSION_STR = "session";
 	private static final String REQUEST_STR = "request";
-	private static final String PREFIX_REQUEST = REQUEST_STR +".";
-	private static final String PREFIX_SESSION = SESSION_STR +".";
+	private static final String PREFIX_REQUEST = REQUEST_STR + ".";
+	private static final String PREFIX_SESSION = SESSION_STR + ".";
 
 	@Override
 	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception {
@@ -64,14 +64,15 @@ public class JxlsReportingEngine implements ReportingEngine {
 
 		String password = null;
 		if (StringUtil.isNotEmpty(jxlsModel.getPasswordAttributeName())) {
-			password = (String)getAttribute(request, jxlsModel.getPasswordAttributeName());
+			password = (String) getAttribute(request, jxlsModel.getPasswordAttributeName());
 		}
 
-		jxlsModel.write(reportData, requestStack.getResponse().getOutputStream(), password);
+		jxlsModel.write(reportData, requestStack.getResponse()
+				.getOutputStream(), password);
 	}
 
 	private void putVar(RequestContext request, Map<String, Object> reportData, MetaReportParamMap[] paramMap) {
-		for(int i=0; i<paramMap.length; i++) {
+		for (int i = 0; i < paramMap.length; i++) {
 			Object val = getAttribute(request, paramMap[i].getMapFrom());
 
 			if (val == null) {
@@ -83,9 +84,9 @@ public class JxlsReportingEngine implements ReportingEngine {
 				if (val instanceof GenericEntity) {
 					reportData.put(paramMap[i].getName(), ((GenericEntity) val).toMap());
 				} else if (val instanceof List<?>) {
-					List<Map<String, Object>> entityMaps = new ArrayList<Map<String,Object>>();
+					List<Map<String, Object>> entityMaps = new ArrayList<Map<String, Object>>();
 
-					List<?> list = (List<?>)val;
+					List<?> list = (List<?>) val;
 					for (Object obj : list) {
 						if (obj instanceof GenericEntity) {
 							entityMaps.add(((GenericEntity) obj).toMap());
@@ -102,12 +103,13 @@ public class JxlsReportingEngine implements ReportingEngine {
 	}
 
 	private Object getAttribute(RequestContext request, String attributeName) {
-		if(attributeName.startsWith(PREFIX_REQUEST)){
+		if (attributeName.startsWith(PREFIX_REQUEST)) {
 			String valueName = attributeName.substring(PREFIX_REQUEST.length());
 			return request.getAttribute(valueName);
-		}else if(attributeName.startsWith(PREFIX_SESSION)){
+		} else if (attributeName.startsWith(PREFIX_SESSION)) {
 			String valueName = attributeName.substring(PREFIX_SESSION.length());
-			return request.getSession().getAttribute(valueName);
+			return request.getSession()
+					.getAttribute(valueName);
 		} else {
 			//Prefix未指定の場合はリクエストから取得
 			return request.getAttribute(attributeName);
@@ -116,8 +118,8 @@ public class JxlsReportingEngine implements ReportingEngine {
 
 	@Override
 	public boolean isSupport(String type) {
-		for(String supportFile : this.supportFiles){
-			if(supportFile.equals(type)){
+		for (String supportFile : this.supportFiles) {
+			if (supportFile.equals(type)) {
 				return true;
 			}
 		}

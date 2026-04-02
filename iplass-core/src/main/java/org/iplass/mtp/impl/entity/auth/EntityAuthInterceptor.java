@@ -103,7 +103,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			return invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.CREATE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.CREATE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(invocation.getEntityDefinition().getDisplayName() + "の" + EntityPermission.Action.CREATE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -112,24 +113,29 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 
 			//項目レベルでのチェック
 			EntityContext ectx = EntityContext.getCurrentContext();
-			for (PropertyHandler ph: eh.getPropertyList(ectx)) {
-				Object value = inv.getEntity().getValue(ph.getName());
+			for (PropertyHandler ph : eh.getPropertyList(ectx)) {
+				Object value = inv.getEntity()
+						.getValue(ph.getName());
 
 				if (value != null) {
 					//項目レベルセキュリティのチェック
-					if (!user.checkPermission(new EntityPropertyPermission(eh.getMetaData().getName(), ph.getName(), EntityPropertyPermission.Action.CREATE))) {
+					if (!user.checkPermission(new EntityPropertyPermission(eh.getMetaData()
+							.getName(), ph.getName(), EntityPropertyPermission.Action.CREATE))) {
 //						throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の項目：" + ph.getMetaData().getDisplayName() + "の" + EntityPropertyPermission.Action.CREATE.getDisplayName() + "権限がありません");
 						throw new NoPermissionException(
-								resourceString("impl.entity.auth.EntityAuthInterceptor.noRegistProperty", eh.getLocalizedDisplayName(), ph.getLocalizedDisplayName()));
+								resourceString("impl.entity.auth.EntityAuthInterceptor.noRegistProperty", eh.getLocalizedDisplayName(),
+										ph.getLocalizedDisplayName()));
 					}
 
 					//参照先のEntityに対して、参照権限が設定されているかチェック
 					if (ph instanceof ReferencePropertyHandler) {
 						ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
 						//逆参照ではない場合
-						if (rph.getMetaData().getMappedByPropertyMetaDataId() == null) {
+						if (rph.getMetaData()
+								.getMappedByPropertyMetaDataId() == null) {
 							EntityHandler reh = rph.getReferenceEntityHandler(ectx);
-							EntityPermission rerPerm = new EntityPermission(reh.getMetaData().getName(), EntityPermission.Action.REFERENCE);
+							EntityPermission rerPerm = new EntityPermission(reh.getMetaData()
+									.getName(), EntityPermission.Action.REFERENCE);
 							if (!user.checkPermission(rerPerm)) {
 //								throw new NoPermissionException(reh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.REFERENCE.getDisplayName() + "権限がありません");
 								throw new NoPermissionException(
@@ -147,8 +153,10 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 
 			//登録可能なデータ範囲か？
 			Object key;
-			if (eh.isVersioned() && invocation.getInsertOption().isVersionSpecified()) {
-				key = new Object[] {oid, inv.getEntity().getVersion()};
+			if (eh.isVersioned() && invocation.getInsertOption()
+					.isVersionSpecified()) {
+				key = new Object[] { oid, inv.getEntity()
+						.getVersion() };
 			} else {
 				key = oid;
 			}
@@ -159,20 +167,24 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 
 	}
 
-	private void checkLimitCondition(final EntityHandler eh, Object value, EntityPermission permission, AuthContextHolder user, boolean versionSpecified) {
+	private void checkLimitCondition(final EntityHandler eh, Object value, EntityPermission permission, AuthContextHolder user,
+			boolean versionSpecified) {
 		//withVersion=trueの場合は、versioned queryを発行しバージョンまで一致するかチェック
-		
+
 		EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(permission);
 		if (eac.hasLimitCondition(permission, user)) {
-			Query q = new Query().select(Entity.OID).from(eh.getMetaData().getName());
+			Query q = new Query().select(Entity.OID)
+					.from(eh.getMetaData()
+							.getName());
 			if (versionSpecified) {
-				q.select().add(Entity.VERSION);
+				q.select()
+						.add(Entity.VERSION);
 			}
 			Condition cond = null;
 			if (value instanceof Entity[]) {
 				Entity[] eList = (Entity[]) value;
 				List<ValueExpression> oids = new ArrayList<ValueExpression>();
-				for (Entity e: eList) {
+				for (Entity e : eList) {
 					if (versionSpecified) {
 						Long ver = e.getVersion();
 						if (ver == null) {
@@ -189,7 +201,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 				}
 				In in;
 				if (versionSpecified) {
-					in = new In(new String[] {Entity.OID, Entity.VERSION});
+					in = new In(new String[] { Entity.OID, Entity.VERSION });
 				} else {
 					in = new In(Entity.OID);
 				}
@@ -245,13 +257,13 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 							}
 						},
 						InvocationType.SEARCH,
-						eh.getService().getInterceptors(),
+						eh.getService()
+								.getInterceptors(),
 						eh).proceed();
 			});
 
-
 			if (value instanceof Entity[]) {
-				for (Entity e: (Entity[]) value) {
+				for (Entity e : (Entity[]) value) {
 					String ct;
 					if (versionSpecified) {
 						Long ver = e.getVersion();
@@ -340,7 +352,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.UPDATE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.UPDATE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(invocation.getEntityDefinition().getDisplayName() + "の" + EntityPermission.Action.UPDATE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -348,28 +361,34 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 
 			//更新可能なデータ範囲か？
-			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && TargetVersion.CURRENT_VALID != inv.getUpdateOption().getTargetVersion());
+			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && TargetVersion.CURRENT_VALID != inv.getUpdateOption()
+					.getTargetVersion());
 
 			//項目レベルでのチェック
 			UpdateOption updateOption = invocation.getUpdateOption();
 			EntityContext ectx = EntityContext.getCurrentContext();
-			for (String pName: updateOption.getUpdateProperties()) {
+			for (String pName : updateOption.getUpdateProperties()) {
 				PropertyHandler ph = eh.getProperty(pName, ectx);
 				if (ph != null) {
-					if (!user.checkPermission(new EntityPropertyPermission(eh.getMetaData().getName(), ph.getName(), EntityPropertyPermission.Action.UPDATE))) {
+					if (!user.checkPermission(new EntityPropertyPermission(eh.getMetaData()
+							.getName(), ph.getName(), EntityPropertyPermission.Action.UPDATE))) {
 //						throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の項目：" + ph.getMetaData().getDisplayName() + "の" + EntityPropertyPermission.Action.UPDATE.getDisplayName() + "権限がありません");
 						throw new NoPermissionException(
-								resourceString("impl.entity.auth.EntityAuthInterceptor.noUpdateProperty", eh.getLocalizedDisplayName(), ph.getLocalizedDisplayName()));
+								resourceString("impl.entity.auth.EntityAuthInterceptor.noUpdateProperty", eh.getLocalizedDisplayName(),
+										ph.getLocalizedDisplayName()));
 					}
 					//参照先のEntityに対して、参照権限が設定されているかチェック
 					if (ph instanceof ReferencePropertyHandler) {
-						Object value = inv.getEntity().getValue(pName);
+						Object value = inv.getEntity()
+								.getValue(pName);
 						if (value != null) {
 							ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
 							//逆参照ではない場合
-							if (rph.getMetaData().getMappedByPropertyMetaDataId() == null) {
+							if (rph.getMetaData()
+									.getMappedByPropertyMetaDataId() == null) {
 								EntityHandler reh = rph.getReferenceEntityHandler(ectx);
-								EntityPermission refPerm = new EntityPermission(reh.getMetaData().getName(), EntityPermission.Action.REFERENCE);
+								EntityPermission refPerm = new EntityPermission(reh.getMetaData()
+										.getName(), EntityPermission.Action.REFERENCE);
 								if (!user.checkPermission(refPerm)) {
 //									throw new NoPermissionException(reh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.REFERENCE.getDisplayName() + "権限がありません");
 									throw new NoPermissionException(
@@ -404,7 +423,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.DELETE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(invocation.getEntityDefinition().getDisplayName() + "の" + EntityPermission.Action.DELETE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -412,7 +432,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 
 			//更新可能なデータ範囲か？
-			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && DeleteTargetVersion.SPECIFIC == inv.getDeleteOption().getTargetVersion());
+			checkLimitCondition(eh, inv.getEntity(), perm, user, eh.isVersioned() && DeleteTargetVersion.SPECIFIC == inv.getDeleteOption()
+					.getTargetVersion());
 
 			invocation.proceed();
 		}
@@ -449,18 +470,19 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.REFERENCE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.REFERENCE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.REFERENCE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
 						resourceString("impl.entity.auth.EntityAuthInterceptor.noReference", eh.getLocalizedDisplayName()));
 			}
 
-
 			//項目のマスク（参照不可の項目をnullに）と、限定条件の付与
 			//query時に対象とするEntityActionが指定されていれば、そのActionを利用(PropertyActionはREFERENCE)
 			EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(perm);
-			EntityPermission.Action action = EntityQueryAuthContextHolder.getContext().getQueryAction();
+			EntityPermission.Action action = EntityQueryAuthContextHolder.getContext()
+					.getQueryAction();
 			inv.setQuery(eac.modifyQuery(inv.getQuery(), action, EntityPropertyPermission.Action.REFERENCE, user));
 
 			invocation.proceed();
@@ -486,7 +508,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			return invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.REFERENCE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.REFERENCE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.REFERENCE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -496,7 +519,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			//項目のマスク（参照不可の項目をnullに）と、限定条件の付与
 			//query時に対象とするEntityActionが指定されていれば、そのActionを利用(PropertyActionはREFERENCE)
 			EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(perm);
-			EntityPermission.Action action = EntityQueryAuthContextHolder.getContext().getQueryAction();
+			EntityPermission.Action action = EntityQueryAuthContextHolder.getContext()
+					.getQueryAction();
 			inv.setQuery(eac.modifyQuery(inv.getQuery(), action, EntityPropertyPermission.Action.REFERENCE, user));
 
 			return invocation.proceed();
@@ -520,7 +544,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			return invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.UPDATE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.UPDATE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.UPDATE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -530,14 +555,16 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			//項目レベルでのチェック
 			UpdateCondition updateCond = invocation.getUpdateCondition();
 			EntityContext ectx = EntityContext.getCurrentContext();
-			for (UpdateValue uv: updateCond.getValues()) {
+			for (UpdateValue uv : updateCond.getValues()) {
 				PropertyHandler ph = eh.getProperty(uv.getEntityField(), ectx);
 
 				// メッセージで利用するdisplayNameは全てDefinitionから取得する
-				if (!user.checkPermission(new EntityPropertyPermission(eh.getMetaData().getName(), ph.getName(), EntityPropertyPermission.Action.UPDATE))) {
+				if (!user.checkPermission(new EntityPropertyPermission(eh.getMetaData()
+						.getName(), ph.getName(), EntityPropertyPermission.Action.UPDATE))) {
 //					throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の項目：" + ph.getMetaData().getDisplayName() + "の" + EntityPropertyPermission.Action.UPDATE.getDisplayName() + "権限がありません");
 					throw new NoPermissionException(
-							resourceString("impl.entity.auth.EntityAuthInterceptor.noUpdateProperty", eh.getLocalizedDisplayName(), ph.getLocalizedDisplayName()));
+							resourceString("impl.entity.auth.EntityAuthInterceptor.noUpdateProperty", eh.getLocalizedDisplayName(),
+									ph.getLocalizedDisplayName()));
 				}
 			}
 
@@ -549,7 +576,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 
 				Condition cond = null;
 				if (updateCond.getWhere() != null) {
-					cond = updateCond.getWhere().getCondition();
+					cond = updateCond.getWhere()
+							.getCondition();
 				}
 				cond = eac.addLimitingCondition(cond, EntityPermission.Action.UPDATE, user);
 				updateCond.setWhere(new Where(cond));
@@ -575,7 +603,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			return invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.DELETE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.DELETE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -591,7 +620,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 
 				Condition cond = null;
 				if (delCond.getWhere() != null) {
-					cond = delCond.getWhere().getCondition();
+					cond = delCond.getWhere()
+							.getCondition();
 				}
 				cond = eac.addLimitingCondition(cond, EntityPermission.Action.DELETE, user);
 				delCond.setWhere(new Where(cond));
@@ -600,7 +630,7 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			return invocation.proceed();
 		}
 	}
-	
+
 	@Override
 	public void getRecycleBin(EntityGetRecycleBinInvocation invocation) {
 		EntityGetRecycleBinInvocationImpl inv = (EntityGetRecycleBinInvocationImpl) invocation;
@@ -613,7 +643,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.DELETE);
 			if (!user.checkPermission(perm)) {
 				//削除権限がない場合は、参照できない
 				return;
@@ -621,7 +652,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(perm);
 			if (eac.hasLimitCondition(perm, user)) {
 				//自分が削除したEntityに限定
-				String clientId = ExecuteContext.getCurrentContext().getClientId();
+				String clientId = ExecuteContext.getCurrentContext()
+						.getClientId();
 				Predicate<Entity> cb = inv.getCallback();
 				inv.setCallback(e -> {
 					if (clientId.equals(e.getUpdateBy())) {
@@ -651,7 +683,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.DELETE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.DELETE.getDisplayName() + "権限がありません");
 				throw new NoPermissionException(
@@ -683,7 +716,8 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			return invocation.proceed();
 		} else {
-			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			EntityPermission perm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.DELETE);
 			if (!user.checkPermission(perm)) {
 //				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の" + EntityPermission.Action.DELETE.getDisplayName() + "（復活）権限がありません");
 				throw new NoPermissionException(
@@ -700,8 +734,9 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 				if (ret[0] == null) {
 					throw new EntityConcurrentUpdateException(resourceString("impl.core.EntityHandler.alreadyRestored"));
 				}
-				
-				String clientId = ExecuteContext.getCurrentContext().getClientId();
+
+				String clientId = ExecuteContext.getCurrentContext()
+						.getClientId();
 				if (!clientId.equals(ret[0].getUpdateBy())) {
 					throw new NoPermissionException(
 							resourceString("impl.entity.auth.EntityAuthInterceptor.noUndoAll", eh.getLocalizedDisplayName()));
@@ -727,17 +762,20 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			invocation.proceed();
 		} else {
-			EntityPermission delPerm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			EntityPermission delPerm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.DELETE);
 			if (!user.checkPermission(delPerm)) {
 				throw new NoPermissionException(
 						resourceString("impl.entity.auth.EntityAuthInterceptor.noDelete", eh.getLocalizedDisplayName()));
 			}
-			EntityPermission crePerm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.CREATE);
+			EntityPermission crePerm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.CREATE);
 			if (!user.checkPermission(crePerm)) {
 				throw new NoPermissionException(
 						resourceString("impl.entity.auth.EntityAuthInterceptor.noRegist", eh.getLocalizedDisplayName()));
 			}
-			EntityPermission updPerm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.UPDATE);
+			EntityPermission updPerm = new EntityPermission(eh.getMetaData()
+					.getName(), EntityPermission.Action.UPDATE);
 			if (!user.checkPermission(updPerm)) {
 				throw new NoPermissionException(
 						resourceString("impl.entity.auth.EntityAuthInterceptor.noUpdate", eh.getLocalizedDisplayName()));

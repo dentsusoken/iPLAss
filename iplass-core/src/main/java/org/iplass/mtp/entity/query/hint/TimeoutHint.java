@@ -34,10 +34,10 @@ public class TimeoutHint extends EQLHint {
 	private static final long serialVersionUID = -652190536500105365L;
 
 	private int seconds;
-	
+
 	public TimeoutHint() {
 	}
-	
+
 	public TimeoutHint(int seconds) {
 		this.seconds = seconds;
 	}

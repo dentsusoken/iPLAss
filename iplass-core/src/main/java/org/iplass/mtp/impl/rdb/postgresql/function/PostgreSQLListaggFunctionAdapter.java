@@ -32,12 +32,12 @@ import org.iplass.mtp.impl.rdb.common.function.ListaggFunctionAdapter;
  *
  */
 public class PostgreSQLListaggFunctionAdapter extends ListaggFunctionAdapter {
-	
+
 	public PostgreSQLListaggFunctionAdapter() {
 		super();
 		setSqlFunctionName("STRING_AGG");
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Listagg function, RdbAdapter rdb) {
 		context.append("STRING_AGG(");
@@ -53,17 +53,21 @@ public class PostgreSQLListaggFunctionAdapter extends ListaggFunctionAdapter {
 			context.append(rdb.getListaggDefaultSeparator());
 			context.append("'");
 		}
-		
+
 		if (function.getWithinGroup() != null) {
 			context.append(" ORDER BY ");
-			for (int i = 0; i < function.getWithinGroup().getSortSpecList().size(); i++) {
+			for (int i = 0; i < function.getWithinGroup()
+					.getSortSpecList()
+					.size(); i++) {
 				if (i > 0) {
 					context.append(",");
 				}
-				toOrderBySpecSQL(context, function.getWithinGroup().getSortSpecList().get(i));
+				toOrderBySpecSQL(context, function.getWithinGroup()
+						.getSortSpecList()
+						.get(i));
 			}
 		}
-		
+
 		context.append(")");
 	}
 
@@ -76,7 +80,7 @@ public class PostgreSQLListaggFunctionAdapter extends ListaggFunctionAdapter {
 		if (args.size() != 4) {
 			throw new QueryException("LISTAGG argment mismatch.");
 		}
-		
+
 		context.append("STRING_AGG(");
 		if (args.get(0) != null) {
 			context.append(args.get(0));

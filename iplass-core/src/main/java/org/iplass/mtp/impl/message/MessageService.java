@@ -39,7 +39,6 @@ import org.iplass.mtp.message.MessageManager;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
-
 /**
  * メッセージサービス
  *
@@ -55,9 +54,11 @@ public class MessageService extends AbstractTypedMetaDataService<MetaMessageCate
 		public TypeMap() {
 			super(getFixedPath(), MetaMessageCategory.class, MessageCategory.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<MessageCategory> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(MessageManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(MessageManager.class);
 		}
 
 		@Override
@@ -68,7 +69,7 @@ public class MessageService extends AbstractTypedMetaDataService<MetaMessageCate
 
 	private List<ResourceBundleConfig> resourceBundle;
 	private ConcurrentHashMap<String, ResourceBundle.Control> resourceBundleControlMap;
-	
+
 	public List<ResourceBundleConfig> getResourceBundle() {
 		return resourceBundle;
 	}
@@ -102,7 +103,8 @@ public class MessageService extends AbstractTypedMetaDataService<MetaMessageCate
 	public List<String> getMessageIdList(int tenantId, String category) {
 		MetaMessageCategoryHandler handler = getRuntimeByName(category);
 		MetaMessageCategory metaData = handler.getMetaData();
-		return new ArrayList<String>(metaData.getMessages().keySet());
+		return new ArrayList<String>(metaData.getMessages()
+				.keySet());
 	}
 
 	@Override
@@ -114,12 +116,12 @@ public class MessageService extends AbstractTypedMetaDataService<MetaMessageCate
 	public Class<MetaMessageCategoryHandler> getRuntimeType() {
 		return MetaMessageCategoryHandler.class;
 	}
-	
+
 	public ResourceBundle.Control getResourceBundleControl(String baseBundleName) {
 		ResourceBundle.Control ctrl = resourceBundleControlMap.get(baseBundleName);
 		if (ctrl == null) {
 			if (resourceBundle != null) {
-				for (ResourceBundleConfig rbc: resourceBundle) {
+				for (ResourceBundleConfig rbc : resourceBundle) {
 					if (rbc.isMatch(baseBundleName)) {
 						ctrl = rbc.getResourceBundleControl();
 						resourceBundleControlMap.put(baseBundleName, ctrl);
@@ -128,7 +130,7 @@ public class MessageService extends AbstractTypedMetaDataService<MetaMessageCate
 				}
 			}
 		}
-		
+
 		return ctrl;
 	}
 

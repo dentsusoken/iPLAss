@@ -35,29 +35,29 @@ public class ReferenceRecursiveTreeSetting implements Refrectable {
 
 	/** ツリーのルートに表示するデータの検索条件 */
 	@MetaFieldInfo(
-			displayName="最上位階層の検索条件",
-			displayNameKey="generic_editor_ReferenceRecursiveTreeSetting_rootConditionDisplaNameKey",
-			description="<b>表示タイプ:Tree</b><br>" +
+			displayName = "最上位階層の検索条件",
+			displayNameKey = "generic_editor_ReferenceRecursiveTreeSetting_rootConditionDisplaNameKey",
+			description = "<b>表示タイプ:Tree</b><br>" +
 					"ツリーの初期表示時に検索する最上位階層のデータの検索条件を設定します。<br>" +
 					"未指定の場合全データが最上位階層に表示されます。",
-			descriptionKey="generic_editor_ReferenceRecursiveTreeSetting_rootConditionDescriptionKey"
+			descriptionKey = "generic_editor_ReferenceRecursiveTreeSetting_rootConditionDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String rootCondition;
 
 	/** 子階層のプロパティ名 */
 	@MetaFieldInfo(
-			displayName="子階層のプロパティ名",
-			displayNameKey="generic_editor_ReferenceRecursiveTreeSetting_childPropertyNameDisplaNameKey",
-			inputType=InputType.PROPERTY,
-			description="<b>表示タイプ:Tree</b><br>" +
+			displayName = "子階層のプロパティ名",
+			displayNameKey = "generic_editor_ReferenceRecursiveTreeSetting_childPropertyNameDisplaNameKey",
+			inputType = InputType.PROPERTY,
+			description = "<b>表示タイプ:Tree</b><br>" +
 					"再帰構造のEntityが持つ子階層のプロパティ名を指定します。",
-			descriptionKey="generic_editor_ReferenceRecursiveTreeSetting_childPropertyNameDescriptionKey"
+			descriptionKey = "generic_editor_ReferenceRecursiveTreeSetting_childPropertyNameDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String childPropertyName;
 
@@ -66,7 +66,7 @@ public class ReferenceRecursiveTreeSetting implements Refrectable {
 	 * @return ツリーのルートに表示するデータの検索条件
 	 */
 	public String getRootCondition() {
-	    return rootCondition;
+		return rootCondition;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class ReferenceRecursiveTreeSetting implements Refrectable {
 	 * @param rootCondition ツリーのルートに表示するデータの検索条件
 	 */
 	public void setRootCondition(String rootCondition) {
-	    this.rootCondition = rootCondition;
+		this.rootCondition = rootCondition;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class ReferenceRecursiveTreeSetting implements Refrectable {
 	 * @return 子階層のプロパティ名
 	 */
 	public String getChildPropertyName() {
-	    return childPropertyName;
+		return childPropertyName;
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class ReferenceRecursiveTreeSetting implements Refrectable {
 	 * @param childPropertyName 子階層のプロパティ名
 	 */
 	public void setChildPropertyName(String childPropertyName) {
-	    this.childPropertyName = childPropertyName;
+		this.childPropertyName = childPropertyName;
 	}
 
 }

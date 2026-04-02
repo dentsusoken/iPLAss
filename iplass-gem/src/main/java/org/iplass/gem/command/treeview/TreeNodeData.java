@@ -108,15 +108,18 @@ public class TreeNodeData {
 	}
 
 	private String convertValue(Object value) {
-		if (value == null) return null;
+		if (value == null)
+			return null;
 		if (value instanceof BinaryReference) {
 			return ((BinaryReference) value).getName();
 		} else if (value instanceof Boolean) {
 			return value.toString();
 		} else if (value instanceof Date) {
-			return DateUtil.getDateInstance(DateFormat.MEDIUM, false).format((java.sql.Date) value);
+			return DateUtil.getDateInstance(DateFormat.MEDIUM, false)
+					.format((java.sql.Date) value);
 		} else if (value instanceof Timestamp) {
-			return DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true).format((Timestamp)value);
+			return DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true)
+					.format((Timestamp) value);
 		} else if (value instanceof BigDecimal) {
 			return value.toString();
 		} else if (value instanceof Double) {
@@ -144,7 +147,7 @@ public class TreeNodeData {
 	 * @return id
 	 */
 	public String getId() {
-	    return id;
+		return id;
 	}
 
 	/**
@@ -152,7 +155,7 @@ public class TreeNodeData {
 	 * @param id id
 	 */
 	public void setId(String id) {
-	    this.id = id;
+		this.id = id;
 	}
 
 	/**
@@ -160,7 +163,7 @@ public class TreeNodeData {
 	 * @return type
 	 */
 	public String getType() {
-	    return type;
+		return type;
 	}
 
 	/**
@@ -168,7 +171,7 @@ public class TreeNodeData {
 	 * @param type type
 	 */
 	public void setType(String type) {
-	    this.type = type;
+		this.type = type;
 	}
 
 	/**
@@ -176,7 +179,7 @@ public class TreeNodeData {
 	 * @return name
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -184,7 +187,7 @@ public class TreeNodeData {
 	 * @param name name
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -192,7 +195,7 @@ public class TreeNodeData {
 	 * @return defName
 	 */
 	public String getDefName() {
-	    return defName;
+		return defName;
 	}
 
 	/**
@@ -200,7 +203,7 @@ public class TreeNodeData {
 	 * @param defName defName
 	 */
 	public void setDefName(String defName) {
-	    this.defName = defName;
+		this.defName = defName;
 	}
 
 	/**
@@ -208,7 +211,7 @@ public class TreeNodeData {
 	 * @return oid
 	 */
 	public String getOid() {
-	    return oid;
+		return oid;
 	}
 
 	/**
@@ -216,7 +219,7 @@ public class TreeNodeData {
 	 * @param oid oid
 	 */
 	public void setOid(String oid) {
-	    this.oid = oid;
+		this.oid = oid;
 	}
 
 	/**
@@ -224,7 +227,7 @@ public class TreeNodeData {
 	 * @return action
 	 */
 	public String getAction() {
-	    return action;
+		return action;
 	}
 
 	/**
@@ -232,7 +235,7 @@ public class TreeNodeData {
 	 * @param action action
 	 */
 	public void setAction(String action) {
-	    this.action = action;
+		this.action = action;
 	}
 
 	/**
@@ -240,7 +243,7 @@ public class TreeNodeData {
 	 * @return viewName
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -248,7 +251,7 @@ public class TreeNodeData {
 	 * @param viewName viewName
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	/**
@@ -256,7 +259,7 @@ public class TreeNodeData {
 	 * @return level
 	 */
 	public int getLevel() {
-	    return level;
+		return level;
 	}
 
 	/**
@@ -264,7 +267,7 @@ public class TreeNodeData {
 	 * @param level level
 	 */
 	public void setLevel(int level) {
-	    this.level = level;
+		this.level = level;
 	}
 
 	/**
@@ -272,7 +275,7 @@ public class TreeNodeData {
 	 * @return parent
 	 */
 	public String getParent() {
-	    return parent;
+		return parent;
 	}
 
 	/**
@@ -280,7 +283,7 @@ public class TreeNodeData {
 	 * @param parent parent
 	 */
 	public void setParent(String parent) {
-	    this.parent = parent;
+		this.parent = parent;
 	}
 
 	/**
@@ -288,7 +291,7 @@ public class TreeNodeData {
 	 * @return isLeaf
 	 */
 	public boolean isLeaf() {
-	    return isLeaf;
+		return isLeaf;
 	}
 
 	/**
@@ -296,7 +299,7 @@ public class TreeNodeData {
 	 * @param isLeaf isLeaf
 	 */
 	public void setLeaf(boolean isLeaf) {
-	    this.isLeaf = isLeaf;
+		this.isLeaf = isLeaf;
 	}
 
 	/**
@@ -304,7 +307,7 @@ public class TreeNodeData {
 	 * @return expanded
 	 */
 	public boolean isExpanded() {
-	    return expanded;
+		return expanded;
 	}
 
 	/**
@@ -312,7 +315,7 @@ public class TreeNodeData {
 	 * @param expanded expanded
 	 */
 	public void setExpanded(boolean expanded) {
-	    this.expanded = expanded;
+		this.expanded = expanded;
 	}
 
 	/**
@@ -320,7 +323,7 @@ public class TreeNodeData {
 	 * @return loaded
 	 */
 	public boolean isLoaded() {
-	    return loaded;
+		return loaded;
 	}
 
 	/**
@@ -328,7 +331,7 @@ public class TreeNodeData {
 	 * @param loaded loaded
 	 */
 	public void setLoaded(boolean loaded) {
-	    this.loaded = loaded;
+		this.loaded = loaded;
 	}
 
 	/**
@@ -336,7 +339,7 @@ public class TreeNodeData {
 	 * @return values
 	 */
 	public Object[] getValues() {
-	    return values;
+		return values;
 	}
 
 	/**
@@ -344,7 +347,7 @@ public class TreeNodeData {
 	 * @param values values
 	 */
 	public void setValues(Object[] values) {
-	    this.values = values;
+		this.values = values;
 	}
 
 }

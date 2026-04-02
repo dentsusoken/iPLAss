@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
  */
 public class AsyncTaskInfo implements Serializable {
 	private static final long serialVersionUID = -4292102838244361400L;
-	
+
 	private String queue;
 	private long taskId;
 	private String groupingKey;
@@ -41,58 +41,75 @@ public class AsyncTaskInfo implements Serializable {
 	private boolean returnResult;
 	private Callable<?> task;
 	private Object result;
-	
+
 	public ExceptionHandlingMode getExceptionHandlingMode() {
 		return exceptionHandlingMode;
 	}
+
 	public void setExceptionHandlingMode(ExceptionHandlingMode exceptionHandlingMode) {
 		this.exceptionHandlingMode = exceptionHandlingMode;
 	}
+
 	public boolean isReturnResult() {
 		return returnResult;
 	}
+
 	public void setReturnResult(boolean returnResult) {
 		this.returnResult = returnResult;
 	}
+
 	public String getQueue() {
 		return queue;
 	}
+
 	public void setQueue(String queue) {
 		this.queue = queue;
 	}
+
 	public long getTaskId() {
 		return taskId;
 	}
+
 	public void setTaskId(long taskId) {
 		this.taskId = taskId;
 	}
+
 	public String getGroupingKey() {
 		return groupingKey;
 	}
+
 	public void setGroupingKey(String groupingKey) {
 		this.groupingKey = groupingKey;
 	}
+
 	public TaskStatus getStatus() {
 		return status;
 	}
+
 	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
+
 	public int getRetryCount() {
 		return retryCount;
 	}
+
 	public void setRetryCount(int retryCount) {
 		this.retryCount = retryCount;
 	}
+
 	public Callable<?> getTask() {
 		return task;
 	}
+
 	public void setTask(Callable<?> task) {
 		this.task = task;
 	}
+
 	public Object getResult() {
 		return result;
 	}
+
 	public void setResult(Object result) {
 		this.result = result;
 	}

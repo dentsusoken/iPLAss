@@ -65,7 +65,7 @@ public class MimeTypeMapEditDialog extends MtpDialog {
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					saveMap();
 				}
 			}

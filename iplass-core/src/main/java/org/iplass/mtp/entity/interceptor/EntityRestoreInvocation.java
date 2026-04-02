@@ -22,10 +22,10 @@ package org.iplass.mtp.entity.interceptor;
 
 import org.iplass.mtp.entity.Entity;
 
-
 public interface EntityRestoreInvocation extends EntityInvocation<Entity> {
-	
+
 	public Long getRecycleBinId();
+
 	public void setRecycleBinId(Long rbid);
-	
+
 }

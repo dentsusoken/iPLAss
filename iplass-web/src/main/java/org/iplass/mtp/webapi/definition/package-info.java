@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/webapi",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/webapi", prefix="def-webapi")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/webapi",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/webapi", prefix = "def-webapi")
+		}
 )
 package org.iplass.mtp.webapi.definition;

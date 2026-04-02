@@ -22,9 +22,9 @@ package org.iplass.mtp.pushnotification.template.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class PushNotificationTemplateDefinition implements Definition {
@@ -37,9 +37,9 @@ public class PushNotificationTemplateDefinition implements Definition {
 	private String body;
 	private String icon;
 	private List<LocalizedNotificationDefinition> localizedNotificationList;
-	
+
 	private String configScript;
-	
+
 	private String langOrUserBindingName;
 
 	public String getName() {
@@ -98,7 +98,7 @@ public class PushNotificationTemplateDefinition implements Definition {
 			List<LocalizedNotificationDefinition> localizedNotificationList) {
 		this.localizedNotificationList = localizedNotificationList;
 	}
-	
+
 	public void addLocalizedNotification(LocalizedNotificationDefinition localizedNotification) {
 		if (localizedNotificationList == null) {
 			localizedNotificationList = new ArrayList<>();

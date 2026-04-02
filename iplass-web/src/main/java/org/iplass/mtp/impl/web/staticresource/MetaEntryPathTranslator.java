@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.web.staticresource;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.web.staticresource.EntryPathTranslator;
@@ -29,14 +27,16 @@ import org.iplass.mtp.web.staticresource.definition.JavaClassEntryPathTranslator
 import org.iplass.mtp.web.staticresource.definition.PrefixEntryPathTranslatorDefinition;
 import org.iplass.mtp.web.staticresource.definition.ScriptingEntryPathTranslatorDefinition;
 
-@XmlSeeAlso({MetaJavaClassEntryPathTranslator.class,
-	MetaPrefixEntryPathTranslator.class,
-	MetaScriptingEntryPathTranslator.class})
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
+@XmlSeeAlso({ MetaJavaClassEntryPathTranslator.class,
+		MetaPrefixEntryPathTranslator.class,
+		MetaScriptingEntryPathTranslator.class })
 public abstract class MetaEntryPathTranslator implements MetaData {
 	private static final long serialVersionUID = 4317005560481835285L;
-	
+
 	public static MetaEntryPathTranslator toMeta(EntryPathTranslatorDefinition def) {
-		if  (def == null) {
+		if (def == null) {
 			return null;
 		}
 		if (def instanceof JavaClassEntryPathTranslatorDefinition) {
@@ -57,7 +57,7 @@ public abstract class MetaEntryPathTranslator implements MetaData {
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public abstract EntryPathTranslatorDefinition currentConfig();
-	
+
 }

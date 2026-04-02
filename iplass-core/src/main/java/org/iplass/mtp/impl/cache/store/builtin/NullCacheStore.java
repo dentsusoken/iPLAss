@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.cache.store.builtin;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -131,7 +130,7 @@ public class NullCacheStore implements CacheStore {
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public int getSize() {
 		return 0;
@@ -150,7 +149,7 @@ public class NullCacheStore implements CacheStore {
 
 	@Override
 	public void destroy() {
-		
+
 	}
 
 	@Override

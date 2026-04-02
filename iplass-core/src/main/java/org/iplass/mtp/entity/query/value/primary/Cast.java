@@ -77,32 +77,32 @@ public class Cast extends PrimaryValue {
 	private ValueExpression value;
 	private PropertyDefinitionType type;
 	private List<Integer> typeArguments;
-	
+
 	public Cast() {
 	}
-	
+
 	public Cast(ValueExpression value, PropertyDefinitionType type) {
 		this.value = value;
 		this.type = type;
 	}
-	
+
 	public Cast(ValueExpression value, PropertyDefinitionType type, List<Integer> typeArguments) {
 		this.value = value;
 		this.type = type;
 		this.typeArguments = typeArguments;
 	}
-	
+
 	public Cast(ValueExpression value, PropertyDefinitionType type, Integer... typeArgs) {
 		this.value = value;
 		this.type = type;
 		if (typeArgs != null && typeArgs.length > 0) {
 			this.typeArguments = new ArrayList<>(typeArgs.length);
-			for (Integer i: typeArgs) {
+			for (Integer i : typeArgs) {
 				this.typeArguments.add(i);
 			}
 		}
 	}
-	
+
 	public ValueExpression getValue() {
 		return value;
 	}
@@ -119,7 +119,6 @@ public class Cast extends PrimaryValue {
 		this.type = type;
 	}
 
-	
 	public List<Integer> getTypeArguments() {
 		return typeArguments;
 	}
@@ -135,10 +134,10 @@ public class Cast extends PrimaryValue {
 		if (typeArguments.size() <= index) {
 			return null;
 		}
-		
+
 		return typeArguments.get(index);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -149,7 +148,7 @@ public class Cast extends PrimaryValue {
 		if (typeArguments != null && typeArguments.size() > 0) {
 			sb.append("(");
 			boolean first = true;
-			for (Integer ta: typeArguments) {
+			for (Integer ta : typeArguments) {
 				if (first) {
 					first = false;
 				} else {
@@ -159,7 +158,7 @@ public class Cast extends PrimaryValue {
 			}
 			sb.append(")");
 		}
-		
+
 		sb.append(")");
 		return sb.toString();
 	}
@@ -197,7 +196,7 @@ public class Cast extends PrimaryValue {
 			return false;
 		return true;
 	}
-	
+
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (value != null) {

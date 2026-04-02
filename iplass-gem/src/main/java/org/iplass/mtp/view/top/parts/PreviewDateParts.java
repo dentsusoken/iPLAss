@@ -43,7 +43,7 @@ public class PreviewDateParts extends TopViewParts {
 	 * @return タイトル
 	 */
 	public String getTitle() {
-	    return title;
+		return title;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class PreviewDateParts extends TopViewParts {
 	 * @param title タイトル
 	 */
 	public void setTitle(String title) {
-	    this.title = title;
+		this.title = title;
 	}
 
 	/**

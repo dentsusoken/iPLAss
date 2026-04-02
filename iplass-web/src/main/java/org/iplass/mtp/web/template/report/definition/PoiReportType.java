@@ -39,11 +39,11 @@ public class PoiReportType extends ReportType {
 	private String passwordAttributeName;
 
 	public ReportOutputLogicDefinition getReportOutputLogicDefinition() {
-	    return reportOutputLogicDefinition;
+		return reportOutputLogicDefinition;
 	}
 
 	public void setReportOutputLogicDefinition(ReportOutputLogicDefinition reportOutputLogicDefinition) {
-	    this.reportOutputLogicDefinition = reportOutputLogicDefinition;
+		this.reportOutputLogicDefinition = reportOutputLogicDefinition;
 	}
 
 	public String getPasswordAttributeName() {

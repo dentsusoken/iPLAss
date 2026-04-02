@@ -31,7 +31,6 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
@@ -76,7 +75,8 @@ public class OPEndpoint {
 	 * @param codeVerifier
 	 * @return token
 	 */
-	public Map<String, Object> token(ClientAuthenticationType clientAuthenticationType, String clientId, String clientSecret, String code, String redirectUri, String codeVerifier) {
+	public Map<String, Object> token(ClientAuthenticationType clientAuthenticationType, String clientId, String clientSecret, String code,
+			String redirectUri, String codeVerifier) {
 		try {
 			String content = null;
 			HttpClient client = opService.getHttpClient();
@@ -84,7 +84,8 @@ public class OPEndpoint {
 			List<NameValuePair> nvps = new ArrayList<>();
 
 			if (clientAuthenticationType == ClientAuthenticationType.CLIENT_SECRET_BASIC) {
-				post.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes("UTF-8")));
+				post.setHeader("Authorization", "Basic " + Base64.getEncoder()
+						.encodeToString((clientId + ":" + clientSecret).getBytes("UTF-8")));
 			} else {
 				nvps.add(new BasicNameValuePair(OAuthEndpointConstants.PARAM_CLIENT_ID, clientId));
 				nvps.add(new BasicNameValuePair(OAuthEndpointConstants.PARAM_CLIENT_SECRET, clientSecret));
@@ -107,7 +108,9 @@ public class OPEndpoint {
 				}
 			});
 
-			return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {});
+			return opService.getObjectMapper()
+					.readValue(content, new TypeReference<Map<String, Object>>() {
+					});
 		} catch (IOException e) {
 			throw new OIDCRuntimeException(e);
 		}
@@ -123,21 +126,23 @@ public class OPEndpoint {
 		//get user profile
 		try {
 			HttpGet get = new HttpGet(userInfoEndpointUrl);
-			get.setHeader("Authorization", tokenType+ " " + accessToken);
+			get.setHeader("Authorization", tokenType + " " + accessToken);
 
-			return opService.getHttpClient().execute(get, res -> {
-				HttpEntity entity = res.getEntity();
+			return opService.getHttpClient()
+					.execute(get, res -> {
+						HttpEntity entity = res.getEntity();
 
-				try {
-					String content = EntityUtils.toString(entity);
+						try {
+							String content = EntityUtils.toString(entity);
 
-					return opService.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {
+							return opService.getObjectMapper()
+									.readValue(content, new TypeReference<Map<String, Object>>() {
+									});
+
+						} finally {
+							EntityUtils.consume(entity);
+						}
 					});
-
-				} finally {
-					EntityUtils.consume(entity);
-				}
-			});
 
 		} catch (IOException e) {
 			throw new OIDCRuntimeException(e);

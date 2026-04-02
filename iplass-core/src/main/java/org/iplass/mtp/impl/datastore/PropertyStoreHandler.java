@@ -20,8 +20,7 @@
 
 package org.iplass.mtp.impl.datastore;
 
-
-public abstract class PropertyStoreHandler /*implements MetaDataRuntime*/ {
+public abstract class PropertyStoreHandler /* implements MetaDataRuntime */ {
 	public abstract MetaPropertyStore getMetaData();
 
 }

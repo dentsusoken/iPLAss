@@ -53,18 +53,17 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @WebApi(
-		name=UpdateMappedbyReferenceCommand.WEBAPI_NAME,
-		displayName="被参照プロパティ更新",
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={Constants.ERROR_PROP, TokenStore.TOKEN_PARAM_NAME},
-		tokenCheck=@WebApiTokenCheck(consume=true, useFixedToken=false),
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/detail/UpdateMappedbyReferenceCommand", displayName="被参照プロパティ更新")
+		name = UpdateMappedbyReferenceCommand.WEBAPI_NAME,
+		displayName = "被参照プロパティ更新",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.ERROR_PROP, TokenStore.TOKEN_PARAM_NAME },
+		tokenCheck = @WebApiTokenCheck(consume = true, useFixedToken = false),
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/detail/UpdateMappedbyReferenceCommand", displayName = "被参照プロパティ更新")
 public final class UpdateMappedbyReferenceCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdateMappedbyReferenceCommand.class);
@@ -75,8 +74,10 @@ public final class UpdateMappedbyReferenceCommand implements Command {
 	private EntityDefinitionManager edm;
 
 	public UpdateMappedbyReferenceCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 	}
 
 	@Override
@@ -161,7 +162,8 @@ public final class UpdateMappedbyReferenceCommand implements Command {
 		ReferenceProperty rrp = (ReferenceProperty) red.getProperty(rp.getMappedBy());
 		if (rrp.getMultiplicity() == 1) {
 			Entity entity = refEntity.getValue(rrp.getName());
-			if (entity != null && entity.getOid().equals(oid)) {
+			if (entity != null && entity.getOid()
+					.equals(oid)) {
 				needUpdate = true;
 				refEntity.setValue(rrp.getName(), null);
 			}
@@ -170,7 +172,8 @@ public final class UpdateMappedbyReferenceCommand implements Command {
 			if (array != null) {
 				List<Entity> entityList = new ArrayList<Entity>();
 				for (Entity entity : array) {
-					if (entity.getOid().equals(oid)) {
+					if (entity.getOid()
+							.equals(oid)) {
 						// 除外
 						needUpdate = true;
 					} else {

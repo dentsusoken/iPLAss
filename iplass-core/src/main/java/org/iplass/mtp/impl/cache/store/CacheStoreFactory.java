@@ -21,11 +21,11 @@
 package org.iplass.mtp.impl.cache.store;
 
 public abstract class CacheStoreFactory {
-	
+
 	private String namespace;
 	private String namespacePattern;
 	private int indexCount = 0;
-	
+
 	public int getIndexCount() {
 		return indexCount;
 	}
@@ -51,12 +51,12 @@ public abstract class CacheStoreFactory {
 	}
 
 	public abstract CacheStore createCacheStore(String namespace);
-	
+
 	public abstract boolean canUseForLocalCache();
-	
+
 	public abstract boolean supportsIndex();
-	
+
 	public abstract CacheHandler createCacheHandler(CacheStore store);
-	
+
 	public abstract CacheStoreFactory getLowerLevel();
 }

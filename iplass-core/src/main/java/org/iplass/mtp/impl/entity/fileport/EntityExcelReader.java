@@ -106,7 +106,8 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 
 		List<String> headerLine = new ArrayList<String>();
 		for (int i = 0; i < lastCell; i++) {
-			String cellValue = headerRow.getCell(i).getStringCellValue();
+			String cellValue = headerRow.getCell(i)
+					.getStringCellValue();
 			if (StringUtil.isEmpty(cellValue)) {
 				break;
 			}
@@ -141,7 +142,8 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		}
 
 		// 空行が含まれていた場合は終了
-		if (currentLine.stream().anyMatch(value -> StringUtil.isNotEmpty(value))) {
+		if (currentLine.stream()
+				.anyMatch(value -> StringUtil.isNotEmpty(value))) {
 			rowIndex++;
 			return currentLine;
 		}
@@ -196,23 +198,28 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 			}
 			switch (propertyDefinition.getType()) {
 			case DATE:
-				return DateUtil.getSimpleDateFormat(getDateFormat(), false).format(cell.getDateCellValue());
+				return DateUtil.getSimpleDateFormat(getDateFormat(), false)
+						.format(cell.getDateCellValue());
 			case DATETIME:
-				return DateUtil.getSimpleDateFormat(getDateTimeFormat(), false).format(cell.getDateCellValue());
+				return DateUtil.getSimpleDateFormat(getDateTimeFormat(), false)
+						.format(cell.getDateCellValue());
 			case TIME:
-				return DateUtil.getSimpleDateFormat(getTimeFormat(), false).format(cell.getDateCellValue());
+				return DateUtil.getSimpleDateFormat(getTimeFormat(), false)
+						.format(cell.getDateCellValue());
 			default:
 				return null;
 			}
 		}
 		// ユーザー定義型で日付を設定している場合
-		if (BuiltinFormats.FIRST_USER_DEFINED_FORMAT_INDEX <= cell.getCellStyle().getDataFormat()) {
-			CellFormat cellFormat = CellFormat.getInstance(cell.getCellStyle().getDataFormatString());
+		if (BuiltinFormats.FIRST_USER_DEFINED_FORMAT_INDEX <= cell.getCellStyle()
+				.getDataFormat()) {
+			CellFormat cellFormat = CellFormat.getInstance(cell.getCellStyle()
+					.getDataFormatString());
 			return cellFormat.apply(cell).text;
 		}
 		// セルタイプがNUMERICで、Booleanの0、1が、0.0、1.0になるので対応
 		if (propertyDefinition != null && propertyDefinition.getType() == PropertyDefinitionType.BOOLEAN) {
-			return ConvertUtil.convertToString((int)cell.getNumericCellValue());
+			return ConvertUtil.convertToString((int) cell.getNumericCellValue());
 		}
 
 		// 上記以外は数値を返す
@@ -229,7 +236,9 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		if (dateFormat != null) {
 			return dateFormat;
 		}
-		dateFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDateFormat();
+		dateFormat = ExecuteContext.getCurrentContext()
+				.getLocaleFormat()
+				.getOutputDateFormat();
 		return dateFormat;
 
 	}
@@ -244,7 +253,9 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		if (dateTimeFormat != null) {
 			return dateTimeFormat;
 		}
-		dateTimeFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDatetimeSecFormat();
+		dateTimeFormat = ExecuteContext.getCurrentContext()
+				.getLocaleFormat()
+				.getOutputDatetimeSecFormat();
 		return dateTimeFormat;
 	}
 
@@ -258,7 +269,9 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		if (timeFormat != null) {
 			return timeFormat;
 		}
-		timeFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputTimeSecFormat();
+		timeFormat = ExecuteContext.getCurrentContext()
+				.getLocaleFormat()
+				.getOutputTimeSecFormat();
 		return timeFormat;
 	}
 

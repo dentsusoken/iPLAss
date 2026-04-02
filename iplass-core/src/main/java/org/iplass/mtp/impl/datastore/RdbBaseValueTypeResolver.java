@@ -81,8 +81,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter.ArgumentTypeResolver;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-
-public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,ArgumentTypeResolver {
+public class RdbBaseValueTypeResolver implements ValueExpressionVisitor, ArgumentTypeResolver {
 
 	private EntityHandler fromEntity;
 	private EntityContext context;
@@ -95,7 +94,8 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 		this.fromEntity = fromEntity;
 		this.context = context;
 		this.rdb = rdb;
-		propService = ServiceRegistry.getRegistry().getService(PropertyService.class);
+		propService = ServiceRegistry.getRegistry()
+				.getService(PropertyService.class);
 	}
 
 	public PropertyType resolve(ValueExpression val) {
@@ -120,7 +120,8 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 		if (literal.getValue() == null) {
 			type = null;
 		} else {
-			type = propService.getPropertyType(literal.getValue().getClass());
+			type = propService.getPropertyType(literal.getValue()
+					.getClass());
 		}
 
 		return false;
@@ -155,7 +156,7 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 
 	private void getSubTypeList(List<PropertyType> list, List<ValueExpression> subList) {
 		if (subList != null) {
-			for (ValueExpression v: subList) {
+			for (ValueExpression v : subList) {
 				v.accept(this);
 				list.add(type);
 			}
@@ -210,19 +211,26 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 	}
 
 	public boolean visit(ParenValue bracketValue) {
-		bracketValue.getNestedValue().accept(this);
+		bracketValue.getNestedValue()
+				.accept(this);
 		return false;
 	}
 
 	public boolean visit(MinusSign minusSign) {
-		minusSign.getValue().accept(this);
+		minusSign.getValue()
+				.accept(this);
 		return false;
 	}
 
 	public boolean visit(ScalarSubQuery scalarSubQuery) {
-		EntityHandler subEntity = context.getHandlerByName(scalarSubQuery.getQuery().getFrom().getEntityName());
+		EntityHandler subEntity = context.getHandlerByName(scalarSubQuery.getQuery()
+				.getFrom()
+				.getEntityName());
 		RdbBaseValueTypeResolver subResolver = new RdbBaseValueTypeResolver(subEntity, context, rdb);
-		type = subResolver.resolve(scalarSubQuery.getQuery().getSelect().getSelectValues().get(0));
+		type = subResolver.resolve(scalarSubQuery.getQuery()
+				.getSelect()
+				.getSelectValues()
+				.get(0));
 		return false;
 	}
 
@@ -232,7 +240,8 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 	}
 
 	public boolean visit(Sum sum) {
-		sum.getValue().accept(this);
+		sum.getValue()
+				.accept(this);
 		return false;
 	}
 
@@ -243,12 +252,14 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 	}
 
 	public boolean visit(Max max) {
-		max.getValue().accept(this);
+		max.getValue()
+				.accept(this);
 		return false;
 	}
 
 	public boolean visit(Min min) {
-		min.getValue().accept(this);
+		min.getValue()
+				.accept(this);
 		return false;
 	}
 
@@ -278,13 +289,15 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 
 	@Override
 	public boolean visit(Mode mode) {
-		mode.getValue().accept(this);
+		mode.getValue()
+				.accept(this);
 		return false;
 	}
 
 	@Override
 	public boolean visit(Median median) {
-		median.getValue().accept(this);
+		median.getValue()
+				.accept(this);
 		return false;
 	}
 
@@ -325,14 +338,15 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 	@Override
 	public boolean visit(Case caseClause) {
 
-		for (When w: caseClause.getWhen()) {
+		for (When w : caseClause.getWhen()) {
 			w.accept(this);
 			if (type != null) {
 				break;
 			}
 		}
 		if (type == null && caseClause.getElseClause() != null) {
-			caseClause.getElseClause().accept(this);
+			caseClause.getElseClause()
+					.accept(this);
 		}
 
 		return false;
@@ -340,13 +354,15 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 
 	@Override
 	public boolean visit(Else elseClause) {
-		elseClause.getResult().accept(this);
+		elseClause.getResult()
+				.accept(this);
 		return false;
 	}
 
 	@Override
 	public boolean visit(When when) {
-		when.getResult().accept(this);
+		when.getResult()
+				.accept(this);
 		return false;
 	}
 
@@ -363,7 +379,8 @@ public class RdbBaseValueTypeResolver implements ValueExpressionVisitor,Argument
 
 	@Override
 	public boolean visit(WindowAggregate windowAggregate) {
-		windowAggregate.getAggregate().accept(this);
+		windowAggregate.getAggregate()
+				.accept(this);
 		return false;
 	}
 

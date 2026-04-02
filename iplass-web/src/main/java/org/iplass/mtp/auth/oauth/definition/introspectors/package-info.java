@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/auth/oauth",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/auth/oauth", prefix="def-oauth")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/auth/oauth",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/auth/oauth", prefix = "def-oauth")
+		}
 )
 package org.iplass.mtp.auth.oauth.definition.introspectors;

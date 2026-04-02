@@ -24,16 +24,19 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.LoadOption;
 
 public interface EntityLoadInvocation extends EntityInvocation<Entity> {
-	
+
 	public String getOid();
+
 	public void setOid(String oid);
-	
+
 	public Long getVersion();
+
 	public void setVersion(Long version);
-	
+
 	public boolean withLock();
-	
+
 	public LoadOption getLoadOption();
+
 	public void setLoadOption(LoadOption loadOption);
-	
+
 }

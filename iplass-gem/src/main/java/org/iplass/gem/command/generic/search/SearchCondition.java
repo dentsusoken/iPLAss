@@ -70,7 +70,8 @@ public class SearchCondition {
 	 * @return 詳細検索条件
 	 */
 	public List<SearchConditionDetail> getDetailConditonList() {
-		if (this.detailConditonList == null) this.detailConditonList = new ArrayList<SearchConditionDetail>();
+		if (this.detailConditonList == null)
+			this.detailConditonList = new ArrayList<SearchConditionDetail>();
 		return detailConditonList;
 	}
 

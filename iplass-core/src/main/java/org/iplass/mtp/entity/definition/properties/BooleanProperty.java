@@ -34,7 +34,7 @@ public class BooleanProperty extends PropertyDefinition {
 
 	public BooleanProperty() {
 	}
-	
+
 	public BooleanProperty(String name) {
 		setName(name);
 	}
@@ -43,7 +43,7 @@ public class BooleanProperty extends PropertyDefinition {
 	public Class<?> getJavaType() {
 		return Boolean.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.BOOLEAN;

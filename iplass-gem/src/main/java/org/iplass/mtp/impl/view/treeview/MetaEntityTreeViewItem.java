@@ -20,11 +20,11 @@
 
 package org.iplass.mtp.impl.view.treeview;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.treeview.EntityTreeViewItem;
 import org.iplass.mtp.view.treeview.ReferenceTreeViewItem;
 import org.iplass.mtp.view.treeview.TreeViewItem;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * ツリービューにEntityを表示するための定義情報
@@ -57,7 +57,8 @@ public class MetaEntityTreeViewItem extends MetaTreeViewItem {
 	public void applyConfig(TreeViewItem item) {
 		if (!(item instanceof EntityTreeViewItem)) {
 			throw new IllegalArgumentException(
-					"type is not EntityTreeViewItem. value is"+ item.getClass().getName());
+					"type is not EntityTreeViewItem. value is" + item.getClass()
+							.getName());
 		}
 		this.fillFrom(item);
 	}

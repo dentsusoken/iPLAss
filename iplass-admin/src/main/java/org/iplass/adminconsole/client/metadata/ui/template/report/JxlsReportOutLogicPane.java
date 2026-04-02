@@ -31,10 +31,10 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class JxlsReportOutLogicPane  extends VLayout {
+public class JxlsReportOutLogicPane extends VLayout {
 
 	private ReportOutLogicListGrid grid;
-	
+
 	public JxlsReportOutLogicPane() {
 
 		setMargin(5);
@@ -50,17 +50,17 @@ public class JxlsReportOutLogicPane  extends VLayout {
 		Label captionHint = new Label();
 		SmartGWTUtil.addHintToLabel(captionHint,
 				"<style type=\"text/css\"><!--"
-				+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
-				+ "ul.notes li{padding:5px 0px;}"
-				+ "ul.notes li span.strong {text-decoration:underline;color:red}"
-				+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
-				+ "--></style>"
-				+ "<h3>Notes</h3>"
-				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment1")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment2")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment3")
-				+ "</ul>");
+						+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
+						+ "ul.notes li{padding:5px 0px;}"
+						+ "ul.notes li span.strong {text-decoration:underline;color:red}"
+						+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
+						+ "--></style>"
+						+ "<h3>Notes</h3>"
+						+ "<ul class=\"notes\">"
+						+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment1")
+						+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment2")
+						+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment3")
+						+ "</ul>");
 		captionComposit.addMember(captionHint);
 
 		grid = new ReportOutLogicListGrid();
@@ -102,15 +102,16 @@ public class JxlsReportOutLogicPane  extends VLayout {
 	public void setDefinition(JxlsReportType definition) {
 		grid.setDefinition(definition);
 	}
-	
+
 	public void deleteAll() {
 		ListGridRecord[] records = grid.getRecords();
 		if (!(records == null || records.length == 0)) {
-			for(ListGridRecord record : records){
+			for (ListGridRecord record : records) {
 				grid.removeData(record);
 			}
 		}
 	}
+
 	/**
 	 * 入力チェックを実行します。
 	 *

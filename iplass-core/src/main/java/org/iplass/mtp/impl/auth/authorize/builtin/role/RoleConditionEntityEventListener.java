@@ -48,23 +48,23 @@ public class RoleConditionEntityEventListener implements EntityEventListener {
 	public RoleConditionEntityEventListener() {
 	}
 
-
 	private String getRoleCode(Entity roleCondEntity) {
 		Query q = new Query()
-			.select(RoleCacheLogic.ROLE_CONDITION_ROLE + "." + RoleCacheLogic.ROLE_CODE)
-			.from(RoleCacheLogic.ROLE_CONDITION_DEF_NAME)
-			.where(new Equals(Entity.OID, roleCondEntity.getOid()));
-		final String[] ret = new String[]{null};
-		ManagerLocator.getInstance().getManager(EntityManager.class).search(q, new Predicate<Object[]>() {
-			@Override
-			public boolean test(Object[] dataModel) {
-				ret[0] = (String) dataModel[0];
-				return false;//1件のはず
-			}
-		});
+				.select(RoleCacheLogic.ROLE_CONDITION_ROLE + "." + RoleCacheLogic.ROLE_CODE)
+				.from(RoleCacheLogic.ROLE_CONDITION_DEF_NAME)
+				.where(new Equals(Entity.OID, roleCondEntity.getOid()));
+		final String[] ret = new String[] { null };
+		ManagerLocator.getInstance()
+				.getManager(EntityManager.class)
+				.search(q, new Predicate<Object[]>() {
+					@Override
+					public boolean test(Object[] dataModel) {
+						ret[0] = (String) dataModel[0];
+						return false;//1件のはず
+					}
+				});
 		return ret[0];
 	}
-
 
 	@Override
 	public boolean beforeDelete(Entity entity, EntityEventContext context) {
@@ -77,7 +77,10 @@ public class RoleConditionEntityEventListener implements EntityEventListener {
 	public void afterDelete(Entity entity, EntityEventContext context) {
 		String roleCode = (String) context.getAttribute("roleCode");
 		if (roleCode != null) {
-			ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleUpdate(roleCode);
+			ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.notifyRoleUpdate(roleCode);
 		}
 	}
 
@@ -85,7 +88,10 @@ public class RoleConditionEntityEventListener implements EntityEventListener {
 	public void afterInsert(Entity entity, EntityEventContext context) {
 		String roleCode = getRoleCode(entity);
 		if (roleCode != null) {
-			ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleUpdate(roleCode);
+			ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.notifyRoleUpdate(roleCode);
 		}
 	}
 
@@ -100,12 +106,18 @@ public class RoleConditionEntityEventListener implements EntityEventListener {
 	public void afterUpdate(Entity entity, EntityEventContext context) {
 		String beforeRoleCode = (String) context.getAttribute("beforeRoleCode");
 		if (beforeRoleCode != null) {
-			ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleUpdate(beforeRoleCode);
+			ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.notifyRoleUpdate(beforeRoleCode);
 		}
 		String afterRoleCode = getRoleCode(entity);
 		if (afterRoleCode != null) {
 			if (!afterRoleCode.equals(beforeRoleCode)) {
-				ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleUpdate(afterRoleCode);
+				ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getResource(TenantAuthorizeContext.class)
+						.notifyRoleUpdate(afterRoleCode);
 			}
 		}
 	}
@@ -114,7 +126,10 @@ public class RoleConditionEntityEventListener implements EntityEventListener {
 	public void afterRestore(Entity entity) {
 		String roleCode = getRoleCode(entity);
 		if (roleCode != null) {
-			ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class).notifyRoleUpdate(roleCode);
+			ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getResource(TenantAuthorizeContext.class)
+					.notifyRoleUpdate(roleCode);
 		}
 	}
 

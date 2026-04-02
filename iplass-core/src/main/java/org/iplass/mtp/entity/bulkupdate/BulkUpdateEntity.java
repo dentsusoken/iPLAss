@@ -29,7 +29,7 @@ import org.iplass.mtp.entity.Entity;
  *
  */
 public class BulkUpdateEntity {
-	
+
 	/**
 	 * 更新方法
 	 * 
@@ -55,13 +55,13 @@ public class BulkUpdateEntity {
 		 */
 		DELETE
 	}
-	
+
 	private UpdateMethod method;
 	private Entity entity;
-	
+
 	public BulkUpdateEntity() {
 	}
-	
+
 	public BulkUpdateEntity(UpdateMethod method, Entity entity) {
 		super();
 		this.method = method;
@@ -71,12 +71,15 @@ public class BulkUpdateEntity {
 	public UpdateMethod getMethod() {
 		return method;
 	}
+
 	public void setMethod(UpdateMethod method) {
 		this.method = method;
 	}
+
 	public Entity getEntity() {
 		return entity;
 	}
+
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}

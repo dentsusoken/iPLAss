@@ -53,20 +53,20 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @ActionMapping(
-		name=EntityFileUploadIndexCommand.ACTION_NAME,
-		displayName="ファイルアップロード表示",
-		paramMapping={
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
+		name = EntityFileUploadIndexCommand.ACTION_NAME,
+		displayName = "ファイルアップロード表示",
+		paramMapping = {
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+				@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+				@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2"),
 		},
-		result=@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_FILE_UPLOAD)
+		result = @Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_FILE_UPLOAD)
 )
-@CommandClass(name="gem/generic/upload/EntityFileUploadIndexCommand", displayName="ファイルアップロード表示")
+@CommandClass(name = "gem/generic/upload/EntityFileUploadIndexCommand", displayName = "ファイルアップロード表示")
 @Template(
-		name=Constants.TEMPLATE_FILE_UPLOAD,
-		path=Constants.CMD_RSLT_JSP_FILE_UPLOAD,
-		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+		name = Constants.TEMPLATE_FILE_UPLOAD,
+		path = Constants.CMD_RSLT_JSP_FILE_UPLOAD,
+		layoutActionName = Constants.LAYOUT_NORMAL_ACTION
 )
 public final class EntityFileUploadIndexCommand extends DetailCommandBase {
 
@@ -84,12 +84,14 @@ public final class EntityFileUploadIndexCommand extends DetailCommandBase {
 
 		FileSupportType fileSupportType = null;
 		if (searchFormView != null) {
-			fileSupportType = searchFormView.getCondSection().getFileSupportType();
+			fileSupportType = searchFormView.getCondSection()
+					.getFileSupportType();
 		}
 
 		// 未指定の場合は、GemConfigServiceから取得
 		if (fileSupportType == null) {
-			GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			GemConfigService gemConfigService = ServiceRegistry.getRegistry()
+					.getService(GemConfigService.class);
 			fileSupportType = gemConfigService.getFileSupportType();
 		}
 
@@ -107,14 +109,18 @@ public final class EntityFileUploadIndexCommand extends DetailCommandBase {
 	private Map<String, String> getCustomColumnNameMap(DetailCommandContext context, SearchFormView searchFormView) {
 
 		if (searchFormView != null) {
-			if (StringUtil.isNotEmpty(searchFormView.getCondSection().getCsvUploadInterrupterName())) {
-				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+			if (StringUtil.isNotEmpty(searchFormView.getCondSection()
+					.getCsvUploadInterrupterName())) {
+				UtilityClassDefinitionManager ucdm = ManagerLocator.getInstance()
+						.getManager(UtilityClassDefinitionManager.class);
 				SearchFormCsvUploadInterrupter interrupter = null;
 				try {
-					interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, searchFormView.getCondSection().getCsvUploadInterrupterName());
+					interrupter = ucdm.createInstanceAs(SearchFormCsvUploadInterrupter.class, searchFormView.getCondSection()
+							.getCsvUploadInterrupterName());
 					return interrupter.columnNameMap(context.getEntityDefinition());
 				} catch (ClassNotFoundException e) {
-					logger.error(searchFormView.getCondSection().getCsvUploadInterrupterName() + " can not instantiate.", e);
+					logger.error(searchFormView.getCondSection()
+							.getCsvUploadInterrupterName() + " can not instantiate.", e);
 					throw new ApplicationException(GemResourceBundleUtil.resourceString("command.generic.upload.CsvUploadIndexCommand.internalErr"));
 				}
 

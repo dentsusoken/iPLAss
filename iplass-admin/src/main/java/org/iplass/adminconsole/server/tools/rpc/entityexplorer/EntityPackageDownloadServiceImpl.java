@@ -23,9 +23,6 @@ package org.iplass.adminconsole.server.tools.rpc.entityexplorer;
 import java.io.IOException;
 import java.util.Arrays;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
@@ -40,6 +37,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Entity Package Export用Service実装クラス
@@ -60,11 +59,12 @@ public class EntityPackageDownloadServiceImpl extends AdminDownloadService {
 		final boolean isSearchAllVersion = Boolean.valueOf(req.getParameter("isSearchAllVersion"));
 
 		//MetaDataEntryの取得
-		String entityPath =  EntityService.ENTITY_META_PATH + defName.replace(".", "/");
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(entityPath);
+		String entityPath = EntityService.ENTITY_META_PATH + defName.replace(".", "/");
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(entityPath);
 		if (entry == null) {
 			logger.error("failed to export entity package. not found entity definition. path =" + entityPath);
-        	throw new DownloadRuntimeException("not found entity definition. path =" + entityPath);
+			throw new DownloadRuntimeException("not found entity definition. path =" + entityPath);
 		}
 
 		final String fileName = tenantId + "-" + defName + ".zip";
@@ -78,18 +78,20 @@ public class EntityPackageDownloadServiceImpl extends AdminDownloadService {
 		packCondition.setEntityPaths(Arrays.asList(entityPath));
 		packCondition.addEntityCondition(defName, entityCondition);
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("EntityExplorerPackageDownload", fileName, entityCondition);
 
 		//Export
 		try {
 			DownloadUtil.setZipResponseHeader(resp, fileName);
 
-			PackageService packageService = ServiceRegistry.getRegistry().getService(PackageService.class);
+			PackageService packageService = ServiceRegistry.getRegistry()
+					.getService(PackageService.class);
 			packageService.write(resp.getOutputStream(), packCondition);
 		} catch (IOException e) {
 			logger.error("failed to export entity package. path =" + entityPath, e);
-        	throw new DownloadRuntimeException(e);
+			throw new DownloadRuntimeException(e);
 		}
 
 	}

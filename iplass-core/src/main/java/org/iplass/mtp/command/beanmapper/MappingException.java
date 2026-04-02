@@ -31,12 +31,12 @@ public class MappingException extends ApplicationException {
 	private static final long serialVersionUID = -916310319212775157L;
 
 	private MappingResult result;
-	
+
 	public MappingException(String message, MappingResult result) {
 		super(message);
 		this.result = result;
 	}
-	
+
 	public MappingResult getResult() {
 		return result;
 	}

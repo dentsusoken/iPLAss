@@ -42,13 +42,13 @@ public class ServiceRegistryInitializer {
 
 	public static final String DEFAULT_CONFIG_FILE_NAME = BootstrapProps.DEFAULT_CONFIG_FILE_NAME;
 
-	private static volatile CopyOnWriteArrayList<String> configPreprocessorClassNames
-			= new CopyOnWriteArrayList<>(new String[]{GroovyPreprocessor.class.getName(), DecodePreprocessor.class.getName()});
-	
+	private static volatile CopyOnWriteArrayList<String> configPreprocessorClassNames = new CopyOnWriteArrayList<>(
+			new String[] { GroovyPreprocessor.class.getName(), DecodePreprocessor.class.getName() });
+
 	public static List<String> getConfigPreprocessorClassNames() {
 		return configPreprocessorClassNames;
 	}
-	
+
 	public static void setConfigPreprocessorClassNames(List<String> configPreprocessorClassNames) {
 		if (configPreprocessorClassNames == null) {
 			ServiceRegistryInitializer.configPreprocessorClassNames = null;
@@ -56,18 +56,21 @@ public class ServiceRegistryInitializer {
 			ServiceRegistryInitializer.configPreprocessorClassNames = new CopyOnWriteArrayList<>(configPreprocessorClassNames);
 		}
 	}
-	
+
 	public static String getServerEnvFileName() {
-		return BootstrapProps.getInstance().getProperty(BootstrapProps.SERVER_ENV_PROP_FILE_NAME);
+		return BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.SERVER_ENV_PROP_FILE_NAME);
 	}
 
 	public static void setServerEnvFileName(String serverEnvFileName) {
 		synchronized (ServiceRegistryInitializer.class) {
 			String val = getServerEnvFileName();
 			if (val != null && !val.equals(serverEnvFileName)) {
-				logger.warn("ServerEnvFileName already set to " + val + ". If ServiceRegistry already inited, you need to call ServiceRegistry's reInit method.");
+				logger.warn("ServerEnvFileName already set to " + val
+						+ ". If ServiceRegistry already inited, you need to call ServiceRegistry's reInit method.");
 			}
-			BootstrapProps.getInstance().setProperty(BootstrapProps.SERVER_ENV_PROP_FILE_NAME, serverEnvFileName);
+			BootstrapProps.getInstance()
+					.setProperty(BootstrapProps.SERVER_ENV_PROP_FILE_NAME, serverEnvFileName);
 		}
 	}
 
@@ -76,7 +79,8 @@ public class ServiceRegistryInitializer {
 			String val = getConfigFileName();
 			if (!configFileName.equals(val)) {
 				logger.debug("replace ServiceConfigFileName from " + val + " to " + configFileName);
-				BootstrapProps.getInstance().setProperty(BootstrapProps.CONFIG_FILE_NAME, configFileName);
+				BootstrapProps.getInstance()
+						.setProperty(BootstrapProps.CONFIG_FILE_NAME, configFileName);
 				return true;
 			} else {
 				return false;
@@ -88,24 +92,29 @@ public class ServiceRegistryInitializer {
 		synchronized (ServiceRegistryInitializer.class) {
 			String val = getConfigFileName();
 			if (val != null && !val.equals(configFileName)) {
-				logger.warn("ServiceConfigFileName already set to " + val + ". If ServiceRegistry already inited, you need to call ServiceRegistry's reInit method.");
+				logger.warn("ServiceConfigFileName already set to " + val
+						+ ". If ServiceRegistry already inited, you need to call ServiceRegistry's reInit method.");
 			}
 			logger.debug("set ServiceConfigFileName to " + configFileName);
-			BootstrapProps.getInstance().setProperty(BootstrapProps.CONFIG_FILE_NAME, configFileName);
+			BootstrapProps.getInstance()
+					.setProperty(BootstrapProps.CONFIG_FILE_NAME, configFileName);
 		}
 	}
 
 	public static String getConfigFileName() {
-		return BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
+		return BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	public static boolean isSetConfigFileName() {
-		String val = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME);
+		String val = BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CONFIG_FILE_NAME);
 		return val != null && val.length() != 0;
 	}
 
 	public static String getCryptoConfigFileName() {
-		return BootstrapProps.getInstance().getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
+		return BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
 	}
 
 	public static void setCryptoConfigFileName(String cryptConfigFileName) {
@@ -114,9 +123,11 @@ public class ServiceRegistryInitializer {
 
 			if (val != null
 					&& !val.equals(cryptConfigFileName)) {
-				logger.warn("CryptoConfigFileName already set to " + val + ". If ServiceRegistry already inited, you need to call ServiceRegistry's reInit method.");
+				logger.warn("CryptoConfigFileName already set to " + val
+						+ ". If ServiceRegistry already inited, you need to call ServiceRegistry's reInit method.");
 			}
-			BootstrapProps.getInstance().setProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME, cryptConfigFileName);
+			BootstrapProps.getInstance()
+					.setProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME, cryptConfigFileName);
 		}
 	}
 

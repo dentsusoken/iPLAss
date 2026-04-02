@@ -58,6 +58,5 @@ public enum NotificationType {
 	/**
 	 * ログイン失敗通知
 	 */
-	LOGIN_FAILED
-	;
+	LOGIN_FAILED;
 }

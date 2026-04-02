@@ -23,14 +23,14 @@ package org.iplass.mtp.impl.view.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.section.Section;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 検索画面用のレイアウト情報
@@ -118,13 +118,12 @@ public class MetaSearchFormView extends MetaFormView {
 	/** 検索画面下部のセクション */
 	private MetaSection bottomSection;
 
-
 	/**
 	 * ごみ箱を隠すかを取得します。
 	 * @return ごみ箱を隠すか
 	 */
 	public boolean isHideTrash() {
-	    return hideTrash;
+		return hideTrash;
 	}
 
 	/**
@@ -132,7 +131,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param showTrash ごみ箱を隠すか
 	 */
 	public void setHideTrash(boolean showTrash) {
-	    this.hideTrash = showTrash;
+		this.hideTrash = showTrash;
 	}
 
 	/**
@@ -156,7 +155,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return 新規作成ボタンを隠すか
 	 */
 	public boolean isHideNew() {
-	    return hideNew;
+		return hideNew;
 	}
 
 	/**
@@ -164,7 +163,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param hideNew 新規作成ボタンを隠すか
 	 */
 	public void setHideNew(boolean hideNew) {
-	    this.hideNew = hideNew;
+		this.hideNew = hideNew;
 	}
 
 	/**
@@ -220,7 +219,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return 一括削除WebAPI名
 	 */
 	public String getDeleteListWebapiName() {
-	    return deleteListWebapiName;
+		return deleteListWebapiName;
 	}
 
 	/**
@@ -228,7 +227,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param deleteListWebapiName 一括削除WebAPI名
 	 */
 	public void setDeleteListWebapiName(String deleteListWebapiName) {
-	    this.deleteListWebapiName = deleteListWebapiName;
+		this.deleteListWebapiName = deleteListWebapiName;
 	}
 
 	/**
@@ -236,7 +235,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return 全削除WebAPI名
 	 */
 	public String getDeleteAllWebapiName() {
-	    return deleteAllWebapiName;
+		return deleteAllWebapiName;
 	}
 
 	/**
@@ -244,7 +243,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param deleteAllWebapiName 全削除WebAPI名
 	 */
 	public void setDeleteAllWebapiName(String deleteAllWebapiName) {
-	    this.deleteAllWebapiName = deleteAllWebapiName;
+		this.deleteAllWebapiName = deleteAllWebapiName;
 	}
 
 	/**
@@ -284,7 +283,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return CSVアップロード画面表示アクション名
 	 */
 	public String getViewUploadActionName() {
-	    return viewUploadActionName;
+		return viewUploadActionName;
 	}
 
 	/**
@@ -292,7 +291,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param viewUploadActionName CSVアップロード画面表示アクション名
 	 */
 	public void setViewUploadActionName(String viewUploadActionName) {
-	    this.viewUploadActionName = viewUploadActionName;
+		this.viewUploadActionName = viewUploadActionName;
 	}
 
 	/**
@@ -397,7 +396,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return EQLカスタム処理クラス名
 	 */
 	public String getInterrupterName() {
-	    return interrupterName;
+		return interrupterName;
 	}
 
 	/**
@@ -405,7 +404,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param interrupterName EQLカスタム処理クラス名
 	 */
 	public void setInterrupterName(String interrupterName) {
-	    this.interrupterName = interrupterName;
+		this.interrupterName = interrupterName;
 	}
 
 	/**
@@ -413,7 +412,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return EQLカスタム処理クラスをCSVダウンロードで利用するか
 	 */
 	public boolean isUseInterrupterForCsvDownload() {
-	    return useInterrupterForCsvDownload;
+		return useInterrupterForCsvDownload;
 	}
 
 	/**
@@ -421,7 +420,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param useInterrupterForCsvDownload EQLカスタム処理クラスをCSVダウンロードで利用するか
 	 */
 	public void setUseInterrupterForCsvDownload(boolean useInterrupterForCsvDownload) {
-	    this.useInterrupterForCsvDownload = useInterrupterForCsvDownload;
+		this.useInterrupterForCsvDownload = useInterrupterForCsvDownload;
 	}
 
 	/**
@@ -445,7 +444,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return ボタン上部のセクション
 	 */
 	public MetaSection getTopSection1() {
-	    return topSection1;
+		return topSection1;
 	}
 
 	/**
@@ -453,7 +452,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param topSection1 ボタン上部のセクション
 	 */
 	public void setTopSection1(MetaSection topSection1) {
-	    this.topSection1 = topSection1;
+		this.topSection1 = topSection1;
 	}
 
 	/**
@@ -461,7 +460,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return ボタン下部のセクション
 	 */
 	public MetaSection getTopSection2() {
-	    return topSection2;
+		return topSection2;
 	}
 
 	/**
@@ -469,7 +468,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param topSection2 ボタン下部のセクション
 	 */
 	public void setTopSection2(MetaSection topSection2) {
-	    this.topSection2 = topSection2;
+		this.topSection2 = topSection2;
 	}
 
 	/**
@@ -477,7 +476,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return 検索画面中央のセクション
 	 */
 	public MetaSection getCenterSection() {
-	    return centerSection;
+		return centerSection;
 	}
 
 	/**
@@ -485,7 +484,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param centerSection 検索画面中央のセクション
 	 */
 	public void setCenterSection(MetaSection centerSection) {
-	    this.centerSection = centerSection;
+		this.centerSection = centerSection;
 	}
 
 	/**
@@ -493,7 +492,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @return 検索画面下部のセクション
 	 */
 	public MetaSection getBottomSection() {
-	    return bottomSection;
+		return bottomSection;
 	}
 
 	/**
@@ -501,7 +500,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param bottomSection 検索画面下部のセクション
 	 */
 	public void setBottomSection(MetaSection bottomSection) {
-	    this.bottomSection = bottomSection;
+		this.bottomSection = bottomSection;
 	}
 
 	@Override
@@ -535,12 +534,11 @@ public class MetaSearchFormView extends MetaFormView {
 		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
 		canVersionedReferenceSearchForNoneVersionedEntity = sForm.isCanVersionedReferenceSearchForNoneVersionedEntity();
 		showUserNameWithPrivilegedValue = sForm.isShowUserNameWithPrivilegedValue();
-		withoutConditionReferenceName =
-				sForm.getWithoutConditionReferenceName() == null ? null : new ArrayList<>(sForm.getWithoutConditionReferenceName());
+		withoutConditionReferenceName = sForm.getWithoutConditionReferenceName() == null ? null
+				: new ArrayList<>(sForm.getWithoutConditionReferenceName());
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
-		searchFormViewHandlerName =
-				sForm.getSearchFormViewHandlerName() == null ? null : new ArrayList<>(sForm.getSearchFormViewHandlerName());
+		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName() == null ? null : new ArrayList<>(sForm.getSearchFormViewHandlerName());
 		if (sForm.getTopSection1() != null) {
 			topSection1 = MetaSection.createInstance(sForm.getTopSection1());
 			topSection1.applyConfig(sForm.getTopSection1(), definitionId);

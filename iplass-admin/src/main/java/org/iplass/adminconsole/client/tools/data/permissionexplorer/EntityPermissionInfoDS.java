@@ -52,7 +52,7 @@ public class EntityPermissionInfoDS extends PermissionListGridDS {
 
 		Criteria criteria = request.getCriteria();
 		if (criteria != null && criteria.getAttributeAsObject(EDIT_DATA_KEY) != null) {
-			PermissionSearchResult result = (PermissionSearchResult)criteria.getAttributeAsObject(EDIT_DATA_KEY);
+			PermissionSearchResult result = (PermissionSearchResult) criteria.getAttributeAsObject(EDIT_DATA_KEY);
 			setResponsePermissinData(requestId, request, response, result);
 		} else {
 			//ここが個別
@@ -78,7 +78,8 @@ public class EntityPermissionInfoDS extends PermissionListGridDS {
 	@Override
 	public String getPermissionConfiguredSummaryText(Entity permission) {
 		StringBuffer status = new StringBuffer();
-		if (Boolean.valueOf(permission.getValue("canCreate").toString())) {
+		if (Boolean.valueOf(permission.getValue("canCreate")
+				.toString())) {
 			status.append("C");
 			if (permission.getValue("createCondition") != null
 					|| permission.getValue("createPropertyControlType") != null
@@ -86,7 +87,8 @@ public class EntityPermissionInfoDS extends PermissionListGridDS {
 				status.append("(*)");
 			}
 		}
-		if (Boolean.valueOf(permission.getValue("canReference").toString())) {
+		if (Boolean.valueOf(permission.getValue("canReference")
+				.toString())) {
 			if (status.length() > 0) {
 				status.append("&nbsp|&nbsp");
 			}
@@ -97,7 +99,8 @@ public class EntityPermissionInfoDS extends PermissionListGridDS {
 				status.append("(*)");
 			}
 		}
-		if (Boolean.valueOf(permission.getValue("canUpdate").toString())) {
+		if (Boolean.valueOf(permission.getValue("canUpdate")
+				.toString())) {
 			if (status.length() > 0) {
 				status.append("&nbsp|&nbsp");
 			}
@@ -108,7 +111,8 @@ public class EntityPermissionInfoDS extends PermissionListGridDS {
 				status.append("(*)");
 			}
 		}
-		if (Boolean.valueOf(permission.getValue("canDelete").toString())) {
+		if (Boolean.valueOf(permission.getValue("canDelete")
+				.toString())) {
 			if (status.length() > 0) {
 				status.append("&nbsp|&nbsp");
 			}

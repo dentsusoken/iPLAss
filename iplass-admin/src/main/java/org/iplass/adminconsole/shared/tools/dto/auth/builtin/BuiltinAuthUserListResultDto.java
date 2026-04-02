@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BuiltinAuthUserListResultDto implements Serializable {
 
 	/** シリアルバージョンNo */
@@ -38,7 +37,6 @@ public class BuiltinAuthUserListResultDto implements Serializable {
 	private boolean isError;
 	private List<String> logMessages;
 
-
 	/**
 	 * コンストラクタ
 	 */
@@ -46,7 +44,6 @@ public class BuiltinAuthUserListResultDto implements Serializable {
 		isError = false;
 		logMessages = new ArrayList<String>();
 	}
-
 
 	public void setUsers(List<BuiltinAuthUserDto> users) {
 		this.users = users;
@@ -79,7 +76,6 @@ public class BuiltinAuthUserListResultDto implements Serializable {
 //	public SearchResult<Entity> getSearchResult() {
 //		return searchResult;
 //	}
-
 
 	public void addLogMessage(String message) {
 		if (logMessages == null) {

@@ -50,14 +50,14 @@ public class TransactionOption {
 	private boolean readOnly;
 	private boolean rollbackWhenException = true;
 	private boolean throwExceptionIfSetRollbackOnly;
-	
+
 	/**
 	 * デフォルト設定のTransactionOptionを生成します。
 	 * 
 	 */
 	public TransactionOption() {
 	}
-	
+
 	/**
 	 * 指定のpropagationでTransactionOptionを生成します。
 	 * 
@@ -66,7 +66,7 @@ public class TransactionOption {
 	public TransactionOption(Propagation propagation) {
 		this.propagation = propagation;
 	}
-	
+
 	/**
 	 * readOnly=trueに設定します。
 	 * 
@@ -76,7 +76,7 @@ public class TransactionOption {
 		this.readOnly = true;
 		return this;
 	}
-	
+
 	/**
 	 * rollbackWhenException=falseに設定します。
 	 * @return
@@ -85,7 +85,7 @@ public class TransactionOption {
 		this.rollbackWhenException = false;
 		return this;
 	}
-	
+
 	/**
 	 * throwExceptionIfSetRollbackOnly=trueに設定します。
 	 * @return
@@ -94,30 +94,37 @@ public class TransactionOption {
 		this.throwExceptionIfSetRollbackOnly = true;
 		return this;
 	}
-	
+
 	public Propagation getPropagation() {
 		return propagation;
 	}
+
 	public void setPropagation(Propagation propagation) {
 		this.propagation = propagation;
 	}
+
 	public boolean isReadOnly() {
 		return readOnly;
 	}
+
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
+
 	public boolean isRollbackWhenException() {
 		return rollbackWhenException;
 	}
+
 	public void setRollbackWhenException(boolean rollbackWhenException) {
 		this.rollbackWhenException = rollbackWhenException;
 	}
+
 	public boolean isThrowExceptionIfSetRollbackOnly() {
 		return throwExceptionIfSetRollbackOnly;
 	}
+
 	public void setThrowExceptionIfSetRollbackOnly(boolean throwExceptionIfSetRollbackOnly) {
 		this.throwExceptionIfSetRollbackOnly = throwExceptionIfSetRollbackOnly;
 	}
-	
+
 }

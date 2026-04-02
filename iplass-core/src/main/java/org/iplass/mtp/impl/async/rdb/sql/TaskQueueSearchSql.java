@@ -44,7 +44,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class TaskQueueSearchSql extends QuerySqlHandler {
 
-	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
 
 	private void appendLoadSql(StringBuilder sb, int tenantId, int queueId, long taskId, boolean withBinary,
 			String tableName, RdbAdapter rdb) {
@@ -69,9 +70,12 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 		}
 		sb.append(" FROM " + tableName
 				+ " WHERE ");
-		sb.append(TaskQueueTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + TaskQueueTable.Q_ID + "=").append(queueId);
-		sb.append(" AND " + TaskQueueTable.TASK_ID + "=").append(taskId);
+		sb.append(TaskQueueTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + TaskQueueTable.Q_ID + "=")
+				.append(queueId);
+		sb.append(" AND " + TaskQueueTable.TASK_ID + "=")
+				.append(taskId);
 	}
 
 	public String toLoadSql(int tenantId, int queueId, long taskId, boolean withBinary,
@@ -106,8 +110,10 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 				+ TaskQueueTable.RESULT_FLG);
 		sb.append(" FROM " + TaskQueueTable.TABLE_NAME
 				+ " WHERE ");
-		sb.append(TaskQueueTable.Q_ID + "=").append(queueId);
-		sb.append(" AND " + TaskQueueTable.VISIBLE_TIME + "<=").append(currentTimeMillis);
+		sb.append(TaskQueueTable.Q_ID + "=")
+				.append(queueId);
+		sb.append(" AND " + TaskQueueTable.VISIBLE_TIME + "<=")
+				.append(currentTimeMillis);
 		sb.append(" AND " + TaskQueueTable.STATUS + " IN('S','E')");
 		sb.append(" AND " + TaskQueueTable.VIRTUAL_WORKER_ID + " IN(-1,");
 		for (int i = 0; i < workerIds.length; i++) {
@@ -118,7 +124,9 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 		}
 		sb.append(")");
 		if (serverId != null) {
-			sb.append(" AND " + TaskQueueTable.SERVER_ID + "='").append(rdb.sanitize(serverId)).append("'");
+			sb.append(" AND " + TaskQueueTable.SERVER_ID + "='")
+					.append(rdb.sanitize(serverId))
+					.append("'");
 		}
 		sb.append(" AND " + TaskQueueTable.RETRY_COUNT + "<=" + maxRetryCount);
 		sb.append(" ORDER BY " + TaskQueueTable.VISIBLE_TIME);
@@ -146,56 +154,68 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 			sb.append(" WHERE ");
 			boolean needAnd = false;
 			if (cond.getTenantId() != null) {
-				sb.append(TaskQueueTable.TENANT_ID + "=").append(cond.getTenantId());
+				sb.append(TaskQueueTable.TENANT_ID + "=")
+						.append(cond.getTenantId());
 				needAnd = true;
 			}
 			if (cond.getQueueId() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.Q_ID + "=").append(cond.getQueueId());
+				sb.append(TaskQueueTable.Q_ID + "=")
+						.append(cond.getQueueId());
 				needAnd = true;
 			}
 			if (cond.getTaskId() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.TASK_ID + "=").append(cond.getTaskId());
+				sb.append(TaskQueueTable.TASK_ID + "=")
+						.append(cond.getTaskId());
 				needAnd = true;
 			}
 			if (cond.getStatus() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.STATUS + "='").append(TaskQueueInsertSql.toStatusStr(cond.getStatus())).append("'");
+				sb.append(TaskQueueTable.STATUS + "='")
+						.append(TaskQueueInsertSql.toStatusStr(cond.getStatus()))
+						.append("'");
 				needAnd = true;
 			}
 			if (cond.getGroupingKey() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.GROUPING_KEY + "='").append(rdb.sanitize(cond.getGroupingKey())).append("'");
+				sb.append(TaskQueueTable.GROUPING_KEY + "='")
+						.append(rdb.sanitize(cond.getGroupingKey()))
+						.append("'");
 				needAnd = true;
 			}
 			if (cond.getRetryCount() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.RETRY_COUNT + ">=").append(cond.getRetryCount());
+				sb.append(TaskQueueTable.RETRY_COUNT + ">=")
+						.append(cond.getRetryCount());
 				needAnd = true;
 			}
 			if (cond.getReturnResult() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.RESULT_FLG + "='").append(TaskQueueInsertSql.toFlagStr(cond.getReturnResult().booleanValue())).append("'");
+				sb.append(TaskQueueTable.RESULT_FLG + "='")
+						.append(TaskQueueInsertSql.toFlagStr(cond.getReturnResult()
+								.booleanValue()))
+						.append("'");
 				needAnd = true;
 			}
 			if (cond.getUpdateDate() != null) {
 				if (needAnd) {
 					sb.append(" AND ");
 				}
-				sb.append(TaskQueueTable.UPDATE + "<=").append(rdb.toTimeStampExpression(cond.getUpdateDate()));
+				sb.append(TaskQueueTable.UPDATE + "<=")
+						.append(rdb.toTimeStampExpression(cond.getUpdateDate()));
 				needAnd = true;
 			}
 		}
@@ -232,13 +252,20 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 		sb.append("SELECT COUNT(*)");
 		sb.append(" FROM " + TaskQueueTable.TABLE_NAME
 				+ " WHERE ");
-		sb.append(TaskQueueTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + TaskQueueTable.Q_ID + "=").append(queueId);
-		sb.append(" AND " + TaskQueueTable.GROUPING_KEY + "='").append(rdb.sanitize(groupingKey)).append("'");
-		sb.append(" AND " + TaskQueueTable.TASK_ID + "<").append(taskId);
+		sb.append(TaskQueueTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + TaskQueueTable.Q_ID + "=")
+				.append(queueId);
+		sb.append(" AND " + TaskQueueTable.GROUPING_KEY + "='")
+				.append(rdb.sanitize(groupingKey))
+				.append("'");
+		sb.append(" AND " + TaskQueueTable.TASK_ID + "<")
+				.append(taskId);
 		sb.append(" AND " + TaskQueueTable.STATUS + " IN('S','E')");
 		if (serverId != null) {
-			sb.append(" AND " + TaskQueueTable.SERVER_ID + "='").append(rdb.sanitize(serverId)).append("'");
+			sb.append(" AND " + TaskQueueTable.SERVER_ID + "='")
+					.append(rdb.sanitize(serverId))
+					.append("'");
 		}
 		return sb.toString();
 	}
@@ -247,22 +274,22 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 		if (taskName == null || taskName.length() == 0) {
 			return null;
 		}
-		if (taskName.equals("S"))  {
+		if (taskName.equals("S")) {
 			return TaskStatus.SUBMITTED;
 		}
-		if (taskName.equals("E"))  {
+		if (taskName.equals("E")) {
 			return TaskStatus.EXECUTING;
 		}
-		if (taskName.equals("A"))  {
+		if (taskName.equals("A")) {
 			return TaskStatus.ABORTED;
 		}
-		if (taskName.equals("R"))  {
+		if (taskName.equals("R")) {
 			return TaskStatus.RETURNED;
 		}
-		if (taskName.equals("C"))  {
+		if (taskName.equals("C")) {
 			return TaskStatus.COMPLETED;
 		}
-		if (taskName.equals("U"))  {
+		if (taskName.equals("U")) {
 			return TaskStatus.UNKNOWN;
 		}
 
@@ -274,13 +301,13 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 			return null;
 		}
 
-		if (expMode.equals("A"))  {
+		if (expMode.equals("A")) {
 			return ExceptionHandlingMode.ABORT;
 		}
-		if (expMode.equals("F"))  {
+		if (expMode.equals("F")) {
 			return ExceptionHandlingMode.ABORT_LOG_FATAL;
 		}
-		if (expMode.equals("R"))  {
+		if (expMode.equals("R")) {
 			return ExceptionHandlingMode.RESTART;
 		}
 

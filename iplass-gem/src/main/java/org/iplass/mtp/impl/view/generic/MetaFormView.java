@@ -23,11 +23,6 @@ package org.iplass.mtp.impl.view.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
@@ -45,11 +40,16 @@ import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.element.section.Section;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlTransient;
+
 /**
  * レイアウト情報のスーパークラス
  * @author lis3wg
  */
-@XmlSeeAlso({MetaDetailFormView.class, MetaSearchFormView.class, MetaBulkFormView.class})
+@XmlSeeAlso({ MetaDetailFormView.class, MetaSearchFormView.class, MetaBulkFormView.class })
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class MetaFormView implements MetaData {
 
@@ -151,7 +151,7 @@ public abstract class MetaFormView implements MetaData {
 	 * @return ダイアログ表示時に最大化
 	 */
 	public boolean isDialogMaximize() {
-	    return dialogMaximize;
+		return dialogMaximize;
 	}
 
 	/**
@@ -159,7 +159,7 @@ public abstract class MetaFormView implements MetaData {
 	 * @param dialogMaximize ダイアログ表示時に最大化
 	 */
 	public void setDialogMaximize(boolean dialogMaximize) {
-	    this.dialogMaximize = dialogMaximize;
+		this.dialogMaximize = dialogMaximize;
 	}
 
 	/**
@@ -167,7 +167,8 @@ public abstract class MetaFormView implements MetaData {
 	 * @return セクション
 	 */
 	public List<MetaSection> getSections() {
-		if (this.sections == null) this.sections = new ArrayList<MetaSection>();
+		if (this.sections == null)
+			this.sections = new ArrayList<MetaSection>();
 		return sections;
 	}
 
@@ -184,7 +185,8 @@ public abstract class MetaFormView implements MetaData {
 	 * @param section セクション
 	 */
 	public void addSection(MetaSection section) {
-		if (this.sections == null) this.sections = new ArrayList<MetaSection>();
+		if (this.sections == null)
+			this.sections = new ArrayList<MetaSection>();
 		this.sections.add(section);
 	}
 
@@ -193,7 +195,7 @@ public abstract class MetaFormView implements MetaData {
 	 * @return イメージカラー
 	 */
 	public String getImageColor() {
-	    return imageColor;
+		return imageColor;
 	}
 
 	/**
@@ -201,7 +203,7 @@ public abstract class MetaFormView implements MetaData {
 	 * @param imageColor イメージカラー
 	 */
 	public void setImageColor(String imageColor) {
-	    this.imageColor = imageColor;
+		this.imageColor = imageColor;
 	}
 
 	/**
@@ -209,7 +211,7 @@ public abstract class MetaFormView implements MetaData {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -217,7 +219,7 @@ public abstract class MetaFormView implements MetaData {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -225,7 +227,8 @@ public abstract class MetaFormView implements MetaData {
 	 * @return ボタン
 	 */
 	public List<MetaButton> getButtons() {
-		if (this.buttons == null) this.buttons = new ArrayList<MetaButton>();
+		if (this.buttons == null)
+			this.buttons = new ArrayList<MetaButton>();
 		return buttons;
 	}
 
@@ -283,16 +286,19 @@ public abstract class MetaFormView implements MetaData {
 			addButton(meta);
 		}
 
-		if (form.getSections().size() > 0) {
+		if (form.getSections()
+				.size() > 0) {
 			for (Section section : form.getSections()) {
 				MetaSection meta = MetaSection.createInstance(section);
 				meta.applyConfig(section, definitionId);
 				if (section instanceof ReferenceSection) {
 					MetaReferenceSection rs = (MetaReferenceSection) meta;
-					if (rs.getPropertyId() != null) this.addSection(rs);
+					if (rs.getPropertyId() != null)
+						this.addSection(rs);
 				} else if (section instanceof MassReferenceSection) {
 					MetaMassReferenceSection ms = (MetaMassReferenceSection) meta;
-					if (ms.getPropertyId() != null) this.addSection(ms);
+					if (ms.getPropertyId() != null)
+						this.addSection(ms);
 				} else {
 					this.addSection(meta);
 				}
@@ -329,10 +335,12 @@ public abstract class MetaFormView implements MetaData {
 			form.addButton((Button) button.currentConfig(definitionId));
 		}
 
-		if (this.getSections().size() > 0) {
+		if (this.getSections()
+				.size() > 0) {
 			for (MetaSection section : this.getSections()) {
 				Section s = (Section) section.currentConfig(definitionId);
-				if (s != null) form.addSection(s);
+				if (s != null)
+					form.addSection(s);
 			}
 		}
 
@@ -349,6 +357,7 @@ public abstract class MetaFormView implements MetaData {
 	}
 
 	public String getTypeName() {
-		return this.getClass().getSimpleName();
+		return this.getClass()
+				.getSimpleName();
 	}
 }

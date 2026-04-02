@@ -44,7 +44,7 @@ import org.iplass.mtp.command.RequestContext;
  *
  */
 public interface PoiReportOutputLogic {
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * POI帳票出力処理

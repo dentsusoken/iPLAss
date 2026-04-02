@@ -53,7 +53,7 @@ public class TaskQueueInsertSql extends UpdateSqlHandler {
 				+ TaskQueueTable.SERVER_ID + ","
 				+ TaskQueueTable.RETRY_COUNT + ","
 				+ TaskQueueTable.CALLABLE
-				+")"
+				+ ")"
 				+ " VALUES(?,?,?,?,?,?,?,?,?,?," + rdb.systimestamp() + ",?,0,?)";
 	}
 
@@ -71,7 +71,7 @@ public class TaskQueueInsertSql extends UpdateSqlHandler {
 		ps.setString(num++, toFlagStr(task.isReturnResult()));
 		ps.setLong(num++, task.getVersion());
 		ps.setString(num++, task.getServerId());
-		
+
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(bos))) {
 			oos.writeObject(task.getCallable());
@@ -144,9 +144,9 @@ public class TaskQueueInsertSql extends UpdateSqlHandler {
 				+ TaskQueueTable.UPDATE + ","
 				+ TaskQueueTable.SERVER_ID + ","
 				+ TaskQueueTable.RETRY_COUNT + ","
-				+ TaskQueueTable.CALLABLE +","
+				+ TaskQueueTable.CALLABLE + ","
 				+ TaskQueueTable.RESULT
-				+")"
+				+ ")"
 				+ " SELECT "
 				+ TaskQueueTable.TENANT_ID + ","
 				+ TaskQueueTable.Q_ID + ","
@@ -161,7 +161,7 @@ public class TaskQueueInsertSql extends UpdateSqlHandler {
 				+ rdb.systimestamp() + ","
 				+ TaskQueueTable.SERVER_ID + ","
 				+ TaskQueueTable.RETRY_COUNT + ","
-				+ TaskQueueTable.CALLABLE +","
+				+ TaskQueueTable.CALLABLE + ","
 				+ TaskQueueTable.RESULT
 				+ " FROM " + TaskQueueTable.TABLE_NAME
 				+ " WHERE "
@@ -175,12 +175,12 @@ public class TaskQueueInsertSql extends UpdateSqlHandler {
 			RdbAdapter rdb, PreparedStatement ps) throws SQLException {
 		int num = 1;
 		ps.setString(num++, toStatusStr(toStatus));
-		
+
 		ps.setInt(num++, task.getTenantId());
 		ps.setInt(num++, task.getQueueId());
 		ps.setLong(num++, task.getTaskId());
 		ps.setLong(num++, task.getVersion());
-		
+
 	}
-	
+
 }

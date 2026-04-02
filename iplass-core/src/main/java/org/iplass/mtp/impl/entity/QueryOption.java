@@ -28,17 +28,17 @@ import org.iplass.mtp.entity.query.hint.Hint;
 import org.iplass.mtp.entity.query.hint.TimeoutHint;
 
 public class QueryOption {
-	
+
 	private int fetchSize = 0;
 	private int queryTimeout = 0;
 
 	public QueryOption() {
 	}
-	
+
 	public QueryOption(int fetchSize) {
 		this.fetchSize = fetchSize;
 	}
-	
+
 	public int getQueryTimeout() {
 		return queryTimeout;
 	}
@@ -54,13 +54,16 @@ public class QueryOption {
 	public void setFetchSize(int fetchSize) {
 		this.fetchSize = fetchSize;
 	}
-	
+
 	public static QueryOption getQueryOption(Query query) {
 		QueryOption qo = null;
-		if (query.getSelect().getHintComment() != null) {
-			List<Hint> list = query.getSelect().getHintComment().getHintList();
+		if (query.getSelect()
+				.getHintComment() != null) {
+			List<Hint> list = query.getSelect()
+					.getHintComment()
+					.getHintList();
 			if (list != null) {
-				for (Hint h: list) {
+				for (Hint h : list) {
 					if (h instanceof FetchSizeHint) {
 						if (qo == null) {
 							qo = new QueryOption();
@@ -75,9 +78,8 @@ public class QueryOption {
 				}
 			}
 		}
-		
+
 		return qo;
 	}
 
-	
 }

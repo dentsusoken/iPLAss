@@ -47,7 +47,8 @@ public class ConfigSetting {
 	}
 
 	public String getRdbAdapterName() {
-		return (adapter != null ? adapter.getClass().getSimpleName() : "");
+		return (adapter != null ? adapter.getClass()
+				.getSimpleName() : "");
 	}
 
 	public String getConnectionInfo() {
@@ -57,12 +58,15 @@ public class ConfigSetting {
 	public boolean isOracle() {
 		return (adapter != null && adapter instanceof OracleRdbAdapter);
 	}
+
 	public boolean isMySQL() {
 		return (adapter != null && adapter instanceof MysqlRdbAdaptor);
 	}
+
 	public boolean isPostgreSQL() {
 		return (adapter != null && adapter instanceof PostgreSQLRdbAdapter);
 	}
+
 	public boolean isSQLServer() {
 		return (adapter != null && adapter instanceof SqlServerRdbAdapter);
 	}

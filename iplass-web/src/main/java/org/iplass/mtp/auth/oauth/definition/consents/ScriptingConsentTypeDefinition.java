@@ -45,7 +45,7 @@ public class ScriptingConsentTypeDefinition extends ConsentTypeDefinition {
 	private static final long serialVersionUID = 7944630447487359180L;
 
 	private String script;
-	
+
 	public String getScript() {
 		return script;
 	}

@@ -23,38 +23,38 @@ package org.iplass.mtp.view.generic.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * 画面項目間の連動、自動補完設定
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({JavascriptAutocompletionSetting.class, WebApiAutocompletionSetting.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso({ JavascriptAutocompletionSetting.class, WebApiAutocompletionSetting.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class AutocompletionSetting implements Refrectable {
 
 	private static final long serialVersionUID = 559723210737582551L;
 
 	/** 連動元のプロパティ */
-	@MetaFieldInfo(displayName="連動元のプロパティ",
-			displayNameKey="generic_common_AutocompletionSetting_propertiesDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=AutocompletionProperty.class,
-			multiple=true,
-			description="連動元のプロパティを指定します。<br>"
+	@MetaFieldInfo(
+			displayName = "連動元のプロパティ",
+			displayNameKey = "generic_common_AutocompletionSetting_propertiesDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = AutocompletionProperty.class,
+			multiple = true,
+			description = "連動元のプロパティを指定します。<br>"
 					+ "複数指定した場合、いずれかのプロパティが変更されると、"
 					+ "全ての項目の値をパラメータとして補完処理を呼び出します。",
-			descriptionKey="generic_common_AutocompletionSetting_propertiesDescriptionKey"
+			descriptionKey = "generic_common_AutocompletionSetting_propertiesDescriptionKey"
 	)
 	@EntityViewField()
 	private List<AutocompletionProperty> properties;
@@ -66,7 +66,8 @@ public abstract class AutocompletionSetting implements Refrectable {
 	 * @return properties
 	 */
 	public List<AutocompletionProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<>();
+		if (properties == null)
+			properties = new ArrayList<>();
 		return properties;
 	}
 

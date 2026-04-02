@@ -82,6 +82,7 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 
 	/** テキストフィールドへの直接入力を制限する */
 	private boolean restrictDirectEditing;
+
 	/**
 	 * 時間の表示範囲を取得します。
 	 * @return 時間の表示範囲
@@ -313,7 +314,7 @@ public class MetaTimestampPropertyEditor extends MetaDateTimePropertyEditor {
 					return true;
 				}
 				if (pd instanceof ExpressionProperty) {
-					ExpressionProperty ep = (ExpressionProperty)pd;
+					ExpressionProperty ep = (ExpressionProperty) pd;
 					if (ep.getResultType() == PropertyDefinitionType.DATETIME) {
 						return true;
 					}

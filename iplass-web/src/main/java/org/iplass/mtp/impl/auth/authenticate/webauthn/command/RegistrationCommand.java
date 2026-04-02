@@ -64,14 +64,18 @@ public class RegistrationCommand implements Command {
 	static final String PARAM_PUBLIC_KEY_CREDENTIAL = "publicKeyCredential";
 
 	static final String STAT_SUCCESS = "ok";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(RegistrationCommand.class);
 
-	private WebAuthnService service = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
+	private WebAuthnService service = ServiceRegistry.getRegistry()
+			.getService(WebAuthnService.class);
 
 	@Override
 	public String execute(RequestContext request) {
-		if (!ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn()) {
+		if (!ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseWebAuthn()) {
 			throw new WebAuthnRuntimeException("WebAuthn is not enabled");
 		}
 		String defName = StringUtil.stripToNull(request.getParam(PARAM_DEFINITION_NAME));
@@ -86,7 +90,7 @@ public class RegistrationCommand implements Command {
 		} catch (Exception e) {
 			throw new WebAuthnRuntimeException("Failed to read publicKeyCredential", e);
 		}
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("register PublicKeyCredential: " + publicKeyCredential);
 		}

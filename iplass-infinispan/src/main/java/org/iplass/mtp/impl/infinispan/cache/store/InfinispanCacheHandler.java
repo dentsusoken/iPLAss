@@ -69,18 +69,19 @@ public class InfinispanCacheHandler implements CacheHandler {
 		if (0 < inputKeyList.size()) {
 			// inputKeys 指定あり
 			state = InfinispanTaskExecutor.submitByCacheKeyOwner(
-					p -> new CacheHandlerTaskInfinispanAdapter<K, V, R>(task, cacheName, new HashSet<>(p), ec.getClientTenantId(), ec.getCurrentTimestamp()),
+					p -> new CacheHandlerTaskInfinispanAdapter<K, V, R>(task, cacheName, new HashSet<>(p), ec.getClientTenantId(),
+							ec.getCurrentTimestamp()),
 					cacheName, inputKeyList);
 		} else {
 			// inputKeys 指定なし
-			CacheHandlerTaskInfinispanAdapter<K, V, R> submitTask = new CacheHandlerTaskInfinispanAdapter<K, V, R>(task, cacheName, Collections.emptySet(),
+			CacheHandlerTaskInfinispanAdapter<K, V, R> submitTask = new CacheHandlerTaskInfinispanAdapter<K, V, R>(task, cacheName,
+					Collections.emptySet(),
 					ec.getClientTenantId(), ec.getCurrentTimestamp());
 			state = InfinispanTaskExecutor.submitAll(submitTask);
 		}
 
 		return state.getFuture();
 	}
-
 
 	/**
 	 * CacheHandlerTask Infinispan Adapter
@@ -128,10 +129,14 @@ public class InfinispanCacheHandler implements CacheHandler {
 				public R execute() {
 					if (currentTimestamp != null) {
 						// 実行時Timestamp 設定
-						ExecuteContext.getCurrentContext().setCurrentTimestamp(currentTimestamp);
+						ExecuteContext.getCurrentContext()
+								.setCurrentTimestamp(currentTimestamp);
 					}
 
-					Cache<Object, CacheEntry> cache = ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager().getCache(cacheName);
+					Cache<Object, CacheEntry> cache = ServiceRegistry.getRegistry()
+							.getService(InfinispanService.class)
+							.getCacheManager()
+							.getCache(cacheName);
 					cht.setContext(new InfinispanCacheContext<K, V>(cache), inputKeys);
 
 					long start = System.currentTimeMillis();
@@ -154,7 +159,8 @@ public class InfinispanCacheHandler implements CacheHandler {
 
 		@Override
 		public String getTaskName() {
-			return cht.getClass().getSimpleName();
+			return cht.getClass()
+					.getSimpleName();
 		}
 
 		/**
@@ -162,7 +168,9 @@ public class InfinispanCacheHandler implements CacheHandler {
 		 * @return TenantContext
 		 */
 		private TenantContext getTenantContext() {
-			return ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
+			return ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class)
+					.getTenantContext(tenantId);
 		}
 	}
 }

@@ -22,6 +22,5 @@ package org.iplass.adminconsole.shared.tools.dto.metaexplorer;
 
 public enum TargetMode {
 
-	LIVE
-	,TAG
+	LIVE, TAG
 }

@@ -126,24 +126,26 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class EntityManagerImpl implements EntityManager {
 
 	private static Logger logger = LoggerFactory.getLogger(EntityManagerImpl.class);
 
 	/** Load時に最新データを強制的に取得するか（下位互換対応） */
 	@Deprecated
-	private final boolean loadLatestVersionedEntity
-		= Boolean.parseBoolean(System.getProperty("mtp.entity.update.targetSpecific.loadLatestVersionedEntity"));
+	private final boolean loadLatestVersionedEntity = Boolean
+			.parseBoolean(System.getProperty("mtp.entity.update.targetSpecific.loadLatestVersionedEntity"));
 
 	private EntityService ehService;
 	private SessionService sessionService;
 	private FulltextSearchService fulltextSearchService;
 
 	public EntityManagerImpl() {
-		ehService = ServiceRegistry.getRegistry().getService(EntityService.class);
-		sessionService = ServiceRegistry.getRegistry().getService(SessionService.class);
-		fulltextSearchService = ServiceRegistry.getRegistry().getService(FulltextSearchService.class);
+		ehService = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
+		sessionService = ServiceRegistry.getRegistry()
+				.getService(SessionService.class);
+		fulltextSearchService = ServiceRegistry.getRegistry()
+				.getService(FulltextSearchService.class);
 	}
 
 	private EntityHandler getEntityHandler(String defName) {
@@ -155,7 +157,10 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	private void setRollbackOnly() {
-		Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
+		Transaction t = ServiceRegistry.getRegistry()
+				.getService(TransactionService.class)
+				.getTransacitonManager()
+				.currentTransaction();
 		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 			t.setRollbackOnly();
 		}
@@ -164,21 +169,25 @@ public class EntityManagerImpl implements EntityManager {
 	private <R> R withReadOnlyCheck(Query q, ResultMode resultMode, Function<Transaction, R> func) {
 		Transaction t = Transaction.getCurrent();
 		if (!t.isReadOnly() && resultMode == ResultMode.AT_ONCE && hasReadOnlyHint(q)) {
-			return Transaction.with(new TransactionOption(Propagation.REQUIRES_NEW).readOnly().throwExceptionIfSetRollbackOnly(), func);
+			return Transaction.with(new TransactionOption(Propagation.REQUIRES_NEW).readOnly()
+					.throwExceptionIfSetRollbackOnly(), func);
 		} else {
 			return func.apply(t);
 		}
 	}
 
 	private boolean hasReadOnlyHint(Query q) {
-		if (q.getSelect().getHintComment() == null) {
+		if (q.getSelect()
+				.getHintComment() == null) {
 			return false;
 		}
-		List<Hint> hintList = q.getSelect().getHintComment().getHintList();
+		List<Hint> hintList = q.getSelect()
+				.getHintComment()
+				.getHintList();
 		if (hintList == null) {
 			return false;
 		}
-		for (Hint h: hintList) {
+		for (Hint h : hintList) {
 			if (h instanceof ReadOnlyHint) {
 				return true;
 			}
@@ -195,14 +204,15 @@ public class EntityManagerImpl implements EntityManager {
 
 			return withReadOnlyCheck(query, ResultMode.AT_ONCE, t -> {
 				//検索処理実行
-				EntityHandler handler = getEntityHandler(query.getFrom().getEntityName());
+				EntityHandler handler = getEntityHandler(query.getFrom()
+						.getEntityName());
 				return new EntityCountInvocationImpl(query, ehService.getInterceptors(), handler).proceed();
 			});
 
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
-		} catch (RuntimeException |Error e) {
+		} catch (RuntimeException | Error e) {
 			setRollbackOnly();
 			throw e;
 		}
@@ -214,7 +224,7 @@ public class EntityManagerImpl implements EntityManager {
 			if (logger.isDebugEnabled()) {
 				logger.debug("delete():" + entity + ", option=" + option);
 			}
-			
+
 			if (entity.getOid() == null) {
 				//oidがnullの場合はエラーメッセージを出力
 				throw new IllegalArgumentException("oid is required for delete operation");
@@ -306,36 +316,39 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public List<Entity> batchLoad(List<EntityKey> keys, String definitionName, LoadOption option) {
-		final LoadOption loadOption = option != null ? option: new LoadOption();
+		final LoadOption loadOption = option != null ? option : new LoadOption();
 
 		EntityContext entityContext = EntityContext.getCurrentContext();
-		EntityDefinition ed = getEntityHandler(definitionName).getMetaData().currentConfig(entityContext);
+		EntityDefinition ed = getEntityHandler(definitionName).getMetaData()
+				.currentConfig(entityContext);
 
 		Select select = new Select();
-		ed.getPropertyList().forEach(pd -> {
-			if (pd instanceof ReferenceProperty) {
-				ReferenceProperty rp = (ReferenceProperty)pd;
-				if (CollectionUtil.isNotEmpty(loadOption.getLoadReferences())) {
-					if (!loadOption.getLoadReferences().contains(rp.getName())) {
-						return;
-					}
-				} else {
-					if (StringUtil.isNotEmpty(rp.getMappedBy())) {
-						if (!loadOption.isWithMappedByReference()) {
-							return;
+		ed.getPropertyList()
+				.forEach(pd -> {
+					if (pd instanceof ReferenceProperty) {
+						ReferenceProperty rp = (ReferenceProperty) pd;
+						if (CollectionUtil.isNotEmpty(loadOption.getLoadReferences())) {
+							if (!loadOption.getLoadReferences()
+									.contains(rp.getName())) {
+								return;
+							}
+						} else {
+							if (StringUtil.isNotEmpty(rp.getMappedBy())) {
+								if (!loadOption.isWithMappedByReference()) {
+									return;
+								}
+							} else {
+								if (!loadOption.isWithReference()) {
+									return;
+								}
+							}
 						}
+						select.add(new EntityField(pd.getName() + "." + Entity.OID));
+						select.add(new EntityField(pd.getName() + "." + Entity.VERSION));
 					} else {
-						if (!loadOption.isWithReference()) {
-							return;
-						}
+						select.add(pd.getName());
 					}
-				}
-				select.add(new EntityField(pd.getName() + "." + Entity.OID));
-				select.add(new EntityField(pd.getName() + "." + Entity.VERSION));
-			} else {
-				select.add(pd.getName());
-			}
-		});
+				});
 
 		Condition condition = null;
 		OrderBy orderBy = new OrderBy();
@@ -343,7 +356,7 @@ public class EntityManagerImpl implements EntityManager {
 			List<ValueExpression> values = keys.stream()
 					.map(key -> new RowValueList(key.getOid(), key.getVersion() != null ? key.getVersion() : 0))
 					.collect(Collectors.toList());
-			condition = new In(new String[] {Entity.OID, Entity.VERSION}, values);
+			condition = new In(new String[] { Entity.OID, Entity.VERSION }, values);
 			orderBy.add(new SortSpec(Entity.OID, SortType.DESC));
 			orderBy.add(new SortSpec(Entity.VERSION, SortType.DESC));
 		} else {
@@ -424,16 +437,17 @@ public class EntityManagerImpl implements EntityManager {
 				}
 
 				//検索処理実行
-				EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
+				EntityHandler eh = getEntityHandler(query.getFrom()
+						.getEntityName());
 				if (finalOption.getResultMode() == ResultMode.AT_ONCE) {
 					final List<Object[]> list = new ArrayList<Object[]>();
 					search(eh, query, finalOption, new Predicate<Object[]>() {
-							@Override
-							public boolean test(Object[] val) {
-								list.add(val);
-								return true;
-							}
-						}, null);
+						@Override
+						public boolean test(Object[] val) {
+							list.add(val);
+							return true;
+						}
+					}, null);
 					return new SearchResult<Object[]>(counts, list);
 				} else {
 					EntityStreamSearchHandler<Object[]> ssh = new EntityStreamSearchHandler<>(eh, Object[].class);
@@ -475,7 +489,8 @@ public class EntityManagerImpl implements EntityManager {
 				}
 
 				//検索処理実行
-				EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
+				EntityHandler eh = getEntityHandler(query.getFrom()
+						.getEntityName());
 				if (finalOption.getResultMode() == ResultMode.AT_ONCE) {
 					final List<T> list = new ArrayList<T>();
 					searchEntity(eh, query, finalOption, new Predicate<T>() {
@@ -505,7 +520,8 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public <T extends Entity> void searchEntity(Query query, final Predicate<T> callback) {
-		searchEntity(getEntityHandler(query.getFrom().getEntityName()), query, new SearchOption(), callback, null);
+		searchEntity(getEntityHandler(query.getFrom()
+				.getEntityName()), query, new SearchOption(), callback, null);
 	}
 
 	@Override
@@ -513,7 +529,8 @@ public class EntityManagerImpl implements EntityManager {
 		if (option == null) {
 			option = new SearchOption();
 		}
-		searchEntity(getEntityHandler(query.getFrom().getEntityName()), query, option, callback, null);
+		searchEntity(getEntityHandler(query.getFrom()
+				.getEntityName()), query, option, callback, null);
 	}
 
 	private <T extends Entity> void searchEntity(EntityHandler handler, Query query, SearchOption option,
@@ -564,7 +581,8 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public void search(Query query, final Predicate<Object[]> callback) {
-		search(getEntityHandler(query.getFrom().getEntityName()), query, new SearchOption(), callback, null);
+		search(getEntityHandler(query.getFrom()
+				.getEntityName()), query, new SearchOption(), callback, null);
 	}
 
 	@Override
@@ -572,7 +590,8 @@ public class EntityManagerImpl implements EntityManager {
 		if (option == null) {
 			option = new SearchOption();
 		}
-		search(getEntityHandler(query.getFrom().getEntityName()), query, option, callback, null);
+		search(getEntityHandler(query.getFrom()
+				.getEntityName()), query, option, callback, null);
 
 	}
 
@@ -649,7 +668,8 @@ public class EntityManagerImpl implements EntityManager {
 				//adminのみ可能
 				AuthContext auth = AuthContext.getCurrentContext();
 				User user = auth.getUser();
-				if (user == null || !auth.getUser().isAdmin()) {
+				if (user == null || !auth.getUser()
+						.isAdmin()) {
 					throw new EntityRuntimeException("Only admin user can set enableAuditPropertySpecification to true.");
 				}
 			}
@@ -701,12 +721,12 @@ public class EntityManagerImpl implements EntityManager {
 				throw new EntityRuntimeException("updateOption is null");//TODO メッセージを埋める（メッセージ管理）
 			}
 
-
 			EntityHandler handler = getEntityHandler(entity.getDefinitionName());
 
 			//バリデーション
 			if (option.isWithValidation()) {
-				ValidateResult validateResult = new EntityValidateInvocationImpl(entity, option.getUpdateProperties(), option, ehService.getInterceptors(), handler).proceed();
+				ValidateResult validateResult = new EntityValidateInvocationImpl(entity, option.getUpdateProperties(), option,
+						ehService.getInterceptors(), handler).proceed();
 				if (validateResult.hasError()) {
 					throw new EntityValidationException("valiation error.", validateResult.getErrors());
 				}
@@ -748,7 +768,8 @@ public class EntityManagerImpl implements EntityManager {
 				}
 
 				UpdateOption toRealyUpate = checkSame(handler, currentStore, entity, option);
-				if (toRealyUpate.getUpdateProperties().size() == 0) {
+				if (toRealyUpate.getUpdateProperties()
+						.size() == 0) {
 					logger.debug("no value is changed. so skip update process:" + entity.getDefinitionName() + "(oid=" + entity.getOid() + ")");
 					return;
 				}
@@ -780,7 +801,7 @@ public class EntityManagerImpl implements EntityManager {
 			toReturn = new ArrayList<String>();
 //			ExecuteContext ctx = ExecuteContext.getCurrentContext();
 			EntityContext entityContext = EntityContext.getCurrentContext();
-			for (String propName: option.getUpdateProperties()) {
+			for (String propName : option.getUpdateProperties()) {
 				if (!propName.equals(Entity.UPDATE_BY)) {//更新者は内部で自動的に更新されるので比較対象外
 					PropertyHandler ph = handler.getProperty(propName, entityContext);
 					Object currentValue = currentStore.getValue(propName);
@@ -881,34 +902,38 @@ public class EntityManagerImpl implements EntityManager {
 							} else {
 								if (newValue == null) {
 									toReturn.add(propName);
-								} else if (rh.getMetaData().getMultiplicity() != 1) {
+								} else if (rh.getMetaData()
+										.getMultiplicity() != 1) {
 									Entity[] currentRef = (Entity[]) currentValue;
 									Entity[] newRef = (Entity[]) newValue;
-							        int length = currentRef.length;
-							        if (newRef.length != length) {
+									int length = currentRef.length;
+									if (newRef.length != length) {
 										toReturn.add(propName);
-							        } else {
-							        	boolean isChange = false;
-								        for (int i = 0; i < length; i++) {
-								        	Entity e1 = currentRef[i];
-								        	Entity e2 = newRef[i];
-								            if (!(e1 == null ?
-								            		e2 == null
-								            		: e1.getOid().equals(e2.getOid())
-								            		&& (e2.getVersion() == null || e2.getVersion().equals(e1.getVersion())))) {
-								            	isChange = true;
-								            	break;
-								            }
-								        }
-								        if (isChange) {
+									} else {
+										boolean isChange = false;
+										for (int i = 0; i < length; i++) {
+											Entity e1 = currentRef[i];
+											Entity e2 = newRef[i];
+											if (!(e1 == null ? e2 == null
+													: e1.getOid()
+															.equals(e2.getOid())
+															&& (e2.getVersion() == null || e2.getVersion()
+																	.equals(e1.getVersion())))) {
+												isChange = true;
+												break;
+											}
+										}
+										if (isChange) {
 											toReturn.add(propName);
-								        }
-							        }
+										}
+									}
 								} else {
 									Entity currentRef = (Entity) currentValue;
 									Entity newRef = (Entity) newValue;
-									if (!(currentRef.getOid().equals(newRef.getOid())
-											&& (newRef.getVersion() == null || newRef.getVersion().equals(currentRef.getVersion())))) {
+									if (!(currentRef.getOid()
+											.equals(newRef.getOid())
+											&& (newRef.getVersion() == null || newRef.getVersion()
+													.equals(currentRef.getVersion())))) {
 										toReturn.add(propName);
 									}
 								}
@@ -1040,7 +1065,6 @@ public class EntityManagerImpl implements EntityManager {
 		try {
 			//FIXME Lobを参照する時のSQL発行回数が多い。。。要対応
 
-
 //			ExecuteContext ctx = ExecuteContext.getCurrentContext();
 			EntityContext entityContext = EntityContext.getCurrentContext();
 
@@ -1076,7 +1100,8 @@ public class EntityManagerImpl implements EntityManager {
 
 			try {
 				LobHandler lm = LobHandler.getInstance(BinaryType.LOB_STORE_NAME);
-				Lob bin = lm.crateBinaryDataTemporary(name, type, sessionService.getSession(true).getId());
+				Lob bin = lm.crateBinaryDataTemporary(name, type, sessionService.getSession(true)
+						.getId());
 				if (is != null) {
 					byte[] buf = new byte[8192];
 					int count;
@@ -1142,7 +1167,8 @@ public class EntityManagerImpl implements EntityManager {
 
 			try {
 				LobHandler lm = LobHandler.getInstance(BinaryType.LOB_STORE_NAME);
-				Lob bin = lm.crateBinaryDataTemporary(name, type, sessionService.getSession(true).getId());
+				Lob bin = lm.crateBinaryDataTemporary(name, type, sessionService.getSession(true)
+						.getId());
 				bin.transferFrom(file);
 				return lm.toBinaryReference(bin, EntityContext.getCurrentContext());
 			} catch (IOException e) {
@@ -1210,7 +1236,8 @@ public class EntityManagerImpl implements EntityManager {
 	public boolean lockByUser(String oid, String definitionName) {
 		try {
 			EntityHandler handler = getEntityHandler(definitionName);
-			return new EntityLockByUserInvocationImpl(oid, ExecuteContext.getCurrentContext().getClientId(), false, ehService.getInterceptors(), handler).proceed();
+			return new EntityLockByUserInvocationImpl(oid, ExecuteContext.getCurrentContext()
+					.getClientId(), false, ehService.getInterceptors(), handler).proceed();
 		} catch (ApplicationException e) {
 			//更新操作が行われた可能性があるので、
 			setRollbackOnly();
@@ -1228,9 +1255,11 @@ public class EntityManagerImpl implements EntityManager {
 			User user = authContext.getUser();
 			EntityHandler handler = getEntityHandler(definitionName);
 			if ((user != null && user.isAdmin()) || authContext.isPrivileged()) {
-				return new EntityUnlockByUserInvocationImpl(oid, ExecuteContext.getCurrentContext().getClientId(), true, ehService.getInterceptors(), handler).proceed();
+				return new EntityUnlockByUserInvocationImpl(oid, ExecuteContext.getCurrentContext()
+						.getClientId(), true, ehService.getInterceptors(), handler).proceed();
 			} else {
-				return new EntityUnlockByUserInvocationImpl(oid, ExecuteContext.getCurrentContext().getClientId(), false, ehService.getInterceptors(), handler).proceed();
+				return new EntityUnlockByUserInvocationImpl(oid, ExecuteContext.getCurrentContext()
+						.getClientId(), false, ehService.getInterceptors(), handler).proceed();
 			}
 		} catch (ApplicationException e) {
 			//更新操作が行われた可能性があるので、
@@ -1306,7 +1335,8 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public Timestamp getCurrentTimestamp() {
-		return ExecuteContext.getCurrentContext().getCurrentTimestamp();
+		return ExecuteContext.getCurrentContext()
+				.getCurrentTimestamp();
 	}
 
 	@Override
@@ -1340,7 +1370,8 @@ public class EntityManagerImpl implements EntityManager {
 	private void resetProperty(Entity entity, ArrayList<EntityProcessCallback> callbacks, boolean shallowCopyLobData) {
 //		ExecuteContext ctx = ExecuteContext.getCurrentContext();
 		EntityContext entityContext = EntityContext.getCurrentContext();
-		EntityDefinition ed = getEntityHandler(entity.getDefinitionName()).getMetaData().currentConfig(entityContext);
+		EntityDefinition ed = getEntityHandler(entity.getDefinitionName()).getMetaData()
+				.currentConfig(entityContext);
 
 		entity.setOid(null);
 		for (PropertyDefinition pd : ed.getPropertyList()) {
@@ -1352,7 +1383,8 @@ public class EntityManagerImpl implements EntityManager {
 				Object value = null;
 				if (pd.getMultiplicity() == 1) {
 					BinaryReference br = entity.getValue(pd.getName());
-					if (br != null) value = shallowCopyLobData ? br.copy() : createBinaryReference(br.getName(), br.getType(), getInputStream(br));
+					if (br != null)
+						value = shallowCopyLobData ? br.copy() : createBinaryReference(br.getName(), br.getType(), getInputStream(br));
 				} else {
 					BinaryReference[] br = entity.getValue(pd.getName());
 					if (br != null && br.length > 0) {
@@ -1367,8 +1399,10 @@ public class EntityManagerImpl implements EntityManager {
 			} else if (pd instanceof ReferenceProperty) {
 				//Referenceはケースにより判断
 				ReferenceProperty rp = (ReferenceProperty) pd;
-				EntityDefinition red = getEntityHandler(rp.getObjectDefinitionName()).getMetaData().currentConfig(entityContext);
-				String mappingClass = red.getMapping() != null ? red.getMapping().getMappingModelClass() : null;
+				EntityDefinition red = getEntityHandler(rp.getObjectDefinitionName()).getMetaData()
+						.currentConfig(entityContext);
+				String mappingClass = red.getMapping() != null ? red.getMapping()
+						.getMappingModelClass() : null;
 				Object value = null;
 				if (pd.getMultiplicity() == 1) {
 					Entity ref = entity.getValue(pd.getName());
@@ -1428,14 +1462,19 @@ public class EntityManagerImpl implements EntityManager {
 		}
 	}
 
-	private Entity copyReference(final Entity entity, final ReferenceProperty rp, ArrayList<EntityProcessCallback> callbacks, boolean shallowCopyLobData) {
-		if (entity == null) return null;
+	private Entity copyReference(final Entity entity, final ReferenceProperty rp, ArrayList<EntityProcessCallback> callbacks,
+			boolean shallowCopyLobData) {
+		if (entity == null)
+			return null;
 		Entity ret = null;
-		EntityDefinition ed = getEntityHandler(rp.getObjectDefinitionName()).getMetaData().currentConfig(EntityContext.getCurrentContext());
-		final String mappingClass = ed.getMapping() != null ? ed.getMapping().getMappingModelClass() : null;
+		EntityDefinition ed = getEntityHandler(rp.getObjectDefinitionName()).getMetaData()
+				.currentConfig(EntityContext.getCurrentContext());
+		final String mappingClass = ed.getMapping() != null ? ed.getMapping()
+				.getMappingModelClass() : null;
 		if (rp.getReferenceType() == ReferenceType.ASSOCIATION) {
 			//通常の参照
-			if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
+			if (rp.getMappedBy() == null || rp.getMappedBy()
+					.isEmpty()) {
 				//参照、そのまま保持
 				ret = entity;
 			} else {
@@ -1444,7 +1483,8 @@ public class EntityManagerImpl implements EntityManager {
 			}
 		} else {
 			//親子関係
-			if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
+			if (rp.getMappedBy() == null || rp.getMappedBy()
+					.isEmpty()) {
 				//参照、この時点で登録を行う
 				ret = deepCopy(entity.getOid(), entity.getDefinitionName(), new DeepCopyOption(shallowCopyLobData));
 			} else {
@@ -1526,7 +1566,8 @@ public class EntityManagerImpl implements EntityManager {
 		ValidateError err = new ValidateError();
 		err.setPropertyName(referenceProperty.getName());
 		err.setPropertyDisplayName(I18nUtil.stringDef(referenceProperty.getDisplayName(), referenceProperty.getLocalizedDisplayNameList()));
-		e.getValidateResults().add(err);
+		e.getValidateResults()
+				.add(err);
 	}
 
 	@Override
@@ -1557,7 +1598,8 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Query query, String fulltext, SearchOption option) {
-		String defName = query.getFrom().getEntityName();
+		String defName = query.getFrom()
+				.getEntityName();
 		List<String> oids = fulltextSearchService.fulltextSearchOidList(defName, fulltext);
 		if (oids == null || oids.size() == 0) {
 			if (option == null || !option.isCountTotal()) {
@@ -1566,7 +1608,8 @@ public class EntityManagerImpl implements EntityManager {
 			// SearchOptionでisCountTotalがtrueで0件を返します。
 			return new SearchResult<T>(0, null);
 		}
-		Map<String, String> oidMap = oids.stream().collect(Collectors.toMap(oid -> oid, oid -> oid));
+		Map<String, String> oidMap = oids.stream()
+				.collect(Collectors.toMap(oid -> oid, oid -> oid));
 
 		Query cpQuery = query.copy();
 		cpQuery.setLimit(null);
@@ -1620,7 +1663,8 @@ public class EntityManagerImpl implements EntityManager {
 				//adminのみ可能
 				AuthContext auth = AuthContext.getCurrentContext();
 				User user = auth.getUser();
-				if (user == null || !auth.getUser().isAdmin()) {
+				if (user == null || !auth.getUser()
+						.isAdmin()) {
 					throw new EntityRuntimeException("Only admin user can set enableAuditPropertySpecification to true.");
 				}
 			}

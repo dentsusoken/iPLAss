@@ -39,7 +39,8 @@ public class Parser {
 
 	public List<Token> parse(String format) throws IOException {
 		List<Token> tokenList = new ArrayList<Token>();
-		if (format == null || format.isEmpty()) return tokenList;
+		if (format == null || format.isEmpty())
+			return tokenList;
 
 		Reader reader = new StringReader(format);
 		StringBuffer stringToken = new StringBuffer();
@@ -47,7 +48,8 @@ public class Parser {
 		int c = -1;
 		while (true) {
 			c = reader.read();
-			if (c == -1) break;
+			if (c == -1)
+				break;
 			if (c == '$') {
 				if (stringToken.length() > 0) {
 					StringToken token = new StringToken(stringToken.toString());
@@ -57,7 +59,8 @@ public class Parser {
 				c = reader.read();
 				if (c == '{') {
 					Token token = perseProperty(reader);
-					if (token != null) tokenList.add(token);
+					if (token != null)
+						tokenList.add(token);
 					continue;
 				}
 			}
@@ -76,8 +79,10 @@ public class Parser {
 		StringBuffer propertyName = new StringBuffer();
 		while (true) {
 			int c = reader.read();
-			if (c == -1) break;
-			if (c == '}') break;
+			if (c == -1)
+				break;
+			if (c == '}')
+				break;
 			propertyName.append((char) c);
 		}
 
@@ -92,7 +97,8 @@ public class Parser {
 
 	public NestProperty getProperty(String name) {
 		for (NestProperty property : properties) {
-			if (property.getPropertyName().equals(name)) {
+			if (property.getPropertyName()
+					.equals(name)) {
 				return property;
 			}
 		}

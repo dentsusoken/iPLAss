@@ -61,7 +61,7 @@ public class ScriptingCommandEditPane extends CommandTypeEditPane {
 		form.setHeight100();
 //		form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
 //		form.setColWidths(100, "*", 100, "*", "*");
-		form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(50, "*", "*");
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
@@ -69,7 +69,8 @@ public class ScriptingCommandEditPane extends CommandTypeEditPane {
 		editScript.setStartRow(false);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_ScriptingCommandEditPane_displayDialogEditScript")));
+		editScript.setPrompt(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_ScriptingCommandEditPane_displayDialogEditScript")));
 		editScript.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -85,6 +86,7 @@ public class ScriptingCommandEditPane extends CommandTypeEditPane {
 							public void onSave(String text) {
 								scriptField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -114,7 +116,7 @@ public class ScriptingCommandEditPane extends CommandTypeEditPane {
 	 */
 	@Override
 	public void setDefinition(CommandDefinition definition) {
-		ScriptingCommandDefinition scrDefinition = (ScriptingCommandDefinition)definition;
+		ScriptingCommandDefinition scrDefinition = (ScriptingCommandDefinition) definition;
 		scriptField.setValue(scrDefinition.getScript());
 	}
 
@@ -125,7 +127,7 @@ public class ScriptingCommandEditPane extends CommandTypeEditPane {
 	 */
 	@Override
 	public CommandDefinition getEditDefinition(CommandDefinition definition) {
-		ScriptingCommandDefinition scrDefinition = (ScriptingCommandDefinition)definition;
+		ScriptingCommandDefinition scrDefinition = (ScriptingCommandDefinition) definition;
 		scrDefinition.setScript(SmartGWTUtil.getStringValue(scriptField));
 		return scrDefinition;
 	}

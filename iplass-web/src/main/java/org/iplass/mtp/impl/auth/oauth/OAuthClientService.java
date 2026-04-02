@@ -37,9 +37,11 @@ public class OAuthClientService extends AbstractTypedMetaDataService<MetaOAuthCl
 		public TypeMap() {
 			super(getFixedPath(), MetaOAuthClient.class, OAuthClientDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<OAuthClientDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(OAuthClientDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(OAuthClientDefinitionManager.class);
 		}
 
 		@Override
@@ -69,5 +71,5 @@ public class OAuthClientService extends AbstractTypedMetaDataService<MetaOAuthCl
 	@Override
 	public void destroy() {
 	}
-	
+
 }

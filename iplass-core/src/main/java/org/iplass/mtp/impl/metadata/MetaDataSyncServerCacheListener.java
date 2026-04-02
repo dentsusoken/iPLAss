@@ -36,26 +36,30 @@ public class MetaDataSyncServerCacheListener implements
 //		if (listCache != null) {
 //			listCache.removeAll();
 //		}
-		
+
 		String defListCacheNs = namespace.replace(MetaDataContext.METADATA_CACHE_NAMESPACE, MetaDataContext.METADATA_DEF_LIST_CACHE_NAMESPACE);
-		CacheStore defListCache = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(defListCacheNs, false);
+		CacheStore defListCache = ServiceRegistry.getRegistry()
+				.getService(CacheService.class)
+				.getCache(defListCacheNs, false);
 		if (defListCache != null) {
 			defListCache.removeAll();
 		}
 	}
-	
+
 	@Override
 	public void markDirty(String namespace, CacheEntry entry) {
 //		String listCacheNs = namespace.replace(MetaDataContext.METADATA_CACHE_NAMESPACE, MetaDataContext.METADATA_LIST_CACHE_NAMESPACE);
 //		CacheStore listCache = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(listCacheNs, false);
 		String defListCacheNs = namespace.replace(MetaDataContext.METADATA_CACHE_NAMESPACE, MetaDataContext.METADATA_DEF_LIST_CACHE_NAMESPACE);
-		CacheStore defListCache = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(defListCacheNs, false);
+		CacheStore defListCache = ServiceRegistry.getRegistry()
+				.getService(CacheService.class)
+				.getCache(defListCacheNs, false);
 		String listPath = (String) entry.getIndexValue(0);
 		if (listPath != null) {
 			if (!listPath.endsWith("/")) {
 				listPath = listPath + "/";
 			}
-			while(listPath.length() != 0) {
+			while (listPath.length() != 0) {
 				listPath = listPath.substring(0, listPath.lastIndexOf('/'));
 				String pathWithSlash = listPath + "/";
 //				if (listCache != null) {
@@ -65,7 +69,7 @@ public class MetaDataSyncServerCacheListener implements
 					defListCache.remove(pathWithSlash);
 				}
 			}
-			
+
 		}
 	}
 

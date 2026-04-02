@@ -126,7 +126,8 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 	private int setPropertyBasicInfo(Map<String, Object> recordMap, PropertyDefinition property, int col) {
 		recordMap.put(header[++col], property.getName());
 		recordMap.put(header[++col], property.getDisplayName());
-		recordMap.put(header[++col], property.getClass().getSimpleName());
+		recordMap.put(header[++col], property.getClass()
+				.getSimpleName());
 		recordMap.put(header[++col], getLength(property));
 		recordMap.put(header[++col], property.getMultiplicity());
 		recordMap.put(header[++col], (isRequired(property) ? rs("tools.entityexplorer.EntityPropertyCsvWriter.maru") : ""));
@@ -196,7 +197,8 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 		if (property instanceof DecimalProperty) {
 			DecimalProperty decimal = (DecimalProperty) property;
 			recordMap.put(header[++col], decimal.getScale());
-			recordMap.put(header[++col], decimal.getRoundingMode().name());
+			recordMap.put(header[++col], decimal.getRoundingMode()
+					.name());
 		} else {
 			recordMap.put(header[++col], "");
 			recordMap.put(header[++col], "");
@@ -211,7 +213,8 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 			recordMap.put(header[++col], autoNumber.getStartsWith());
 			recordMap.put(header[++col], autoNumber.getFixedNumberOfDigits());
 			recordMap.put(header[++col], autoNumber.getFormatScript());
-			recordMap.put(header[++col], autoNumber.getNumberingType().name());
+			recordMap.put(header[++col], autoNumber.getNumberingType()
+					.name());
 		} else {
 			recordMap.put(header[++col], "");
 			recordMap.put(header[++col], "");
@@ -226,7 +229,8 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 		if (property.getValidations() != null) {
 			StringBuilder builder = new StringBuilder();
 			for (ValidationDefinition validation : property.getValidations()) {
-				builder.append(validation.getClass().getSimpleName() + ":");
+				builder.append(validation.getClass()
+						.getSimpleName() + ":");
 				if (validation.getErrorCode() != null) {
 					builder.append("(" + validation.getErrorCode() + ")");
 				}
@@ -299,7 +303,8 @@ public class EntityPropertyCsvWriter extends AdminCsvWriter {
 		if (type == null) {
 			return "!Null";
 		}
-		return property.getReferenceType().name();
+		return property.getReferenceType()
+				.name();
 	}
 
 	private static String rs(String key, Object... arguments) {

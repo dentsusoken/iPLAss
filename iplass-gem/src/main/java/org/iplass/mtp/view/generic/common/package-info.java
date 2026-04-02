@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/view/generic",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/view/generic", prefix="def-vgeneric")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/view/generic",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/view/generic", prefix = "def-vgeneric")
+		}
 )
 package org.iplass.mtp.view.generic.common;

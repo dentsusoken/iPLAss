@@ -37,11 +37,11 @@ public class Max extends Aggregate {
 
 	public Max() {
 	}
-	
+
 	public Max(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public Max(ValueExpression value) {
 		setValue(value);
 	}
@@ -58,7 +58,7 @@ public class Max extends Aggregate {
 	protected String getFuncName() {
 		return "max";
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

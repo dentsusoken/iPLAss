@@ -21,12 +21,12 @@ package org.iplass.mtp.web.template.tags;
 
 import java.io.IOException;
 
+import org.iplass.mtp.web.template.TemplateUtil;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
-
-import org.iplass.mtp.web.template.TemplateUtil;
 
 /**
  * <p>
@@ -57,7 +57,7 @@ import org.iplass.mtp.web.template.TemplateUtil;
  *
  */
 public class RenderContentTag extends SimpleTagSupport {
-	
+
 	@Override
 	public void doTag() throws JspException, IOException {
 		try {

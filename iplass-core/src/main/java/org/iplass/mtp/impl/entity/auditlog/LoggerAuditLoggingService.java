@@ -45,7 +45,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class LoggerAuditLoggingService implements AuditLoggingService {
 
 	//TODO カテゴリ名を設定可能に
@@ -135,7 +134,7 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 				maskTargetMap.forEach((key, value) -> {
 					if (!key.equals("*")) {
 						PropertyMaskTarget target = maskTargetMap.get("*");
-						
+
 						target.propertyMap.forEach((wildcardKey, wildcardValue) -> {
 							// 各Entityのproperty設定を上書きしないように追加
 							value.propertyMap.putIfAbsent(wildcardKey, wildcardValue);
@@ -159,7 +158,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		String str = null;
 		//FIXME 制御文字を取り除く（どちらかと言うと、Entity側でのチェック制御か？）
 		if (detail != null) {
-			str = detail.toString().replace("\n", "\\n").replace("\r", "\\r");
+			str = detail.toString()
+					.replace("\n", "\\n")
+					.replace("\r", "\\r");
 		}
 		logger.info(action + "," + str);
 	}
@@ -203,8 +204,12 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 
 	private StringBuilder toLogFormat(Entity entity, List<PropertyHandler> logProps) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{\"definitionName\":\"").append(entity.getDefinitionName()).append("\"");
-		sb.append(",\"oid\":\"").append(entity.getOid()).append("\"");
+		sb.append("{\"definitionName\":\"")
+				.append(entity.getDefinitionName())
+				.append("\"");
+		sb.append(",\"oid\":\"")
+				.append(entity.getOid())
+				.append("\"");
 		if (logProps != null) {
 
 			PropertyMaskTarget propertyMaskTarget = null;
@@ -215,12 +220,15 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 				}
 			}
 
-			for (PropertyHandler key: logProps) {
+			for (PropertyHandler key : logProps) {
 				sb.append(",");
-				sb.append("\"").append(key.getName()).append("\":");
+				sb.append("\"")
+						.append(key.getName())
+						.append("\":");
 				PropertyType pt = null;
 				if (key instanceof PrimitivePropertyHandler) {
-					pt = ((PrimitivePropertyHandler) key).getMetaData().getType();
+					pt = ((PrimitivePropertyHandler) key).getMetaData()
+							.getType();
 				}
 
 				Object val = entity.getValue(key.getName());
@@ -232,7 +240,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 							sb.append(",");
 						}
 						if (valArray[i] instanceof GenericEntity) {
-							sb.append("{\"oid\":\"").append(((GenericEntity) valArray[i]).getOid()).append("\",\"name\":\"");
+							sb.append("{\"oid\":\"")
+									.append(((GenericEntity) valArray[i]).getOid())
+									.append("\",\"name\":\"");
 							cutAppend(sb, maskValue(key.getName(), ((GenericEntity) valArray[i]).getName(), propertyMaskTarget));
 							sb.append("\"}");
 						} else {
@@ -253,7 +263,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 					}
 					sb.append("]");
 				} else if (val instanceof GenericEntity) {
-					sb.append("{\"oid\":\"").append(((GenericEntity) val).getOid()).append("\",\"name\":\"");
+					sb.append("{\"oid\":\"")
+							.append(((GenericEntity) val).getOid())
+							.append("\",\"name\":\"");
 					cutAppend(sb, maskValue(key.getName(), ((GenericEntity) val).getName(), propertyMaskTarget));
 					sb.append("\"}");
 				} else {
@@ -276,7 +288,9 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 
 	@Override
 	public void logInsert(Entity entity) {
-		EntityHandler eh = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(entity.getDefinitionName());
+		EntityHandler eh = ServiceRegistry.getRegistry()
+				.getService(EntityService.class)
+				.getRuntimeByName(entity.getDefinitionName());
 		if (eh != null) {
 			log(ACTION_INSERT, toLogFormat(entity, eh.getPropertyList(EntityContext.getCurrentContext())));
 		}
@@ -287,10 +301,15 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 		String oid = entity.getOid();
 		String defName = entity.getDefinitionName();
 		StringBuilder sb = new StringBuilder();
-		sb.append("{\"definitionName\":\"").append(defName).append("\"");
-		sb.append(",\"oid\":\"").append(oid).append("\"");
+		sb.append("{\"definitionName\":\"")
+				.append(defName)
+				.append("\"");
+		sb.append(",\"oid\":\"")
+				.append(oid)
+				.append("\"");
 		if (option.getTargetVersion() == DeleteTargetVersion.SPECIFIC) {
-			sb.append(",\"version\":").append(entity.getVersion());
+			sb.append(",\"version\":")
+					.append(entity.getVersion());
 		}
 		sb.append("}");
 		log(ACTION_DELETE, sb);
@@ -308,12 +327,14 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 
 	@Override
 	public void logUpdate(Entity beforeEntity, Entity entity, UpdateOption option) {
-		EntityHandler eh = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(entity.getDefinitionName());
+		EntityHandler eh = ServiceRegistry.getRegistry()
+				.getService(EntityService.class)
+				.getRuntimeByName(entity.getDefinitionName());
 		if (eh != null) {
 			List<PropertyHandler> props = new ArrayList<>();
 			if (option.getUpdateProperties() != null) {
 				EntityContext ec = EntityContext.getCurrentContext();
-				for (String up: option.getUpdateProperties()) {
+				for (String up : option.getUpdateProperties()) {
 					//updateByはこの段階で、更新前の値なので、混乱を避けるため出力しない
 					if (!Entity.UPDATE_BY.equals(up)) {
 						props.add(eh.getProperty(up, ec));

@@ -50,7 +50,8 @@ class PropertyDescriptorParser {
 	 */
 	public PropertyDescriptor getPropertyDesctiptor(String propertyName) {
 		for (PropertyDescriptor descriptor : descriptors) {
-			if (descriptor.getName().equals(propertyName)) {
+			if (descriptor.getName()
+					.equals(propertyName)) {
 				return descriptor;
 			}
 		}

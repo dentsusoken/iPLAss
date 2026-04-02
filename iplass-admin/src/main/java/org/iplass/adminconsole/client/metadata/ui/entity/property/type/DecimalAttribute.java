@@ -41,7 +41,7 @@ public class DecimalAttribute implements PropertyAttribute {
 	@Override
 	public void applyFrom(PropertyDefinition property, EntityDefinition entity) {
 
-		DecimalProperty decimal = (DecimalProperty)property;
+		DecimalProperty decimal = (DecimalProperty) property;
 
 		setScale(decimal.getScale());
 		setRoundingMode(decimal.getRoundingMode());
@@ -50,7 +50,7 @@ public class DecimalAttribute implements PropertyAttribute {
 	@Override
 	public void applyTo(PropertyDefinition property, EntityDefinition entity) {
 
-		DecimalProperty decimal = (DecimalProperty)property;
+		DecimalProperty decimal = (DecimalProperty) property;
 
 		decimal.setScale(getScale());
 		decimal.setRoundingMode(getRoundingMode());

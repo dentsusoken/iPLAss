@@ -20,11 +20,11 @@
 
 package org.iplass.mtp.tools.gui.partition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
 
@@ -36,7 +36,7 @@ public class PartitionTable extends JTable {
 
 	public PartitionTable() {
 
-		setAutoCreateRowSorter(true);	//ソート機能
+		setAutoCreateRowSorter(true); //ソート機能
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		List<PartitionTableColumnInfo> cols = initColumnInfo();
@@ -44,8 +44,10 @@ public class PartitionTable extends JTable {
 		model = new PartitionTableModel(cols);
 		setModel(model);
 
-		for (int i = 0; i < cols.size(); i ++) {
-			getColumnModel().getColumn(i).setPreferredWidth(cols.get(i).getColSize());
+		for (int i = 0; i < cols.size(); i++) {
+			getColumnModel().getColumn(i)
+					.setPreferredWidth(cols.get(i)
+							.getColSize());
 		}
 
 	}
@@ -55,7 +57,7 @@ public class PartitionTable extends JTable {
 		return model;
 	}
 
-	private List<PartitionTableColumnInfo> initColumnInfo () {
+	private List<PartitionTableColumnInfo> initColumnInfo() {
 
 		List<PartitionTableColumnInfo> cols = new ArrayList<PartitionTableColumnInfo>();
 		cols.add(new PartitionTableColumnInfo("TableName", 300));
@@ -76,6 +78,7 @@ public class PartitionTable extends JTable {
 		public String getName() {
 			return name;
 		}
+
 		public int getColSize() {
 			return colSize;
 		}
@@ -104,9 +107,9 @@ public class PartitionTable extends JTable {
 			return data.get(row);
 		}
 
-        @Override
+		@Override
 		public int getRowCount() {
-			return data !=null ? data.size() : 0;
+			return data != null ? data.size() : 0;
 		}
 
 		@Override
@@ -117,12 +120,12 @@ public class PartitionTable extends JTable {
 			}
 
 			switch (column) {
-				case 0:
-					return info.getTableName();
-				case 1:
-					return info.getMaxTenantId();
-				default:
-					break;
+			case 0:
+				return info.getTableName();
+			case 1:
+				return info.getMaxTenantId();
+			default:
+				break;
 			}
 
 			return super.getValueAt(row, column);
@@ -133,7 +136,7 @@ public class PartitionTable extends JTable {
 		}
 
 		@Override
-        public Class<?> getColumnClass(int column) {
+		public Class<?> getColumnClass(int column) {
 			if (getRowCount() == 0) {
 				return String.class;
 			}
@@ -143,12 +146,12 @@ public class PartitionTable extends JTable {
 			} else {
 				return value.getClass();
 			}
-        }
+		}
 
-        @Override
-        public boolean isCellEditable(int row, int col) {
-            return false;
-        }
+		@Override
+		public boolean isCellEditable(int row, int col) {
+			return false;
+		}
 	}
 
 }

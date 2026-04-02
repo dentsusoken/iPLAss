@@ -102,16 +102,18 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
-			if (uploader.getLastUploadState().isSuccess()) {
-				finishUpload(uploader.getLastUploadState().getData());
+			if (uploader.getLastUploadState()
+					.isSuccess()) {
+				finishUpload(uploader.getLastUploadState()
+						.getData());
 			} else {
-				errorUpload(uploader.getLastUploadState().getErrorMessage());
+				errorUpload(uploader.getLastUploadState()
+						.getErrorMessage());
 			}
 
 			//Hidden項目の削除
 			uploader.removeHidden();
 		});
-
 
 		fileComposit.addMember(uploader);
 
@@ -122,7 +124,8 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		upload.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (uploader.getFileName() == null || uploader.getFileName().isEmpty()) {
+				if (uploader.getFileName() == null || uploader.getFileName()
+						.isEmpty()) {
 					SC.warn(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLUploadDialog_selectImportFile"));
 					return;
 				}
@@ -223,7 +226,7 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		cancel.setDisabled(disabled);
 	}
 
-	private class XMLUploadResultInfo extends UploadResultInfo{
+	private class XMLUploadResultInfo extends UploadResultInfo {
 
 		String fileOid;
 
@@ -253,11 +256,14 @@ public class MetaDataXMLUploadDialog extends AbstractWindow {
 		}
 
 		private String getFileUploadStatusMessage(String status) {
-			if (ConfigUploadProperty.Status.SUCCESS.name().equals(status)) {
+			if (ConfigUploadProperty.Status.SUCCESS.name()
+					.equals(status)) {
 				return AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLUploadDialog_uploadSuccessful");
-			} else if (ConfigUploadProperty.Status.WARN.name().equals(status)) {
+			} else if (ConfigUploadProperty.Status.WARN.name()
+					.equals(status)) {
 				return AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLUploadDialog_uploadWarn");
-			} else if (ConfigUploadProperty.Status.ERROR.name().equals(status)) {
+			} else if (ConfigUploadProperty.Status.ERROR.name()
+					.equals(status)) {
 				return AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLUploadDialog_uploadErr");
 			} else {
 				return AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataXMLUploadDialog_notGetUploadResult");

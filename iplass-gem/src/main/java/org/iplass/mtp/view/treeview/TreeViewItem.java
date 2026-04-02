@@ -24,24 +24,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * ツリービューのアイテム
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({EntityTreeViewItem.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso({ EntityTreeViewItem.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class TreeViewItem implements Serializable {
 
 	/** ソート種別 */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/treeview")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/treeview")
 	public enum TreeSortType {
 		ASC, DESC;
 	}
@@ -134,7 +133,7 @@ public abstract class TreeViewItem implements Serializable {
 	 * @return ビュー名
 	 */
 	public String getViewName() {
-	    return viewName;
+		return viewName;
 	}
 
 	/**
@@ -142,7 +141,7 @@ public abstract class TreeViewItem implements Serializable {
 	 * @param viewName ビュー名
 	 */
 	public void setViewName(String viewName) {
-	    this.viewName = viewName;
+		this.viewName = viewName;
 	}
 
 	/**
@@ -357,8 +356,9 @@ public abstract class TreeViewItem implements Serializable {
 	 * @return ColModelのマッピング
 	 */
 	public List<TreeViewGridColModelMapping> getMapping() {
-		if (mapping == null) mapping = new ArrayList<TreeViewGridColModelMapping>();
-	    return mapping;
+		if (mapping == null)
+			mapping = new ArrayList<TreeViewGridColModelMapping>();
+		return mapping;
 	}
 
 	/**
@@ -366,7 +366,7 @@ public abstract class TreeViewItem implements Serializable {
 	 * @param mapping ColModelのマッピング
 	 */
 	public void setMapping(List<TreeViewGridColModelMapping> mapping) {
-	    this.mapping = mapping;
+		this.mapping = mapping;
 	}
 
 	/**
@@ -374,7 +374,7 @@ public abstract class TreeViewItem implements Serializable {
 	 * @param mapping ColModelのマッピング
 	 */
 	public void addMapping(TreeViewGridColModelMapping mapping) {
-	    getMapping().add(mapping);
+		getMapping().add(mapping);
 	}
 
 	/**
@@ -405,7 +405,8 @@ public abstract class TreeViewItem implements Serializable {
 	 */
 	private ReferenceTreeViewItem search(String propertyName) {
 		for (ReferenceTreeViewItem item : getReferenceTreeViewItems()) {
-			if (item.getPropertyName().equals(propertyName))
+			if (item.getPropertyName()
+					.equals(propertyName))
 				return item;
 		}
 		return null;

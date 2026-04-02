@@ -26,7 +26,7 @@ package org.iplass.mtp.pushnotification;
  *
  */
 public interface PushNotificationListener {
-	
+
 	/**
 	 * PushNotification送信前に呼び出されます。
 	 * デフォルト実装では何もしません（return trueします）。
@@ -37,7 +37,7 @@ public interface PushNotificationListener {
 	public default boolean beforePush(PushNotification notification) {
 		return true;
 	}
-	
+
 	/**
 	 * PushNotificationの送信要求を正常に処理できた場合（すべてのメッセージが正しく送信されたとは限りません）に呼び出されます。
 	 * デフォルト実装では何もしません。
@@ -47,7 +47,7 @@ public interface PushNotificationListener {
 	 */
 	public default void onSuccess(PushNotification notification, PushNotificationResult result) {
 	}
-	
+
 	/**
 	 * PushNotificationの送信要求を正常に処理できなかった場合（例外発生時）に呼び出されます。
 	 * デフォルト実装では何もしません（return trueします）。

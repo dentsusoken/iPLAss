@@ -20,16 +20,16 @@
 
 package org.iplass.mtp.impl.xml.jaxb;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +56,14 @@ public final class SecureSAXParserFactory extends SAXParserFactory {
 	private static Logger logger = LoggerFactory.getLogger(SecureSAXParserFactory.class);
 
 	private static final EntityResolver EMPTY_ENTITY_RESOLVER = new EntityResolver() {
-	    public InputSource resolveEntity(String publicId, String systemId) {
-	        return new InputSource(new ByteArrayInputStream(new byte[0]));
-	    }
+		public InputSource resolveEntity(String publicId, String systemId) {
+			return new InputSource(new ByteArrayInputStream(new byte[0]));
+		}
 	};
 
-    private final SAXParserFactory spf;
+	private final SAXParserFactory spf;
 
-    public SecureSAXParserFactory(SAXParserFactory spf) {
+	public SecureSAXParserFactory(SAXParserFactory spf) {
 		this.spf = spf;
 		try {
 			spf.setFeature("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);

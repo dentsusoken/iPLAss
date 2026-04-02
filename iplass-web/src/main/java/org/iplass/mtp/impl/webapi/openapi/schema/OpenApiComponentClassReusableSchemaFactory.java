@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ObjectSchema;
@@ -69,7 +68,8 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 
 		var components = getOpenApiComponents(openApi);
 
-		if (null != components.getSchemas() && components.getSchemas().containsKey(name)) {
+		if (null != components.getSchemas() && components.getSchemas()
+				.containsKey(name)) {
 			// すでに定義済みの場合は再利用
 			return ref;
 		}
@@ -106,8 +106,11 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 			String jsonSchemaString = schemaGenerator.generate(clazz);
 			logger.trace("Class to JsonSchema. class={}, jsonSchema={}", clazz, jsonSchemaString);
 			// JsonSchema to OpenAPI Schema
-			var resolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getOpenApiResolver();
-			var openApiVersion = openApi.getOpenapi().split("\\.");
+			var resolver = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class)
+					.getOpenApiResolver();
+			var openApiVersion = openApi.getOpenapi()
+					.split("\\.");
 			var seriesVersion = openApiVersion[0] + "." + openApiVersion[1];
 			var mapper = resolver.getObjectMapper(OpenApiFileType.JSON, OpenApiVersion.fromSeriesVersion(seriesVersion));
 			var jsonSchema = mapper.readValue(jsonSchemaString, Schema.class);
@@ -135,17 +138,22 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 			openApiSchema.setProperties(jsonSchema.getProperties());
 			openApiSchema.setTitle(schemaType.name() + " Class Schema " + clazz.getSimpleName());
 
-			var standardClassSchemaResolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getStandardClassSchemaResolver();
+			var standardClassSchemaResolver = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class)
+					.getStandardClassSchemaResolver();
 			@SuppressWarnings("rawtypes")
 			Map<String, Schema> props = openApiSchema.getProperties();
 			var parser = new PropertyDescriptorParser(clazz);
 			props.forEach((key, value) -> {
-				var isContainsArray = null != value.getTypes() && value.getTypes().contains("array");
+				var isContainsArray = null != value.getTypes() && value.getTypes()
+						.contains("array");
 				var isTypeArray = "array".equals(value.getType());
-				var isNotEmptyArrayRef = StringUtil.isNotEmpty(value.getItems() != null ? value.getItems().get$ref() : null);
+				var isNotEmptyArrayRef = StringUtil.isNotEmpty(value.getItems() != null ? value.getItems()
+						.get$ref() : null);
 				var isArray = isContainsArray || isTypeArray || isNotEmptyArrayRef;
 
-				var isContainsObject = null != value.getTypes() && value.getTypes().contains("object");
+				var isContainsObject = null != value.getTypes() && value.getTypes()
+						.contains("object");
 				var isTypeObject = "object".equals(value.getType());
 				var isNotEmptyObjectRef = StringUtil.isNotEmpty(value.get$ref());
 				var isObject = isContainsObject || isTypeObject || isNotEmptyObjectRef;
@@ -167,7 +175,8 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 
 					} else if (propType.isAssignableFrom(java.util.List.class) || propType.isAssignableFrom(java.util.Set.class)) {
 						// List, Set 派生の場合は、 generics を取得する
-						var genericReturnType = descriptor.getReadMethod().getGenericReturnType();
+						var genericReturnType = descriptor.getReadMethod()
+								.getGenericReturnType();
 						if (genericReturnType instanceof java.lang.reflect.ParameterizedType pt) {
 							// List, Set なので必ず Genericsタイプは１つ
 							var genericType = pt.getActualTypeArguments()[0];
@@ -183,21 +192,26 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 
 								// 解決できない場合は、再利用可能なスキーマとして追加
 								var refName = addReusableSchema(genericClass, openApi, schemaType);
-								value.getItems().set$ref(refName);
-								value.getItems().properties(null);
+								value.getItems()
+										.set$ref(refName);
+								value.getItems()
+										.properties(null);
 							}
 						}
 
 					} else {
 						// 解決できない場合は、再利用可能なスキーマとして追加
 						var refName = addReusableSchema(propType, openApi, schemaType);
-						value.getItems().set$ref(refName);
-						value.getItems().properties(null);
+						value.getItems()
+								.set$ref(refName);
+						value.getItems()
+								.properties(null);
 					}
 
 				} else if (isObject) {
 					// type が object の場合は、標準データ型を判定
-					var propType = parser.getPropertyDesctiptor(key).getPropertyType();
+					var propType = parser.getPropertyDesctiptor(key)
+							.getPropertyType();
 					logger.trace("object type. class={}, property={}, propertyType={}", clazz, key, propType);
 					if (standardClassSchemaResolver.canResolve(propType)) {
 						// 解決可能な場合は、スキーマを解決して設定
@@ -258,7 +272,9 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 	 * @throws JsonProcessingException
 	 */
 	private Schema<?> getDefsSchema(Map<String, Object> defsMap, Schema<?> schema, ObjectMapper mapper) throws JsonProcessingException {
-		var defsKey = schema.get$ref().substring(schema.get$ref().lastIndexOf('/') + 1);
+		var defsKey = schema.get$ref()
+				.substring(schema.get$ref()
+						.lastIndexOf('/') + 1);
 		var defSchemaObject = defsMap.get(defsKey);
 		var defSchemaString = mapper.writeValueAsString(defSchemaObject);
 		var defSchema = mapper.readValue(defSchemaString, Schema.class);

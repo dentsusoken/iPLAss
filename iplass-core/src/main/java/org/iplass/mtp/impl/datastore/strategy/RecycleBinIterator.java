@@ -23,16 +23,19 @@ package org.iplass.mtp.impl.datastore.strategy;
 import java.sql.Timestamp;
 
 public interface RecycleBinIterator {
-	
-	public boolean next();
-	
-	public long getRbid();
-	public String getOid();
-	public String getName();
-	public Timestamp getRbDate();
-	public String getRbUser();
-	
-	public void close();
 
+	public boolean next();
+
+	public long getRbid();
+
+	public String getOid();
+
+	public String getName();
+
+	public Timestamp getRbDate();
+
+	public String getRbUser();
+
+	public void close();
 
 }

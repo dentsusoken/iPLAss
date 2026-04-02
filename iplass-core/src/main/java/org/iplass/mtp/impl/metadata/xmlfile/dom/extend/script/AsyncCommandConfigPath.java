@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/command/commands/commandConfig", 
+		path = "/metaDataEntry/metaData/command/commands/commandConfig",
 		fileExtension = FileExtention.GROOVY,
 		useFileSequence = true)
 public class AsyncCommandConfigPath extends AbstractExternalRefPath {

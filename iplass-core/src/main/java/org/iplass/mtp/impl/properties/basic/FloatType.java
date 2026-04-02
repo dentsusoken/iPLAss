@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class FloatType extends BasicType {
 	private static final long serialVersionUID = 3314101651301305269L;
 	private static final int hash = 22;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(FloatType.class);
 
 	@Override
@@ -43,7 +43,7 @@ public class FloatType extends BasicType {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public FloatProperty createPropertyDefinitionInstance() {
 		return new FloatProperty();
@@ -58,7 +58,7 @@ public class FloatType extends BasicType {
 	public Class<?> storeType() {
 		return Double.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.FLOAT;
@@ -78,5 +78,5 @@ public class FloatType extends BasicType {
 			return null;
 		}
 	}
-	
+
 }

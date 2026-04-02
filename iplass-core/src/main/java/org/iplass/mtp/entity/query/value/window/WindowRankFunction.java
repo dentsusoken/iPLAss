@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.entity.query.value.window;
 
-
 /**
  * Windowランク関数を表す抽象クラス。
  * 
@@ -32,7 +31,8 @@ public abstract class WindowRankFunction extends WindowFunction {
 
 	@Override
 	protected void writeWindowFunctionType(StringBuilder sb) {
-		sb.append(getFuncName()).append("()");
+		sb.append(getFuncName())
+				.append("()");
 	}
 
 	@Override

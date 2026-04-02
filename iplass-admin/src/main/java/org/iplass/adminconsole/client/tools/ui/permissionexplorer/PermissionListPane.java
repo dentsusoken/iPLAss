@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.permissionexplorer;
 
-
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -148,7 +147,7 @@ public abstract class PermissionListPane extends VLayout {
 		expandAllButton = new ToolStripButton();
 		expandAllButton.setIcon(EXPAND_ICON);
 		expandAllButton.setTitle("Expand");
-		expandAllButton.setVisible(false);	//Tree用なのでデフォルト非表示
+		expandAllButton.setVisible(false); //Tree用なのでデフォルト非表示
 		expandAllButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -161,7 +160,7 @@ public abstract class PermissionListPane extends VLayout {
 		contractAllButton = new ToolStripButton();
 		contractAllButton.setIcon(CONTRACT_ICON);
 		contractAllButton.setTitle("Collapse");
-		contractAllButton.setVisible(false);	//Tree用なのでデフォルト非表示
+		contractAllButton.setVisible(false); //Tree用なのでデフォルト非表示
 		contractAllButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -173,7 +172,8 @@ public abstract class PermissionListPane extends VLayout {
 
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_PermissionListPane_refreshList")));
+		refreshButton.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_permissionexplorer_PermissionListPane_refreshList")));
 		refreshButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -270,7 +270,8 @@ public abstract class PermissionListPane extends VLayout {
 		this.editing = editing;
 		if (!proccesing) {
 			//処理中以外の場合はタイトルをステータスに合わせて変更
-			mainPane.getTab().setTitle(getStateTabTitle());
+			mainPane.getTab()
+					.setTitle(getStateTabTitle());
 		}
 	}
 
@@ -279,7 +280,8 @@ public abstract class PermissionListPane extends VLayout {
 	 */
 	final protected void setProgressStart() {
 		proccesing = true;
-		mainPane.getTab().setTitle("<span>" + Canvas.imgHTML(PROGRESS_ICON) + "&nbsp;Loading...</span>");
+		mainPane.getTab()
+				.setTitle("<span>" + Canvas.imgHTML(PROGRESS_ICON) + "&nbsp;Loading...</span>");
 	}
 
 	/**
@@ -287,7 +289,8 @@ public abstract class PermissionListPane extends VLayout {
 	 */
 	final protected void setProgressFinish() {
 		proccesing = false;
-		mainPane.getTab().setTitle(getStateTabTitle());
+		mainPane.getTab()
+				.setTitle(getStateTabTitle());
 	}
 
 	/**
@@ -341,8 +344,8 @@ public abstract class PermissionListPane extends VLayout {
 	private void convertRoleMap(List<Entity> roleList) {
 		roleMap = new LinkedHashMap<String, Entity>();
 		if (roleList != null) {
-			for (Entity role: roleList) {
-				roleMap.put((String)role.getValue("code"), role);
+			for (Entity role : roleList) {
+				roleMap.put((String) role.getValue("code"), role);
 			}
 		}
 	}

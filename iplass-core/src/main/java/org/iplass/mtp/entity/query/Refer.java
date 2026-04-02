@@ -36,10 +36,10 @@ public class Refer implements ASTNode {
 	private EntityField referenceName;
 	private AsOf asOf;
 	private Condition condition;
-	
+
 	public Refer() {
 	}
-	
+
 	public Refer(EntityField referenceName, Condition condition) {
 		this.referenceName = referenceName;
 		this.condition = condition;
@@ -50,7 +50,7 @@ public class Refer implements ASTNode {
 		this.asOf = asOf;
 		this.condition = condition;
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
@@ -69,7 +69,7 @@ public class Refer implements ASTNode {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -78,7 +78,8 @@ public class Refer implements ASTNode {
 			sb.append(referenceName);
 		}
 		if (asOf != null) {
-			sb.append(" ").append(asOf);
+			sb.append(" ")
+					.append(asOf);
 		}
 		if (condition != null) {
 			sb.append(" on ");
@@ -149,5 +150,5 @@ public class Refer implements ASTNode {
 	public void setCondition(Condition condition) {
 		this.condition = condition;
 	}
-	
+
 }

@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.oauth.definition.ClientPolicyDefinition;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
@@ -54,22 +52,25 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.template.TemplateUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class MetaOAuthAuthorization extends BaseRootMetaData implements DefinableMetaData<OAuthAuthorizationDefinition> {
 	private static final long serialVersionUID = 3413613829144055452L;
 
 	private static List<MetaScope> standardScopes = new ArrayList<>();
 	static {
-		standardScopes.add(new MetaScope(OAuthConstants.SCOPE_OFFLINE_ACCESS, "Offline Access", "Application requres offline access to your resources."));
+		standardScopes
+				.add(new MetaScope(OAuthConstants.SCOPE_OFFLINE_ACCESS, "Offline Access", "Application requres offline access to your resources."));
 		standardScopes.add(new MetaScope(OAuthConstants.SCOPE_OPENID, "OpenID", "Application requires your public identifier(OpenID)."));
 	}
-	
+
 	private List<String> availableRoles;
 	private List<MetaScope> scopes;
 	private String consentTemplateName;
 	private List<MetaClientPolicy> clientPolicies;
 	private MetaSubjectIdentifierType subjectIdentifierType;
 	private String issuerUri;
-	
+
 	public String getIssuerUri() {
 		return issuerUri;
 	}
@@ -140,7 +141,7 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		}
 		if (def.getScopes() != null) {
 			scopes = new ArrayList<>();
-			for (ScopeDefinition sd: def.getScopes()) {
+			for (ScopeDefinition sd : def.getScopes()) {
 				MetaScope ms = MetaScope.createInstance(sd);
 				ms.applyConfig(sd);
 				scopes.add(ms);
@@ -151,11 +152,11 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		consentTemplateName = def.getConsentTemplateName();
 		if (def.getClientPolicies() != null) {
 			clientPolicies = new ArrayList<>();
-			for (ClientPolicyDefinition cpd: def.getClientPolicies()) {
+			for (ClientPolicyDefinition cpd : def.getClientPolicies()) {
 				MetaClientPolicy mcp = new MetaClientPolicy();
 				mcp.applyConfig(cpd);
 				clientPolicies.add(mcp);
-				
+
 			}
 		} else {
 			clientPolicies = null;
@@ -175,13 +176,13 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		def.setName(name);
 		def.setDescription(description);
 		def.setDisplayName(displayName);
-		
+
 		if (availableRoles != null) {
 			def.setAvailableRoles(new ArrayList<>(availableRoles));
 		}
 		if (scopes != null) {
 			ArrayList<ScopeDefinition> list = new ArrayList<>();
-			for (MetaScope ms: scopes) {
+			for (MetaScope ms : scopes) {
 				list.add(ms.currentConfig());
 			}
 			def.setScopes(list);
@@ -189,7 +190,7 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		def.setConsentTemplateName(consentTemplateName);
 		if (clientPolicies != null) {
 			ArrayList<ClientPolicyDefinition> list = new ArrayList<>();
-			for (MetaClientPolicy mcp: clientPolicies) {
+			for (MetaClientPolicy mcp : clientPolicies) {
 				list.add(mcp.currentConfig());
 			}
 			def.setClientPolicies(list);
@@ -198,27 +199,28 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			def.setSubjectIdentifierType(subjectIdentifierType.currentConfig());
 		}
 		def.setIssuerUri(issuerUri);
-		
+
 		return def;
 	}
-	
+
 	public class OAuthAuthorizationRuntime extends BaseMetaDataRuntime {
-		
-		private OAuthAuthorizationService service = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-		private OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
-		
+
+		private OAuthAuthorizationService service = ServiceRegistry.getRegistry()
+				.getService(OAuthAuthorizationService.class);
+		private OAuthClientService clientService = ServiceRegistry.getRegistry()
+				.getService(OAuthClientService.class);
+
 		private EnumMap<ClientType, ClientPolicyRuntime> clientPolicyRuntimeMap;
 		private SubjectIdentifierTypeRuntime subjectIdentifierTypeRuntime;
 		private Map<String, MetaScope> scopeMap;
 		private Map<String, OIDCClaimScopeRuntime> oidcClaimScopeMap;
-		
-		
+
 		private OAuthAuthorizationRuntime() {
 			try {
 				boolean useOpenIdConnect = false;
 				clientPolicyRuntimeMap = new EnumMap<>(ClientType.class);
 				if (clientPolicies != null) {
-					for (MetaClientPolicy cp: clientPolicies) {
+					for (MetaClientPolicy cp : clientPolicies) {
 						clientPolicyRuntimeMap.put(cp.getClientType(), cp.createRuntime(MetaOAuthAuthorization.this));
 						useOpenIdConnect = useOpenIdConnect || cp.isSupportOpenIDConnect();
 					}
@@ -232,29 +234,29 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 				scopeMap = new HashMap<>();
 				oidcClaimScopeMap = new HashMap<>();
 				if (scopes != null) {
-					for (MetaScope ms: scopes) {
+					for (MetaScope ms : scopes) {
 						scopeMap.put(ms.getName(), ms);
 						if (ms instanceof MetaOIDCClaimScope) {
 							oidcClaimScopeMap.put(ms.getName(), ((MetaOIDCClaimScope) ms).createRuntime(getName()));
 						}
 					}
 				}
-				for (MetaScope ms: standardScopes) {
+				for (MetaScope ms : standardScopes) {
 					if (!scopeMap.containsKey(ms.getName())) {
 						scopeMap.put(ms.getName(), ms);
 					}
 				}
-				
+
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
-		
+
 		@Override
 		public MetaOAuthAuthorization getMetaData() {
 			return MetaOAuthAuthorization.this;
 		}
-		
+
 		public SubjectIdentifierTypeRuntime getSubjectIdentifierType() {
 			return subjectIdentifierTypeRuntime;
 		}
@@ -267,30 +269,38 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			if (clientRuntime == null) {
 				throw new IllegalArgumentException("OAuthClient not found:" + authorizationRequest.getClientId());
 			}
-			if (!clientRuntime.getMetaData().getAuthorizationServerId().equals(getId())) {
+			if (!clientRuntime.getMetaData()
+					.getAuthorizationServerId()
+					.equals(getId())) {
 				throw new IllegalArgumentException("OAuthClient is not registered to AuthServer:" + authorizationRequest.getClientId());
 			}
-			
-			if (clientRuntime.getMetaData().getGrantTypes() == null
-					|| !clientRuntime.getMetaData().getGrantTypes().contains(GrantType.AUTHORIZATION_CODE)) {
+
+			if (clientRuntime.getMetaData()
+					.getGrantTypes() == null
+					|| !clientRuntime.getMetaData()
+							.getGrantTypes()
+							.contains(GrantType.AUTHORIZATION_CODE)) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_UNAUTHORIZED_CLIENT, "grant_type not allowed.");
 			}
 			if (authorizationRequest.getRedirectUri() == null) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "redirect_uri required.");
 			}
-			if (authorizationRequest.getResponseTypes() == null || authorizationRequest.getResponseTypes().size() == 0) {
+			if (authorizationRequest.getResponseTypes() == null || authorizationRequest.getResponseTypes()
+					.size() == 0) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "response_type required.");
 			}
-			for (String rt: authorizationRequest.getResponseTypes()) {
+			for (String rt : authorizationRequest.getResponseTypes()) {
 				//currently only code is supported
 				if (!OAuthConstants.RESPONSE_TYPE_CODE.equals(rt)) {
 					throw new OAuthApplicationException(OAuthConstants.ERROR_UNSUPPORTED_RESPONSE_TYPE, "invalid response_type.");
 				}
 			}
-			if (authorizationRequest.getScopes() == null || authorizationRequest.getScopes().size() == 0) {
+			if (authorizationRequest.getScopes() == null || authorizationRequest.getScopes()
+					.size() == 0) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "scope required.");
 			}
-			List<String> scopesByClientType = getClientPolicy(clientRuntime.getMetaData().getClientType()).scopeList();
+			List<String> scopesByClientType = getClientPolicy(clientRuntime.getMetaData()
+					.getClientType()).scopeList();
 			if (!scopesByClientType.containsAll(authorizationRequest.getScopes())) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_SCOPE, "invalid scope.");
 			}
@@ -304,7 +314,7 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "nonce required.");
 				}
 			}
-			
+
 			if (authorizationRequest.getResponseMode() != null) {
 				if (!OAuthConstants.RESPONSE_MODE_FORM_POST.equals(authorizationRequest.getResponseMode())
 						&& !OAuthConstants.RESPONSE_MODE_QUERY.equals(authorizationRequest.getResponseMode())
@@ -312,14 +322,15 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid response_mode.");
 				}
 			}
-			
+
 			if (authorizationRequest.getCodeChallenge() == null && authorizationRequest.getCodeChallengeMethod() == null) {
 				if (service.isForcePKCE()) {
-					if (clientRuntime.getMetaData().getClientType() == ClientType.PUBLIC) {
+					if (clientRuntime.getMetaData()
+							.getClientType() == ClientType.PUBLIC) {
 						throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "PKCE required for public clients.");
 					}
 				}
-				
+
 			} else {
 				if (authorizationRequest.getCodeChallenge() == null) {
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "code_challenge required.");
@@ -337,71 +348,82 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 					}
 				}
 			}
-			
-			if (authorizationRequest.getPrompt() != null && authorizationRequest.getPrompt().size() > 0) {
-				if (authorizationRequest.getPrompt().contains(OAuthConstants.PROMPT_NONE)) {
-					if (authorizationRequest.getPrompt().size() != 1) {
+
+			if (authorizationRequest.getPrompt() != null && authorizationRequest.getPrompt()
+					.size() > 0) {
+				if (authorizationRequest.getPrompt()
+						.contains(OAuthConstants.PROMPT_NONE)) {
+					if (authorizationRequest.getPrompt()
+							.size() != 1) {
 						throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid prompt.");
 					}
 				} else {
-					if (authorizationRequest.getPrompt().size() > 2) {
+					if (authorizationRequest.getPrompt()
+							.size() > 2) {
 						//currently supports "login" and "consent"
 						throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid prompt.");
 					}
-					for (String p: authorizationRequest.getPrompt()) {
+					for (String p : authorizationRequest.getPrompt()) {
 						if (!p.equals(OAuthConstants.PROMPT_CONSENT) && !p.equals(OAuthConstants.PROMPT_LOGIN)) {
 							throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid prompt.");
 						}
 					}
 				}
 			}
-			
+
 			if (authorizationRequest.getMaxAge() != null) {
-				if (authorizationRequest.getMaxAge().longValue() < 0) {
+				if (authorizationRequest.getMaxAge()
+						.longValue() < 0) {
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid max_age.");
 				}
 			}
-			
+
 		}
-		
+
 		public ClientPolicyRuntime getClientPolicy(ClientType clientType) {
 			return clientPolicyRuntimeMap.get(clientType);
 		}
-		
+
 		public List<MetaScope> getScopeByName(List<String> scopeNames) {
 			ArrayList<MetaScope> ret = new ArrayList<>();
-			for (String scopeName: scopeNames) {
+			for (String scopeName : scopeNames) {
 				MetaScope ms = scopeMap.get(scopeName);
 				if (ms != null) {
 					ret.add(ms);
 				}
 			}
-			
+
 			return ret;
 		}
-		
+
 		public MetaScope getScope(String scopeName) {
 			return scopeMap.get(scopeName);
 		}
-		
+
 		public OIDCClaimScopeRuntime getOIDCClaimScope(String scopeName) {
 			return oidcClaimScopeMap.get(scopeName);
 		}
 
 		public boolean isNeedConsent(RequestContext request, AuthorizationRequest authReq) {
 			OAuthClientRuntime client = clientService.getRuntimeByName(authReq.getClientId());
-			ClientPolicyRuntime clientPolicy = clientPolicyRuntimeMap.get(client.getMetaData().getClientType());
-			
-			AccessToken current = service.getAccessTokenStore().getAccessTokenByUserOid(client, AuthContext.getCurrentContext().getUser().getOid());
-			return clientPolicy.consentType().needConsent(request, authReq.getScopes(), current);
+			ClientPolicyRuntime clientPolicy = clientPolicyRuntimeMap.get(client.getMetaData()
+					.getClientType());
+
+			AccessToken current = service.getAccessTokenStore()
+					.getAccessTokenByUserOid(client, AuthContext.getCurrentContext()
+							.getUser()
+							.getOid());
+			return clientPolicy.consentType()
+					.needConsent(request, authReq.getScopes(), current);
 		}
 
 		public AuthorizationCode generateCode(AuthorizationRequest authReq) {
 			AuthContext authContext = AuthContext.getCurrentContext();
 			authReq.setUser(authContext.getUser());
 			authReq.setAuthTime(authContext.getAuthTime());
-			
-			return service.getAuthorizationCodeStore().newAuthorizationCode(authReq);
+
+			return service.getAuthorizationCodeStore()
+					.newAuthorizationCode(authReq);
 		}
 
 		public String consentTemplateName() {
@@ -411,15 +433,15 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			}
 			return service.getDefaultConsentTemplateName();
 		}
-		
+
 		public boolean hasAvailableRole() {
-			
+
 			if (availableRoles == null) {
 				return false;
 			}
-			
+
 			AuthContext ac = AuthContext.getCurrentContext();
-			for (String r: availableRoles) {
+			for (String r : availableRoles) {
 				// *は全部OK
 				if (OAuthAuthorizationDefinition.AVAILABLE_ROLE_ANY.equals(r)) {
 					return true;
@@ -428,70 +450,98 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
-		
+
 		public OAuthTokens exchangeCodeToToken(String codeStr, String redirectUri, String codeVerifier, OAuthClientRuntime client) {
-			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
+			if (!getId().equals(client.getMetaData()
+					.getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
 			}
-			
-			AuthorizationCode code = service.getAuthorizationCodeStore().getAndRemoveAuthorizationCode(codeStr);
+
+			AuthorizationCode code = service.getAuthorizationCodeStore()
+					.getAndRemoveAuthorizationCode(codeStr);
 			if (code == null
-					|| !code.getRequest().getClientId().equals(client.getMetaData().getName())
-					|| !code.getRequest().getRedirectUri().equals(redirectUri)
+					|| !code.getRequest()
+							.getClientId()
+							.equals(client.getMetaData()
+									.getName())
+					|| !code.getRequest()
+							.getRedirectUri()
+							.equals(redirectUri)
 					|| code.getExpires() < System.currentTimeMillis()) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid code/redirect_uri/client_id/code_verifier.");
 			}
-			
+
 			//PKCE
-			if (code.getRequest().getCodeChallenge() != null) {
-				if (!code.getRequest().getCodeChallenge().equals(OAuthUtil.calcCodeChallenge(code.getRequest().getCodeChallengeMethod(), codeVerifier))) {
+			if (code.getRequest()
+					.getCodeChallenge() != null) {
+				if (!code.getRequest()
+						.getCodeChallenge()
+						.equals(OAuthUtil.calcCodeChallenge(code.getRequest()
+								.getCodeChallengeMethod(), codeVerifier))) {
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid code/redirect_uri/client_id/code_verifier.");
 				}
 			} else if (codeVerifier != null) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid code/redirect_uri/client_id/code_verifier.");
 			}
-			
-			AccessToken accessToken = service.getAccessTokenStore().createAccessToken(client, code.getRequest().getUser().getOid(), code.getRequest().getScopes());
-			
+
+			AccessToken accessToken = service.getAccessTokenStore()
+					.createAccessToken(client, code.getRequest()
+							.getUser()
+							.getOid(),
+							code.getRequest()
+									.getScopes());
+
 			IdToken idToken = null;
-			if (code.getRequest().getScopes().contains(OAuthConstants.SCOPE_OPENID)) {
+			if (code.getRequest()
+					.getScopes()
+					.contains(OAuthConstants.SCOPE_OPENID)) {
 				idToken = new IdToken(code, accessToken, this, client, service);
 			}
-			
+
 			return new OAuthTokens(accessToken, idToken);
 		}
-		
+
 		public AccessToken refreshToken(String refreshTokenStr, OAuthClientRuntime client) {
-			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
+			if (!getId().equals(client.getMetaData()
+					.getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
 			}
-			
-			if (client.getMetaData().getGrantTypes() == null
-					|| !client.getMetaData().getGrantTypes().contains(GrantType.REFRESH_TOKEN)) {
-				throw new OAuthApplicationException(OAuthConstants.ERROR_UNAUTHORIZED_CLIENT, "grant_type not allowed.");
-			}
-			
-			ClientPolicyRuntime clientPolicy = clientPolicyRuntimeMap.get(client.getMetaData().getClientType());
-			if (!clientPolicy.getMetaData().isSupportRefreshToken()) {
+
+			if (client.getMetaData()
+					.getGrantTypes() == null
+					|| !client.getMetaData()
+							.getGrantTypes()
+							.contains(GrantType.REFRESH_TOKEN)) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_UNAUTHORIZED_CLIENT, "grant_type not allowed.");
 			}
 
-			RefreshToken refreshToken = service.getAccessTokenStore().getRefreshToken(refreshTokenStr);
+			ClientPolicyRuntime clientPolicy = clientPolicyRuntimeMap.get(client.getMetaData()
+					.getClientType());
+			if (!clientPolicy.getMetaData()
+					.isSupportRefreshToken()) {
+				throw new OAuthApplicationException(OAuthConstants.ERROR_UNAUTHORIZED_CLIENT, "grant_type not allowed.");
+			}
+
+			RefreshToken refreshToken = service.getAccessTokenStore()
+					.getRefreshToken(refreshTokenStr);
 			if (refreshToken == null) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid refresh_token.");
 			}
-			
+
 			if (refreshToken.getExpiresIn() <= 0) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid refresh_token.");
 			}
-			if (!refreshToken.getClientId().equals(client.getMetaData().getName())) {
+			if (!refreshToken.getClientId()
+					.equals(client.getMetaData()
+							.getName())) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid refresh_token.");
 			}
-			
-			AccessToken accessToken = service.getAccessTokenStore().createAccessToken(client, refreshToken);
+
+			AccessToken accessToken = service.getAccessTokenStore()
+					.createAccessToken(client, refreshToken);
 			if (accessToken == null) {
 				throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_GRANT, "invalid refresh_token.");
 			}
@@ -499,18 +549,20 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		}
 
 		public void revoke(String tokenStr, String tokenTypeHint, OAuthClientRuntime client) {
-			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
+			if (!getId().equals(client.getMetaData()
+					.getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
 			}
-			
-			service.getAccessTokenStore().revokeToken(client, tokenStr, tokenTypeHint);
+
+			service.getAccessTokenStore()
+					.revokeToken(client, tokenStr, tokenTypeHint);
 		}
 
 		public String issuerId(RequestContext request) {
 			if (issuerUri != null) {
 				return issuerUri;
 			}
-			
+
 			HttpServletRequest httpReq = (HttpServletRequest) request.getAttribute(WebRequestConstants.SERVLET_REQUEST);
 			StringBuilder sb = new StringBuilder();
 			if (httpReq.isSecure()) {
@@ -520,11 +572,12 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 				sb.append("http://");
 			}
 			sb.append(httpReq.getServerName());
-			
+
 			int port = httpReq.getServerPort();
 			if ((httpReq.isSecure() && port != 443)
 					|| (!httpReq.isSecure() && port != 80)) {
-				sb.append(':').append(port);
+				sb.append(':')
+						.append(port);
 			}
 			sb.append(TemplateUtil.getTenantContextPath());
 			sb.append("/oauth");
@@ -532,17 +585,18 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 				sb.append("/");
 				sb.append(getName());
 			}
-			
+
 			return sb.toString();
 		}
 
 		public Map<String, Object> userInfo(AccessToken accessToken, OAuthClientRuntime client) {
-			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
+			if (!getId().equals(client.getMetaData()
+					.getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
 			}
-			
+
 			Map<String, Object> userInfoClaims = new HashMap<>();
-			for (String s: accessToken.getGrantedScopes()) {
+			for (String s : accessToken.getGrantedScopes()) {
 				OIDCClaimScopeRuntime csr = getOIDCClaimScope(s);
 				if (csr != null) {
 					csr.map(accessToken.getUser(), userInfoClaims);
@@ -552,7 +606,7 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			userInfoClaims.put("sub", sub);
 			return userInfoClaims;
 		}
-		
+
 	}
 
 }

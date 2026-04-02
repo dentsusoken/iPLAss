@@ -26,7 +26,6 @@ import java.util.List;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 
-
 /**
  * GROUP BY句を表す。
  * 
@@ -41,17 +40,17 @@ public class GroupBy implements ASTNode {
 		 * 小計、合計を同時に集計する
 		 */
 		ROLLUP,
-		
+
 		/**
 		 * group byに指定されている項目のすべての組み合わせの小計、合計を同時に集計する
 		 */
 		CUBE
 	}
-	
+
 	private List<ValueExpression> groupingFieldList = new ArrayList<ValueExpression>();
-	
+
 	private RollType rollType;
-	
+
 	public List<ValueExpression> getGroupingFieldList() {
 		return groupingFieldList;
 	}
@@ -59,7 +58,7 @@ public class GroupBy implements ASTNode {
 	public void setGroupingFieldList(List<ValueExpression> groupingFieldList) {
 		this.groupingFieldList = groupingFieldList;
 	}
-	
+
 	/**
 	 * 集約関数利用する際の、
 	 * group byする集約する項目毎の集計行（小計、合計）を同時に取得する場合は、
@@ -85,16 +84,16 @@ public class GroupBy implements ASTNode {
 	public RollType getRollType() {
 		return rollType;
 	}
-	
+
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(QueryVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (groupingFieldList != null) {
-				for (ValueExpression s: groupingFieldList) {
+				for (ValueExpression s : groupingFieldList) {
 					s.accept(visitor);
 				}
 			}
@@ -111,7 +110,7 @@ public class GroupBy implements ASTNode {
 		groupingFieldList.add(groupingField);
 		return this;
 	}
-	
+
 	public GroupBy add(Object groupingField) {
 		if (groupingField == null) {
 			throw new NullPointerException("groupingField is null");
@@ -127,10 +126,10 @@ public class GroupBy implements ASTNode {
 		} else {
 			throw new QueryException("groupingField is ValueExpression or String type required.");
 		}
-		
+
 		return add(v);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -163,8 +162,9 @@ public class GroupBy implements ASTNode {
 		int result = 1;
 		result = prime
 				* result
-				+ ((groupingFieldList == null) ? 0 : groupingFieldList
-						.hashCode());
+				+ ((groupingFieldList == null) ? 0
+						: groupingFieldList
+								.hashCode());
 		result = prime * result
 				+ ((rollType == null) ? 0 : rollType.hashCode());
 		return result;

@@ -39,6 +39,7 @@ public interface DeleteLogTable {
 		EMPTY("");
 
 		private String code;
+
 		Status(String code) {
 			this.code = code;
 		}

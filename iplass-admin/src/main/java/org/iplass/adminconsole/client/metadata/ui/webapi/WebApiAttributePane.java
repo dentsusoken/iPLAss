@@ -118,7 +118,6 @@ public class WebApiAttributePane extends HLayout {
 
 		methodForm.setItems(getMethod, postMethod, putMethod, deleteMethod, patchMethod);
 
-
 		accessForm = new DynamicForm();
 		accessForm.setWidth100();
 		accessForm.setPadding(10);
@@ -128,16 +127,20 @@ public class WebApiAttributePane extends HLayout {
 		accessForm.setGroupTitle("Access Policy");
 
 		privilegedField = new CheckboxItem("privileged", "Privilege execute");
-		privilegedField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_privilExecution")));
+		privilegedField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_privilExecution")));
 
 		publicWebAPIField = new CheckboxItem("publicWebAPI", "Public WebAPI");
-		publicWebAPIField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_publicWebAPI")));
+		publicWebAPIField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_publicWebAPI")));
 
 		checkXRequestedWithHeaderField = new CheckboxItem("checkXRequestedWithHeader", "check X-Requested-With Header");
-		checkXRequestedWithHeaderField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_checkXRequestedWithHeader")));
+		checkXRequestedWithHeaderField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_checkXRequestedWithHeader")));
 
 		synchronizeOnSessionField = new CheckboxItem("synchronizeOnSession", "Synchronize On Session");
-		synchronizeOnSessionField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_synchronizeOnSession")));
+		synchronizeOnSessionField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_synchronizeOnSession")));
 
 		stateTypeField = new SelectItem();
 		stateTypeField.setTitle("State Type");
@@ -258,19 +261,24 @@ public class WebApiAttributePane extends HLayout {
 		checkXRequestedWithHeaderField.setValue(definition.isCheckXRequestedWithHeader());
 		synchronizeOnSessionField.setValue(definition.isSynchronizeOnSession());
 		if (definition.getState() != null) {
-			stateTypeField.setValue(definition.getState().name());
+			stateTypeField.setValue(definition.getState()
+					.name());
 		} else {
 			stateTypeField.setValue(StateType.STATEFUL.name());
 		}
 
 		if (definition.getTokenCheck() != null) {
 			tokenCheckField.setValue(Boolean.TRUE.toString());
-			useFixedTokenField.setValue(definition.getTokenCheck().isUseFixedToken());
-			if (!definition.getTokenCheck().isUseFixedToken()) {
-				consumeField.setValue(definition.getTokenCheck().isConsume());
+			useFixedTokenField.setValue(definition.getTokenCheck()
+					.isUseFixedToken());
+			if (!definition.getTokenCheck()
+					.isUseFixedToken()) {
+				consumeField.setValue(definition.getTokenCheck()
+						.isConsume());
 				consumeField.show();
 			}
-			exceptionRollbackField.setValue(definition.getTokenCheck().isExceptionRollback());
+			exceptionRollbackField.setValue(definition.getTokenCheck()
+					.isExceptionRollback());
 			useFixedTokenField.show();
 			exceptionRollbackField.show();
 		} else {
@@ -281,7 +289,8 @@ public class WebApiAttributePane extends HLayout {
 		}
 
 		if (definition.getCacheControlType() != null) {
-			cacheControlTypeField.setValue(definition.getCacheControlType().name());
+			cacheControlTypeField.setValue(definition.getCacheControlType()
+					.name());
 		} else {
 			cacheControlTypeField.setValue("");
 		}
@@ -297,16 +306,16 @@ public class WebApiAttributePane extends HLayout {
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
 
 		List<MethodType> methodTypeList = new ArrayList<>();
-		if (getMethod.getValue() != null && (Boolean)getMethod.getValue()) {
+		if (getMethod.getValue() != null && (Boolean) getMethod.getValue()) {
 			methodTypeList.add(MethodType.GET);
 		}
-		if (postMethod.getValue() != null && (Boolean)postMethod.getValue()) {
+		if (postMethod.getValue() != null && (Boolean) postMethod.getValue()) {
 			methodTypeList.add(MethodType.POST);
 		}
-		if (putMethod.getValue() != null && (Boolean)putMethod.getValue()) {
+		if (putMethod.getValue() != null && (Boolean) putMethod.getValue()) {
 			methodTypeList.add(MethodType.PUT);
 		}
-		if (deleteMethod.getValue() != null && (Boolean)deleteMethod.getValue()) {
+		if (deleteMethod.getValue() != null && (Boolean) deleteMethod.getValue()) {
 			methodTypeList.add(MethodType.DELETE);
 		}
 		if (patchMethod.getValue() != null && (Boolean) patchMethod.getValue()) {
@@ -336,7 +345,8 @@ public class WebApiAttributePane extends HLayout {
 			definition.setTokenCheck(null);
 		}
 
-		if (cacheControlTypeField.getValue() != null && !cacheControlTypeField.getValueAsString().isEmpty()) {
+		if (cacheControlTypeField.getValue() != null && !cacheControlTypeField.getValueAsString()
+				.isEmpty()) {
 			definition.setCacheControlType(CacheControlType.valueOf(SmartGWTUtil.getStringValue(cacheControlTypeField)));
 		} else {
 			definition.setCacheControlType(null);

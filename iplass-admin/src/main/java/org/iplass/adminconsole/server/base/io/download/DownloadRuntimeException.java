@@ -40,5 +40,4 @@ public class DownloadRuntimeException extends RuntimeException {
 		super(cause);
 	}
 
-
 }

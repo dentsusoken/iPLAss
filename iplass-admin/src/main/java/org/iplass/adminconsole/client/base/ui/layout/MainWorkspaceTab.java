@@ -201,16 +201,16 @@ public class MainWorkspaceTab extends TabSet {
 	 */
 	public void removeTab(String name, String tabSubName) {
 		Tab tab = getTab(getTabID(name, tabSubName));
-		if(tab != null) {
+		if (tab != null) {
 			removeTab(tab);
 		}
 	}
 
-    @Override
+	@Override
 	public void removeTab(final Tab tab) {
 		if (fireContentsClosed(tab)) {
 
-			SC.ask(AdminClientMessageUtil.getString("ui_MainPane_closeConfirm") , new BooleanCallback() {
+			SC.ask(AdminClientMessageUtil.getString("ui_MainPane_closeConfirm"), new BooleanCallback() {
 				@Override
 				public void execute(Boolean value) {
 					if (value) {
@@ -220,13 +220,13 @@ public class MainWorkspaceTab extends TabSet {
 			});
 
 		} else {
-	    	super.removeTab(tab);
+			super.removeTab(tab);
 		}
-    }
+	}
 
-    private void confirmRemoveTab(Tab tab) {
-    	super.removeTab(tab);
-    }
+	private void confirmRemoveTab(Tab tab) {
+		super.removeTab(tab);
+	}
 
 	/**
 	 * タブの生成
@@ -299,7 +299,9 @@ public class MainWorkspaceTab extends TabSet {
 	 * @return タブID
 	 */
 	public String getTabID(String defName, String tabSubName) {
-		return (SmartGWTUtil.isNotEmpty(tabSubName) ? defName + tabSubName : defName).replace(".", "_").replace("/", "_").replace("-", "_");
+		return (SmartGWTUtil.isNotEmpty(tabSubName) ? defName + tabSubName : defName).replace(".", "_")
+				.replace("/", "_")
+				.replace("-", "_");
 	}
 
 	/**

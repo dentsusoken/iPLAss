@@ -24,10 +24,12 @@ import org.iplass.mtp.entity.definition.IndexType;
 class IndexTableKey {
 	IndexType indexType;
 	String colType;
+
 	public IndexTableKey(IndexType indexType, String colType) {
 		this.indexType = indexType;
 		this.colType = colType;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -37,6 +39,7 @@ class IndexTableKey {
 				+ ((indexType == null) ? 0 : indexType.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

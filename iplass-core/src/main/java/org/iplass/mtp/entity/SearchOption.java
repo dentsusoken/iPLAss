@@ -33,7 +33,7 @@ public class SearchOption {
 	private boolean countTotal;
 	private boolean returnStructuredEntity;
 	private boolean notifyListeners = true;
-	
+
 	/**
 	 * resultMode=AT_ONCE,
 	 * countTotal=false,
@@ -58,28 +58,35 @@ public class SearchOption {
 	public SearchOption(ResultMode resultMode) {
 		this.resultMode = resultMode;
 	}
-	
+
 	public boolean isReturnStructuredEntity() {
 		return returnStructuredEntity;
 	}
+
 	public void setReturnStructuredEntity(boolean returnStructuredEntity) {
 		this.returnStructuredEntity = returnStructuredEntity;
 	}
+
 	public ResultMode getResultMode() {
 		return resultMode;
 	}
+
 	public void setResultMode(ResultMode resultMode) {
 		this.resultMode = resultMode;
 	}
+
 	public boolean isCountTotal() {
 		return countTotal;
 	}
+
 	public void setCountTotal(boolean countTotal) {
 		this.countTotal = countTotal;
 	}
+
 	public boolean isNotifyListeners() {
 		return notifyListeners;
 	}
+
 	public void setNotifyListeners(boolean notifyListeners) {
 		this.notifyListeners = notifyListeners;
 	}
@@ -93,7 +100,7 @@ public class SearchOption {
 		this.notifyListeners = false;
 		return this;
 	}
-	
+
 	/**
 	 * 検索結果を、表形式ではなく構造化された形で返却するように設定します。
 	 * このフラグが有効化されるのは、{@link EntityManager#searchEntity(org.iplass.mtp.entity.query.Query, SearchOption)}にて、
@@ -106,7 +113,7 @@ public class SearchOption {
 		this.returnStructuredEntity = true;
 		return this;
 	}
-	
+
 	/**
 	 * 検索時に、Limit句を指定しない形の合計件数（行数）を取得するように設定します。
 	 * 
@@ -116,7 +123,7 @@ public class SearchOption {
 		this.countTotal = true;
 		return this;
 	}
-	
+
 	/**
 	 * 検索結果の取得モードを指定します。
 	 * 

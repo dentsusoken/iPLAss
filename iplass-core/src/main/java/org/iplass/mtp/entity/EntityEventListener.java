@@ -43,9 +43,9 @@ package org.iplass.mtp.entity;
  *
  */
 public interface EntityEventListener {
-	
+
 	//TODO 複数件一括更新時に複数のEntityを一括で渡す対応。<-難しい。。。メモリ消費が大きくなる可能性。。
-	
+
 	/**
 	 * 削除処理後に呼び出されます。
 	 * 
@@ -73,7 +73,6 @@ public interface EntityEventListener {
 	public default void afterUpdate(Entity entity, EntityEventContext context) {
 	}
 
-	
 	/**
 	 * 削除処理前に呼び出されます。
 	 * リターン値がfalseの場合、後続処理（実際の削除処理）を実行しません（例外は発生しません。処理が成功したかのように動作します）。
@@ -109,7 +108,7 @@ public interface EntityEventListener {
 	public default boolean beforeUpdate(Entity entity, EntityEventContext context) {
 		return true;
 	}
-	
+
 	/**
 	 * 検証処理前に呼び出されます。
 	 * 
@@ -127,7 +126,7 @@ public interface EntityEventListener {
 	 */
 	public default void onLoad(Entity entity) {
 	}
-	
+
 	/**
 	 * ごみ箱から復旧した際に呼び出されます。
 	 * 
@@ -135,7 +134,7 @@ public interface EntityEventListener {
 	 */
 	public default void afterRestore(Entity entity) {
 	}
-	
+
 	/**
 	 * 削除処理時に、物理削除された場合、
 	 * もしくはごみ箱から完全に物理削除された際に呼び出されます。

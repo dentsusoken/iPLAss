@@ -22,9 +22,8 @@ package org.iplass.mtp.impl.cluster.channel;
 
 import org.iplass.mtp.impl.cluster.Message;
 
-
 public interface MessageReceiver {
-	
+
 	public void receiveMessage(Message msg);
 
 }

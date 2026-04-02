@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 import org.iplass.mtp.impl.rdb.oracle.OracleRdbAdapter;
 
 public class OracleDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
-	
+
 //	/*HOUR*/
 //	select TRUNC((cast(to_timestamp('2012-03-01 12:12:12') as DATE)-cast('2011-03-01' as DATE))*24) from dual;
 //	/*DAY*/
@@ -40,72 +40,86 @@ public class OracleDateDiffFunctionAdapter implements FunctionAdapter<Function>,
 //	select TRUNC(MONTHS_BETWEEN(to_date('2012-03-05'), to_date('2011-03-01'))) from dual;
 //	/*YEAR*/
 //	select TRUNC(MONTHS_BETWEEN(to_date('2012-04-01'), to_date('2011-03-01'))/12) from dual;
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 3) {
 			throw new QueryException(function.getName() + " must have 3 arguments.");
 		}
-		
-		String unit = ((String) ((Literal) function.getArguments().get(0)).getValue()).toUpperCase();
-		
+
+		String unit = ((String) ((Literal) function.getArguments()
+				.get(0)).getValue()).toUpperCase();
+
 		context.append("TRUNC(");
-		
+
 		switch (unit) {
 		case YEAR:
 			//MONTHS_BETWEEN / 12
 			context.append(((OracleRdbAdapter) rdb).getMonthsBetweenFunction());
 			context.append("(");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(")/12");
 			break;
 		case MONTH:
 			//MONTHS_BETWEEN
 			context.append(((OracleRdbAdapter) rdb).getMonthsBetweenFunction());
 			context.append("(");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(")");
 			break;
 		case DAY:
 			//Date - Date
 			context.append("CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS DATE)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS DATE)");
 			break;
 		case HOUR:
 			//(Date - Date) * 24
 			context.append("(CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS DATE)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS DATE))*24");
 			break;
 		case MINUTE:
 			//(Date - Date) * 1440
 			context.append("(CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS DATE)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS DATE))*1440");
 			break;
 		case SECOND:
 			//(Date - Date) * 86400
 			context.append("(CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS DATE)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS DATE))*86400");
 			break;
 		default:
 			throw new QueryException("unknown interval unit:" + unit);
 		}
-		
+
 		context.append(")");
 	}
 
@@ -115,11 +129,13 @@ public class OracleDateDiffFunctionAdapter implements FunctionAdapter<Function>,
 		if (args == null || args.size() != 3) {
 			throw new QueryException(getFunctionName() + " must have 3 arguments.");
 		}
-		
-		String unit = args.get(0).toString().toUpperCase();
-		
+
+		String unit = args.get(0)
+				.toString()
+				.toUpperCase();
+
 		context.append("TRUNC(");
-		
+
 		switch (unit) {
 		case YEAR:
 			//MONTHS_BETWEEN / 12
@@ -174,10 +190,10 @@ public class OracleDateDiffFunctionAdapter implements FunctionAdapter<Function>,
 		default:
 			throw new QueryException("unknown interval unit:" + unit);
 		}
-		
+
 		context.append(")");
 	}
-	
+
 	@Override
 	public String getFunctionName() {
 		return "DATE_DIFF";
@@ -187,6 +203,5 @@ public class OracleDateDiffFunctionAdapter implements FunctionAdapter<Function>,
 	public Class<?> getType(Function function, ArgumentTypeResolver typeResolver) {
 		return Long.class;
 	}
-
 
 }

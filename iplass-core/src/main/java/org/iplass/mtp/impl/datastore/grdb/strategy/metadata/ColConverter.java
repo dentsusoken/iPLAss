@@ -31,8 +31,8 @@ import org.iplass.mtp.impl.properties.basic.DecimalType;
 import org.iplass.mtp.impl.properties.basic.StringType;
 import org.iplass.mtp.impl.properties.basic.TimeType;
 import org.iplass.mtp.impl.properties.extend.AutoNumberType;
-import org.iplass.mtp.impl.properties.extend.SelectType;
 import org.iplass.mtp.impl.properties.extend.LongTextType.LongText;
+import org.iplass.mtp.impl.properties.extend.SelectType;
 import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
@@ -57,8 +57,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public abstract class ColConverter {
-	
-	private static ColConverterFactory factory = ServiceRegistry.getRegistry().getService(ColConverterFactory.class);
+
+	private static ColConverterFactory factory = ServiceRegistry.getRegistry()
+			.getService(ColConverterFactory.class);
 
 	protected PropertyType from;
 	protected PropertyType to;
@@ -76,11 +77,13 @@ public abstract class ColConverter {
 		public NoneColConverter(PropertyType from, PropertyType to) {
 			super(from, to);
 		}
+
 		@Override
 		public void appendConvertExp(StringBuilder sb, String fromCol,
 				RdbAdapter rdb) {
 			sb.append(fromCol);
 		}
+
 		@Override
 		public boolean canUseSameCol() {
 			return true;
@@ -132,6 +135,7 @@ public abstract class ColConverter {
 		CastColConverter(PropertyType from, PropertyType to) {
 			super(from, to);
 		}
+
 		@Override
 		public void appendConvertExp(StringBuilder sb, String fromCol, RdbAdapter rdb) {
 
@@ -150,10 +154,11 @@ public abstract class ColConverter {
 			toTypeAdapter.appendToTypedCol(sb, rdb,
 					() -> sb.append(rdb.cast(fromTypeAdapter.sqlType(), toTypeAdapter.sqlType(), fromColSb, null, scale)));
 		}
+
 		@Override
 		public boolean canUseSameCol() {
 			//FIXME PropertyType#getDataStoreEnumTypeで判断できるように
-			
+
 			switch (to.getEnumType()) {
 			case DECIMAL:
 				if (from instanceof DecimalType) {
@@ -191,13 +196,13 @@ public abstract class ColConverter {
 				return false;
 			case STRING:
 				switch (from.getEnumType()) {
-					case AUTONUMBER:
-					case BOOLEAN:
-					case SELECT:
-					case STRING:
-						return true;
-					default:
-						return false;
+				case AUTONUMBER:
+				case BOOLEAN:
+				case SELECT:
+				case STRING:
+					return true;
+				default:
+					return false;
 				}
 			default:
 				return to.equals(from);

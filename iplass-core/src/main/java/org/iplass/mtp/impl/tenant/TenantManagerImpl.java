@@ -41,23 +41,26 @@ public class TenantManagerImpl extends AbstractTypedDefinitionManager<Tenant> im
 	private static final Logger logger = LoggerFactory.getLogger(TenantManagerImpl.class);
 
 	/** テナントService */
-	private TenantService tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
+	private TenantService tenantService = ServiceRegistry.getRegistry()
+			.getService(TenantService.class);
 	/** MetaテナントService */
-	private MetaTenantService metaTenantService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
+	private MetaTenantService metaTenantService = ServiceRegistry.getRegistry()
+			.getService(MetaTenantService.class);
 
 	@Override
 	public Tenant getTenant() {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 
 		//Tenant情報の検索
 		Tenant tenant = tenantService.getTenant(tenantId);
-		if(tenant == null) {
+		if (tenant == null) {
 			return null;
 		}
 
 		//MetaTenant情報の検索
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
-		if(handler == null){
+		if (handler == null) {
 			return null;
 			//ハンドラの取得ができない場合は、デフォルトを取得
 			//handler = metaTenantService.getHandlerByMetaTenantName(tenant.getId(), metaTenantService.DEFAULT_TENANT);
@@ -85,7 +88,7 @@ public class TenantManagerImpl extends AbstractTypedDefinitionManager<Tenant> im
 
 		//変更前Tenant情報の検索（テナント名変更対応）
 		Tenant oldTenant = tenantService.getTenant(tenant.getId());
-		if(oldTenant == null) {
+		if (oldTenant == null) {
 			logger.error("exception occured during tenant definition update:"
 					+ "指定のテナントは存在しません。テナントID=" + tenant.getId());
 			return new DefinitionModifyResult(false, "exception occured during tenant definition update:"
@@ -94,18 +97,20 @@ public class TenantManagerImpl extends AbstractTypedDefinitionManager<Tenant> im
 
 		//更新対象のMetaTenantにIDを設定するため検索（この際、変更前テナントのNameで検索）
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(oldTenant.getName());
-		if(handler == null){
+		if (handler == null) {
 			logger.error("exception occured during tenant definition update:"
 					+ "指定のテナントは存在しません。テナント名=" + oldTenant.getName());
 			return new DefinitionModifyResult(false, "exception occured during tenant definition update:"
 					+ "指定のテナントは存在しません。テナント名=" + oldTenant.getName());
 		}
 		MetaTenant updateMetaTenant = new MetaTenant(tenant);
-		updateMetaTenant.setId(handler.getMetaData().getId());
+		updateMetaTenant.setId(handler.getMetaData()
+				.getId());
 
 		try {
 			//DB側の更新
-			String clientId = ExecuteContext.getCurrentContext().getClientId();
+			String clientId = ExecuteContext.getCurrentContext()
+					.getClientId();
 			tenantService.updateTenant(tenant, clientId, forceUpdate);
 
 			//Meta側の更新
@@ -116,8 +121,10 @@ public class TenantManagerImpl extends AbstractTypedDefinitionManager<Tenant> im
 		} catch (Exception e) {
 			setRollbackOnly();
 			if (e.getCause() != null) {
-				logger.error("exception occured during tenant definition update:" + e.getCause().getMessage(), e.getCause());
-				return new DefinitionModifyResult(false, "exception occured during tenant definition update:" + e.getCause().getMessage());
+				logger.error("exception occured during tenant definition update:" + e.getCause()
+						.getMessage(), e.getCause());
+				return new DefinitionModifyResult(false, "exception occured during tenant definition update:" + e.getCause()
+						.getMessage());
 			} else {
 				logger.error("exception occured during tenant definition update:" + e.getMessage(), e);
 				return new DefinitionModifyResult(false, "exception occured during tenant definition update:" + e.getMessage());

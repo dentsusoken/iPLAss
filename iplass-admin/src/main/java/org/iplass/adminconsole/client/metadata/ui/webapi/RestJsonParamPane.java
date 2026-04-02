@@ -91,13 +91,16 @@ public class RestJsonParamPane extends HLayout {
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
 
 		if (paramName.getValue() != null) {
-			definition.setRestJsonParameterName(paramName.getValue().toString());
+			definition.setRestJsonParameterName(paramName.getValue()
+					.toString());
 		}
 		if (paramType.getValue() != null) {
-			definition.setRestJsonParameterType(paramType.getValue().toString());
+			definition.setRestJsonParameterType(paramType.getValue()
+					.toString());
 		}
 		if (acceptableContentTypes.getValue() != null) {
-			definition.setRestJsonAcceptableContentTypes(SmartGWTUtil.convertStringToArray(acceptableContentTypes.getValue().toString(), ","));
+			definition.setRestJsonAcceptableContentTypes(SmartGWTUtil.convertStringToArray(acceptableContentTypes.getValue()
+					.toString(), ","));
 		}
 		return definition;
 	}

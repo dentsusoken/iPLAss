@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
@@ -39,6 +37,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * テナントのメタ情報
@@ -52,7 +52,7 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 	private static final long serialVersionUID = -891000660283577842L;
 
 	private static Logger logger = LoggerFactory.getLogger(MetaTenant.class);
-	
+
 	/** テナント設定情報 */
 	@SuppressWarnings("rawtypes")
 	private List<MetaTenantConfig> tenantConfigs;
@@ -133,9 +133,11 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 		localizedDisplayNameList = I18nUtil.toMeta(definition.getLocalizedDisplayNameList());
 
 		if (definition.getTenantConfigs() != null) {
-			final MetaTenantService mts = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
+			final MetaTenantService mts = ServiceRegistry.getRegistry()
+					.getService(MetaTenantService.class);
 			//クラス名でソート
-			tenantConfigs = definition.getTenantConfigs().stream()
+			tenantConfigs = definition.getTenantConfigs()
+					.stream()
 					.map(defConfig -> {
 						@SuppressWarnings("rawtypes")
 						MetaTenantConfig metaConfig = mts.toMetaConfig(defConfig);
@@ -145,7 +147,10 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 						return metaConfig;
 					})
 					.filter(metaConfig -> metaConfig != null)
-					.sorted((config1, config2) -> config1.getClass().getName().compareTo(config2.getClass().getName()))
+					.sorted((config1, config2) -> config1.getClass()
+							.getName()
+							.compareTo(config2.getClass()
+									.getName()))
 					.collect(Collectors.toList());
 		} else {
 			tenantConfigs = null;
@@ -159,7 +164,6 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 		return definition;
 	}
 
-
 	public class MetaTenantHandler extends BaseMetaDataRuntime {
 
 		@SuppressWarnings("rawtypes")
@@ -171,9 +175,10 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 			if (tenantConfigs == null) {
 				tenantConfigs = new ArrayList<MetaTenantConfig>();
 			}
-			
-			MetaTenantService mts = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
-			for (Class<? extends MetaTenantConfig> cz: mts.getMetaTenantConfigClasses()) {
+
+			MetaTenantService mts = ServiceRegistry.getRegistry()
+					.getService(MetaTenantService.class);
+			for (Class<? extends MetaTenantConfig> cz : mts.getMetaTenantConfigClasses()) {
 				if (!hasMetaTenantConfig(cz, tenantConfigs)) {
 					try {
 						MetaTenantConfig mtc = cz.newInstance();
@@ -183,22 +188,24 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 					}
 				}
 			}
-			
+
 			//coreモジュール外のMetaTenantConfigのサブクラスは参照できない可能性を考慮する
 			tenantConfigsRuntimes = new HashMap<>();
-			for (MetaTenantConfig config: tenantConfigs) {
+			for (MetaTenantConfig config : tenantConfigs) {
 				MetaTenantConfigRuntime runtime = config.createRuntime(this);
 				if (runtime != null) {
-					tenantConfigsRuntimes.put(runtime.getClass().getName(), runtime);
+					tenantConfigsRuntimes.put(runtime.getClass()
+							.getName(), runtime);
 				}
 			}
 
 		}
-		
+
 		@SuppressWarnings("rawtypes")
 		private boolean hasMetaTenantConfig(Class<? extends MetaTenantConfig> cz, List<MetaTenantConfig> list) {
-			for (MetaTenantConfig mtc: list) {
-				if (mtc != null && mtc.getClass().equals(cz)) {
+			for (MetaTenantConfig mtc : list) {
+				if (mtc != null && mtc.getClass()
+						.equals(cz)) {
 					return true;
 				}
 			}
@@ -207,7 +214,7 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public <R extends MetaTenantConfigRuntime> R getConfigRuntime(Class<R> tenantConfigClass) {
-			return (R)tenantConfigsRuntimes.get(tenantConfigClass.getName());
+			return (R) tenantConfigsRuntimes.get(tenantConfigClass.getName());
 		}
 
 		@Override
@@ -218,7 +225,8 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 		public void applyMetaDataToTenant(final Tenant tenant) {
 			applyToTenant(tenant);
 
-			tenantConfigsRuntimes.values().forEach(runtime -> runtime.applyMetaDataToTenant(tenant));
+			tenantConfigsRuntimes.values()
+					.forEach(runtime -> runtime.applyMetaDataToTenant(tenant));
 		}
 	}
 

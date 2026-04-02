@@ -66,7 +66,10 @@ public enum TemplateType {
 	public static TemplateType valueOf(TemplateDefinition definition) {
 		for (TemplateType type : values()) {
 			//if (definition.getClass().isAssignableFrom(type.definitionClass)) {
-			if (definition.getClass().getName().equals(type.definitionClass().getName())) {
+			if (definition.getClass()
+					.getName()
+					.equals(type.definitionClass()
+							.getName())) {
 				return type;
 			}
 		}
@@ -77,30 +80,40 @@ public enum TemplateType {
 //		return type.definitionClass().newInstance();
 //	}
 	public static TemplateDefinition typeOfDefinition(TemplateType type) {
-		if (type.definitionClass().equals(GroovyTemplateDefinition.class)) {
+		if (type.definitionClass()
+				.equals(GroovyTemplateDefinition.class)) {
 			return new GroovyTemplateDefinition();
-		} else if (type.definitionClass().equals(JspTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(JspTemplateDefinition.class)) {
 			return new JspTemplateDefinition();
-		} else if (type.definitionClass().equals(HtmlTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(HtmlTemplateDefinition.class)) {
 			return new HtmlTemplateDefinition();
-		} else if (type.definitionClass().equals(BinaryTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(BinaryTemplateDefinition.class)) {
 			return new BinaryTemplateDefinition();
-		} else if (type.definitionClass().equals(ReportTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ReportTemplateDefinition.class)) {
 			return new ReportTemplateDefinition();
 		}
 		return null;
 	}
 
 	public static TemplateTypeEditPane typeOfEditPane(TemplateType type) {
-		if (type.definitionClass().equals(GroovyTemplateDefinition.class)) {
+		if (type.definitionClass()
+				.equals(GroovyTemplateDefinition.class)) {
 			return new GroovyTemplateEditPane();
-		} else if (type.definitionClass().equals(JspTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(JspTemplateDefinition.class)) {
 			return new JspTemplateEditPane();
-		} else if (type.definitionClass().equals(HtmlTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(HtmlTemplateDefinition.class)) {
 			return new HtmlTemplateEditPane();
-		} else if (type.definitionClass().equals(BinaryTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(BinaryTemplateDefinition.class)) {
 			return new BinaryTemplateEditPane();
-		} else if (type.definitionClass().equals(ReportTemplateDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ReportTemplateDefinition.class)) {
 			return new ReportTemplateEditPane();
 		}
 		return null;

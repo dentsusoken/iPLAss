@@ -99,7 +99,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		setCanDelete(canDelete);
 
 		boolean canRename = !isShared() && !isSharedOverwrite()
-				&& !(isSharable() && isOverwritable());	//共有可能でかつOverwrite可能の場合は不可
+				&& !(isSharable() && isOverwritable()); //共有可能でかつOverwrite可能の場合は不可
 		setCanRename(canRename);
 	}
 
@@ -141,6 +141,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setShared(boolean shared) {
 		setAttribute(ATTRIBUTE_SHARED, shared);
 	}
@@ -151,6 +152,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setSharedOverwrite(boolean sharedOverrite) {
 		setAttribute(ATTRIBUTE_SHARED_OVERWRITE, sharedOverrite);
 	}
@@ -161,6 +163,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setSharable(boolean sharable) {
 		setAttribute(ATTRIBUTE_SHARABLE, sharable);
 	}
@@ -171,6 +174,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setOverwritable(boolean overwritable) {
 		setAttribute(ATTRIBUTE_OVERWRITABLE, overwritable);
 	}
@@ -181,6 +185,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setDataSharable(boolean dataSharable) {
 		setAttribute(ATTRIBUTE_DATA_SHARABLE, dataSharable);
 	}
@@ -191,6 +196,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setPermissionSharable(boolean permissionSharable) {
 		setAttribute(ATTRIBUTE_PERMISSION_SHARABLE, permissionSharable);
 	}
@@ -201,6 +207,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setCanDelete(boolean canDelete) {
 		setAttribute(ATTRIBUTE_CAN_DELETE, canDelete);
 	}
@@ -211,6 +218,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return false;
 	}
+
 	public void setCanRename(boolean canRename) {
 		setAttribute(ATTRIBUTE_CAN_RENAME, canRename);
 	}
@@ -221,6 +229,7 @@ public class MetaDataItemMenuTreeNode extends AdminMenuTreeNode {
 		}
 		return null;
 	}
+
 	public void setDefinitionClassName(String definitionClassName) {
 		setAttribute(ATTRIBUTE_DEF_CLASS_NAME, definitionClassName);
 	}

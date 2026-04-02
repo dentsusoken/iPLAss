@@ -95,7 +95,8 @@ public class LogExplorerConditionPane extends VLayout {
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(MtpWidgetConstants.ICON_REFRESH);
 		refreshButton.setHoverWrap(false);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_refreshConditionList")));
+		refreshButton.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_refreshConditionList")));
 		refreshButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -221,7 +222,7 @@ public class LogExplorerConditionPane extends VLayout {
 			service.applyLogConditions(TenantInfoHolder.getId(), conditions, new AdminAsyncCallback<String>() {
 
 				@Override
-				protected void beforeFailure(Throwable caught){
+				protected void beforeFailure(Throwable caught) {
 					SmartGWTUtil.hideProgress();
 				};
 
@@ -244,7 +245,7 @@ public class LogExplorerConditionPane extends VLayout {
 
 			LogConditionInfo info = null;
 			if (record != null) {
-				info = (LogConditionInfo)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				info = (LogConditionInfo) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 			}
 			editPane.setCondition(info);
 		}
@@ -318,7 +319,7 @@ public class LogExplorerConditionPane extends VLayout {
 		public List<LogConditionInfo> getEditConditions() {
 			List<LogConditionInfo> result = new ArrayList<>();
 			for (ListGridRecord record : getRecords()) {
-				result.add((LogConditionInfo)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+				result.add((LogConditionInfo) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 			}
 			return result.isEmpty() ? null : result;
 		}
@@ -358,12 +359,12 @@ public class LogExplorerConditionPane extends VLayout {
 			});
 			btnCancel = new IButton("Cancel");
 			btnCancel.setDisabled(true);
-			btnCancel.addClickHandler((event)-> {
+			btnCancel.addClickHandler((event) -> {
 				cancelCondition();
 			});
 			pnlHeader.setMembers(btnOK, btnCancel);
 
-			selLevel =  new MtpSelectItem();
+			selLevel = new MtpSelectItem();
 			selLevel.setTitle("Level");
 			LinkedHashMap<String, String> levelMap = new LinkedHashMap<>();
 			levelMap.put("TRACE", "TRACE");
@@ -390,7 +391,8 @@ public class LogExplorerConditionPane extends VLayout {
 			btnEditCondition.setStartRow(true);
 			btnEditCondition.setColSpan(3);
 			btnEditCondition.setAlign(Alignment.RIGHT);
-			btnEditCondition.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_dispEditDialogCondition")));
+			btnEditCondition.setPrompt(SmartGWTUtil
+					.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_dispEditDialogCondition")));
 			btnEditCondition.addClickHandler((event) -> {
 				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
 						SmartGWTUtil.getStringValue(txaCondition),
@@ -403,6 +405,7 @@ public class LogExplorerConditionPane extends VLayout {
 							public void onSave(String text) {
 								txaCondition.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -437,7 +440,7 @@ public class LogExplorerConditionPane extends VLayout {
 
 			SectionStack stack = new SectionStack();
 			SectionStackSection section = new SectionStackSection("Condition Setting");
-			section.setCanCollapse(false);	//CLOSE不可
+			section.setCanCollapse(false); //CLOSE不可
 
 			section.addItem(layout);
 			stack.addSection(section);
@@ -540,6 +543,5 @@ public class LogExplorerConditionPane extends VLayout {
 		}
 
 	}
-
 
 }

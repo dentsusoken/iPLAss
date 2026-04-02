@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.datastore.grdb.GRdbPropertyStoreRuntime;
-import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbMultiplePropertyStore.GRdbMultiplePropertyStoreHandler;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore.GRdbPropertyStoreHandler;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.datastore.grdb.strategy.bulkupdate.PropertyColumnValue;
@@ -35,14 +35,14 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.ColumnValue;
 import org.iplass.mtp.impl.rdb.adapter.bulk.DynamicColumnValue;
 
 public class PropertyColumnValueMapper implements ColumnValueMapper {
-	
+
 	private int tenantId;
 	private EntityHandler eh;
 	private PrimitivePropertyHandler ph;
 	private int pageNo;
-	
+
 	private String internalIndexKey;
-	
+
 	public PropertyColumnValueMapper(int tenantId, EntityHandler eh, PrimitivePropertyHandler ph, int pageNo) {
 		this.tenantId = tenantId;
 		this.eh = eh;
@@ -56,21 +56,27 @@ public class PropertyColumnValueMapper implements ColumnValueMapper {
 		if (!colDef.isMulti()) {
 			//本体
 			GRdbPropertyStoreHandler scol = (GRdbPropertyStoreHandler) colDef;
-			if (scol.getMetaData().getPageNo() == pageNo) {
-				columnValues.add(new PropertyColumnValue(scol.getMetaData().getColumnName(), scol.getSingleColumnRdbTypeAdapter(), scol.isNative(), null, rdb));
+			if (scol.getMetaData()
+					.getPageNo() == pageNo) {
+				columnValues.add(new PropertyColumnValue(scol.getMetaData()
+						.getColumnName(), scol.getSingleColumnRdbTypeAdapter(), scol.isNative(), null, rdb));
 			}
 			//index
-			if (!scol.isExternalIndex() && scol.getIndexColName() != null && scol.getMetaData().getIndexPageNo() == pageNo) {
+			if (!scol.isExternalIndex() && scol.getIndexColName() != null && scol.getMetaData()
+					.getIndexPageNo() == pageNo) {
 				columnValues.add(new DynamicColumnValue(scol.getIndexColName() + ObjStoreTable.INDEX_TD_POSTFIX, rdb));
 				columnValues.add(new PropertyColumnValue(scol.getIndexColName(), scol.getSingleColumnRdbTypeAdapter(), false, null, rdb));
-				internalIndexKey = MetaGRdbPropertyStore.makeInternalIndexKey(tenantId, eh.getMetaData().getId(), pageNo);
+				internalIndexKey = MetaGRdbPropertyStore.makeInternalIndexKey(tenantId, eh.getMetaData()
+						.getId(), pageNo);
 			}
 		} else {
 			//本体
 			GRdbMultiplePropertyStoreHandler mcol = (GRdbMultiplePropertyStoreHandler) colDef;
-			for (MetaGRdbPropertyStore metaCol: mcol.getMetaData().getStore()) {
+			for (MetaGRdbPropertyStore metaCol : mcol.getMetaData()
+					.getStore()) {
 				if (metaCol.getPageNo() == pageNo) {
-					columnValues.add(new PropertyColumnValue(metaCol.getColumnName(), mcol.getSingleColumnRdbTypeAdapter(), mcol.isNative(), null, rdb));
+					columnValues
+							.add(new PropertyColumnValue(metaCol.getColumnName(), mcol.getSingleColumnRdbTypeAdapter(), mcol.isNative(), null, rdb));
 				}
 			}
 			//TODO multiは現状index非対応
@@ -85,11 +91,13 @@ public class PropertyColumnValueMapper implements ColumnValueMapper {
 		if (!colDef.isMulti()) {
 			//本体
 			GRdbPropertyStoreHandler scol = (GRdbPropertyStoreHandler) colDef;
-			if (scol.getMetaData().getPageNo() == pageNo) {
+			if (scol.getMetaData()
+					.getPageNo() == pageNo) {
 				values.add(val);
 			}
 			//index
-			if (!scol.isExternalIndex() && scol.getIndexColName() != null && scol.getMetaData().getIndexPageNo() == pageNo) {
+			if (!scol.isExternalIndex() && scol.getIndexColName() != null && scol.getMetaData()
+					.getIndexPageNo() == pageNo) {
 				switch (scol.getIndexType()) {
 				case UNIQUE:
 					values.add(internalIndexKey);
@@ -112,8 +120,12 @@ public class PropertyColumnValueMapper implements ColumnValueMapper {
 		} else {
 			//本体
 			GRdbMultiplePropertyStoreHandler mcol = (GRdbMultiplePropertyStoreHandler) colDef;
-			for (int i = 0; i < mcol.getMetaData().getStore().size(); i++) {
-				MetaGRdbPropertyStore metaCol = mcol.getMetaData().getStore().get(i);
+			for (int i = 0; i < mcol.getMetaData()
+					.getStore()
+					.size(); i++) {
+				MetaGRdbPropertyStore metaCol = mcol.getMetaData()
+						.getStore()
+						.get(i);
 				if (metaCol.getPageNo() == pageNo) {
 					if (val instanceof Object[]) {
 						Object[] valList = (Object[]) val;

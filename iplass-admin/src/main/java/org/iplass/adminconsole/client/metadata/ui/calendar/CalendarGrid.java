@@ -103,20 +103,20 @@ public class CalendarGrid extends MtpTreeGrid {
 
 		//setAutoFetchData(true);
 		setDragDataAction(DragDataAction.MOVE);
-		setSelectionType(SelectionStyle.SINGLE);	//単一行選択
-		setBorder("none");					//外のSectionと線がかぶるので消す
+		setSelectionType(SelectionStyle.SINGLE); //単一行選択
+		setBorder("none"); //外のSectionと線がかぶるので消す
 
-		setLeaveScrollbarGap(false);		//←falseで縦スクロールバーの領域が自動表示
+		setLeaveScrollbarGap(false); //←falseで縦スクロールバーの領域が自動表示
 //		setShowHeader(true);  				//←trueで上に列タイトルが表示される（Default true）
 //		setEmptyMessage("No Item Data");	//←空の場合のメッセージ
 //		//setManyItemsImage("cubes_all.png");
-		setCanReorderRecords(true);			//←Dragによるレコードの並べ替え許可指定（Default false）
-		setCanAcceptDroppedRecords(true);	//←レコードのDropの許可指定（Default false）
-		setCanDragRecordsOut(true);			//←レコードをDragして他にDropできるか（Default false）
+		setCanReorderRecords(true); //←Dragによるレコードの並べ替え許可指定（Default false）
+		setCanAcceptDroppedRecords(true); //←レコードのDropの許可指定（Default false）
+		setCanDragRecordsOut(true); //←レコードをDragして他にDropできるか（Default false）
 //		setShowEdges(false);				//←trueで周りに枠が表示される（Default false）
-		setCanSort(false);					//←ソートできるか（Default true）
-		setCanFreezeFields(false);			//←列を固定できるか（Default null）
-		setCanPickFields(false);			//←ヘッダで列を選択できるか（Default true）
+		setCanSort(false); //←ソートできるか（Default true）
+		setCanFreezeFields(false); //←列を固定できるか（Default null）
+		setCanPickFields(false); //←ヘッダで列を選択できるか（Default true）
 
 		//メッセージのカスタマイズ
 		//Drop先Nodeにすでに同じNodeが存在する場合、FolderDropEvent自体が発生しないが、
@@ -209,18 +209,18 @@ public class CalendarGrid extends MtpTreeGrid {
 				public void onClick(ClickEvent event) {
 
 					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_deleteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_deleteCategoryConf", record.getAttribute("defName"))
-							, new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_deleteCategoryConf", record.getAttribute("defName")),
+							new BooleanCallback() {
 
-						@Override
-						public void execute(Boolean value) {
-							if (value) {
-								TreeNode target = Tree.nodeForRecord(record);
-								tree.remove(target);
-							}
+								@Override
+								public void execute(Boolean value) {
+									if (value) {
+										TreeNode target = Tree.nodeForRecord(record);
+										tree.remove(target);
+									}
 
-						}
-					});
+								}
+							});
 				}
 			});
 			ret = deleteBtn;
@@ -235,7 +235,7 @@ public class CalendarGrid extends MtpTreeGrid {
 	 * @param record 対象レコード
 	 */
 	private void showItemDialog(Record record) {
-		EntityCalendarItem item = (EntityCalendarItem)record.getAttributeAsObject("valueObject");
+		EntityCalendarItem item = (EntityCalendarItem) record.getAttributeAsObject("valueObject");
 		EntityCalendarItemEditDialog dialog = new EntityCalendarItemEditDialog(item);
 		dialog.show();
 	}
@@ -255,7 +255,7 @@ public class CalendarGrid extends MtpTreeGrid {
 			root.setChildren(children);
 		}
 
-		tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
+		tree = new Tree(); //Treeをnewしなおさないと階層がうまく表示されない
 		tree.setRoot(root);
 		tree.setModelType(TreeModelType.CHILDREN);
 
@@ -330,7 +330,7 @@ public class CalendarGrid extends MtpTreeGrid {
 				//ルート直下はルート直下のみ移動可能
 				//それ以外はそのノードが属する階層内のみ移動可能
 				TreeNode[] nodes = event.getNodes();
-				if (nodes != null && nodes.length ==1) {
+				if (nodes != null && nodes.length == 1) {
 					if (nodes[0] instanceof CalendarNode) {
 						moveTargetNode = (CalendarNode) nodes[0];
 					}
@@ -344,7 +344,7 @@ public class CalendarGrid extends MtpTreeGrid {
 				Canvas dragTarget = event.getSourceWidget();
 
 				//対象レコードの取得
-				ListGridRecord record = ((ListGrid)dragTarget).getSelectedRecord();
+				ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 				String name = record.getAttribute("defName");
 				EntityCalendarItem item = new EntityCalendarItem();
 				item.setDefinitionName(name);
@@ -363,10 +363,12 @@ public class CalendarGrid extends MtpTreeGrid {
 
 			//Nodeの移動処理
 			if (dropTargetNode != null && moveTargetNode != null) {
-				if (tree.getParentPath(moveTargetNode).equals(tree.getPath(dropTargetNode))) {
+				if (tree.getParentPath(moveTargetNode)
+						.equals(tree.getPath(dropTargetNode))) {
 					int curIndex = getCurrentIndex(moveTargetNode);
 					int addIndex = event.getIndex();
-					if (addIndex > curIndex) addIndex--;
+					if (addIndex > curIndex)
+						addIndex--;
 
 					tree.remove(moveTargetNode);
 					tree.add(moveTargetNode, dropTargetNode, addIndex);
@@ -447,27 +449,29 @@ public class CalendarGrid extends MtpTreeGrid {
 			centerInPage();
 
 			RequiredIfValidator propertyNameValidator = new RequiredIfValidator(
-				new RequiredIfFunction() {
+					new RequiredIfFunction() {
 
-					@Override
-					public boolean execute(FormItem formItem, Object value) {
-						String calendarSearchType = SmartGWTUtil.getStringValue(calendarSearchTypeField);
-						String name = formItem.getName();
-						if (CalendarSearchType.DATE.name().equals(calendarSearchType)) {
-							//Dateの場合はFromとToはノーチェック
-							if ("fromPropertyName".equals(name) || "toPropertyName".equals(name)) {
-								return false;
+						@Override
+						public boolean execute(FormItem formItem, Object value) {
+							String calendarSearchType = SmartGWTUtil.getStringValue(calendarSearchTypeField);
+							String name = formItem.getName();
+							if (CalendarSearchType.DATE.name()
+									.equals(calendarSearchType)) {
+								//Dateの場合はFromとToはノーチェック
+								if ("fromPropertyName".equals(name) || "toPropertyName".equals(name)) {
+									return false;
+								}
+							} else {
+								//Periodの場合はpropertyNameはノーチェック
+								if ("propertyName".equals(formItem.getName())) {
+									return false;
+								}
 							}
-						} else {
-							//Periodの場合はpropertyNameはノーチェック
-							if ("propertyName".equals(formItem.getName())) {
-								return false;
-							}
+
+							return value == null || value.toString()
+									.isEmpty();
 						}
-
-						return value == null || value.toString().isEmpty();
-					}
-				});
+					});
 			propertyNameValidator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_requiredField"));
 
 			//設定項目の入力フィールド作成
@@ -484,7 +488,8 @@ public class CalendarGrid extends MtpTreeGrid {
 			editScript.setWidth(100);
 			editScript.setColSpan(3);
 			editScript.setAlign(Alignment.RIGHT);
-			editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_displayDialogEditScript")));
+			editScript.setPrompt(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_displayDialogEditScript")));
 			editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -499,6 +504,7 @@ public class CalendarGrid extends MtpTreeGrid {
 								public void onSave(String text) {
 									colorConfigField.setValue(text);
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -543,7 +549,8 @@ public class CalendarGrid extends MtpTreeGrid {
 			filterConditionField = new MtpTextAreaItem();
 			filterConditionField.setTitle("Filter Condition");
 			filterConditionField.setHeight(100);
-			SmartGWTUtil.addHoverToFormItem(filterConditionField, AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speCommonFilterCond"));
+			SmartGWTUtil.addHoverToFormItem(filterConditionField,
+					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speCommonFilterCond"));
 			items.add(filterConditionField);
 
 			limitField = new SpinnerItem("limit", "Limit");
@@ -592,11 +599,12 @@ public class CalendarGrid extends MtpTreeGrid {
 
 				@Override
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						item.setEntityColor(SmartGWTUtil.getStringValue(entityColorField));
 						item.setColorConfig(SmartGWTUtil.getStringValue(colorConfigField));
 						String calendarSearchType = SmartGWTUtil.getStringValue(calendarSearchTypeField);
-						if (CalendarSearchType.DATE.name().equals(calendarSearchType)) {
+						if (CalendarSearchType.DATE.name()
+								.equals(calendarSearchType)) {
 							item.setCalendarSearchType(CalendarSearchType.DATE);
 							item.setPropertyName(SmartGWTUtil.getStringValue(propertyNameField));
 							item.setFromPropertyName(null);
@@ -612,10 +620,12 @@ public class CalendarGrid extends MtpTreeGrid {
 						item.setDisplayTime(SmartGWTUtil.getBooleanValue(displayTimeField));
 
 						String viewAction = SmartGWTUtil.getStringValue(viewActionField);
-						if ("#default".equals(viewAction)) viewAction = null;
+						if ("#default".equals(viewAction))
+							viewAction = null;
 						item.setViewAction(viewAction);
 						String addAction = SmartGWTUtil.getStringValue(addActionField);
-						if ("#default".equals(addAction)) addAction = null;
+						if ("#default".equals(addAction))
+							addAction = null;
 						item.setAddAction(addAction);
 						item.setAllowNewRecordRegistration(SmartGWTUtil.getBooleanValue(allowNewRecordRegistrationField));
 						item.setViewName(SmartGWTUtil.getStringValue(viewNameField));
@@ -642,8 +652,8 @@ public class CalendarGrid extends MtpTreeGrid {
 			defNameField.setValue(item.getDefinitionName());
 			entityColorField.setValue(item.getEntityColor());
 			colorConfigField.setValue(item.getColorConfig());
-			calendarSearchTypeField.setValue(item.getCalendarSearchType() != null ?
-					item.getCalendarSearchType().name() : "DATE");
+			calendarSearchTypeField.setValue(item.getCalendarSearchType() != null ? item.getCalendarSearchType()
+					.name() : "DATE");
 			propertyNameField.setValue(item.getPropertyName());
 			fromPropertyNameField.setValue(item.getFromPropertyName());
 			toPropertyNameField.setValue(item.getToPropertyName());
@@ -652,17 +662,18 @@ public class CalendarGrid extends MtpTreeGrid {
 			displayTimeField.setValue(item.getDisplayTime() != null ? item.getDisplayTime() : false);
 
 			String viewAction = item.getViewAction();
-			if (viewAction == null || viewAction.isEmpty()) viewAction = "#default";
+			if (viewAction == null || viewAction.isEmpty())
+				viewAction = "#default";
 			viewActionField.setValue(viewAction);
 			String addAction = item.getAddAction();
-			if (addAction == null || addAction.isEmpty()) addAction = "#default";
+			if (addAction == null || addAction.isEmpty())
+				addAction = "#default";
 			addActionField.setValue(addAction);
 			allowNewRecordRegistrationField.setValue(item.getAllowNewRecordRegistration() != null ? item.getAllowNewRecordRegistration() : true);
 			viewNameField.setValue(item.getViewName());
 
-
 			//対象EntityのProperty定義を取得
-			MetaDataServiceAsync service  = MetaDataServiceFactory.get();
+			MetaDataServiceAsync service = MetaDataServiceFactory.get();
 			service.getEntityDefinition(TenantInfoHolder.getId(), item.getDefinitionName(), new AsyncCallback<EntityDefinition>() {
 
 				@Override
@@ -675,7 +686,8 @@ public class CalendarGrid extends MtpTreeGrid {
 
 						@Override
 						public int compare(PropertyDefinition o1, PropertyDefinition o2) {
-							return o1.getName().compareTo(o2.getName());
+							return o1.getName()
+									.compareTo(o2.getName());
 						}
 					});
 

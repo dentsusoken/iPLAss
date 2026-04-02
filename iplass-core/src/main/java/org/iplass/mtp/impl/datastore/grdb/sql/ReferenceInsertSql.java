@@ -30,10 +30,11 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
 public class ReferenceInsertSql extends UpdateSqlHandler {
-	
+
 	private static final Long LONG_ZERO = Long.valueOf(0);
 
-	public String insert(int tenantId, EntityHandler eh, String propId, String oid, Long version, String targetObjDefId, String targetObjId, Long targetObjVersion, RdbAdapter rdb) {
+	public String insert(int tenantId, EntityHandler eh, String propId, String oid, Long version, String targetObjDefId, String targetObjId,
+			Long targetObjVersion, RdbAdapter rdb) {
 		if (version == null) {
 			version = LONG_ZERO;
 		}
@@ -41,7 +42,7 @@ public class ReferenceInsertSql extends UpdateSqlHandler {
 			targetObjVersion = LONG_ZERO;
 		}
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("INSERT INTO ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
 		sb.append("("
@@ -54,22 +55,30 @@ public class ReferenceInsertSql extends UpdateSqlHandler {
 				+ "," + ObjRefTable.TARGET_OBJ_ID
 				+ "," + ObjRefTable.TARGET_OBJ_VER
 				+ ") VALUES(");
-		sb.append(tenantId).append(",'");
-		sb.append(rdb.sanitize(eh.getMetaData().getId())).append("','");
-		sb.append(rdb.sanitize(propId)).append("','");
-		sb.append(rdb.sanitize(oid)).append("',");
-		sb.append(version).append(",'");
-		sb.append(rdb.sanitize(targetObjDefId)).append("','");
-		sb.append(rdb.sanitize(targetObjId)).append("',");
+		sb.append(tenantId)
+				.append(",'");
+		sb.append(rdb.sanitize(eh.getMetaData()
+				.getId()))
+				.append("','");
+		sb.append(rdb.sanitize(propId))
+				.append("','");
+		sb.append(rdb.sanitize(oid))
+				.append("',");
+		sb.append(version)
+				.append(",'");
+		sb.append(rdb.sanitize(targetObjDefId))
+				.append("','");
+		sb.append(rdb.sanitize(targetObjId))
+				.append("',");
 		sb.append(targetObjVersion);
 		sb.append(")");
-		
+
 		return sb.toString();
 	}
-	
+
 	public String prepareInsert(EntityHandler eh) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("INSERT INTO ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
 		sb.append("("
@@ -82,11 +91,12 @@ public class ReferenceInsertSql extends UpdateSqlHandler {
 				+ "," + ObjRefTable.TARGET_OBJ_ID
 				+ "," + ObjRefTable.TARGET_OBJ_VER
 				+ ") VALUES(?,?,?,?,?,?,?,?)");
-		
+
 		return sb.toString();
 	}
-	
-	public void setPrepareInsertParameter(PreparedStatement stmt, int tenantId, EntityHandler eh, String propId, String oid, Long version, String targetObjDefId, String targetObjId, Long targetObjVersion, RdbAdapter rdb) throws SQLException {
+
+	public void setPrepareInsertParameter(PreparedStatement stmt, int tenantId, EntityHandler eh, String propId, String oid, Long version,
+			String targetObjDefId, String targetObjId, Long targetObjVersion, RdbAdapter rdb) throws SQLException {
 		if (version == null) {
 			version = LONG_ZERO;
 		}
@@ -94,7 +104,8 @@ public class ReferenceInsertSql extends UpdateSqlHandler {
 			targetObjVersion = LONG_ZERO;
 		}
 		stmt.setInt(1, tenantId);
-		stmt.setString(2, eh.getMetaData().getId());
+		stmt.setString(2, eh.getMetaData()
+				.getId());
 		stmt.setString(3, propId);
 		stmt.setString(4, oid);
 		stmt.setLong(5, version);

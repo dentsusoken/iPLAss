@@ -30,13 +30,15 @@ public class Jwt {
 		this.header = header;
 		this.claims = claims;
 	}
-	
+
 	public Map<String, Object> getHeader() {
 		return header;
 	}
+
 	public void setHeader(Map<String, Object> header) {
 		this.header = header;
 	}
+
 	public Map<String, Object> getClaims() {
 		return claims;
 	}

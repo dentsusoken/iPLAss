@@ -82,7 +82,7 @@ public class EntitySelectDialog extends AbstractWindow {
 		grid.setShowAllRecords(true);
 		grid.setCanResizeFields(true);
 
-    	grid.setDataSource(MetaDataNameDS.getInstance(EntityDefinition.class));
+		grid.setDataSource(MetaDataNameDS.getInstance(EntityDefinition.class));
 		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
 		grid.setFields(nameField);
 
@@ -90,33 +90,33 @@ public class EntitySelectDialog extends AbstractWindow {
 
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				String name = event.getRecord().getAttribute(DataSourceConstants.FIELD_NAME);
+				String name = event.getRecord()
+						.getAttribute(DataSourceConstants.FIELD_NAME);
 				selectEntity(name);
 			}
 		});
 
-
 		DynamicForm form = new DynamicForm();
 		form.setWidth100();
 		form.setHeight(30);
-		form.setTitleWidth(0);	//チェックボックスを左に寄せるため。
+		form.setTitleWidth(0); //チェックボックスを左に寄せるため。
 		form.setCellPadding(0);
 
 		excludeRefItem = new CheckboxItem("excludeRefItem", "exclude reference properties");
 		SmartGWTUtil.addHoverToFormItem(excludeRefItem, AdminClientMessageUtil.getString("ui_tools_eql_EntitySelectDialog_excludeSelectRefProp"));
-		excludeRefItem.setWidth(200);	//Widthを指定しないと選択時に下にスクロールが表示されるため
+		excludeRefItem.setWidth(200); //Widthを指定しないと選択時に下にスクロールが表示されるため
 
 		excludeInheritedItem = new CheckboxItem("excludeInheritedItem", "exclude inherited properties(ignore "
 				+ Entity.OID + "," + Entity.NAME + "," + Entity.VERSION + ")");
-		SmartGWTUtil.addHoverToFormItem(excludeInheritedItem, AdminClientMessageUtil.getString("ui_tools_eql_EntitySelectDialog_excludeSelectInheriProp"));
-		excludeInheritedItem.setWidth(200);	//Widthを指定しないと選択時に下にスクロールが表示されるため
+		SmartGWTUtil.addHoverToFormItem(excludeInheritedItem,
+				AdminClientMessageUtil.getString("ui_tools_eql_EntitySelectDialog_excludeSelectInheriProp"));
+		excludeInheritedItem.setWidth(200); //Widthを指定しないと選択時に下にスクロールが表示されるため
 
 		formatEqlItem = new CheckboxItem("formatedEqlItem", "format output eql");
 		SmartGWTUtil.addHoverToFormItem(formatEqlItem, AdminClientMessageUtil.getString("ui_tools_eql_EntitySelectDialog_formatOutputEql"));
-		formatEqlItem.setWidth(200);	//Widthを指定しないと選択時に下にスクロールが表示されるため
+		formatEqlItem.setWidth(200); //Widthを指定しないと選択時に下にスクロールが表示されるため
 
 		form.setFields(excludeRefItem, excludeInheritedItem, formatEqlItem);
-
 
 		HLayout footerLayout = new HLayout(5);
 		footerLayout.setWidth100();
@@ -132,7 +132,8 @@ public class EntitySelectDialog extends AbstractWindow {
 				if (grid.getSelectedRecord() == null) {
 					SC.warn(AdminClientMessageUtil.getString("ui_tools_eql_EntitySelectDialog_pleaseSelectEntity"));
 				} else {
-					String name = grid.getSelectedRecord().getAttribute("name");
+					String name = grid.getSelectedRecord()
+							.getAttribute("name");
 					selectEntity(name);
 				}
 			}

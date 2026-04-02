@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import groovy.lang.ExpandoMetaClass;
 import groovy.lang.GroovyClassLoader;
 
-
 public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilityClass, UtilityClassRuntime> implements ScriptService {
 	private static Logger logger = LoggerFactory.getLogger(GroovyScriptService.class);
 
@@ -64,17 +63,22 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 		public TypeMap() {
 			super(getFixedPath(), MetaUtilityClass.class, UtilityClassDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<UtilityClassDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(UtilityClassDefinitionManager.class);
 		}
+
 		@Override
 		public String toPath(String defName) {
 			return pathPrefix + defName.replace('.', '/');
 		}
+
 		@Override
 		public String toDefName(String path) {
-			return path.substring(pathPrefix.length()).replace("/", ".");
+			return path.substring(pathPrefix.length())
+					.replace("/", ".");
 		}
 
 		@Override
@@ -92,7 +96,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 
 	private GroovyClassLoader parentClassLoader;
 	private List<GroovyScript> expandScriptRefs;
-	
+
 	private List<String> initScript;
 	private List<String> importList;
 	private List<String> staticImportList;
@@ -101,7 +105,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 
 	public GroovyScriptService() {
 	}
-	
+
 	private String getScriptSrc(String path) {
 		InputStream is = GroovyScriptService.class.getResourceAsStream(path);
 		byte[] buf = new byte[1024];
@@ -152,7 +156,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 			conf.setDebug(true);
 		}
 		parentClassLoader = new GroovyClassLoader(GroovyScriptService.class.getClassLoader(), conf, false);
-		
+
 		initScript = config.getValues("initScript");
 		if (initScript != null) {
 			expandScriptRefs = new ArrayList<>();
@@ -172,7 +176,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 	public boolean isDebug() {
 		return debug;
 	}
-	
+
 	private CompilerConfiguration newCompilerConfiguration() {
 		CompilerConfiguration conf = new CompilerConfiguration();
 		conf.setSourceEncoding(ENCODING);
@@ -183,7 +187,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 		ImportCustomizer ic = null;
 		if (importList != null && importList.size() > 0) {
 			ic = new ImportCustomizer();
-			for (String i: importList) {
+			for (String i : importList) {
 				i = i.trim();
 				if (i.endsWith(".*")) {
 					ic.addStarImports(i.substring(0, i.length() - 2));
@@ -196,7 +200,7 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 			if (ic == null) {
 				ic = new ImportCustomizer();
 			}
-			for (String si: staticImportList) {
+			for (String si : staticImportList) {
 				si = si.trim();
 				if (si.endsWith(".*")) {
 					ic.addStaticStars(si.substring(0, si.length() - 2));
@@ -236,20 +240,23 @@ public class GroovyScriptService extends AbstractTypedMetaDataService<MetaUtilit
 	private void invalidateTenantContext() {
 
 		//TenantContextのリロード。このスレッド自身は、旧のTenantContextで実行される
-		final TenantContext current = ExecuteContext.getCurrentContext().getTenantContext();
+		final TenantContext current = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		Transaction t = Transaction.getCurrent();
 		if (t.getStatus() == TransactionStatus.ACTIVE) {
 			if (t.getAttribute(TRANSACTION_FLAG_KEY) == null) {
 				t.addTransactionListener(new TransactionListener() {
 					@Override
 					public void afterCommit(Transaction t) {
-						TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+						TenantContextService tcService = ServiceRegistry.getRegistry()
+								.getService(TenantContextService.class);
 						tcService.reloadTenantContext(current.getTenantId(), false);
 					}
 				});
 			}
 		} else {
-			TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+			TenantContextService tcService = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class);
 			tcService.reloadTenantContext(current.getTenantId(), false);
 		}
 

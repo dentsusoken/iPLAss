@@ -20,7 +20,7 @@
 package org.iplass.mtp.impl.auth.oauth.util;
 
 public interface OAuthConstants {
-	
+
 	//error codes
 	//リクエストに必須パラメーターが含まれていない, サポート外のパラメーターが付与されている, 同一のパラメーターが複数含まれる場合, その他不正な形式であった場合もこれに含まれる
 	public static final String ERROR_INVALID_REQUEST = "invalid_request";
@@ -48,11 +48,10 @@ public interface OAuthConstants {
 	public static final String ERROR_LOGIN_REQUIRED = "login_required";
 	//Authorization Server は End-User の同意を必要とする. Authentication Request 中の prompt パラメータが none であるが, End-User の同意のためのユーザーインターフェースの表示なしには Authentication Request が完了できない時にこのエラーが返される
 	public static final String ERROR_CONSENT_REQUIRED = "consent_required";
-	
-	
+
 	//response_type
 	public static final String RESPONSE_TYPE_CODE = "code";
-	
+
 	//response_mode
 	public static final String RESPONSE_MODE_QUERY = "query";
 	public static final String RESPONSE_MODE_FRAGMENT = "fragment";
@@ -61,15 +60,15 @@ public interface OAuthConstants {
 	//query.jwt
 	//form_post.jwt
 	//jwt
-	
+
 	//code_challenge_method
 	public static final String CODE_CHALLENGE_METHOD_S256 = "S256";
 	public static final String CODE_CHALLENGE_METHOD_PLAIN = "plain";
-	
+
 	//grant_type
 	public static final String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
 	public static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
-	 
+
 	//reserved scope
 	public static final String SCOPE_OPENID = "openid";
 	public static final String SCOPE_PROFILE = "profile";
@@ -77,13 +76,13 @@ public interface OAuthConstants {
 	public static final String SCOPE_ADDRESS = "address";
 	public static final String SCOPE_PHONE = "phone";
 	public static final String SCOPE_OFFLINE_ACCESS = "offline_access";
-	
+
 	//oidc prompt
 	public static final String PROMPT_NONE = "none";
 	public static final String PROMPT_LOGIN = "login";
 	public static final String PROMPT_CONSENT = "consent";
-	
+
 	//token type
 	public static final String TOKEN_TYPE_BEARER = "Bearer";
-	
+
 }

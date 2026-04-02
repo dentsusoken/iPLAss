@@ -93,7 +93,8 @@ public interface JxlsReportOutputLogic {
 					if (transformer instanceof PoiTransformer poiTransformer) {
 						var book = poiTransformer.getWorkbook();
 
-						if (cellRef.getSheetName() != null && cellRef.getSheetName().length() > 0) {
+						if (cellRef.getSheetName() != null && cellRef.getSheetName()
+								.length() > 0) {
 							book.setSheetName(0, cellRef.getSheetName());
 						}
 					}
@@ -182,7 +183,10 @@ public interface JxlsReportOutputLogic {
 				.withAreaBuilder((transformer, clearTemplateCells) -> {
 					var areaList = new XlsCommentAreaBuilder().build(transformer, clearTemplateCells);
 
-					GridCommand gridCommand = (GridCommand) areaList.get(0).getCommandDataList().get(0).getCommand();
+					GridCommand gridCommand = (GridCommand) areaList.get(0)
+							.getCommandDataList()
+							.get(0)
+							.getCommand();
 					gridCommand.setProps(objectProps);
 
 					return areaList;
@@ -192,7 +196,8 @@ public interface JxlsReportOutputLogic {
 					if (transformer instanceof PoiTransformer poiTransformer) {
 						var book = poiTransformer.getWorkbook();
 
-						if (cellRef.getSheetName() != null && cellRef.getSheetName().length() > 0) {
+						if (cellRef.getSheetName() != null && cellRef.getSheetName()
+								.length() > 0) {
 							book.setSheetName(0, cellRef.getSheetName());
 						}
 					}

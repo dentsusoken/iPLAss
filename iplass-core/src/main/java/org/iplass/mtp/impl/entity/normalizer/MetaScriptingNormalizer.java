@@ -112,7 +112,7 @@ public class MetaScriptingNormalizer extends MetaNormalizer {
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
 		return new ScriptingNormalizerRuntime(entity, property);
 	}
-	
+
 	public class ScriptingNormalizerRuntime extends NormalizerRuntime {
 
 		private static final String SCRIPT_PREFIX = "ScriptingNormalizer_script";
@@ -121,12 +121,15 @@ public class MetaScriptingNormalizer extends MetaNormalizer {
 		private ScriptEngine scriptEngine;
 
 		ScriptingNormalizerRuntime(MetaEntity entity, MetaProperty property) {
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			scriptEngine = tc.getScriptEngine();
 
 			String scriptName = null;
-			for (int i = 0; i < property.getNormalizers().size(); i++) {
-				if (MetaScriptingNormalizer.this == property.getNormalizers().get(i)) {
+			for (int i = 0; i < property.getNormalizers()
+					.size(); i++) {
+				if (MetaScriptingNormalizer.this == property.getNormalizers()
+						.get(i)) {
 					scriptName = SCRIPT_PREFIX + "_" + entity.getId() + "_" + property.getId() + "_" + i;
 					break;
 				}

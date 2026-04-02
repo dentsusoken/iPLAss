@@ -30,17 +30,17 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 
 public class RememberMeTokenAccountHandle implements AccountHandle {
 	private static final long serialVersionUID = 8676835071856056838L;
-	
-	public static final String AUTHED_BY_REMEMBER_ME_TOKEN ="authedByRememberMeToken";
-	public static final String REMEMBER_ME_TOKEN_SERIES ="rememberMeTokenSeries";
-	
+
+	public static final String AUTHED_BY_REMEMBER_ME_TOKEN = "authedByRememberMeToken";
+	public static final String REMEMBER_ME_TOKEN_SERIES = "rememberMeTokenSeries";
+
 	private String unmodifiableUniqueKey;
 	private Map<String, Object> attributeMap;
 	private int authenticationProviderIndex;
 
 	public RememberMeTokenAccountHandle() {
 	}
-	
+
 	public RememberMeTokenAccountHandle(String unmodifiableUniqueKey, String series, String policyName) {
 		this.unmodifiableUniqueKey = unmodifiableUniqueKey;
 		getAttributeMap().put(RememberMeTokenAccountHandle.AUTHED_BY_REMEMBER_ME_TOKEN, Boolean.TRUE);
@@ -77,7 +77,7 @@ public class RememberMeTokenAccountHandle implements AccountHandle {
 
 	@Override
 	public Map<String, Object> getAttributeMap() {
-		if(attributeMap == null){
+		if (attributeMap == null) {
 			attributeMap = new HashMap<String, Object>();
 		}
 		return attributeMap;
@@ -92,5 +92,5 @@ public class RememberMeTokenAccountHandle implements AccountHandle {
 	public int getAuthenticationProviderIndex() {
 		return authenticationProviderIndex;
 	}
-	
+
 }

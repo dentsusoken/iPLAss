@@ -36,9 +36,9 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class RememberMeTokenHandler extends AuthTokenHandler {
-	
+
 	public static final String TYPE_REMME_DEFAULT = "REMME";
-	
+
 	private AuthenticationPolicyService policyService;
 
 	@Override
@@ -47,7 +47,8 @@ public class RememberMeTokenHandler extends AuthTokenHandler {
 		if (getType() == null) {
 			setType(TYPE_REMME_DEFAULT);
 		}
-		this.policyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+		this.policyService = ServiceRegistry.getRegistry()
+				.getService(AuthenticationPolicyService.class);
 	}
 
 	@Override
@@ -56,14 +57,19 @@ public class RememberMeTokenHandler extends AuthTokenHandler {
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
 		info.setStartDate(authToken.getStartDate());
-		
+
 		Timestamp t = authToken.getStartDate();
 		AuthenticationPolicyRuntime pol = policyService.getOrDefault(authToken.getPolicyName());
-		if (pol.getMetaData().getRememberMePolicy() == null) {
+		if (pol.getMetaData()
+				.getRememberMePolicy() == null) {
 			info.setExpired(true);
 		} else {
-			if (pol.getMetaData().getRememberMePolicy().getLifetimeMinutes() > 0) {
-				Timestamp exp = new Timestamp(t.getTime() + TimeUnit.MINUTES.toMillis(pol.getMetaData().getRememberMePolicy().getLifetimeMinutes()));
+			if (pol.getMetaData()
+					.getRememberMePolicy()
+					.getLifetimeMinutes() > 0) {
+				Timestamp exp = new Timestamp(t.getTime() + TimeUnit.MINUTES.toMillis(pol.getMetaData()
+						.getRememberMePolicy()
+						.getLifetimeMinutes()));
 				if (exp.getTime() >= System.currentTimeMillis()) {
 					info.setExpiryDate(exp);
 				} else {
@@ -73,7 +79,7 @@ public class RememberMeTokenHandler extends AuthTokenHandler {
 		}
 		return info;
 	}
-	
+
 	@Override
 	public Credential toCredential(AuthToken newToken) {
 		return new RememberMeTokenCredential(newToken.encodeToken());

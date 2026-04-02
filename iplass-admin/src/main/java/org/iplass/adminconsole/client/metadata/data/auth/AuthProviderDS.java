@@ -57,7 +57,6 @@ public class AuthProviderDS extends AbstractAdminDataSource {
 		grid.setFields(nameField);
 	}
 
-
 	public static AuthProviderDS getInstance() {
 		if (instance == null) {
 			instance = new AuthProviderDS();

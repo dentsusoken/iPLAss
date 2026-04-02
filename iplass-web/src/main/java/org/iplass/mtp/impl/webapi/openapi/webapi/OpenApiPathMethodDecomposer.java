@@ -64,8 +64,8 @@ public class OpenApiPathMethodDecomposer {
 		var webApiBasePath = parameterStartIndex < 0
 				// "{" が見つからない場合、/path/to/openapi のような形式。先頭のスラッシュを除去し、そのまま利用する。( 例： /path/to/openapi -> path/to/openapi )
 				? path.substring(1)
-						// "{" が見つかった場合、/path/to/openapi/{parameter} のような形式。先頭のスラッシュとパラメーター部を除去する。 ( 例: /path/to/openapi/{parameter} -> path/to/openapi )
-						: path.substring(1, parameterStartIndex);
+				// "{" が見つかった場合、/path/to/openapi/{parameter} のような形式。先頭のスラッシュとパラメーター部を除去する。 ( 例: /path/to/openapi/{parameter} -> path/to/openapi )
+				: path.substring(1, parameterStartIndex);
 
 		// WebAPI 定義が存在するかチェックする
 		var wdm = ManagerLocator.manager(WebApiDefinitionManager.class);
@@ -80,7 +80,8 @@ public class OpenApiPathMethodDecomposer {
 		// WebAPI定義が存在しない場合、メソッド単位で WebAPI定義を作成する
 		var result = new ArrayList<OpenApiProcessUnit>();
 		// WebAPI定義が存在しない場合、メソッド単位で WebAPI定義を作成する
-		for (var entry : pathItem.readOperationsMap().entrySet()) {
+		for (var entry : pathItem.readOperationsMap()
+				.entrySet()) {
 			// 対象メソッドを判別
 			var methodType = switch (entry.getKey()) {
 			case GET -> MethodType.GET;
@@ -97,7 +98,9 @@ public class OpenApiPathMethodDecomposer {
 				continue;
 			}
 
-			var webApiPath = new StringBuilder(webApiBasePath).append("/").append(methodType.name()).toString();
+			var webApiPath = new StringBuilder(webApiBasePath).append("/")
+					.append(methodType.name())
+					.toString();
 
 			var methodDef = wdm.get(webApiPath);
 			if (null != methodDef) {
@@ -115,7 +118,8 @@ public class OpenApiPathMethodDecomposer {
 		// webApiBasePath 配下に別の WebAPI が存在しているかを確認する
 		var underWebApiBasePathDefList = wdm.definitionSummaryList(webApiBasePath);
 
-		if (result.size() == 1 && result.get(0).getUpdateType() == WebApiUpdateType.CREATE && underWebApiBasePathDefList.size() == 0) {
+		if (result.size() == 1 && result.get(0)
+				.getUpdateType() == WebApiUpdateType.CREATE && underWebApiBasePathDefList.size() == 0) {
 			// メソッドが１つ且つ、新規作成 且つ、webApiBasePath 配下に別のWebAPI が存在していない場合は、メソッド名が指定されていないパスを設定する。
 			// 「webApiBasePath 配下に別のWebAPI が存在していない」という条件は、path/to/webapi/GET を作成しようとしたときに、path/to/webapi/POST のように別のメソッドが存在しないこと。
 			var before = result.get(0);

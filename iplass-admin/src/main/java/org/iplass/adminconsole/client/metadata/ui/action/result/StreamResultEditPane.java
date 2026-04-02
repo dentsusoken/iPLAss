@@ -84,7 +84,8 @@ public class StreamResultEditPane extends ResultTypeEditPane {
 		contentLengthAttributeNameField = new MtpTextItem("contentLengthAttributeName", "contentLength AttributeName");
 
 		acceptRangesField = new CheckboxItem("acceptRanges", "Accept Ranges");
-		SmartGWTUtil.addHoverToFormItem(acceptRangesField, AdminClientMessageUtil.getString("ui_metadata_action_StreamResultEditPane_acceptRangesTooltip"));
+		SmartGWTUtil.addHoverToFormItem(acceptRangesField,
+				AdminClientMessageUtil.getString("ui_metadata_action_StreamResultEditPane_acceptRangesTooltip"));
 
 		form.setItems(streamAttributeNameField, contentTypeAttributeNameField, contentLengthAttributeNameField, acceptRangesField);
 
@@ -121,14 +122,15 @@ public class StreamResultEditPane extends ResultTypeEditPane {
 	 */
 	@Override
 	public void setDefinition(ResultDefinition definition) {
-		StreamResultDefinition stream = (StreamResultDefinition)definition;
+		StreamResultDefinition stream = (StreamResultDefinition) definition;
 		streamAttributeNameField.setValue(stream.getInputStreamAttributeName());
 		contentTypeAttributeNameField.setValue(stream.getContentTypeAttributeName());
 		contentLengthAttributeNameField.setValue(stream.getContentLengthAttributeName());
 		acceptRangesField.setValue(stream.isAcceptRanges());
 		useContentDispositionField.setValue(stream.isUseContentDisposition());
 		if (stream.getContentDispositionType() != null) {
-			contentDispositionTypeField.setValue(stream.getContentDispositionType().name());
+			contentDispositionTypeField.setValue(stream.getContentDispositionType()
+					.name());
 		} else {
 			contentDispositionTypeField.setValue("");
 		}
@@ -142,7 +144,7 @@ public class StreamResultEditPane extends ResultTypeEditPane {
 	 */
 	@Override
 	public ResultDefinition getEditDefinition(ResultDefinition definition) {
-		StreamResultDefinition stream = (StreamResultDefinition)definition;
+		StreamResultDefinition stream = (StreamResultDefinition) definition;
 		stream.setInputStreamAttributeName(SmartGWTUtil.getStringValue(streamAttributeNameField));
 		stream.setContentTypeAttributeName(SmartGWTUtil.getStringValue(contentTypeAttributeNameField));
 		stream.setContentLengthAttributeName(SmartGWTUtil.getStringValue(contentLengthAttributeNameField));

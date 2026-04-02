@@ -25,12 +25,11 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
-@XmlRootElement(name="metaDataEntry")
+@XmlRootElement(name = "metaDataEntry")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaDataEntryThinWrapper {
 
-	@XmlJavaTypeAdapter(value=ObjectXmlAdapter.class)
+	@XmlJavaTypeAdapter(value = ObjectXmlAdapter.class)
 	private RootMetaData metaData;
 
 	public MetaDataEntryThinWrapper() {

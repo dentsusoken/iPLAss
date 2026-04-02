@@ -23,15 +23,15 @@ package org.iplass.mtp.impl.web.actionmapping.cache;
 import java.io.IOException;
 import java.io.Serializable;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.WebInvocationImpl;
 
+import jakarta.servlet.ServletException;
+
 public interface ContentBlock extends Serializable {
-	
+
 	public void writeTo(WebRequestStack request) throws IOException, ServletException;
 
 	public long lastModified(long lastModified, WebInvocationImpl invocation, ContentCacheContext cc, String lang);
-	
+
 }

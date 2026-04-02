@@ -23,15 +23,14 @@ package org.iplass.mtp.impl.metadata.annotation;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-
 public interface AnnotatableMetaDataFactory<A extends Annotation, C> {
 	public static final String DEFAULT = "##default";
 
 	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<C> annotatedClass);
-	
+
 	public Class<C> getAnnotatedClass();
-	
+
 	public Class<A> getAnnotationClass();
-	
+
 //	public String getContextPath();
 }

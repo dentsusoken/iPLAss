@@ -60,9 +60,9 @@ public class PackageCreateDialog extends AbstractWindow {
 		SmartGWTUtil.showAnimationFullScreen(new AnimationFullScreenCallback() {
 			@Override
 			public void execute(boolean earlyFinish) {
-              animateOutline.hide();
-              PackageCreateDialog dialog = new PackageCreateDialog(owner, width, height);
-              dialog.show();
+				animateOutline.hide();
+				PackageCreateDialog dialog = new PackageCreateDialog(owner, width, height);
+				dialog.show();
 			}
 		});
 	}
@@ -173,7 +173,7 @@ public class PackageCreateDialog extends AbstractWindow {
 		controller.setHeight(20);
 		controller.setWidth100();
 		controller.setAlign(VerticalAlignment.CENTER);
-		controller.setMembers(members.toArray(new Canvas[]{}));
+		controller.setMembers(members.toArray(new Canvas[] {}));
 
 		return controller;
 	}
@@ -186,15 +186,15 @@ public class PackageCreateDialog extends AbstractWindow {
 			}
 		}
 
-		showOperationPane(CreateOperation.valueOf((String)cardLayout.getFirstCardKey()));
+		showOperationPane(CreateOperation.valueOf((String) cardLayout.getFirstCardKey()));
 	}
 
 	private void showOperationPane(CreateOperation operation) {
 		//現在のCardの情報を反映
-		((CreateOperationPane)cardLayout.getCurrentCard()).applyTo(createInfo);
+		((CreateOperationPane) cardLayout.getCurrentCard()).applyTo(createInfo);
 
 		//切り替えるCardに情報を渡す
-		((CreateOperationPane)cardLayout.getCard(operation.name())).setCurrentCreateInfo(createInfo);
+		((CreateOperationPane) cardLayout.getCard(operation.name())).setCurrentCreateInfo(createInfo);
 
 		description.setContents("<div>" + operation.displayName() + "</div>" + operation.description());
 		cardLayout.showCard(operation.name());

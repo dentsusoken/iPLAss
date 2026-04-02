@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class MetaSingleCommand extends MetaCommand {
 
 	private static final long serialVersionUID = 4170356067972278213L;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(MetaSingleCommand.class);
 
 	private String metaMetaCommandId;
@@ -58,10 +58,12 @@ public class MetaSingleCommand extends MetaCommand {
 		SingleCommandConfig def = (SingleCommandConfig) definition;
 
 		//name -> id 変換
-		CommandService service = ServiceRegistry.getRegistry().getService(CommandService.class);
-		MetaCommandRuntime runtime =service.getRuntimeByName(def.getCommandName());
+		CommandService service = ServiceRegistry.getRegistry()
+				.getService(CommandService.class);
+		MetaCommandRuntime runtime = service.getRuntimeByName(def.getCommandName());
 
-		metaMetaCommandId = runtime.getMetaData().getId();
+		metaMetaCommandId = runtime.getMetaData()
+				.getId();
 	}
 
 	@Override
@@ -70,11 +72,13 @@ public class MetaSingleCommand extends MetaCommand {
 		fillTo(definition);
 
 		//id -> name 変換
-		CommandService service = ServiceRegistry.getRegistry().getService(CommandService.class);
-		MetaCommandRuntime runtime =service.getRuntimeById(metaMetaCommandId);
+		CommandService service = ServiceRegistry.getRegistry()
+				.getService(CommandService.class);
+		MetaCommandRuntime runtime = service.getRuntimeById(metaMetaCommandId);
 
 		if (runtime != null) {
-			definition.setCommandName(runtime.getMetaData().getName());
+			definition.setCommandName(runtime.getMetaData()
+					.getName());
 		}
 		return definition;
 	}
@@ -90,12 +94,15 @@ public class MetaSingleCommand extends MetaCommand {
 		@Override
 		protected void initImpl(String identifer) {
 			MetaCommandRuntime mcr = getMetaCommandRuntime();
-			readOnly = mcr.getMetaData().isReadOnly();
-			name = mcr.getMetaData().getName();
+			readOnly = mcr.getMetaData()
+					.isReadOnly();
+			name = mcr.getMetaData()
+					.getName();
 		}
 
 		private MetaCommandRuntime getMetaCommandRuntime() {
-			CommandService service = ServiceRegistry.getRegistry().getService(CommandService.class);
+			CommandService service = ServiceRegistry.getRegistry()
+					.getService(CommandService.class);
 			MetaCommandRuntime runtime = service.getRuntimeById(metaMetaCommandId);
 			if (runtime == null) {
 				throw new NullPointerException("CommandClassId:" + metaMetaCommandId + " Command class not found");
@@ -117,12 +124,13 @@ public class MetaSingleCommand extends MetaCommand {
 			}
 			return cmd;
 		}
-		
+
 		private void initCommand(Command cmd) {
 			logger.debug("init Command instance:" + cmd);
 
 			if (configScript != null) {
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				ScriptEngine ss = tc.getScriptEngine();
 
 				ScriptContext sc = ss.newScriptContext();
@@ -139,7 +147,8 @@ public class MetaSingleCommand extends MetaCommand {
 		@Override
 		protected boolean newInstancePerRequest() {
 			MetaCommandRuntime runtime = getMetaCommandRuntime();
-			return runtime.getMetaData().isNewInstancePerRequest();
+			return runtime.getMetaData()
+					.isNewInstancePerRequest();
 		}
 
 		@Override

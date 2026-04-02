@@ -23,21 +23,23 @@ package org.iplass.mtp.entity.query;
 import java.io.Serializable;
 
 public interface ASTNode extends Serializable {
-	
+
 	//TODO toString()をオーバーライドでなく、appendString(StringBuilder sb)をオーバーライドさせる
-	
+
 	//TODO ASTTransformer、Visitorはapiとして公開しない形の方がよい
-	
+
 	public String toString();
+
 	public int hashCode();
+
 	public boolean equals(Object obj);
-	
+
 	public ASTNode accept(ASTTransformer transformer);
-	
+
 	public default ASTNode copy() {
 		return this.accept(ASTTransformerSupport.copier);
 	}
-	
+
 //	public void appendTo(StringBuilder sb);
-	
+
 }

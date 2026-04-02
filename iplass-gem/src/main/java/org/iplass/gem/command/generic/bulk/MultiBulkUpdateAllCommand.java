@@ -54,30 +54,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(name=MultiBulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME,
-			displayName="更新",
-			paramMapping={
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
-				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
-				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
-			},
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_BULK_MULTI_EDIT),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_BULK_MULTI_EDIT),
-				@Result(status=Constants.CMD_EXEC_ERROR_SEARCH, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-			},
-			tokenCheck=@TokenCheck
-	)
+		@ActionMapping(
+				name = MultiBulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME,
+				displayName = "更新",
+				paramMapping = {
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${0}", condition = "subPath.length==1"),
+						@ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}", condition = "subPath.length==2"),
+						@ParamMapping(name = Constants.DEF_NAME, mapFrom = "${1}", condition = "subPath.length==2")
+				},
+				result = {
+						@Result(
+								status = Constants.CMD_EXEC_SUCCESS,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_BULK_MULTI_EDIT),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_BULK_MULTI_EDIT),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_SEARCH,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_TOKEN,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				},
+				tokenCheck = @TokenCheck
+		)
 })
 @CommandClass(name = "gem/generic/bulk/MultiBulkUpdateAllCommand", displayName = "一括全更新")
 public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
@@ -112,20 +123,23 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 		if (command != null) {
 			command.setSearchBulk(request, true);
 			ret = command.execute(request);
-			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
+			if (!Constants.CMD_EXEC_SUCCESS.equals(ret))
+				return ret;
 
 			// トランザクションタイプを取得します
 			EntityDefinition ed = context.getEntityDefinition();
 			EntityView view = evm.get(ed.getName());
 			String viewName = request.getParam(Constants.VIEW_NAME);
-			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
-			BulkUpdateAllCommandTransactionType transactionType = form.getResultSection().getBulkUpdateAllCommandTransactionType();
+			SearchFormView form = FormViewUtil.getSearchFormView(ed, view, viewName);
+			BulkUpdateAllCommandTransactionType transactionType = form.getResultSection()
+					.getBulkUpdateAllCommandTransactionType();
 
 			try {
 				@SuppressWarnings("unchecked")
 				SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
 				// 更新する前の処理を呼び出します。
-				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(result.getList());
+				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler()
+						.beforeOperation(result.getList());
 				List<ValidateError> errors = bulkContext.getErrors();
 				List<Entity> entities = bulkContext.getEntities();
 
@@ -142,34 +156,46 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 				} else if (entities.size() > 0) {
 					// 先頭に「行番号_」を付加する
 					List<String> oid = IntStream.range(0, entities.size())
-							.mapToObj(i -> i + "_" + entities.get(i).getOid())
+							.mapToObj(i -> i + "_" + entities.get(i)
+									.getOid())
 							.collect(Collectors.toList());
 					List<String> version = IntStream.range(0, entities.size())
-							.mapToObj(i -> i + "_" + entities.get(i).getVersion())
+							.mapToObj(i -> i + "_" + entities.get(i)
+									.getVersion())
 							.collect(Collectors.toList());
 					List<String> updateDate = IntStream.range(0, entities.size())
-							.mapToObj(i -> i + "_" + entities.get(i).getUpdateDate().getTime())
+							.mapToObj(i -> i + "_" + entities.get(i)
+									.getUpdateDate()
+									.getTime())
 							.collect(Collectors.toList());
-
 
 					int count = oid.size();
 
 					//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
-					int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getBulkUpdateAllCommandBatchSize();
+					int batchSize = ServiceRegistry.getRegistry()
+							.getService(GemConfigService.class)
+							.getBulkUpdateAllCommandBatchSize();
 					if (transactionType == BulkUpdateAllCommandTransactionType.ONCE) {
 						batchSize = count;
 					}
 
 					int countPerBatch = count / batchSize;
-					if (count % batchSize > 0) countPerBatch++;
+					if (count % batchSize > 0)
+						countPerBatch++;
 					for (int i = 0; i < countPerBatch; i++) {
 						int current = i * batchSize;
 						List<String> subOidList = oid.stream()
-								.skip(current).limit(batchSize).collect(Collectors.toList());
+								.skip(current)
+								.limit(batchSize)
+								.collect(Collectors.toList());
 						List<String> subVersionList = version.stream()
-								.skip(current).limit(batchSize).collect(Collectors.toList());
+								.skip(current)
+								.limit(batchSize)
+								.collect(Collectors.toList());
 						List<String> subUpdateDate = updateDate.stream()
-								.skip(current).limit(batchSize).collect(Collectors.toList());
+								.skip(current)
+								.limit(batchSize)
+								.collect(Collectors.toList());
 						ret = Transaction.requiresNew(t -> {
 							String r = null;
 							try {
@@ -204,7 +230,8 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 				}
 
 				// 更新した後の処理を呼び出します。
-				context.getBulkUpdateInterrupterHandler().afterOperation(entities);
+				context.getBulkUpdateInterrupterHandler()
+						.afterOperation(entities);
 			} catch (ApplicationException e) {
 				if (getLogger().isDebugEnabled()) {
 					getLogger().debug(e.getMessage(), e);

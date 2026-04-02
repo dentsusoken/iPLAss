@@ -23,6 +23,6 @@ package org.iplass.mtp.impl.async.rdb;
 public abstract class WorkerFactory {
 	public static final String WORKER_ID_DEF_NAME = "mtp.async.rdb.workers";
 	public static final String WORKER_PROCESS = "mtp.async.rdb.worker.process";
-	
+
 	public abstract Worker createWorker(Queue queue, int workerId);
 }

@@ -46,13 +46,14 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.ServletContext;
 
-
 public class UploadFileHandleImpl implements UploadFileHandle {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadFileHandleImpl.class);
-	private static WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+	private static WebFrontendService webFront = ServiceRegistry.getRegistry()
+			.getService(WebFrontendService.class);
 
-	public static UploadFileHandleImpl toUploadFileHandle(InputStream is, String fileName, String type, ServletContext servletContext, long maxSize) throws IOException {
+	public static UploadFileHandleImpl toUploadFileHandle(InputStream is, String fileName, String type, ServletContext servletContext, long maxSize)
+			throws IOException {
 		try {
 			UploadFileHandleImpl value = null;
 
@@ -171,7 +172,8 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker()
+					.checkMagicByte(tempFile, type, fileName);
 		}
 
 		if (!tempFile.exists()) {
@@ -179,7 +181,8 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 			return null;
 		}
 
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		return em.createBinaryReference(tempFile, fileName, type);
 	}
 
@@ -196,13 +199,14 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker()
+					.checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
 			return new FileInputStream(tempFile);
 		} catch (FileNotFoundException e) {
-			logger.warn("upload file is externally deleted. maybe contains virus." , e);
+			logger.warn("upload file is externally deleted. maybe contains virus.", e);
 			return null;
 		}
 	}
@@ -220,7 +224,8 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker()
+					.checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {
@@ -238,7 +243,8 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 
 		// マジックバイトチェックを実施
 		if (webFront.isExecMagicByteCheck()) {
-			webFront.getMagicByteChecker().checkMagicByte(tempFile, type, fileName);
+			webFront.getMagicByteChecker()
+					.checkMagicByte(tempFile, type, fileName);
 		}
 
 		try {

@@ -31,7 +31,7 @@ import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefiniti
  */
 public class JavaClassAccountNotificationListenerDefinition extends AccountNotificationListenerDefinition {
 	private static final long serialVersionUID = 64910434337213460L;
-	
+
 	private String className;
 
 	/**

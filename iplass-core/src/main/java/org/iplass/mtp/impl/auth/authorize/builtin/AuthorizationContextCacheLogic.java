@@ -26,31 +26,34 @@ import org.iplass.mtp.impl.cache.LoadingAdapter;
 import org.iplass.mtp.transaction.Transaction;
 
 public abstract class AuthorizationContextCacheLogic implements LoadingAdapter<String, BuiltinAuthorizationContext> {
-	
+
 	protected final TenantAuthorizeContext authorizeContext;
-	
+
 	public AuthorizationContextCacheLogic(TenantAuthorizeContext authorizeContext) {
 		this.authorizeContext = authorizeContext;
 	}
-	
+
 	@Override
 	public Object getIndexVal(int index, BuiltinAuthorizationContext val) {
 		return null;
 	}
+
 	@Override
 	public List<BuiltinAuthorizationContext> loadByIndex(int index, Object indexVal) {
 		return null;
 	}
+
 	@Override
 	public long getVersion(BuiltinAuthorizationContext value) {
 		//TODO バージョンの定義と実装
 		return 0;
 	}
+
 	@Override
 	public String getKey(BuiltinAuthorizationContext val) {
 		return val.getContextName();
 	}
-	
+
 	@Override
 	public final BuiltinAuthorizationContext load(String key) {
 		if (authorizeContext.isDeclareTransactionExplicitly()) {
@@ -63,5 +66,5 @@ public abstract class AuthorizationContextCacheLogic implements LoadingAdapter<S
 	}
 
 	protected abstract BuiltinAuthorizationContext loadImpl(String key);
-	
+
 }

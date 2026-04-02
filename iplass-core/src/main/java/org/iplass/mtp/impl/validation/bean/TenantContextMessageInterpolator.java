@@ -21,10 +21,10 @@ package org.iplass.mtp.impl.validation.bean;
 
 import java.util.Locale;
 
-import jakarta.validation.MessageInterpolator;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
+
+import jakarta.validation.MessageInterpolator;
 
 /**
  * Tenant単位にMessageInterpolatorのインスタンスを保持し、呼び分けるMessageInterpolator。
@@ -39,7 +39,7 @@ import org.iplass.mtp.impl.core.TenantContext;
  *
  */
 public class TenantContextMessageInterpolator implements MessageInterpolator {
-	
+
 	private MessageInterpolatorFactory messageInterpolatorFactory;
 
 	public MessageInterpolatorFactory getMessageInterpolatorFactory() {
@@ -52,18 +52,22 @@ public class TenantContextMessageInterpolator implements MessageInterpolator {
 
 	@Override
 	public String interpolate(String messageTemplate, Context context) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		BeanValidationResource bvr = tc.getResource(BeanValidationResource.class);
-		return bvr.getMessageInterpolator().interpolate(messageTemplate, context);
+		return bvr.getMessageInterpolator()
+				.interpolate(messageTemplate, context);
 	}
 
 	@Override
 	public String interpolate(String messageTemplate, Context context, Locale locale) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		BeanValidationResource bvr = tc.getResource(BeanValidationResource.class);
-		return bvr.getMessageInterpolator().interpolate(messageTemplate, context, locale);
+		return bvr.getMessageInterpolator()
+				.interpolate(messageTemplate, context, locale);
 	}
-	
+
 	public MessageInterpolator createMessageInterpolatorForTenant(int tenantId) {
 		return messageInterpolatorFactory.newMessageInterpolator(tenantId);
 	}

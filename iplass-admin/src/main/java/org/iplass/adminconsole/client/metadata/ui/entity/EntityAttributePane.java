@@ -41,10 +41,11 @@ public class EntityAttributePane extends HLayout {
 
 		form = new DynamicForm();
 		form.setWidth100();
-		form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(5); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(120, "*", 120, "*", "*");
 
-		form.setFields(controller.getFormItems().toArray(new FormItem[0]));
+		form.setFields(controller.getFormItems()
+				.toArray(new FormItem[0]));
 		addMember(form);
 	}
 

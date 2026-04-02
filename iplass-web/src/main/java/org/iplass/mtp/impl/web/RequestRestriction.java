@@ -25,18 +25,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.ws.rs.core.MediaType;
-
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
+
+import jakarta.ws.rs.core.MediaType;
 
 public class RequestRestriction implements ServiceInitListener<WebFrontendService> {
 	//ファイルサイズ、ボディサイズなど、基本的にはWAF、リバースプロキシ等の前段でやる想定だが、前段でできない場合も想定しておく。
 	//後から設定ファイルで制約を付け加えたい項目（特にセキュリティ上）を設定できるようにする
 	//synchronizeOnSession、キャッシュ種別などはアプリの作り上の問題なので、それはここでは設定しない
-	
+
 	private String pathPattern;
-	
+
 	private List<String> allowMethods;
 	private List<String> allowContentTypes;
 	private CorsConfig cors;
@@ -44,13 +44,13 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 	private Long maxFileSize;
 	//MetaDataでの設定を優先するか否かのフラグ
 	private boolean force;
-	
+
 	private Pattern pathPatternCompile;
 	private boolean allowAllMethods;
 	private HashSet<String> allowMethodsHash;
 	private boolean allowAllContentTypes;
 	private MediaType[] allowContentTypesMT;
-	
+
 	public RequestRestriction copy() {
 		RequestRestriction copy = new RequestRestriction();
 		copy.pathPattern = pathPattern;
@@ -71,10 +71,10 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 		copy.allowMethodsHash = allowMethodsHash;
 		copy.allowAllContentTypes = allowAllContentTypes;
 		copy.allowContentTypesMT = allowContentTypesMT;
-		
+
 		return copy;
 	}
-	
+
 	public List<String> getAllowMethods() {
 		return allowMethods;
 	}
@@ -130,17 +130,18 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 	public void setPathPattern(String pathPattern) {
 		this.pathPattern = pathPattern;
 	}
-	
+
 	public void init() {
 		if (pathPattern != null) {
 			if (pathPatternCompile == null
-					|| !pathPatternCompile.pattern().equals(pathPattern)) {
+					|| !pathPatternCompile.pattern()
+							.equals(pathPattern)) {
 				pathPatternCompile = Pattern.compile(pathPattern, Pattern.DOTALL);
 			}
 		} else {
 			pathPatternCompile = null;
 		}
-		
+
 		allowAllMethods = false;
 		allowMethodsHash = null;
 		if (allowMethods != null) {
@@ -149,8 +150,7 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 			}
 			allowMethodsHash = new HashSet<>(allowMethods);
 		}
-		
-		
+
 		allowAllContentTypes = false;
 		allowContentTypesMT = null;
 		if (allowContentTypes != null) {
@@ -168,21 +168,21 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 	public void inited(WebFrontendService service, Config config) {
 		init();
 	}
-	
+
 	public long maxBodySize() {
 		if (maxBodySize == null) {
 			return -1;
 		}
 		return maxBodySize.longValue();
 	}
-	
+
 	public long maxFileSize() {
 		if (maxFileSize == null) {
 			return -1;
 		}
 		return maxFileSize.longValue();
 	}
-	
+
 	public Pattern getPathPatternCompile() {
 		return pathPatternCompile;
 	}
@@ -195,11 +195,11 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 		if (allowAllMethods) {
 			return true;
 		}
-		
+
 		if (allowMethodsHash != null) {
 			return allowMethodsHash.contains(requestMethod);
 		}
-		
+
 		return false;
 	}
 
@@ -211,9 +211,9 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 		if (ct.isWildcardType() || ct.isWildcardSubtype()) {
 			return false;
 		}
-		
+
 		if (allowContentTypesMT != null) {
-			for (MediaType act: allowContentTypesMT) {
+			for (MediaType act : allowContentTypesMT) {
 				if (ct.isCompatible(act)) {
 					return true;
 				}
@@ -229,9 +229,9 @@ public class RequestRestriction implements ServiceInitListener<WebFrontendServic
 		if (contentType.isWildcardType() || contentType.isWildcardSubtype()) {
 			return false;
 		}
-		
+
 		if (allowContentTypesMT != null) {
-			for (MediaType act: allowContentTypesMT) {
+			for (MediaType act : allowContentTypesMT) {
 				if (contentType.isCompatible(act)) {
 					return true;
 				}

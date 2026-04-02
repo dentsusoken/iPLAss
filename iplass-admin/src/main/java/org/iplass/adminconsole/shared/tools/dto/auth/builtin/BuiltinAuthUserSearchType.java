@@ -26,6 +26,7 @@ public enum BuiltinAuthUserSearchType {
 	ATTRIBUTE("Attribute");
 
 	private String displayName;
+
 	private BuiltinAuthUserSearchType(String displayName) {
 		this.displayName = displayName;
 	}

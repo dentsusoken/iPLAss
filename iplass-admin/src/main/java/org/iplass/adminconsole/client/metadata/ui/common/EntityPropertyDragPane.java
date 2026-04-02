@@ -40,15 +40,14 @@ public class EntityPropertyDragPane extends VLayout {
 
 		SectionStackSection propertySection = new SectionStackSection("Properties");
 		propertySection.setExpanded(true);
-		propertySection.setCanCollapse(false);	//CLOSE不可
+		propertySection.setCanCollapse(false); //CLOSE不可
 		propertySection.setID(SECTION_ID_PROPERTY);
-
 
 		propertySectionStack.addSection(propertySection);
 
 		//表示TreeGrid
 		propertyGrid = new EntityPropertyTreeGrid(showRoot);
-		propertyGrid.setDragType("Property");	//DragされるItemのType設定
+		propertyGrid.setDragType("Property"); //DragされるItemのType設定
 
 		propertySection.addItem(propertyGrid);
 

@@ -31,20 +31,22 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 
 public class MysqlDateAddFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
-	
+
 	//date_add(date, interval 1 day);
-	
+
 	public MysqlDateAddFunctionAdapter() {
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 3) {
 			throw new QueryException(function.getName() + " must have 3 arguments.");
 		}
-		
-		String unit = ((String) ((Literal) function.getArguments().get(2)).getValue()).toUpperCase();
-		
+
+		String unit = ((String) ((Literal) function.getArguments()
+				.get(2)).getValue()).toUpperCase();
+
 		if (unit.equals(MONTH)
 				|| unit.equals(YEAR)
 				|| unit.equals(DAY)
@@ -53,9 +55,11 @@ public class MysqlDateAddFunctionAdapter implements FunctionAdapter<Function>, D
 				|| unit.equals(SECOND)) {
 			//date_add
 			context.append("DATE_ADD(");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(",INTERVAL (");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") ");
 			context.append(unit);
 			context.append(")");
@@ -70,9 +74,11 @@ public class MysqlDateAddFunctionAdapter implements FunctionAdapter<Function>, D
 		if (args == null || args.size() != 3) {
 			throw new QueryException(getFunctionName() + " must have 3 arguments.");
 		}
-		
-		String unit = args.get(2).toString().toUpperCase();
-		
+
+		String unit = args.get(2)
+				.toString()
+				.toUpperCase();
+
 		if (unit.equals(MONTH)
 				|| unit.equals(YEAR)
 				|| unit.equals(DAY)

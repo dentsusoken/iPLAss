@@ -42,7 +42,7 @@ public class SimpleAuthTokenCredential implements Credential, Serializable {
 	private String token;
 
 	private Map<String, Object> additionalAuthenticationFactor;
-	
+
 	public SimpleAuthTokenCredential() {
 	}
 
@@ -66,7 +66,7 @@ public class SimpleAuthTokenCredential implements Credential, Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	
+
 	@Override
 	public Object getAuthenticationFactor(String name) {
 		if (additionalAuthenticationFactor == null) {

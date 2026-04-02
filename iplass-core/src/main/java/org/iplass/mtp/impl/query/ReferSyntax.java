@@ -33,19 +33,19 @@ import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
 import org.iplass.mtp.impl.query.value.primary.EntityFieldSyntax;
 
 public class ReferSyntax implements Syntax<Refer>, QueryConstants {
-	
+
 	private OrSyntax or;
 	private EntityFieldSyntax entityField;
 	private AsOfSyntax asOf;
-	
+
 	public void init(SyntaxContext context) {
 		or = context.getSyntax(OrSyntax.class);
 		entityField = context.getSyntax(EntityFieldSyntax.class);
 		asOf = context.getSyntax(AsOfSyntax.class);
 	}
-	
+
 	public Refer parse(ParseContext str) throws ParseException {
-		
+
 		if (!str.equalsNextToken(REFER, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("refer expected.", this, str));
 		}
@@ -53,18 +53,18 @@ public class ReferSyntax implements Syntax<Refer>, QueryConstants {
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		EntityField referenceName = entityField.parse(str);
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//AS OF
 		AsOf ao = null;
 		if (str.equalsNextToken(AS, ParseContext.TOKEN_DELIMITERS)) {
 			ao = asOf.parse(str);
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		//ON
 		Condition cond = null;
 		if (str.equalsNextToken(ON, ParseContext.TOKEN_DELIMITERS)) {
@@ -72,11 +72,11 @@ public class ReferSyntax implements Syntax<Refer>, QueryConstants {
 			if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 				throw new ParseException(new EvalError("space expected.", this, str));
 			}
-			
+
 			cond = or.parse(str);
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		if (cond == null && ao == null) {
 			throw new ParseException(new EvalError("'AS OF' or 'ON' expected.", this, str));
 		}
@@ -85,7 +85,7 @@ public class ReferSyntax implements Syntax<Refer>, QueryConstants {
 		if (ao != null) {
 			r.setAsOf(ao);
 		}
-		
+
 		return r;
 	}
 

@@ -39,7 +39,7 @@ public class IsNullSyntax implements Syntax<IsNull>, QueryConstants {
 		}
 		str.consumeChars(IS.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.equalsNextToken(NULL, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("null expected.", this, str));
 		}

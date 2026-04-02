@@ -26,9 +26,9 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  *
  * @author lis3wg
  */
-@XmlSeeAlso({AutoNumberPropertyEditor.class, BinaryPropertyEditor.class, BooleanPropertyEditor.class, DateTimePropertyEditor.class,
-	ExpressionPropertyEditor.class, NumberPropertyEditor.class, SelectPropertyEditor.class,
-	StringPropertyEditor.class})
+@XmlSeeAlso({ AutoNumberPropertyEditor.class, BinaryPropertyEditor.class, BooleanPropertyEditor.class, DateTimePropertyEditor.class,
+		ExpressionPropertyEditor.class, NumberPropertyEditor.class, SelectPropertyEditor.class,
+		StringPropertyEditor.class })
 public abstract class PrimitivePropertyEditor extends PropertyEditor {
 
 	/** シリアルバージョンUID */

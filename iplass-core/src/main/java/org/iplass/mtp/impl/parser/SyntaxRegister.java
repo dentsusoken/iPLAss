@@ -21,9 +21,9 @@
 package org.iplass.mtp.impl.parser;
 
 public interface SyntaxRegister {
-	
+
 	public String getContextName();
-	
+
 	public Syntax<?>[] getSyntax();
 
 }

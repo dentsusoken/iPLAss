@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.tools.entity;
 
 import java.io.Serializable;
 
-public class UpdateAllValue  implements Serializable {
+public class UpdateAllValue implements Serializable {
 
 	public enum UpdateAllValueType {
 		LITERAL,
@@ -35,8 +35,9 @@ public class UpdateAllValue  implements Serializable {
 	private String value;
 	private UpdateAllValueType valueType;
 
-	public UpdateAllValue() {}
-	
+	public UpdateAllValue() {
+	}
+
 	public UpdateAllValue(String propertyName, String value, UpdateAllValueType valueType) {
 		this.propertyName = propertyName;
 		this.value = value;

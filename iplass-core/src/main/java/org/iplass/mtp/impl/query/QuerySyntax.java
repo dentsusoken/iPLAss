@@ -35,11 +35,10 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class QuerySyntax implements Syntax<Query>, QueryConstants {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(QuerySyntax.class);
-	
+
 	private SelectSyntax select;
 	private FromSyntax from;
 	private ReferSyntax refer;
@@ -59,22 +58,22 @@ public class QuerySyntax implements Syntax<Query>, QueryConstants {
 		orderBy = context.getSyntax(OrderBySyntax.class);
 		limit = context.getSyntax(LimitSyntax.class);
 	}
-	
+
 	public Query parse(ParseContext str) throws ParseException {
-		
+
 		//FIXME 空白位置のチェックがしっかりできているかどうかを再確認。
-		
+
 		long start = 0;
 		if (logger.isTraceEnabled()) {
 			start = System.nanoTime();
 		}
-		
+
 		Query q = new Query();
 		Select s = select.parse(str);
 		q.setSelect(s);
 		From f = from.parse(str);
 		q.setFrom(f);
-		
+
 		List<Refer> referList = null;
 		while (str.equalsNextToken(REFER, ParseContext.TOKEN_DELIMITERS)) {
 			if (referList == null) {
@@ -87,7 +86,7 @@ public class QuerySyntax implements Syntax<Query>, QueryConstants {
 		if (referList != null) {
 			q.setRefer(referList);
 		}
-		
+
 		if (str.equalsNextToken(WHERE, ParseContext.TOKEN_DELIMITERS)) {
 			Where w = where.parse(str);
 			q.setWhere(w);
@@ -116,7 +115,7 @@ public class QuerySyntax implements Syntax<Query>, QueryConstants {
 				q.setLimit(limit.parse(str));
 			}
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (!str.isEnd()) {
 			if (str.equalsNextToken(VERSIONED, ParseContext.TOKEN_DELIMITERS)) {
@@ -124,7 +123,7 @@ public class QuerySyntax implements Syntax<Query>, QueryConstants {
 				str.consumeChars(VERSIONED.length());
 			}
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (!str.isEnd()) {
 			if (str.equalsNextToken(LOCALIZED, ParseContext.TOKEN_DELIMITERS)) {
@@ -132,18 +131,17 @@ public class QuerySyntax implements Syntax<Query>, QueryConstants {
 				str.consumeChars(LOCALIZED.length());
 			}
 		}
-		
+
 		if (logger.isTraceEnabled()) {
 			long time = System.nanoTime() - start;
-			logger.trace("parse time:{}ms query:{}", ((double)time)/1000000, q);
+			logger.trace("parse time:{}ms query:{}", ((double) time) / 1000000, q);
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//isEndチェックはここでは行わない。SyntaxParser経由でのパースのみisEnd()チェックする
-		
+
 		return q;
 	}
-
 
 }

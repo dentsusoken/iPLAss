@@ -54,16 +54,16 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @WebApi(
-	name=DeleteAllCommand.WEBAPI_NAME,
-	displayName="条件指定削除",
-	accepts=RequestType.REST_FORM,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	results={Constants.MESSAGE},
-	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
-	checkXRequestedWithHeader=true
+		name = DeleteAllCommand.WEBAPI_NAME,
+		displayName = "条件指定削除",
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.MESSAGE },
+		tokenCheck = @WebApiTokenCheck(consume = false, useFixedToken = true),
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/delete/DeleteAllCommand", displayName="条件指定削除")
+@CommandClass(name = "gem/generic/delete/DeleteAllCommand", displayName = "条件指定削除")
 public final class DeleteAllCommand extends DeleteCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteAllCommand.class);
@@ -92,7 +92,8 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 			//削除対象の検索
 			command.setSearchDelete(request, true);
 			ret = command.execute(request);
-			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
+			if (!Constants.CMD_EXEC_SUCCESS.equals(ret))
+				return ret;
 
 			@SuppressWarnings("unchecked")
 			SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
@@ -101,7 +102,8 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 
 			try {
 				//削除前の処理を呼び出します。
-				BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(result.getList());
+				BulkOperationContext bulkContext = context.getDeleteInterrupterHandler()
+						.beforeOperation(result.getList());
 				List<ValidateError> errors = bulkContext.getErrors();
 				List<Entity> list = bulkContext.getEntities();
 				int count = list.size();
@@ -111,21 +113,26 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 					ret = Constants.CMD_EXEC_ERROR;
 				} else if (list.size() > 0) {
 					//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
-					DeleteAllCommandTransactionType transactionType = form.getResultSection().getDeleteAllCommandTransactionType();
+					DeleteAllCommandTransactionType transactionType = form.getResultSection()
+							.getDeleteAllCommandTransactionType();
 					int batchSize = 0;
 					if (transactionType == DeleteAllCommandTransactionType.ONCE) {
 						batchSize = count;
 					} else {
-						batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getDeleteAllCommandBatchSize();
+						batchSize = ServiceRegistry.getRegistry()
+								.getService(GemConfigService.class)
+								.getDeleteAllCommandBatchSize();
 					}
 
 					int countPerBatch = count / batchSize;
-					if (count % batchSize > 0) countPerBatch++;
+					if (count % batchSize > 0)
+						countPerBatch++;
 					int current = 0;
 					for (int i = 0; i < countPerBatch; i++) {
 						current = i * batchSize;
 						int last = current + batchSize;
-						if (last > list.size()) last = list.size();
+						if (last > list.size())
+							last = list.size();
 						final List<Entity> subList = list.subList(current, last);
 						Boolean _ret = Transaction.requiresNew(t -> {
 							for (Entity entity : subList) {
@@ -146,7 +153,8 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 				}
 
 				//削除後の処理を呼び出します。
-				context.getDeleteInterrupterHandler().afterOperation(list);
+				context.getDeleteInterrupterHandler()
+						.afterOperation(list);
 			} catch (ApplicationException e) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(e.getMessage(), e);

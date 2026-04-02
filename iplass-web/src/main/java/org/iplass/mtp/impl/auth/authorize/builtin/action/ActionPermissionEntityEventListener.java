@@ -29,7 +29,7 @@ import org.iplass.mtp.web.actionmapping.permission.ActionPermission;
  *
  */
 public class ActionPermissionEntityEventListener extends PermissionEntityEventListener {
-	
+
 	public ActionPermissionEntityEventListener() {
 		super(ActionPermission.class);
 	}

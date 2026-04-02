@@ -45,7 +45,6 @@ import org.iplass.mtp.impl.properties.extend.SelectType;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
-
 public class PropertyService implements Service {
 
 	//TODO MetaDataRepositoryに登録されているプロパティのリストを取得。
@@ -53,9 +52,8 @@ public class PropertyService implements Service {
 
 	//TODO OracleとMySQLでは、適切な値が変わってくる
 	private int longTextInlineStoreMaxLength = 1024;
-	
-	private boolean remainInlineText = false;
 
+	private boolean remainInlineText = false;
 
 	private Map<Class<?>, PropertyType> map;
 	private EnumMap<PropertyDefinitionType, PropertyType> enumMap;
@@ -75,7 +73,7 @@ public class PropertyService implements Service {
 
 	public PropertyType newPropertyType(PropertyDefinition pDef) {
 		PropertyType pt = null;
-		
+
 		switch (pDef.getType()) {
 		case AUTONUMBER:
 			pt = new AutoNumberType();
@@ -121,7 +119,7 @@ public class PropertyService implements Service {
 		default:
 			throw new IllegalArgumentException();
 		}
-		
+
 		pt.applyDefinition(pDef);
 		return pt;
 	}
@@ -139,7 +137,7 @@ public class PropertyService implements Service {
 		if (longTextInlineStoreMaxLengthString != null) {
 			longTextInlineStoreMaxLength = Integer.parseInt(longTextInlineStoreMaxLengthString);
 		}
-		
+
 		if (config.getValue("remainInlineText") != null) {
 			remainInlineText = Boolean.valueOf(config.getValue("remainInlineText"));
 		}
@@ -159,7 +157,7 @@ public class PropertyService implements Service {
 		map.put(Long.class, new IntegerType());
 		map.put(String.class, new StringType());
 		map.put(SelectValue.class, new SelectType());
-		
+
 		enumMap.put(PropertyDefinitionType.BINARY, new BinaryType());
 		enumMap.put(PropertyDefinitionType.BOOLEAN, new BooleanType());
 		enumMap.put(PropertyDefinitionType.DATETIME, new DateTimeType());

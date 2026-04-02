@@ -18,6 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package org.iplass.adminconsole.client.metadata.ui.webhook;
+
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -30,6 +31,7 @@ import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
@@ -38,9 +40,9 @@ import com.smartgwt.client.util.SC;
  *
  */
 public class WebhookTemplatePlugin extends DefaultMetaDataPlugin {
-	
+
 	/** カテゴリ名 */
-	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION +"/" + "Webhook";
+	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION + "/" + "Webhook";
 
 	/** ノード名 */
 	private static final String NODE_NAME = "WebhookTemplate";
@@ -50,7 +52,7 @@ public class WebhookTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected String nodeName() {
-		return NODE_NAME ;
+		return NODE_NAME;
 	}
 
 	@Override
@@ -61,6 +63,7 @@ public class WebhookTemplatePlugin extends DefaultMetaDataPlugin {
 	public String getCategoryName() {
 		return CATEGORY_NAME;
 	}
+
 	@Override
 	protected String nodeIcon() {
 		return NODE_ICON;
@@ -101,21 +104,25 @@ public class WebhookTemplatePlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), WebhookTemplateDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_mail_WebhookTemplatePluginManager_failedToDeleteWebhookTemplate" + caught.getMessage()));
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_mail_WebhookTemplatePluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_mail_WebhookTemplatePluginManager_deleteWebhookTemplateComp"));
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_mail_WebhookTemplatePluginManager_failedToDeleteWebhookTemplate" + result.getMessage()));
-				}
-			}
-		});
+		service.deleteDefinition(TenantInfoHolder.getId(), WebhookTemplateDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						SC.warn(AdminClientMessageUtil
+								.getString("ui_metadata_mail_WebhookTemplatePluginManager_failedToDeleteWebhookTemplate" + caught.getMessage()));
+					}
+
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_mail_WebhookTemplatePluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_mail_WebhookTemplatePluginManager_deleteWebhookTemplateComp"));
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil
+									.getString("ui_metadata_mail_WebhookTemplatePluginManager_failedToDeleteWebhookTemplate" + result.getMessage()));
+						}
+					}
+				});
 	}
 
 	@Override
@@ -125,7 +132,7 @@ public class WebhookTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[] {WebhookTemplateEditPane.class};
+		return new Class[] { WebhookTemplateEditPane.class };
 	}
 
 }

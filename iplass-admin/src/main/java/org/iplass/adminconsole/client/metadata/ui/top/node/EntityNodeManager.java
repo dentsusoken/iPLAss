@@ -38,6 +38,6 @@ public class EntityNodeManager extends ItemNodeManager {
 	@Override
 	public void loadChild(Tree tree, TopViewNode parent) {
 		TopViewNode entityList = new TopViewNode("SearchResult List", EntityListParts.class.getName(), "", true, true, false);
-		tree.addList(new TopViewNode[]{entityList}, parent);
+		tree.addList(new TopViewNode[] { entityList }, parent);
 	}
 }

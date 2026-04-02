@@ -23,9 +23,9 @@ package org.iplass.mtp.web.template.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class GroovyTemplateDefinition extends TemplateDefinition {

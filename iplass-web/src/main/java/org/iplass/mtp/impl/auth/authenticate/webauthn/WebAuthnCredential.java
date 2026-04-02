@@ -25,14 +25,13 @@ import java.util.Map;
 
 import org.iplass.mtp.auth.login.Credential;
 
-
 public class WebAuthnCredential implements Credential, Serializable {
 	private static final long serialVersionUID = -2877054376956770659L;
 
 	public static final String FACTOR_WA_DEFINITION_NAME = "webAuthnDefinitionName";
 	public static final String FACTOR_PUBLIC_KEY_CREDENTIAL = "publicKeyCredential";
 	public static final String FACTOR_SERVER = "server";
-	
+
 	private String id;// userHandle
 	private String publicKeyCredential;
 	private String webAuthnDefinitionName;
@@ -100,25 +99,25 @@ public class WebAuthnCredential implements Credential, Serializable {
 	@Override
 	public Object getAuthenticationFactor(String name) {
 		return switch (name) {
-			case FACTOR_WA_DEFINITION_NAME -> webAuthnDefinitionName;
-			case FACTOR_PUBLIC_KEY_CREDENTIAL -> publicKeyCredential;
+		case FACTOR_WA_DEFINITION_NAME -> webAuthnDefinitionName;
+		case FACTOR_PUBLIC_KEY_CREDENTIAL -> publicKeyCredential;
 		case FACTOR_SERVER -> server;
-			default -> additionalAuthenticationFactor == null ? null : additionalAuthenticationFactor.get(name);
+		default -> additionalAuthenticationFactor == null ? null : additionalAuthenticationFactor.get(name);
 		};
 	}
 
 	@Override
 	public void setAuthenticationFactor(String name, Object value) {
 		switch (name) {
-			case FACTOR_WA_DEFINITION_NAME -> this.webAuthnDefinitionName = (String) value;
-			case FACTOR_PUBLIC_KEY_CREDENTIAL -> this.publicKeyCredential = (String) value;
-			case FACTOR_SERVER -> this.server = (WebAuthnServer) value;
-			default -> {
-				if (additionalAuthenticationFactor == null) {
-					additionalAuthenticationFactor = new HashMap<String, Object>();
-				}
-				additionalAuthenticationFactor.put(name, value);
+		case FACTOR_WA_DEFINITION_NAME -> this.webAuthnDefinitionName = (String) value;
+		case FACTOR_PUBLIC_KEY_CREDENTIAL -> this.publicKeyCredential = (String) value;
+		case FACTOR_SERVER -> this.server = (WebAuthnServer) value;
+		default -> {
+			if (additionalAuthenticationFactor == null) {
+				additionalAuthenticationFactor = new HashMap<String, Object>();
 			}
+			additionalAuthenticationFactor.put(name, value);
+		}
 		}
 	}
 

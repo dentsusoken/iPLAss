@@ -36,7 +36,7 @@ public class CumeDist extends WindowRankFunction {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	@Override
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
@@ -48,7 +48,7 @@ public class CumeDist extends WindowRankFunction {
 			}
 		}
 	}
-	
+
 	@Override
 	public CumeDist partitionBy(Object... partitionField) {
 		super.partitionBy(partitionField);

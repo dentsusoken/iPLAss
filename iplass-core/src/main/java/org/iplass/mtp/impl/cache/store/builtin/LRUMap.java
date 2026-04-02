@@ -27,30 +27,29 @@ import org.iplass.mtp.impl.cache.store.CacheEntry;
 
 public class LRUMap extends LinkedHashMap<Object, CacheEntry> {
 	private static final long serialVersionUID = 5231893587904969880L;
-	
+
 	MapBaseCacheStore store;
 	private int size;
-	
+
 	public LRUMap(int initialCapacity, float loadFactor, int size) {
 		super(initialCapacity, loadFactor, true);
 		this.size = size;
 	}
-	
+
 	void setStore(MapBaseCacheStore store) {
 		this.store = store;
 	}
 
 	@Override
-    protected boolean removeEldestEntry(Map.Entry<Object, CacheEntry> eldest) {
-    	
-    	boolean isRemove = size() > size;
-    	if (isRemove) {
-    		//TODO 実際の削除前に、呼び出ししてしまっているがよいか、、
-    		store.removeFromIndex(eldest.getValue(), false);
-    		store.notifyRemoved(eldest.getValue());
-    	}
-        return isRemove;
-    }
-	
-}
+	protected boolean removeEldestEntry(Map.Entry<Object, CacheEntry> eldest) {
 
+		boolean isRemove = size() > size;
+		if (isRemove) {
+			//TODO 実際の削除前に、呼び出ししてしまっているがよいか、、
+			store.removeFromIndex(eldest.getValue(), false);
+			store.notifyRemoved(eldest.getValue());
+		}
+		return isRemove;
+	}
+
+}

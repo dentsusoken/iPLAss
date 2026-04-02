@@ -37,9 +37,9 @@ package org.iplass.mtp.web.template.report.definition;
  *
  */
 public class GroovyReportOutputLogicDefinition extends ReportOutputLogicDefinition {
-	
+
 	private static final long serialVersionUID = -6363313428336523812L;
-	
+
 	private String script;
 
 	public String getScript() {

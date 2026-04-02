@@ -248,7 +248,8 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @return 表示名
 	 */
 	protected String getDisplayName(FieldInfo info) {
-		if (info.getDisplayNameKey() != null && !info.getDisplayNameKey().isEmpty()) {
+		if (info.getDisplayNameKey() != null && !info.getDisplayNameKey()
+				.isEmpty()) {
 			return getString(info.getDisplayNameKey());
 		}
 		return info.getDisplayName();
@@ -261,7 +262,8 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @return 説明
 	 */
 	protected String getDescription(FieldInfo info) {
-		if (info.getDescriptionKey() != null && !info.getDescriptionKey().isEmpty()) {
+		if (info.getDescriptionKey() != null && !info.getDescriptionKey()
+				.isEmpty()) {
 			return getString(info.getDescriptionKey());
 		}
 		return info.getDescription();
@@ -276,7 +278,8 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @return Scriptヒント(説明)
 	 */
 	protected String getScriptHint(FieldInfo info) {
-		if (info.getDescriptionKey() != null && !info.getDescriptionKey().isEmpty()) {
+		if (info.getDescriptionKey() != null && !info.getDescriptionKey()
+				.isEmpty()) {
 			String hint = getString(info.getDescriptionKey() + "ScriptHint");
 			if (hint != null && !hint.isEmpty()) {
 				return hint;
@@ -297,8 +300,10 @@ public class MetaFieldSettingPane extends VLayout {
 
 	private void createPane(AnalysisResult result, final Refrectable value) {
 
-		for (String key : result.getValueMap().keySet()) {
-			defValueMap.put(key, result.getValueMap().get(key));
+		for (String key : result.getValueMap()
+				.keySet()) {
+			defValueMap.put(key, result.getValueMap()
+					.get(key));
 		}
 
 		// 解析結果から入力フィールドを生成
@@ -381,7 +386,7 @@ public class MetaFieldSettingPane extends VLayout {
 				// CanvasItemは個別でチェック
 				if (form.getItem(info.getName()) != null) {
 					if (form.getItem(info.getName()) instanceof MetaFieldCanvasItem) {
-						MetaFieldCanvasItem canvasItem = (MetaFieldCanvasItem)form.getItem(info.getName());
+						MetaFieldCanvasItem canvasItem = (MetaFieldCanvasItem) form.getItem(info.getName());
 						validate = validate & canvasItem.validate();
 					}
 				}
@@ -463,18 +468,20 @@ public class MetaFieldSettingPane extends VLayout {
 			if (info.getInputType() == InputType.TEXT) {
 				return (String) form.getValue(info.getName());
 			} else if (info.getInputType() == InputType.NUMBER) {
-				return Integer.parseInt(form.getValue(info.getName()).toString());
+				return Integer.parseInt(form.getValue(info.getName())
+						.toString());
 			} else if (info.getInputType() == InputType.CHECKBOX) {
-				return Boolean.parseBoolean(form.getValue(info.getName()).toString());
+				return Boolean.parseBoolean(form.getValue(info.getName())
+						.toString());
 			} else if (info.getInputType() == InputType.ENUM) {
 				if (info.isMultiple()) {
-					SelectItem selectItem = (SelectItem)form.getItem(info.getName());
+					SelectItem selectItem = (SelectItem) form.getItem(info.getName());
 					@SuppressWarnings("unchecked")
-					List<String> values = (List<String>)selectItem.getValue();
+					List<String> values = (List<String>) selectItem.getValue();
 					if (values == null || values.isEmpty()) {
 						return null;
 					}
-					return (Serializable)values;
+					return (Serializable) values;
 				} else {
 					String val = (String) form.getValue(info.getName());
 					if (SmartGWTUtil.isEmpty(val)) {

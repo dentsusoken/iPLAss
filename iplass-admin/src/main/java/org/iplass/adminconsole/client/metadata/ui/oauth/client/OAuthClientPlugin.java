@@ -36,7 +36,6 @@ import org.iplass.mtp.auth.oauth.definition.OAuthClientDefinition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -108,25 +107,28 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), definitionClassName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + caught.getMessage());
-			}
-			@Override
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_deleteComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), definitionClassName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + result.getMessage());
-				}
-			}
-		});
+					@Override
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_deleteComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -136,6 +138,6 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{OAuthClientEditPane.class};
+		return new Class[] { OAuthClientEditPane.class };
 	}
 }

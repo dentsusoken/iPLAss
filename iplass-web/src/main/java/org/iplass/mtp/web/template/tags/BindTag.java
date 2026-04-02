@@ -21,13 +21,6 @@ package org.iplass.mtp.web.template.tags;
 
 import java.util.ArrayList;
 
-import jakarta.el.PropertyNotFoundException;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.PageContext;
-import jakarta.servlet.jsp.tagext.Tag;
-import jakarta.servlet.jsp.tagext.TagSupport;
-import jakarta.servlet.jsp.tagext.TryCatchFinally;
-
 import org.iplass.mtp.command.beanmapper.BeanParamMapper;
 import org.iplass.mtp.command.beanmapper.MappingError;
 import org.iplass.mtp.command.beanmapper.MappingException;
@@ -38,6 +31,13 @@ import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.template.ValueFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.el.PropertyNotFoundException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
 /**
  * <p>
@@ -209,7 +209,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 	private static final long serialVersionUID = 1L;
 
 	private static Logger log = LoggerFactory.getLogger(BindTag.class);
-	
+
 	public static final String DEFAULT_PROPERTY_DELIMITER = ".";
 	public static final String DEFAULT_INDEX_PREFIX = "[";
 	public static final String DEFAULT_INDEX_POSTFIX = "]";
@@ -220,18 +220,18 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 	public static final String DEFAULT_PROPERTY_RAW_VALUE_VARIABLE_NAME = "rawValue";
 	public static final String DEFAULT_PROPERTY_ERROR_VALUE_VARIABLE_NAME = "errorValue";
 	public static final String DEFAULT_ERROR_VARIABLE_NAME = "errors";
-	
+
 	private String propertyDelimiter;
 	private String indexPrefix;
 	private String indexPostfix;
 	private String prefix;
-	
+
 	private String beanVariableName;
 	private String mappingResultVariableName;
 	private Boolean autoDetectErrors = Boolean.TRUE;
 	private Object bean;
 	private MappingResult mappingResult;
-	
+
 	private String propertyNameVariableName;
 	private String propertyValueVariableName;
 	private String propertyRawValueVariableName;
@@ -240,124 +240,157 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 	private String prop;
 	private Boolean htmlEscape;
 	private ValueFormatter formatter;
-	
+
 	private boolean setBean;
 	private boolean setProp;
 	private ELMapper elMapper;
-	
+
 	public String getPropertyErrorValueVariableName() {
 		return propertyErrorValueVariableName;
 	}
+
 	public void setPropertyErrorValueVariableName(String propertyErrorValueVariableName) {
 		this.propertyErrorValueVariableName = propertyErrorValueVariableName;
 	}
+
 	public ValueFormatter getFormatter() {
 		return formatter;
 	}
+
 	public void setFormatter(ValueFormatter formatter) {
 		this.formatter = formatter;
 	}
+
 	public boolean isHtmlEscape() {
 		if (htmlEscape == null) {
 			return false;
 		}
 		return htmlEscape;
 	}
+
 	public void setHtmlEscape(boolean htmlEscape) {
 		this.htmlEscape = htmlEscape;
 	}
+
 	public String getPropertyDelimiter() {
 		return propertyDelimiter;
 	}
+
 	public void setPropertyDelimiter(String propertyDelimiter) {
 		this.propertyDelimiter = propertyDelimiter;
 	}
+
 	public String getIndexPrefix() {
 		return indexPrefix;
 	}
+
 	public void setIndexPrefix(String indexPrefix) {
 		this.indexPrefix = indexPrefix;
 	}
+
 	public String getIndexPostfix() {
 		return indexPostfix;
 	}
+
 	public void setIndexPostfix(String indexPostfix) {
 		this.indexPostfix = indexPostfix;
 	}
+
 	public String getBeanVariableName() {
 		return beanVariableName;
 	}
+
 	public void setBeanVariableName(String beanVariableName) {
 		this.beanVariableName = beanVariableName;
 	}
+
 	public String getMappingResultVariableName() {
 		return mappingResultVariableName;
 	}
+
 	public void setMappingResultVariableName(String mappingResultVariableName) {
 		this.mappingResultVariableName = mappingResultVariableName;
 	}
+
 	public String getPropertyNameVariableName() {
 		return propertyNameVariableName;
 	}
+
 	public void setPropertyNameVariableName(String propertyNameVariableName) {
 		this.propertyNameVariableName = propertyNameVariableName;
 	}
+
 	public String getPropertyValueVariableName() {
 		return propertyValueVariableName;
 	}
+
 	public void setPropertyValueVariableName(String propertyValueVariableName) {
 		this.propertyValueVariableName = propertyValueVariableName;
 	}
+
 	public String getPropertyRawValueVariableName() {
 		return propertyRawValueVariableName;
 	}
+
 	public void setPropertyRawValueVariableName(String propertyRawValueVariableName) {
 		this.propertyRawValueVariableName = propertyRawValueVariableName;
 	}
+
 	public String getErrorsVariableName() {
 		return errorsVariableName;
 	}
+
 	public void setErrorsVariableName(String errorsVariableName) {
 		this.errorsVariableName = errorsVariableName;
 	}
+
 	public Object getBean() {
 		return bean;
 	}
+
 	public void setBean(Object bean) {
 		this.bean = bean;
 		setBean = true;
 		elMapper = new ELMapper();
 		elMapper.setTargetBean(bean);
 	}
+
 	public Boolean getAutoDetectErrors() {
 		return autoDetectErrors;
 	}
+
 	public void setAutoDetectErrors(Boolean autoDetectErrors) {
 		this.autoDetectErrors = autoDetectErrors;
 	}
+
 	public MappingResult getMappingResult() {
 		return mappingResult;
 	}
+
 	public void setMappingResult(MappingResult mappingResult) {
 		this.mappingResult = mappingResult;
 	}
+
 	public String getProp() {
 		return prop;
 	}
+
 	public void setProp(String prop) {
 		this.prop = prop;
 		setProp = true;
 	}
+
 	public String getPrefix() {
 		return prefix;
 	}
+
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
-	
+
 	private void exposeBean() {
 		pageContext.setAttribute(beanVariableName, bean);
-		
+
 		if (autoDetectErrors != null && autoDetectErrors.booleanValue()) {
 			if (mappingResult == null) {
 				Exception e = (Exception) pageContext.getAttribute(WebRequestConstants.EXCEPTION, PageContext.REQUEST_SCOPE);
@@ -374,10 +407,10 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 		}
 		pageContext.setAttribute(mappingResultVariableName, mappingResult);
 	}
-	
+
 	private void exposeProp() {
 		if (bean != null) {
-			
+
 			String name = prop;
 			if (propertyDelimiter != null) {
 				name = name.replace(DEFAULT_PROPERTY_DELIMITER, propertyDelimiter);
@@ -391,9 +424,9 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			if (prefix != null) {
 				name = prefix + name;
 			}
-			
+
 			pageContext.setAttribute(propertyNameVariableName, name);
-			
+
 			Object value = null;
 			boolean valResolve = false;
 			if (mappingResult.hasError()) {
@@ -402,16 +435,19 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 					value = e.getErrorValue();
 					valResolve = true;
 				}
-				
+
 				ArrayList<String> errMsgs = new ArrayList<>();
 				Object errorValue = null;
-				for (MappingError me: mappingResult.getErrors()) {
-					if (me.getPropertyPath().startsWith(prop)) {
-						if (me.getPropertyPath().length() == prop.length()) {
+				for (MappingError me : mappingResult.getErrors()) {
+					if (me.getPropertyPath()
+							.startsWith(prop)) {
+						if (me.getPropertyPath()
+								.length() == prop.length()) {
 							errMsgs.addAll(me.getErrorMessages());
 							errorValue = me.getErrorValue();
 						} else {
-							char c = me.getPropertyPath().charAt(prop.length());
+							char c = me.getPropertyPath()
+									.charAt(prop.length());
 							if (c == '.' || c == '[') {
 								errMsgs.addAll(me.getErrorMessages());
 							}
@@ -427,7 +463,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 					}
 				}
 			}
-			
+
 			if (!valResolve) {
 				try {
 					value = elMapper.getValue(prop);
@@ -437,7 +473,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 					}
 				}
 			}
-			
+
 			if (value != null && htmlEscape) {
 				pageContext.setAttribute(propertyValueVariableName, StringUtil.escapeHtml(formatter.apply(value)));
 			} else {
@@ -446,11 +482,11 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			pageContext.setAttribute(propertyRawValueVariableName, value);
 		}
 	}
-	
+
 	boolean isSetBean() {
 		return setBean;
 	}
-	
+
 	BindTag getBeanBindTag() {
 		Tag tag = this;
 		for (;;) {
@@ -458,13 +494,13 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			if (tag == null) {
 				return null;
 			}
-			
+
 			if (tag instanceof BindTag && ((BindTag) tag).setBean) {
 				return (BindTag) tag;
 			}
 		}
 	}
-	
+
 	private void resolveBean(BindTag beanTag) {
 		if (beanTag != null) {
 			bean = beanTag.bean;
@@ -472,7 +508,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			mappingResult = beanTag.mappingResult;
 		}
 	}
-	
+
 	private void initParam(BindTag beanTag) {
 		if (propertyDelimiter == null) {
 			if (beanTag != null) {
@@ -510,7 +546,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 				formatter = ValueFormatter.DEFAULT_FORMATTER;
 			}
 		}
-		
+
 		if (beanVariableName == null) {
 			if (beanTag != null) {
 				beanVariableName = beanTag.beanVariableName;
@@ -568,7 +604,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			}
 		}
 	}
-	
+
 	@Override
 	public int doStartTag() throws JspException {
 		if (setBean) {
@@ -583,9 +619,10 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			}
 			exposeProp();
 		}
-		
+
 		return EVAL_BODY_INCLUDE;
 	}
+
 	@Override
 	public int doEndTag() throws JspException {
 		if (setProp) {
@@ -595,38 +632,38 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 			pageContext.removeAttribute(propertyErrorValueVariableName, PageContext.PAGE_SCOPE);
 			pageContext.removeAttribute(errorsVariableName, PageContext.PAGE_SCOPE);
 		}
-		
+
 		if (setBean) {
 			pageContext.removeAttribute(beanVariableName, PageContext.PAGE_SCOPE);
 			pageContext.removeAttribute(mappingResultVariableName, PageContext.PAGE_SCOPE);
-			
+
 			BindTag parentBeanTag = getBeanBindTag();
 			if (parentBeanTag != null) {
 				parentBeanTag.exposeBean();
 			}
 		}
-		
+
 		return EVAL_PAGE;
 	}
-	
+
 	@Override
 	public void doCatch(Throwable t) throws Throwable {
 		throw t;
 	}
-	
+
 	@Override
 	public void doFinally() {
 		propertyDelimiter = null;
 		indexPrefix = null;
 		indexPostfix = null;
 		prefix = null;
-		
+
 		beanVariableName = null;
 		mappingResultVariableName = null;
 		autoDetectErrors = Boolean.TRUE;
 		bean = null;
 		mappingResult = null;
-		
+
 		propertyNameVariableName = null;
 		propertyValueVariableName = null;
 		propertyRawValueVariableName = null;
@@ -635,7 +672,7 @@ public class BindTag extends TagSupport implements TryCatchFinally {
 		prop = null;
 		htmlEscape = null;
 		formatter = null;
-		
+
 		setBean = false;
 		setProp = false;
 		elMapper = null;

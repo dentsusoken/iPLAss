@@ -58,10 +58,10 @@ import org.iplass.mtp.auth.policy.definition.NotificationType;
  */
 public class ScriptingAccountNotificationListenerDefinition extends AccountNotificationListenerDefinition {
 	private static final long serialVersionUID = 1974904229979573512L;
-	
+
 	private String script;
 	private List<NotificationType> listenNotification;
-	
+
 	/**
 	 * GroovyScriptのコード。
 	 * 
@@ -70,7 +70,7 @@ public class ScriptingAccountNotificationListenerDefinition extends AccountNotif
 	public String getScript() {
 		return script;
 	}
-	
+
 	/**
 	 * see {@link #getScript()}
 	 * @param script
@@ -78,7 +78,7 @@ public class ScriptingAccountNotificationListenerDefinition extends AccountNotif
 	public void setScript(String script) {
 		this.script = script;
 	}
-	
+
 	/**
 	 * 通知を受け取るNotificationType。
 	 * ここで指定された通知のみScriptのロジックが呼び出される。
@@ -88,7 +88,7 @@ public class ScriptingAccountNotificationListenerDefinition extends AccountNotif
 	public List<NotificationType> getListenNotification() {
 		return listenNotification;
 	}
-	
+
 	/**
 	 * see {@link #getListenNotification()}
 	 * @param listenNotification

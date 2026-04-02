@@ -46,31 +46,45 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @ActionMappings({
-@ActionMapping(
-	name=DownloadCommand.DOWNLOAD_ACTION_NAME,
-	displayName="バイナリダウンロード",
-	result=@Result(type=Type.STREAM, useContentDisposition=true, acceptRanges=true)
-),
-@ActionMapping(
-	name=DownloadCommand.REFERENCE_ACTION_NAME,
-	displayName="バイナリ参照",
-	result=@Result(type=Type.STREAM, useContentDisposition=true, contentDispositionType=ContentDispositionType.INLINE, acceptRanges=true)
-),
-@ActionMapping(
-	name=DownloadCommand.PDFVIEWER_ACTION_NAME,
-	displayName="PDFビューア",
-	command={},
-	result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_HTML_PDFVIEWER_PATH, templateName="gem/binary/pdfviewer",
-	useContentDisposition=true, contentDispositionType=ContentDispositionType.INLINE, acceptRanges=true)
-),
-@ActionMapping(
-	name=DownloadCommand.IMGVIEWER_ACTION_NAME,
-	displayName="画像ビューア",
-	result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_HTML_IMGVIEWER_PATH, templateName="gem/binary/imgviewer",
-	useContentDisposition=true, contentDispositionType=ContentDispositionType.INLINE, acceptRanges=true)
-)
+		@ActionMapping(
+				name = DownloadCommand.DOWNLOAD_ACTION_NAME,
+				displayName = "バイナリダウンロード",
+				result = @Result(type = Type.STREAM, useContentDisposition = true, acceptRanges = true)
+		),
+		@ActionMapping(
+				name = DownloadCommand.REFERENCE_ACTION_NAME,
+				displayName = "バイナリ参照",
+				result = @Result(
+						type = Type.STREAM,
+						useContentDisposition = true,
+						contentDispositionType = ContentDispositionType.INLINE,
+						acceptRanges = true)
+		),
+		@ActionMapping(
+				name = DownloadCommand.PDFVIEWER_ACTION_NAME,
+				displayName = "PDFビューア",
+				command = {},
+				result = @Result(
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_HTML_PDFVIEWER_PATH,
+						templateName = "gem/binary/pdfviewer",
+						useContentDisposition = true,
+						contentDispositionType = ContentDispositionType.INLINE,
+						acceptRanges = true)
+		),
+		@ActionMapping(
+				name = DownloadCommand.IMGVIEWER_ACTION_NAME,
+				displayName = "画像ビューア",
+				result = @Result(
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_HTML_IMGVIEWER_PATH,
+						templateName = "gem/binary/imgviewer",
+						useContentDisposition = true,
+						contentDispositionType = ContentDispositionType.INLINE,
+						acceptRanges = true)
+		)
 })
-@CommandClass(name="gem/binary/DownloadCommand", displayName="ダウンロード")
+@CommandClass(name = "gem/binary/DownloadCommand", displayName = "ダウンロード")
 public final class DownloadCommand implements Command {
 
 	public static final String DOWNLOAD_ACTION_NAME = "gem/binary/download";
@@ -78,7 +92,8 @@ public final class DownloadCommand implements Command {
 	public static final String PDFVIEWER_ACTION_NAME = "gem/binary/pdfviewer";
 	public static final String IMGVIEWER_ACTION_NAME = "gem/binary/imgviewer";
 
-	private GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+	private GemConfigService service = ServiceRegistry.getRegistry()
+			.getService(GemConfigService.class);
 	private static final Logger auditLogger = LoggerFactory.getLogger("mtp.audit.download");
 
 	@Override
@@ -89,14 +104,16 @@ public final class DownloadCommand implements Command {
 		String propName = request.getParam(Constants.PROP_NAME);
 
 		if (defName != null && propName != null) {
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+			EntityManager em = ManagerLocator.getInstance()
+					.getManager(EntityManager.class);
 			BinaryReference br = em.loadBinaryReference(lobId);
 
 			List<BinaryDownloadLoggingTargetProperty> targetProperties = service.getBinaryDownloadLoggingTargetProperty();
 			for (BinaryDownloadLoggingTargetProperty targetProperty : targetProperties) {
 				if (defName.equals(targetProperty.getEntityName()) && propName.equals(targetProperty.getPropertyName())) {
 					// ダウンロード用ログの出力（操作名称,ファイル名,条件）
-					auditLogger.info("BinaryPropertyDataDownload," + br.getName() + ",lobId:" + lobId + " entityName:" + defName + " propertyName:" + propName);
+					auditLogger.info(
+							"BinaryPropertyDataDownload," + br.getName() + ",lobId:" + lobId + " entityName:" + defName + " propertyName:" + propName);
 				}
 			}
 

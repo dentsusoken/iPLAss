@@ -37,8 +37,8 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,16 +47,16 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 @WebApi(
-	name=RestoreCommand.WEBAPI_NAME,
-	displayName="復元",
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
-	results={"message","errorRbid"},
-	checkXRequestedWithHeader=true
+		name = RestoreCommand.WEBAPI_NAME,
+		displayName = "復元",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		tokenCheck = @WebApiTokenCheck(consume = false, useFixedToken = true),
+		results = { "message", "errorRbid" },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/delete/RestoreCommand", displayName="復元")
+@CommandClass(name = "gem/generic/delete/RestoreCommand", displayName = "復元")
 public final class RestoreCommand extends DeleteCommandBase {
 
 	public static final String WEBAPI_NAME = "gem/generic/delete/restore";
@@ -67,29 +67,35 @@ public final class RestoreCommand extends DeleteCommandBase {
 		final String defName = request.getParam(Constants.DEF_NAME);
 		String viewName = request.getParam(Constants.VIEW_NAME);
 		Long[] rbid = null;
-		Object val = request.getParamMap().get(Constants.RBID);
+		Object val = request.getParamMap()
+				.get(Constants.RBID);
 		if (val instanceof String) {
-			rbid = new Long[]{CommandUtil.getLong((String)val)};
+			rbid = new Long[] { CommandUtil.getLong((String) val) };
 		} else if (val instanceof ArrayList<?>) {
 			ArrayList<?> list = (ArrayList<?>) val;
 			rbid = new Long[list.size()];
 			for (int i = 0; i < list.size(); i++) {
-				rbid[i] = CommandUtil.getLong(list.get(i).toString());
+				rbid[i] = CommandUtil.getLong(list.get(i)
+						.toString());
 			}
 		}
 
 		if (rbid != null && rbid.length > 0) {
 			final boolean isAllowTrashOperationToRecycleBy = isAllowTrashOperationToRecycleBy(defName, viewName);
-			final String userOid = AuthContext.getCurrentContext().getUser().getOid();
+			final String userOid = AuthContext.getCurrentContext()
+					.getUser()
+					.getOid();
 
 			int count = rbid.length;
 			int countPerHundret = count / 100;
-			if (count % 100 > 0) countPerHundret++;
+			if (count % 100 > 0)
+				countPerHundret++;
 			int current = 0;
 			for (int i = 0; i < countPerHundret; i++) {
 				current = i * 100;
 				int last = current + 100;
-				if (last > rbid.length) last = rbid.length;
+				if (last > rbid.length)
+					last = rbid.length;
 				List<Long> list = Arrays.asList(rbid);
 				final List<Long> subList = list.subList(current, last);
 				Boolean ret = Transaction.requiresNew(transaction -> {

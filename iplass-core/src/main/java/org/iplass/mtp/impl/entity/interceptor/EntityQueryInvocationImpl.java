@@ -94,7 +94,8 @@ public class EntityQueryInvocationImpl extends EntityInvocationImpl<Void> implem
 			eh.search(query, (EntityStreamSearchHandler<Object[]>) streamSearchHandler, (Predicate<Object[]>) resultCallback);
 			break;
 		case SEARCH_ENTITY:
-			eh.searchEntity(query, searchOption.isReturnStructuredEntity(), (EntityStreamSearchHandler<Entity>) streamSearchHandler, (Predicate<Entity>) resultCallback);
+			eh.searchEntity(query, searchOption.isReturnStructuredEntity(), (EntityStreamSearchHandler<Entity>) streamSearchHandler,
+					(Predicate<Entity>) resultCallback);
 			break;
 		default:
 			break;

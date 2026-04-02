@@ -98,7 +98,8 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -128,22 +129,24 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 		// エラーのクリア
 		commonSection.clearErrors();
 
-		service.getDefinitionEntry(TenantInfoHolder.getId(), OAuthAuthorizationDefinition.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
+		service.getDefinitionEntry(TenantInfoHolder.getId(), OAuthAuthorizationDefinition.class.getName(), defName,
+				new AsyncCallback<DefinitionEntry>() {
 
-			@Override
-			public void onSuccess(DefinitionEntry result) {
-				// 画面に反映
-				setDefinition(result);
-			}
+					@Override
+					public void onSuccess(DefinitionEntry result) {
+						// 画面に反映
+						setDefinition(result);
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_failed"),
-						AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_failedGetScreenInfo") + caught.getMessage());
+					@Override
+					public void onFailure(Throwable caught) {
+						SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_failed"),
+								AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_failedGetScreenInfo")
+										+ caught.getMessage());
 
-				GWT.log(caught.toString(), caught);
-			}
-		});
+						GWT.log(caught.toString(), caught);
+					}
+				});
 
 		// ステータスチェック
 		StatusCheckUtil.statuCheck(OAuthAuthorizationDefinition.class.getName(), defName, this);
@@ -156,8 +159,10 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (OAuthAuthorizationDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
@@ -180,17 +185,17 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_saveComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					final OAuthAuthorizationDefinition definition = curDefinition;
-					commonSection.getEditDefinition(definition);
-					attributePane.getEditDefinition(definition);
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							final OAuthAuthorizationDefinition definition = curDefinition;
+							commonSection.getEditDefinition(definition);
+							attributePane.getEditDefinition(definition);
 
-					updateDefinition(definition, true);
-				}
-			}
-		});
+							updateDefinition(definition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -199,17 +204,16 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 	private void cancelDefinition() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_OAuthAuthorizationEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**

@@ -34,7 +34,8 @@ public class WebApiCorsAccessControlAllowCredentialsOpenApiOperationConverter ex
 
 	@Override
 	protected boolean isMapOpenApiOperationValue(WebApiOpenApiConvertContext context) {
-		return context.getWebApiDefinition().isAccessControlAllowCredentials();
+		return context.getWebApiDefinition()
+				.isAccessControlAllowCredentials();
 	}
 
 	@Override
@@ -45,17 +46,20 @@ public class WebApiCorsAccessControlAllowCredentialsOpenApiOperationConverter ex
 
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
-		context.getWebApiDefinition().setAccessControlAllowCredentials(false);
+		context.getWebApiDefinition()
+				.setAccessControlAllowCredentials(false);
 	}
 
 	@Override
 	protected CheckNext convertWebApiOperation(OperationContext operation, WebApiOpenApiConvertContext context) {
 		var response = getOkResponse(operation.getOperation());
 		if (null != response.getHeaders()) {
-			for (var key : response.getHeaders().keySet()) {
+			for (var key : response.getHeaders()
+					.keySet()) {
 				if (LOWER_HEADER.equals(key.toLowerCase())) {
 					// Access-Control-Allow-Credentials ヘッダが存在する場合、Access-Control-Allow-Credentialsはtrueにする。
-					context.getWebApiDefinition().setAccessControlAllowCredentials(true);
+					context.getWebApiDefinition()
+							.setAccessControlAllowCredentials(true);
 					return CheckNext.FINISH;
 				}
 			}

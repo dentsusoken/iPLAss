@@ -54,13 +54,20 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 
 	private static final Logger logger = LoggerFactory.getLogger(GemEntityDefinitionOperationController.class);
 
-	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
-	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	private EntityFilterManager efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
-	private EntityWebApiDefinitionManager ewm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
-	private MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
-	private MenuTreeManager mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
+	private DefinitionManager dm = ManagerLocator.getInstance()
+			.getManager(DefinitionManager.class);
+	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
+	private EntityViewManager evm = ManagerLocator.getInstance()
+			.getManager(EntityViewManager.class);
+	private EntityFilterManager efm = ManagerLocator.getInstance()
+			.getManager(EntityFilterManager.class);
+	private EntityWebApiDefinitionManager ewm = ManagerLocator.getInstance()
+			.getManager(EntityWebApiDefinitionManager.class);
+	private MenuItemManager mm = ManagerLocator.getInstance()
+			.getManager(MenuItemManager.class);
+	private MenuTreeManager mtm = ManagerLocator.getInstance()
+			.getManager(MenuTreeManager.class);
 	private MetaDataAuditLogger auditLogger = MetaDataAuditLogger.getLogger();
 
 	@Override
@@ -85,7 +92,7 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 			}
 
 			MenuTree tree = mtm.get(DEFAULT);
-			if(tree != null) {
+			if (tree != null) {
 				tree.addMenuItem(entityItem);
 				auditLogger.logMetadata(MetaDataAction.UPDATE, MenuTree.class.getName(), "name:" + tree.getName());
 				DefinitionModifyResult ret3 = mtm.update(tree);
@@ -102,14 +109,14 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 	@Override
 	public AdminDefinitionModifyResult updateMenuItem(EntityDefinition definition) {
 		MenuItem menuItem = mm.get(convertPath(definition.getName()));
-		if(menuItem != null) {
+		if (menuItem != null) {
 			// 更新対象化チェックする
 			String itemDispName = menuItem.getDisplayName();
 			String entityDispName = definition.getDisplayName();
-			if(itemDispName != null && !itemDispName.equals(entityDispName)) {
+			if (itemDispName != null && !itemDispName.equals(entityDispName)) {
 				// データは異なる。
 				EntityDefinition oldEd = edm.get(definition.getName());
-				if(itemDispName.equals(oldEd.getDisplayName())) {
+				if (itemDispName.equals(oldEd.getDisplayName())) {
 					// メニューと同一(デフォルト)なので修正する
 					menuItem.setDisplayName(definition.getDisplayName());
 
@@ -180,7 +187,7 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 
 		//EntityViewの削除
 		DefinitionInfo view = dm.getInfo(EntityView.class, name);
-		if(view != null && !view.isShared()) {
+		if (view != null && !view.isShared()) {
 
 			auditLogger.logMetadata(MetaDataAction.DELETE, EntityView.class.getName(), "name:" + name);
 			DefinitionModifyResult retEv = evm.remove(name);
@@ -210,19 +217,19 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 		// メニューTreeの更新
 		for (String menuTreeName : mtm.definitionList()) {
 			MenuTree menuTree = mtm.get(menuTreeName);
-			if(menuTree != null && menuTree.getMenuItems() != null) {
+			if (menuTree != null && menuTree.getMenuItems() != null) {
 				List<MenuItem> items = menuTree.getMenuItems();
 				boolean update = false;
-				for (int i = (items.size() -1 ) ; i >= 0; i--) {
+				for (int i = (items.size() - 1); i >= 0; i--) {
 					MenuItem menuItem = items.get(i);
-					if(menuItem instanceof EntityMenuItem) {
-						if(name.equals(((EntityMenuItem) menuItem).getEntityDefinitionName())) {
+					if (menuItem instanceof EntityMenuItem) {
+						if (name.equals(((EntityMenuItem) menuItem).getEntityDefinitionName())) {
 							items.remove(i);
 							update = true;
 						}
 					}
 				}
-				if(update) {
+				if (update) {
 					auditLogger.logMetadata(MetaDataAction.UPDATE, MenuTree.class.getName(), "name:" + menuTree.getName());
 					DefinitionModifyResult ret2 = mtm.update(menuTree);
 					if (!ret2.isSuccess()) {
@@ -236,9 +243,10 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 		//メニュItemの削除(万が一メニューツリーに一つも紐づいていない場合もあり得るので全Itemをチェック)
 		for (String menuItemName : mm.definitionList()) {
 			DefinitionEntry menuItem = dm.getDefinitionEntry(MenuItem.class, menuItemName);
-			if (menuItem != null && !menuItem.getDefinitionInfo().isShared()) {
-				if(menuItem.getDefinition() instanceof EntityMenuItem) {
-					if(name.equals(((EntityMenuItem)menuItem.getDefinition()).getEntityDefinitionName())) {
+			if (menuItem != null && !menuItem.getDefinitionInfo()
+					.isShared()) {
+				if (menuItem.getDefinition() instanceof EntityMenuItem) {
+					if (name.equals(((EntityMenuItem) menuItem.getDefinition()).getEntityDefinitionName())) {
 						auditLogger.logMetadata(MetaDataAction.DELETE, MenuItem.class.getName(), "name:" + menuItemName);
 						DefinitionModifyResult ret3 = mm.remove(menuItemName);
 						if (!ret3.isSuccess()) {
@@ -284,7 +292,7 @@ public class GemEntityDefinitionOperationController implements EntityDefinitionO
 	 * @return 有効なパス
 	 */
 	private String convertPath(String path) {
-		return path.replace(".","/");
+		return path.replace(".", "/");
 	}
 
 }

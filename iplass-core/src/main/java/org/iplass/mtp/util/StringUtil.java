@@ -44,7 +44,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class StringUtil {
 
 	private static class RandomHolder {
-		static final SecureRandomGenerator random = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator();
+		static final SecureRandomGenerator random = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator();
 	}
 
 	private static final Map<CharSequence, CharSequence> APOS_ESCAPE;
@@ -277,7 +279,8 @@ public class StringUtil {
 		if (StringUtils.isEmpty(str)) {
 			return str;
 		} else {
-			return str.replace("\n", "").replace("\r", "");
+			return str.replace("\n", "")
+					.replace("\r", "");
 		}
 	}
 
@@ -363,14 +366,16 @@ public class StringUtil {
 				if (buf.length() != 0) {
 					buf.append('_');
 				}
-				buf.append(s.substring(pos, i).toUpperCase());
+				buf.append(s.substring(pos, i)
+						.toUpperCase());
 				pos = i;
 			}
 		}
 		if (buf.length() != 0) {
 			buf.append('_');
 		}
-		buf.append(s.substring(pos, s.length()).toUpperCase());
+		buf.append(s.substring(pos, s.length())
+				.toUpperCase());
 		return buf.toString();
 	}
 

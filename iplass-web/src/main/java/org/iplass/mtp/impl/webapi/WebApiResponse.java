@@ -24,18 +24,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.impl.webapi.jackson.WebApiResponseSerializer;
+import org.iplass.mtp.impl.webapi.jaxb.Result;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.iplass.mtp.impl.webapi.jackson.WebApiResponseSerializer;
-import org.iplass.mtp.impl.webapi.jaxb.Result;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 
 /**
  * WebAPI呼び出し結果。
@@ -44,7 +42,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"status", "resultList", "exceptionType", "exceptionMessage"})
+@XmlType(propOrder = { "status", "resultList", "exceptionType", "exceptionMessage" })
 @JsonSerialize(using = WebApiResponseSerializer.class)
 public class WebApiResponse {
 	private String status;
@@ -54,7 +52,7 @@ public class WebApiResponse {
 
 	@XmlTransient
 	private Map<String, Object> results;
-	
+
 	public WebApiResponse() {
 	}
 
@@ -65,14 +63,14 @@ public class WebApiResponse {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	public void addResult(String key, Object value) {
 		if (results == null) {
 			results = new LinkedHashMap<>();
 		}
 		results.put(key, value);
 	}
-	
+
 	public Map<String, Object> getResults() {
 		return results;
 	}
@@ -80,7 +78,7 @@ public class WebApiResponse {
 	public void setResults(Map<String, Object> results) {
 		this.results = results;
 	}
-	
+
 	public Throwable getException() {
 		return throwable;
 	}
@@ -94,7 +92,8 @@ public class WebApiResponse {
 		if (this.throwable == null) {
 			return null;
 		} else {
-			return this.throwable.getClass().getName();
+			return this.throwable.getClass()
+					.getName();
 		}
 	}
 
@@ -106,15 +105,15 @@ public class WebApiResponse {
 			return this.throwable.getMessage();
 		}
 	}
-	
-	@XmlElement(name="result")
+
+	@XmlElement(name = "result")
 	public List<Result> getResultList() {
 		if (results == null) {
 			return null;
 		}
-		
+
 		List<Result> res = new ArrayList<>(results.size());
-		for (Map.Entry<String, Object> e: results.entrySet()) {
+		for (Map.Entry<String, Object> e : results.entrySet()) {
 			res.add(new Result(e.getKey(), e.getValue()));
 		}
 		return res;

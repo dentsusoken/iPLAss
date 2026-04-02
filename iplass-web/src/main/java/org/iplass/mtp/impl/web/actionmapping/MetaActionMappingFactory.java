@@ -52,7 +52,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.actionmapping.ActionCacheCriteria;
 import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 
-
 public class MetaActionMappingFactory implements
 		AnnotatableMetaDataFactory<ActionMapping, Object> {
 
@@ -71,7 +70,8 @@ public class MetaActionMappingFactory implements
 		return ActionMapping.class;
 	}
 
-	private Result toMetaResult(String actionMappingPath, org.iplass.mtp.command.annotation.action.Result result, Map<String, AnnotateMetaDataEntry> map, boolean overwritable) {
+	private Result toMetaResult(String actionMappingPath, org.iplass.mtp.command.annotation.action.Result result,
+			Map<String, AnnotateMetaDataEntry> map, boolean overwritable) {
 		Result r = null;
 		switch (result.type()) {
 		case JSP:
@@ -90,7 +90,9 @@ public class MetaActionMappingFactory implements
 			String metaPath = TemplateService.TEMPLATE_META_PATH + template.getName();
 			template.setId(metaPath);
 			if (DEFAULT.equals(result.contentType())) {
-				template.setContentType(ServiceRegistry.getRegistry().getService(WebFrontendService.class).getDefaultContentType());
+				template.setContentType(ServiceRegistry.getRegistry()
+						.getService(WebFrontendService.class)
+						.getDefaultContentType());
 			} else {
 				template.setContentType(result.contentType());
 			}
@@ -125,7 +127,8 @@ public class MetaActionMappingFactory implements
 			dtr.setContentDispositionType(result.contentDispositionType());
 			dtr.setFileNameAttributeName(result.fileNameAttributeName());
 
-			String layoutActionAttributeName = DEFAULT.equals(result.layoutActionAttributeName()) ? "layoutActionName" : result.layoutActionAttributeName();
+			String layoutActionAttributeName = DEFAULT.equals(result.layoutActionAttributeName()) ? "layoutActionName"
+					: result.layoutActionAttributeName();
 			dtr.setLayoutActionAttributeName(layoutActionAttributeName);
 			r = dtr;
 			break;
@@ -153,7 +156,8 @@ public class MetaActionMappingFactory implements
 
 		if (r != null) {
 			if (result.exception() != UNSPECIFIED.class) {
-				r.setExceptionClassName(result.exception().getName());
+				r.setExceptionClassName(result.exception()
+						.getName());
 			}
 
 			if (DEFAULT.equals(result.status())) {
@@ -170,11 +174,12 @@ public class MetaActionMappingFactory implements
 	private MetaCacheCriteria toMetaCacheCriteria(CacheCriteria anoCacheCriteria) {
 
 		MetaCacheCriteria criteria = null;
-		switch(anoCacheCriteria.type()) {
+		switch (anoCacheCriteria.type()) {
 		case JAVA_CLASS:
 			if (anoCacheCriteria.javaCriteriaClass() != ActionCacheCriteria.class) {
 				MetaJavaClassCacheCriteria javaCriteria = new MetaJavaClassCacheCriteria();
-				javaCriteria.setClassName(anoCacheCriteria.javaCriteriaClass().getName());
+				javaCriteria.setClassName(anoCacheCriteria.javaCriteriaClass()
+						.getName());
 				criteria = javaCriteria;
 				break;
 			} else {
@@ -269,17 +274,17 @@ public class MetaActionMappingFactory implements
 
 		if (actionMapping.clientCacheType() != null) {
 			switch (actionMapping.clientCacheType()) {
-				case CACHE:
-					metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.CACHE);
-					break;
-				case CACHE_PUBLIC:
-					metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.CACHE_PUBLIC);
-					break;
-				case NO_CACHE:
-					metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.NO_CACHE);
-					break;
-				default:
-					break;
+			case CACHE:
+				metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.CACHE);
+				break;
+			case CACHE_PUBLIC:
+				metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.CACHE_PUBLIC);
+				break;
+			case NO_CACHE:
+				metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.NO_CACHE);
+				break;
+			default:
+				break;
 			}
 		}
 		metaActionMapping.setClientCacheMaxAge(actionMapping.clientCacheMaxAge());
@@ -301,7 +306,7 @@ public class MetaActionMappingFactory implements
 		if (actionMapping.maxFileSize() != Long.MIN_VALUE) {
 			metaActionMapping.setMaxFileSize(actionMapping.maxFileSize());
 		}
-		
+
 		metaActionMapping.setNeedTrustedAuthenticate(actionMapping.needTrustedAuthenticate());
 		metaActionMapping.setParts(actionMapping.parts());
 		metaActionMapping.setPrivileged(actionMapping.privileged());
@@ -335,15 +340,20 @@ public class MetaActionMappingFactory implements
 		metaActionMapping.setResult(metaResult);
 
 		//ValidateToken設定(ActionMappingからチェック)
-		if (actionMapping.tokenCheck().executeCheck()) {
+		if (actionMapping.tokenCheck()
+				.executeCheck()) {
 			MetaTokenCheck tokenCheck = new MetaTokenCheck();
-			tokenCheck.setConsume(actionMapping.tokenCheck().consume());
-			tokenCheck.setExceptionRollback(actionMapping.tokenCheck().exceptionRollback());
-			tokenCheck.setUseFixedToken(actionMapping.tokenCheck().useFixedToken());
+			tokenCheck.setConsume(actionMapping.tokenCheck()
+					.consume());
+			tokenCheck.setExceptionRollback(actionMapping.tokenCheck()
+					.exceptionRollback());
+			tokenCheck.setUseFixedToken(actionMapping.tokenCheck()
+					.useFixedToken());
 			metaActionMapping.setTokenCheck(tokenCheck);
 		}
 
-		if (!Type.NO_CACHE.equals(actionMapping.cacheCriteria().type())) {
+		if (!Type.NO_CACHE.equals(actionMapping.cacheCriteria()
+				.type())) {
 			MetaCacheCriteria cacheCriteria = toMetaCacheCriteria(actionMapping.cacheCriteria());
 			metaActionMapping.setCacheCriteria(cacheCriteria);
 		}
@@ -359,6 +369,5 @@ public class MetaActionMappingFactory implements
 		ActionMapping actionMapping = annotatedClass.getAnnotation(ActionMapping.class);
 		return toMetaData(actionMapping, annotatedClass);
 	}
-
 
 }

@@ -22,8 +22,9 @@ package org.iplass.mtp.impl.entity;
 import org.iplass.mtp.spi.ServiceInitListener;
 
 public interface AdditionalStoreMaintainer extends ServiceInitListener<EntityService> {
-	
+
 	public void clean(int tenantId, String defId);
+
 	public void defrag(int tenantId, EntityHandler eh);
 
 }

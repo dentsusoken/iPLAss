@@ -23,12 +23,13 @@ import java.util.Properties;
 
 public class PropertyFilePassphraseSupplier implements PassphraseSupplier {
 	public static final String PASSPHRASE = "passphrase";
-	
+
 	private Properties prop;
 
 	@Override
 	public char[] getPassphrase() {
-		return prop.getProperty(PASSPHRASE).toCharArray();
+		return prop.getProperty(PASSPHRASE)
+				.toCharArray();
 	}
 
 	@Override

@@ -23,11 +23,11 @@ package org.iplass.mtp.view.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * メニューのツリー構造定義
@@ -117,7 +117,7 @@ public class MenuTree implements Definition {
 	 * @return 表示順序
 	 */
 	public Integer getDisplayOrder() {
-	    return displayOrder;
+		return displayOrder;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class MenuTree implements Definition {
 	 * @param displayOrder 表示順序
 	 */
 	public void setDisplayOrder(Integer displayOrder) {
-	    this.displayOrder = displayOrder;
+		this.displayOrder = displayOrder;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class MenuTree implements Definition {
 	 * @return 定義の表示名を表示かどうか
 	 */
 	public boolean isShowMenuDisplayName() {
-	    return showMenuDisplayName;
+		return showMenuDisplayName;
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class MenuTree implements Definition {
 	 * @param showMenuDisplayName 定義の表示名を表示かどうか
 	 */
 	public void setShowMenuDisplayName(boolean showMenuDisplayName) {
-	    this.showMenuDisplayName = showMenuDisplayName;
+		this.showMenuDisplayName = showMenuDisplayName;
 	}
 
 	/**

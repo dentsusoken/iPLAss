@@ -22,7 +22,7 @@ package org.iplass.adminconsole.shared.tools.dto.metaexplorer;
 
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty;
 
-public interface ConfigDownloadProperty extends DownloadProperty{
+public interface ConfigDownloadProperty extends DownloadProperty {
 
 	public static final String ACTION_URL = "service/metaconfigdownload";
 

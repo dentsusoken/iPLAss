@@ -33,7 +33,8 @@ public class TransactionUtil {
 
 	public static void setRollback() {
 		//トランザクションのロールバック指定
-		TransactionManager tm = ManagerLocator.getInstance().getManager(TransactionManager.class);
+		TransactionManager tm = ManagerLocator.getInstance()
+				.getManager(TransactionManager.class);
 		Transaction t = tm.currentTransaction();
 		if (t != null && t.getStatus() == TransactionStatus.ACTIVE && !t.isRollbackOnly()) {
 			log.debug("set transaction rollback.");

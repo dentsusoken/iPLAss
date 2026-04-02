@@ -40,9 +40,9 @@ import io.jsonwebtoken.SigningKeyResolverAdapter;
  *
  */
 public class JjwtProcesor implements JwtProcessor {
-	
+
 	private boolean useRsaSsaPss;
-	
+
 	public boolean isUseRsaSsaPss() {
 		return useRsaSsaPss;
 	}
@@ -69,7 +69,7 @@ public class JjwtProcesor implements JwtProcessor {
 			throw new InvalidKeyException(e.getMessage(), e);
 		}
 	}
-	
+
 	private SignatureAlgorithm forSigningKey(PrivateKey key) {
 		SignatureAlgorithm alg = SignatureAlgorithm.forSigningKey(key);
 		if (useRsaSsaPss) {
@@ -105,52 +105,54 @@ public class JjwtProcesor implements JwtProcessor {
 	}
 
 	@Override
-	public Jwt decode(String jwt, int allowedClockSkewMinutes, Function<String, Map<String, Object>> jwkResolver) throws InvalidKeyException, InvalidJwtException {
+	public Jwt decode(String jwt, int allowedClockSkewMinutes, Function<String, Map<String, Object>> jwkResolver)
+			throws InvalidKeyException, InvalidJwtException {
 		try {
-			Jws<Claims> claims = Jwts.parserBuilder().setSigningKeyResolver(new SigningKeyResolverAdapter() {
-				@Override
-				public Key resolveSigningKey(@SuppressWarnings("rawtypes") JwsHeader jwsHeader, Claims claims) {
-					String keyId = jwsHeader.getKeyId();
-					Map<String, Object> jwk = jwkResolver.apply(keyId);
-					if (jwk == null) {
-						throw new InvalidJwtException("JWK is not defined for specific keyId:" + keyId);
-					}
-					
-					String use = (String) jwk.get(CertificateKeyPair.JWK_PARAM_USE);
-					if (use != null) {
-						if (!use.equals(CertificateKeyPair.USE_SIG)) {
-							throw new InvalidKeyException("invalid use parameter:" + use);
-						}
-					}
-					
-					String alg = (String) jwk.get(CertificateKeyPair.JWK_PARAM_ALG);
-					if (alg != null) {
-						//jwk側の定義が正
-						String algFromHeader = jwsHeader.getAlgorithm();
-						if (algFromHeader != null) {
-							if (!alg.equalsIgnoreCase(algFromHeader)) {
-								throw new InvalidJwtException("alg parameter unmatch:" + algFromHeader);
+			Jws<Claims> claims = Jwts.parserBuilder()
+					.setSigningKeyResolver(new SigningKeyResolverAdapter() {
+						@Override
+						public Key resolveSigningKey(@SuppressWarnings("rawtypes") JwsHeader jwsHeader, Claims claims) {
+							String keyId = jwsHeader.getKeyId();
+							Map<String, Object> jwk = jwkResolver.apply(keyId);
+							if (jwk == null) {
+								throw new InvalidJwtException("JWK is not defined for specific keyId:" + keyId);
 							}
+
+							String use = (String) jwk.get(CertificateKeyPair.JWK_PARAM_USE);
+							if (use != null) {
+								if (!use.equals(CertificateKeyPair.USE_SIG)) {
+									throw new InvalidKeyException("invalid use parameter:" + use);
+								}
+							}
+
+							String alg = (String) jwk.get(CertificateKeyPair.JWK_PARAM_ALG);
+							if (alg != null) {
+								//jwk側の定義が正
+								String algFromHeader = jwsHeader.getAlgorithm();
+								if (algFromHeader != null) {
+									if (!alg.equalsIgnoreCase(algFromHeader)) {
+										throw new InvalidJwtException("alg parameter unmatch:" + algFromHeader);
+									}
+								}
+							} else {
+								//jwtのalgで（後続処理でKeyとの整合性チェック）
+								alg = jwsHeader.getAlgorithm();
+							}
+
+							if (alg == null || alg.equalsIgnoreCase(CertificateKeyPair.ALG_NONE)) {
+								throw new InvalidJwtException("alg parameter unspecified or none specified:" + alg);
+							}
+
+							CertificateKeyPair key = new CertificateKeyPair(jwk);
+							checkValidVerificationKey(alg, key);
+
+							return key.getPublicKey();
 						}
-					} else {
-						//jwtのalgで（後続処理でKeyとの整合性チェック）
-						alg = jwsHeader.getAlgorithm();
-					}
-					
-					if (alg == null || alg.equalsIgnoreCase(CertificateKeyPair.ALG_NONE)) {
-						throw new InvalidJwtException("alg parameter unspecified or none specified:" + alg);
-					}
-					
-					CertificateKeyPair key = new CertificateKeyPair(jwk);
-					checkValidVerificationKey(alg, key);
-					
-					return key.getPublicKey();
-				}
-			})
-			.setAllowedClockSkewSeconds(TimeUnit.MINUTES.toSeconds(allowedClockSkewMinutes))
-			.build()
-			.parseClaimsJws(jwt);
-			
+					})
+					.setAllowedClockSkewSeconds(TimeUnit.MINUTES.toSeconds(allowedClockSkewMinutes))
+					.build()
+					.parseClaimsJws(jwt);
+
 			return new Jwt(claims.getHeader(), claims.getBody());
 		} catch (io.jsonwebtoken.security.InvalidKeyException e) {
 			throw new InvalidKeyException(e.getMessage(), e);

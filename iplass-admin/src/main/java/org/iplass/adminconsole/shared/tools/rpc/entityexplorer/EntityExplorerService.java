@@ -44,8 +44,7 @@ import com.google.gwt.user.client.rpc.XsrfProtectedService;
  * Entity用Service
  */
 @RemoteServiceRelativePath("service/entityexplorer")
-public interface EntityExplorerService extends XsrfProtectedService , EntityDataTransferService {
-
+public interface EntityExplorerService extends XsrfProtectedService, EntityDataTransferService {
 
 	/**
 	 * <p>Entityのリストを取得します。</p>
@@ -86,7 +85,8 @@ public interface EntityExplorerService extends XsrfProtectedService , EntityData
 	 * @param offset Offset
 	 * @return
 	 */
-	public EntityDataListResultInfo search(int tenantId, final String defName, final String whereClause, final String orderByClause, final boolean isSearcgAllVersion, final int limit, final int offset);
+	public EntityDataListResultInfo search(int tenantId, final String defName, final String whereClause, final String orderByClause,
+			final boolean isSearcgAllVersion, final int limit, final int offset);
 
 	/**
 	 * <p>Entityデータの件数を取得します。</p>
@@ -111,7 +111,8 @@ public interface EntityExplorerService extends XsrfProtectedService , EntityData
 	 * @param isSearcgAllVersion 全バージョン検索
 	 * @return
 	 */
-	public EntityDataListResultInfo validateCriteria(int tenantId, final String defName, final String whereClause, final String orderByClause, final boolean isSearcgAllVersion);
+	public EntityDataListResultInfo validateCriteria(int tenantId, final String defName, final String whereClause, final String orderByClause,
+			final boolean isSearcgAllVersion);
 
 	/**
 	 * <p>ReferenceEntityを検索します。</p>
@@ -187,7 +188,7 @@ public interface EntityExplorerService extends XsrfProtectedService , EntityData
 	 */
 	public EntityDataDeleteResultInfo deleteAllByEntityData(final int tenantId, final String defName, final List<Entity> targets,
 			final boolean isNotifyListeners, final int commitLimit);
-	
+
 	/**
 	 * <p>Where条件に該当するデータ件数を返します。</p>
 	 * <p>updateAll、deleteAll実行前の件数確認用処理です</p>

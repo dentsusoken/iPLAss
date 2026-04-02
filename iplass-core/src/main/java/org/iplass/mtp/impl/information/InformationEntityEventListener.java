@@ -13,7 +13,8 @@ public class InformationEntityEventListener implements EntityEventListener {
 	@Override
 	public boolean beforeInsert(Entity entity, EntityEventContext context) {
 		if (entity.getEndDate() == null) {
-			entity.setEndDate(ExecuteContext.getCurrentContext().getDefaultEndDate());
+			entity.setEndDate(ExecuteContext.getCurrentContext()
+					.getDefaultEndDate());
 		}
 		return true;
 	}

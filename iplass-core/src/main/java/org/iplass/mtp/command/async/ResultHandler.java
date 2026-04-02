@@ -37,7 +37,7 @@ import org.iplass.mtp.command.CommandInvoker;
  *
  */
 public interface ResultHandler extends Serializable {
-	
+
 	public void handle(String commandResult);
 
 	public void handle(Throwable exception);

@@ -119,8 +119,8 @@ public class EntityDataListPane extends VLayout {
 
 		//workspace
 		workspaceTabSet = new WorkspaceTab(entityName);
-		workspaceTabSet.setShowResizeBar(true);		//リサイズ可能
-		workspaceTabSet.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		workspaceTabSet.setShowResizeBar(true); //リサイズ可能
+		workspaceTabSet.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		//message panel
 		messageTabSet = new MessageTabSet();
@@ -142,7 +142,6 @@ public class EntityDataListPane extends VLayout {
 	private void initialize(String entityName) {
 		entityChanged(entityName);
 	}
-
 
 	/**
 	 * Entity一覧に戻る処理
@@ -235,7 +234,8 @@ public class EntityDataListPane extends VLayout {
 			//Entity一覧に戻る
 			//------------------------
 			IButton showListButton = new IButton("＜ Entity List");
-			showListButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_notRefreshAutoReturnList")));
+			showListButton.setTooltip(SmartGWTUtil
+					.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_notRefreshAutoReturnList")));
 			showListButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -262,7 +262,7 @@ public class EntityDataListPane extends VLayout {
 					entityChanged(entityField.getValueAsString());
 				}
 			});
-			entityField.setValue(entityName);	//初期選択
+			entityField.setValue(entityName); //初期選択
 
 			form.setFields(entityField);
 
@@ -271,7 +271,8 @@ public class EntityDataListPane extends VLayout {
 			//------------------------
 			IButton configExportButton = new IButton("Export Config");
 			configExportButton.setIcon(EXPORT_ICON);
-			configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityDef")));
+			configExportButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityDef")));
 			configExportButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -285,7 +286,8 @@ public class EntityDataListPane extends VLayout {
 			//------------------------
 			IButton importCSVButton = new IButton("Import CSV");
 			importCSVButton.setIcon(IMPORT_ICON);
-			importCSVButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_importCsvFile")));
+			importCSVButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_importCsvFile")));
 			importCSVButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -403,7 +405,8 @@ public class EntityDataListPane extends VLayout {
 			final ToolStripButton deleteButton = new ToolStripButton();
 			deleteButton.setIcon(DELETE_ICON);
 			deleteButton.setTitle("Delete");
-			SmartGWTUtil.addHoverToCanvas(deleteButton, AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_deleteSelectEntity"));
+			SmartGWTUtil.addHoverToCanvas(deleteButton,
+					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_deleteSelectEntity"));
 			deleteButton.setHoverWrap(false);
 			deleteButton.addClickHandler(new ClickHandler() {
 
@@ -421,7 +424,8 @@ public class EntityDataListPane extends VLayout {
 			//------------------------
 			showAllPropertyItem = new CheckboxItem();
 			showAllPropertyItem.setTitle("show inherited properties");
-			showAllPropertyItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_showAllPropInherit")));
+			showAllPropertyItem.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_showAllPropInherit")));
 			showAllPropertyItem.addChangedHandler(new ChangedHandler() {
 
 				@Override
@@ -503,12 +507,11 @@ public class EntityDataListPane extends VLayout {
 						button.addClickHandler(new ClickHandler() {
 							@Override
 							public void onClick(ClickEvent event) {
-								Entity entity = (Entity)record.getAttributeAsObject(EntitySearchResultDS.ENTITY_ATTRIBUTE_NAME);
+								Entity entity = (Entity) record.getAttributeAsObject(EntitySearchResultDS.ENTITY_ATTRIBUTE_NAME);
 								if (entity == null) {
 									SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_canNotGetRecordInfo"));
 								} else {
-									MultiReferencePropertyDialog dialog =
-										new MultiReferencePropertyDialog(ds.getDefinition(), entity, fieldName);
+									MultiReferencePropertyDialog dialog = new MultiReferencePropertyDialog(ds.getDefinition(), entity, fieldName);
 									dialog.show();
 								}
 							}
@@ -622,7 +625,8 @@ public class EntityDataListPane extends VLayout {
 		}
 
 		public boolean isSearchError() {
-			return (ds.getResult() == null || ds.getResult().isError());
+			return (ds.getResult() == null || ds.getResult()
+					.isError());
 		}
 
 		private void setDataSource(EntitySearchResultDS ds) {
@@ -674,12 +678,12 @@ public class EntityDataListPane extends VLayout {
 		private void setCriteriaLimit(Criteria criteria) {
 			criteria.addCriteria(EntitySearchResultDS.LIMIT_CRITERIA, LIMIT);
 			criteria.addCriteria(EntitySearchResultDS.OFFSET_CRITERIA, getOffset());
-			criteria.addCriteria("dummy", System.currentTimeMillis() + "");	//同じ条件だとDSに飛ばないので
+			criteria.addCriteria("dummy", System.currentTimeMillis() + ""); //同じ条件だとDSに飛ばないので
 		}
 
 		private int getOffset() {
 
-			return (getPageNum() - 1) * LIMIT ;
+			return (getPageNum() - 1) * LIMIT;
 		}
 
 		private void showResultInfo(EntityDataListResultInfo result) {
@@ -773,8 +777,8 @@ public class EntityDataListPane extends VLayout {
 
 			searchAllVersion = new CheckboxItem();
 			searchAllVersion.setTitle("seach all version");
-			searchAllVersion.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_allVerSearch")));
-
+			searchAllVersion.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_allVerSearch")));
 
 			HLayout footer = new HLayout();
 			footer.setHeight(30);
@@ -782,7 +786,8 @@ public class EntityDataListPane extends VLayout {
 
 			IButton searchButton = new IButton("Search");
 			searchButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
-			searchButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_correCondEntitySearch")));
+			searchButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_correCondEntitySearch")));
 			searchButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -793,7 +798,8 @@ public class EntityDataListPane extends VLayout {
 
 			IButton countButton = new IButton("Count");
 			countButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
-			countButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_correCondEntityCount")));
+			countButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_correCondEntityCount")));
 			countButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -804,7 +810,8 @@ public class EntityDataListPane extends VLayout {
 
 			IButton exportCSVButton = new IButton("Export CSV");
 			exportCSVButton.setIcon(EXPORT_ICON);
-			exportCSVButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityCorreCond")));
+			exportCSVButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityCorreCond")));
 			exportCSVButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -816,7 +823,8 @@ public class EntityDataListPane extends VLayout {
 			IButton exportPackButton = new IButton("Export Package");
 			exportPackButton.setIcon(EXPORT_ICON);
 			exportPackButton.setAutoFit(true);
-			exportPackButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityPackCond")));
+			exportPackButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityPackCond")));
 			exportPackButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -827,7 +835,8 @@ public class EntityDataListPane extends VLayout {
 
 			IButton updateAllButton = new IButton("Update ALL");
 			updateAllButton.setIcon(EDIT_ICON);
-			updateAllButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_updateEntityCorreCond")));
+			updateAllButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_updateEntityCorreCond")));
 			updateAllButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -838,7 +847,8 @@ public class EntityDataListPane extends VLayout {
 
 			IButton deleteAllButton = new IButton("Delete ALL");
 			deleteAllButton.setIcon(DELETE_ICON);
-			deleteAllButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_deleteEntityCorreCond")));
+			deleteAllButton.setTooltip(
+					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_deleteEntityCorreCond")));
 			deleteAllButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -892,19 +902,23 @@ public class EntityDataListPane extends VLayout {
 		public String getWhere2() {
 			return SmartGWTUtil.getStringValue(whereField);
 		}
+
 		public String getWhere() {
 			String where = SmartGWTUtil.getStringValue(whereField);
 
 			return (where != null ? where : "");
 		}
+
 		public String getOrderBy2() {
 			return SmartGWTUtil.getStringValue(orderByField);
 		}
+
 		public String getOrderBy() {
 			String orderBy = SmartGWTUtil.getStringValue(orderByField);
 
 			return (orderBy != null ? orderBy : "");
 		}
+
 		public boolean isSearchAllVersion() {
 			return SmartGWTUtil.getBooleanValue(searchAllVersion);
 		}
@@ -962,26 +976,25 @@ public class EntityDataListPane extends VLayout {
 						|| !gridOrderBy.equals(getOrderBy())
 						|| gridAllVer != isSearchAllVersion()) {
 					SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
-							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff")
-							, new BooleanCallback() {
-
-						@Override
-						public void execute(Boolean value) {
-							if (!value) {
-								return;
-							}
-							//現在の検索条件の検証
-							validateCriteria(true, true, new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff"), new BooleanCallback() {
 
 								@Override
 								public void execute(Boolean value) {
-									if (value) {
-										showCsvDownloadDialog();
+									if (!value) {
+										return;
 									}
+									//現在の検索条件の検証
+									validateCriteria(true, true, new BooleanCallback() {
+
+										@Override
+										public void execute(Boolean value) {
+											if (value) {
+												showCsvDownloadDialog();
+											}
+										}
+									});
 								}
 							});
-						}
-					});
 				} else {
 					//検索実行時にエラーが発生していないかを確認
 					if (workspace.isSearchError()) {
@@ -1026,26 +1039,25 @@ public class EntityDataListPane extends VLayout {
 						|| !gridOrderBy.equals(getOrderBy())
 						|| gridAllVer != isSearchAllVersion()) {
 					SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
-							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff")
-							, new BooleanCallback() {
-
-						@Override
-						public void execute(Boolean value) {
-							if (!value) {
-								return;
-							}
-							//現在の検索条件の検証
-							validateCriteria(true, true, new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff"), new BooleanCallback() {
 
 								@Override
 								public void execute(Boolean value) {
-									if (value) {
-										executePack();
+									if (!value) {
+										return;
 									}
+									//現在の検索条件の検証
+									validateCriteria(true, true, new BooleanCallback() {
+
+										@Override
+										public void execute(Boolean value) {
+											if (value) {
+												executePack();
+											}
+										}
+									});
 								}
 							});
-						}
-					});
 				} else {
 					//検索実行時にエラーが発生していないかを確認
 					if (workspace.isSearchError()) {
@@ -1061,25 +1073,24 @@ public class EntityDataListPane extends VLayout {
 		private void executePack() {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
-					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityPackConfirm")
-					, new BooleanCallback() {
+					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityPackConfirm"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (!value) {
-						return;
-					}
+						@Override
+						public void execute(Boolean value) {
+							if (!value) {
+								return;
+							}
 
-					PostDownloadFrame frame = new PostDownloadFrame();
-					frame.setAction(GWT.getModuleBaseURL() + "service/entitypackagedownload")
-						.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-						.addParameter("definitionName", curDefinition.getName())
-						.addParameter("whereClause", getWhere())
-						.addParameter("orderByClause", getOrderBy())
-						.addParameter("isSearchAllVersion", isSearchAllVersion() + "")
-						.execute();
-				}
-			});
+							PostDownloadFrame frame = new PostDownloadFrame();
+							frame.setAction(GWT.getModuleBaseURL() + "service/entitypackagedownload")
+									.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+									.addParameter("definitionName", curDefinition.getName())
+									.addParameter("whereClause", getWhere())
+									.addParameter("orderByClause", getOrderBy())
+									.addParameter("isSearchAllVersion", isSearchAllVersion() + "")
+									.execute();
+						}
+					});
 
 		}
 
@@ -1119,14 +1130,13 @@ public class EntityDataListPane extends VLayout {
 				String gridWhere = gridCriteria.getAttribute(EntitySearchResultDS.WHERE_CRITERIA);
 				if (!gridWhere.equals(getWhere())) {
 					SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
-							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff")
-							, new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff"), new BooleanCallback() {
 
-						@Override
-						public void execute(Boolean value) {
-							if (!value) {
-								return;
-							}
+								@Override
+								public void execute(Boolean value) {
+									if (!value) {
+										return;
+									}
 //							//現在の検索条件の検証
 //							validateCriteria(false, false, new BooleanCallback() {
 //
@@ -1138,9 +1148,9 @@ public class EntityDataListPane extends VLayout {
 //								}
 //							});
 
-							showUpdateAllDialog();
-						}
-					});
+									showUpdateAllDialog();
+								}
+							});
 				} else {
 //					//検索実行時にエラーが発生していないかを確認
 //					if (workspace.isSearchError()) {
@@ -1162,32 +1172,32 @@ public class EntityDataListPane extends VLayout {
 			service.count(TenantInfoHolder.getId(), curDefinition.getName(),
 					getWhere(), isSearchAllVersion(), new AsyncCallback<EntityDataListResultInfo>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					GWT.log("error!!!", caught);
-					List<String> messages = new ArrayList<>();
-					messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErr"));
-					messages.add(caught.getMessage());
+						@Override
+						public void onFailure(Throwable caught) {
+							GWT.log("error!!!", caught);
+							List<String> messages = new ArrayList<>();
+							messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErr"));
+							messages.add(caught.getMessage());
 
-					messageTabSet.setErrorMessage(messages);
+							messageTabSet.setErrorMessage(messages);
 
-					finishExecute();
-				}
+							finishExecute();
+						}
 
-				@Override
-				public void onSuccess(EntityDataListResultInfo result) {
-					if (result.isError()) {
-						messageTabSet.setErrorMessage(result.getLogMessages());
+						@Override
+						public void onSuccess(EntityDataListResultInfo result) {
+							if (result.isError()) {
+								messageTabSet.setErrorMessage(result.getLogMessages());
 
-						finishExecute();
-					} else {
-						messageTabSet.setMessage(result.getLogMessages());
+								finishExecute();
+							} else {
+								messageTabSet.setMessage(result.getLogMessages());
 
-						finishExecute();
-					}
-				}
+								finishExecute();
+							}
+						}
 
-			});
+					});
 
 		}
 
@@ -1196,47 +1206,48 @@ public class EntityDataListPane extends VLayout {
 			startExecute("validate");
 
 			service.validateCriteria(TenantInfoHolder.getId(), curDefinition.getName(),
-					getWhere(), (checkOrder ? getOrderBy() : null), (checkVersion ? isSearchAllVersion() : false), new AsyncCallback<EntityDataListResultInfo>() {
+					getWhere(), (checkOrder ? getOrderBy() : null), (checkVersion ? isSearchAllVersion() : false),
+					new AsyncCallback<EntityDataListResultInfo>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					GWT.log("error!!!", caught);
-					List<String> messages = new ArrayList<>();
-					messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErr"));
-					messages.add(caught.getMessage());
+						@Override
+						public void onFailure(Throwable caught) {
+							GWT.log("error!!!", caught);
+							List<String> messages = new ArrayList<>();
+							messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErr"));
+							messages.add(caught.getMessage());
 
-					messageTabSet.setErrorMessage(messages);
+							messageTabSet.setErrorMessage(messages);
 
-					finishExecute();
+							finishExecute();
 
-					SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErrSpe"));
+							SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErrSpe"));
 
-					//処理を戻す
-					callback.execute(false);
-				}
+							//処理を戻す
+							callback.execute(false);
+						}
 
-				@Override
-				public void onSuccess(EntityDataListResultInfo result) {
-					if (result.isError()) {
-						messageTabSet.setErrorMessage(result.getLogMessages());
-						SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErrSpe"));
+						@Override
+						public void onSuccess(EntityDataListResultInfo result) {
+							if (result.isError()) {
+								messageTabSet.setErrorMessage(result.getLogMessages());
+								SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErrSpe"));
 
-						finishExecute();
+								finishExecute();
 
-						//処理を戻す
-						callback.execute(false);
+								//処理を戻す
+								callback.execute(false);
 
-					} else {
-						messageTabSet.setMessage(result.getLogMessages());
+							} else {
+								messageTabSet.setMessage(result.getLogMessages());
 
-						finishExecute();
+								finishExecute();
 
-						//OK処理を戻す
-						callback.execute(true);
-					}
-				}
+								//OK処理を戻す
+								callback.execute(true);
+							}
+						}
 
-			});
+					});
 		}
 
 		private void deleteAll() {
@@ -1274,14 +1285,13 @@ public class EntityDataListPane extends VLayout {
 				String gridWhere = gridCriteria.getAttribute(EntitySearchResultDS.WHERE_CRITERIA);
 				if (!gridWhere.equals(getWhere())) {
 					SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
-							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff")
-							, new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff"), new BooleanCallback() {
 
-						@Override
-						public void execute(Boolean value) {
-							if (!value) {
-								return;
-							}
+								@Override
+								public void execute(Boolean value) {
+									if (!value) {
+										return;
+									}
 //							//現在の検索条件の検証
 //							validateCriteria(false, false, new BooleanCallback() {
 //
@@ -1293,9 +1303,9 @@ public class EntityDataListPane extends VLayout {
 //								}
 //							});
 
-							showDeleteAllDialog();
-						}
-					});
+									showDeleteAllDialog();
+								}
+							});
 				} else {
 //					//検索実行時にエラーが発生していないかを確認
 //					if (workspace.isSearchError()) {

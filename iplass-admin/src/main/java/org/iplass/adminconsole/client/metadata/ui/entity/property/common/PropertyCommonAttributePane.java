@@ -93,12 +93,14 @@ public class PropertyCommonAttributePane extends VLayout implements PropertyAttr
 
 	@Override
 	public void onChangeNotNullFromList(boolean isNotNull) {
-		controller.notNullParts().onChangeNotNullFromList(isNotNull);
+		controller.notNullParts()
+				.onChangeNotNullFromList(isNotNull);
 	}
 
 	@Override
 	public boolean canEditNotNull() {
-		return controller.notNullParts().canEditNotNull();
+		return controller.notNullParts()
+				.canEditNotNull();
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class PropertyCommonAttributePane extends VLayout implements PropertyAttr
 
 		for (PropertyCommonAttributeParts parts : controller.partsList()) {
 			if (parts instanceof TypeChangeHandler) {
-				((TypeChangeHandler)parts).onTypeChanged(type);
+				((TypeChangeHandler) parts).onTypeChanged(type);
 			}
 		}
 

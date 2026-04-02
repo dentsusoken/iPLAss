@@ -53,7 +53,7 @@ public class MetaParameterMatchCacheCriteria extends MetaCacheCriteria {
 	@Override
 	public void applyConfig(CacheCriteriaDefinition definition) {
 		fillFrom(definition);
-		ParameterMatchCacheCriteriaDefinition def = (ParameterMatchCacheCriteriaDefinition)definition;
+		ParameterMatchCacheCriteriaDefinition def = (ParameterMatchCacheCriteriaDefinition) definition;
 		if (def.getMatchingParameterName() != null) {
 			matchingParameterName = new ArrayList<String>();
 			matchingParameterName.addAll(def.getMatchingParameterName());
@@ -95,7 +95,7 @@ public class MetaParameterMatchCacheCriteria extends MetaCacheCriteria {
 		@Override
 		public String createContentCacheKey(RequestContext request) {
 			StringBuilder sb = new StringBuilder();
-			for (String param: sortedParamList) {
+			for (String param : sortedParamList) {
 				sb.append(param);
 				sb.append("=");
 				String[] value = request.getParams(param);
@@ -107,7 +107,7 @@ public class MetaParameterMatchCacheCriteria extends MetaCacheCriteria {
 						String[] copy = new String[value.length];
 						System.arraycopy(value, 0, copy, 0, copy.length);
 						Arrays.sort(copy);
-						for (String v: copy) {
+						for (String v : copy) {
 							sb.append(v);
 							sb.append(":");
 						}
@@ -117,7 +117,6 @@ public class MetaParameterMatchCacheCriteria extends MetaCacheCriteria {
 			}
 			return sb.toString();
 		}
-
 
 	}
 

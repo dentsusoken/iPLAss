@@ -36,11 +36,13 @@ public class MessageResourceBundle extends ResourceBundle {
 
 	private String baseBundleName;
 	String lang;
-	private MessageService service = ServiceRegistry.getRegistry().getService(MessageService.class);
+	private MessageService service = ServiceRegistry.getRegistry()
+			.getService(MessageService.class);
 
 	public MessageResourceBundle(String baseBundleName, Locale locale, ResourceBundle wrapped) {
 		this.baseBundleName = baseBundleName;
-		I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+		I18nService i18n = ServiceRegistry.getRegistry()
+				.getService(I18nService.class);
 		Locale langLocale = i18n.selectLangLocale(locale);
 		lang = langLocale.toLanguageTag();
 		setParent(wrapped);
@@ -65,7 +67,8 @@ public class MessageResourceBundle extends ResourceBundle {
 	protected Set<String> handleKeySet() {
 		MetaMessageCategoryHandler handler = service.getRuntimeByName(baseBundleName);
 		if (handler != null) {
-			Map<String,MetaMessageItem> map = handler.getMetaData().getMessages();
+			Map<String, MetaMessageItem> map = handler.getMetaData()
+					.getMessages();
 			if (map == null) {
 				return Collections.emptySet();
 			}
@@ -79,7 +82,8 @@ public class MessageResourceBundle extends ResourceBundle {
 	public Enumeration<String> getKeys() {
 		MetaMessageCategoryHandler handler = service.getRuntimeByName(baseBundleName);
 		if (handler != null) {
-			Map<String,MetaMessageItem> map = handler.getMetaData().getMessages();
+			Map<String, MetaMessageItem> map = handler.getMetaData()
+					.getMessages();
 			if (map == null && parent == null) {
 				return Collections.emptyEnumeration();
 			}
@@ -96,12 +100,13 @@ public class MessageResourceBundle extends ResourceBundle {
 				public boolean hasMoreElements() {
 					return keys.hasNext();
 				}
+
 				@Override
 				public String nextElement() {
 					return keys.next();
 				}
 			};
-		} else if (parent != null){
+		} else if (parent != null) {
 			return parent.getKeys();
 		} else {
 			return Collections.emptyEnumeration();

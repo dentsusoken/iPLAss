@@ -19,17 +19,17 @@
  */
 package org.iplass.mtp.impl.validation.bean.hibernate;
 
-import jakarta.validation.MessageInterpolator;
-
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.spi.resourceloading.ResourceBundleLocator;
 import org.iplass.mtp.impl.validation.bean.MessageInterpolatorFactory;
 
+import jakarta.validation.MessageInterpolator;
+
 public class HibernateMessageInterpolatorFactory implements MessageInterpolatorFactory {
-	
+
 	private ResourceBundleLocator resourceBundleLocator;
 	private boolean cachingEnabled = true;
-	
+
 	public boolean isCachingEnabled() {
 		return cachingEnabled;
 	}
@@ -41,11 +41,11 @@ public class HibernateMessageInterpolatorFactory implements MessageInterpolatorF
 	public ResourceBundleLocator getResourceBundleLocator() {
 		return resourceBundleLocator;
 	}
-	
+
 	public void setResourceBundleLocator(ResourceBundleLocator resourceBundleLocator) {
 		this.resourceBundleLocator = resourceBundleLocator;
 	}
-	
+
 	@Override
 	public MessageInterpolator newMessageInterpolator(int tenantId) {
 		return new ResourceBundleMessageInterpolator(resourceBundleLocator, cachingEnabled);

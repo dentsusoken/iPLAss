@@ -28,10 +28,12 @@ import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-public class AuthenticationPolicyDefinitionManagerImpl extends AbstractTypedDefinitionManager<AuthenticationPolicyDefinition> implements AuthenticationPolicyDefinitionManager {
+public class AuthenticationPolicyDefinitionManagerImpl extends AbstractTypedDefinitionManager<AuthenticationPolicyDefinition>
+		implements AuthenticationPolicyDefinitionManager {
 //	private static Logger logger = LoggerFactory.getLogger(AuthenticationPolicyDefinitionManagerImpl.class);
 
-	private AuthenticationPolicyService service = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+	private AuthenticationPolicyService service = ServiceRegistry.getRegistry()
+			.getService(AuthenticationPolicyService.class);
 //	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
 
 //	@Override
@@ -101,11 +103,12 @@ public class AuthenticationPolicyDefinitionManagerImpl extends AbstractTypedDefi
 
 	@Override
 	public AuthenticationPolicyDefinition getOrDefault(String definitionName) {
-		AuthenticationPolicyRuntime runtime =  service.getOrDefault(definitionName);
+		AuthenticationPolicyRuntime runtime = service.getOrDefault(definitionName);
 		if (runtime == null) {
 			return null;
 		}
-		return runtime.getMetaData().currentConfig();
+		return runtime.getMetaData()
+				.currentConfig();
 	}
 
 //	@Override

@@ -42,7 +42,7 @@ public class WebhookEndpoint {
 	 * <%}%>
 	 * @param url <%=doclang == 'ja' ? '宛先のURL': 'The URL of the destination'%>
 	 */
-	public WebhookEndpoint(String url){
+	public WebhookEndpoint(String url) {
 		this.url = url;
 	}
 
@@ -55,11 +55,11 @@ public class WebhookEndpoint {
 	 * @param url <%=doclang == 'ja' ? '宛先のURL': 'The URL of the destination'%>
 	 * @param hmacKey <%=doclang == 'ja' ? 'HMACハッシュに使う秘密キー': 'The secret key to generate HMAC hashes'%>
 	 */
-	public WebhookEndpoint(String url, String hmacKey){
+	public WebhookEndpoint(String url, String hmacKey) {
 		this.url = url;
 		this.hmacKey = hmacKey;
 	}
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * Webhookに付けるエンドポイントを生成する。
@@ -70,7 +70,7 @@ public class WebhookEndpoint {
 	 * @param headerAuthorizationType <%=doclang == 'ja' ? 'Authorizationヘッダーに付ける内容のタイプ': 'Type of the content in Authorization Header'%>
 	 * @param headerAuthorizationContent <%=doclang == 'ja' ? 'Authorizationヘッダーに付ける内容、BASICの場合username:passwordの形にしてください': 'Content in Authorization Header, if it is BASIC, it should be a string in format of username:password'%>
 	 */
-	public WebhookEndpoint(String url, WebhookAuthenticationType headerAuthorizationType, String headerAuthorizationContent){
+	public WebhookEndpoint(String url, WebhookAuthenticationType headerAuthorizationType, String headerAuthorizationContent) {
 		this.url = url;
 		this.headerAuthorizationType = headerAuthorizationType;
 		this.headerAuthorizationContent = headerAuthorizationContent;
@@ -87,7 +87,7 @@ public class WebhookEndpoint {
 	 * @param headerAuthorizationContent <%=doclang == 'ja' ? 'Authorizationヘッダーに付ける内容、BASICの場合username:passwordの形にしてください': 'Content in Authorization Header, if it is BASIC, it should be a string in format of username:password'%>
 	 * @param hmacKey <%=doclang == 'ja' ? 'HMACハッシュに使う秘密キー': 'The secret key to generate HMAC hashes'%>
 	 */
-	public WebhookEndpoint(String url, WebhookAuthenticationType headerAuthorizationType, String headerAuthorizationContent, String hmacKey){
+	public WebhookEndpoint(String url, WebhookAuthenticationType headerAuthorizationType, String headerAuthorizationContent, String hmacKey) {
 		this.url = url;
 		this.headerAuthorizationType = headerAuthorizationType;
 		this.headerAuthorizationContent = headerAuthorizationContent;
@@ -103,7 +103,7 @@ public class WebhookEndpoint {
 	 * @param userName <%=doclang == 'ja' ? 'ユーザー名': 'User name'%>	 
 	 * @param password <%=doclang == 'ja' ? 'パスワード': 'Password'%>
 	 */
-	public void setBasicAuthorization(String userName,String password) {
+	public void setBasicAuthorization(String userName, String password) {
 		this.headerAuthorizationType = WebhookAuthenticationType.BASIC;
 		this.headerAuthorizationContent = userName + ":" + password;
 	}
@@ -272,5 +272,5 @@ public class WebhookEndpoint {
 	public void setHeaderAuthCustomTypeName(String headerAuthCustomTypeName) {
 		this.headerAuthCustomTypeName = headerAuthCustomTypeName;
 	}
-	
+
 }

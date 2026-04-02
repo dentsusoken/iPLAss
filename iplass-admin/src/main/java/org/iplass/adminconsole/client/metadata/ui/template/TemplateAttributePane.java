@@ -70,7 +70,7 @@ public class TemplateAttributePane extends VLayout {
 		//入力部分
 		commonForm = new DynamicForm();
 		commonForm.setWidth100();
-		commonForm.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+		commonForm.setNumCols(5); //間延びしないように最後に１つ余分に作成
 		commonForm.setColWidths(100, "*", 100, "*", "*");
 		commonForm.setMargin(5);
 
@@ -83,7 +83,7 @@ public class TemplateAttributePane extends VLayout {
 
 		typeForm = new DynamicForm();
 		typeForm.setWidth100();
-		typeForm.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+		typeForm.setNumCols(5); //間延びしないように最後に１つ余分に作成
 		typeForm.setColWidths(100, "*", 100, "*", "*");
 		typeForm.setMargin(5);
 

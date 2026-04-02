@@ -37,7 +37,6 @@ import org.iplass.mtp.impl.entity.property.PrimitivePropertyHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
-
 public class JoinPath {
 
 //	public static final String ROOT_ALIAS = "c";
@@ -86,7 +85,8 @@ public class JoinPath {
 		if (isRoot) {
 			myAlias = aliases.getAlias(null);
 			objDataTableName = ((GRdbEntityStoreRuntime) rootEh.getEntityStoreRuntime()).OBJ_STORE();
-			taregtObjDefId = rootEh.getMetaData().getId();
+			taregtObjDefId = rootEh.getMetaData()
+					.getId();
 			dataTenantId = context.getTenantId(rootEh);
 		}
 		joinWithVersionCol = true;
@@ -101,9 +101,9 @@ public class JoinPath {
 			if (children == null) {
 				children = new ArrayList<JoinPath>();
 			}
-			for (JoinPath ac: another.children) {
+			for (JoinPath ac : another.children) {
 				boolean find = false;
-				for (JoinPath c: children) {
+				for (JoinPath c : children) {
 					if (c.name.equals(ac.name)) {
 						find = true;
 						c.merge(ac);
@@ -124,13 +124,13 @@ public class JoinPath {
 		int dotIndex = path.indexOf('.');
 		if (dotIndex > -1) {
 			String childName = path.substring(0, dotIndex);
-			for (JoinPath c: children) {
+			for (JoinPath c : children) {
 				if (c.name.equals(childName)) {
 					return c.getJoinPath(path.substring(dotIndex + 1));
 				}
 			}
 		} else {
-			for (JoinPath c: children) {
+			for (JoinPath c : children) {
 				if (c.name.equals(path)) {
 					return c;
 				}
@@ -138,7 +138,6 @@ public class JoinPath {
 		}
 		return null;
 	}
-
 
 	private void checkVersionPropertyUsed(String propName, EntityHandler eh) {
 		if (joinWithVersionCol) {
@@ -170,14 +169,18 @@ public class JoinPath {
 			GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
 			if (col != null) {
 				if (!col.isNative()) {
-					for (GRdbPropertyStoreHandler scol: col.asList()) {
+					for (GRdbPropertyStoreHandler scol : col.asList()) {
 						if (!useIndex || col.isMulti() || scol.getIndexColName() == null) {
-							if (scol.getMetaData().getPageNo() > 0) {
-								addPageNo(scol.getMetaData().getPageNo());
+							if (scol.getMetaData()
+									.getPageNo() > 0) {
+								addPageNo(scol.getMetaData()
+										.getPageNo());
 							}
 						} else {
-							if (scol.getMetaData().getIndexPageNo() > 0) {
-								addPageNo(scol.getMetaData().getIndexPageNo());
+							if (scol.getMetaData()
+									.getIndexPageNo() > 0) {
+								addPageNo(scol.getMetaData()
+										.getIndexPageNo());
 							}
 						}
 					}
@@ -188,7 +191,8 @@ public class JoinPath {
 
 	//TODO 再帰のプログラムが汚いので後でリファクタリング
 
-	public void addPath(String[] propPath, int currentPos, EntityContext context, EntityHandler dataModelHandler, boolean onCondition, boolean useIndex) {
+	public void addPath(String[] propPath, int currentPos, EntityContext context, EntityHandler dataModelHandler, boolean onCondition,
+			boolean useIndex) {
 
 		if (propPath.length == currentPos + 2) {
 			//この結合先テーブルのプロパティを利用
@@ -204,7 +208,7 @@ public class JoinPath {
 				children = new ArrayList<JoinPath>();
 			}
 			JoinPath matched = null;
-			for (JoinPath j: children) {
+			for (JoinPath j : children) {
 				if (j.name.equals(propPath[currentPos + 1])) {
 					matched = j;
 					break;
@@ -213,7 +217,8 @@ public class JoinPath {
 
 			ReferencePropertyHandler pHandler = (ReferencePropertyHandler) dataModelHandler.getDeclaredProperty(propPath[currentPos + 1]);
 			if (pHandler == null) {
-				throw new NullPointerException(dataModelHandler.getMetaData().getName() + "." + propPath[currentPos + 1] + " not found");
+				throw new NullPointerException(dataModelHandler.getMetaData()
+						.getName() + "." + propPath[currentPos + 1] + " not found");
 			}
 //			ReferenceDefinition refDef = (ReferenceDefinition) pHandler.getStoreSpecProperty();
 //			ReferenceProperty refPropDef = (ReferenceProperty) pHandler.getDefinition();
@@ -234,11 +239,13 @@ public class JoinPath {
 				matched.parent = this;
 				ReferencePropertyHandler mappedBy = pHandler.getMappedByPropertyHandler(context);
 				EntityHandler refEh = pHandler.getReferenceEntityHandler(context);
-				matched.taregtObjDefId = refEh.getMetaData().getId();
+				matched.taregtObjDefId = refEh.getMetaData()
+						.getId();
 				matched.isMappedBy = (mappedBy != null);
 				if (matched.isMappedBy) {
 					matched.refDefId = mappedBy.getId();
-					matched.mappedByObjDefId = refEh.getMetaData().getId();
+					matched.mappedByObjDefId = refEh.getMetaData()
+							.getId();
 					matched.objRefTableName = ((GRdbEntityStoreRuntime) refEh.getEntityStoreRuntime()).OBJ_REF();
 					matched.refTenantId = context.getTenantId(refEh);
 				} else {
@@ -246,7 +253,7 @@ public class JoinPath {
 					matched.objRefTableName = ((GRdbEntityStoreRuntime) dataModelHandler.getEntityStoreRuntime()).OBJ_REF();
 					matched.refTenantId = context.getTenantId(dataModelHandler);
 				}
-				
+
 				if (dataModelHandler.isVersioned() && !matched.isMappedBy) {
 					matched.joinRefWithDataTable = true;
 					isUse = true;
@@ -280,7 +287,7 @@ public class JoinPath {
 			ret = new ArrayList<>();
 			ret.addAll(bindVariables);
 		}
-		for (JoinPath c: children) {
+		for (JoinPath c : children) {
 			List<BindValue> cblist = c.getOrderedBindVariables();
 			if (cblist != null) {
 				if (ret == null) {
@@ -302,12 +309,15 @@ public class JoinPath {
 		//参照先を結合
 		if (!isRoot) {
 //			sb.append(" LEFT OUTER JOIN OBJ_REF \"");
-			sb.append(" ").append(OUTER_JOIN).append(" ");
+			sb.append(" ")
+					.append(OUTER_JOIN)
+					.append(" ");
 			sb.append(objRefTableName);
 			sb.append(" ");
 			appendPath(sb);
 			sb.append("_r ");
-			if (sqc.getRdb().isSupportTableHint()) {
+			if (sqc.getRdb()
+					.isSupportTableHint()) {
 				sqc.appendTableHint(myAlias + "_r", sb);
 			}
 			sb.append("ON ");
@@ -362,12 +372,15 @@ public class JoinPath {
 
 			if (isUse) {
 //				sb.append(" LEFT OUTER JOIN OBJ_DATA \"");
-				sb.append(" ").append(OUTER_JOIN).append(" ");
+				sb.append(" ")
+						.append(OUTER_JOIN)
+						.append(" ");
 				sb.append(objDataTableName);
 				sb.append(" ");
 				appendPath(sb);
 				sb.append(" ");
-				if (sqc.getRdb().isSupportTableHint()) {
+				if (sqc.getRdb()
+						.isSupportTableHint()) {
 					sqc.appendTableHint(myAlias, sb);
 				}
 				sb.append("ON ");
@@ -435,7 +448,7 @@ public class JoinPath {
 
 		//複数ページに跨る場合、各ページを結合
 		if (pageNo != null && pageNo.size() > 0) {
-			for (Integer pn: pageNo) {
+			for (Integer pn : pageNo) {
 				sb.append(" ");
 				if (isRoot) {
 					sb.append(INNER_JOIN);
@@ -444,22 +457,26 @@ public class JoinPath {
 					sb.append(OUTER_JOIN);
 				}
 				sb.append(" ");
-				sb.append(objDataTableName).append(" ");
+				sb.append(objDataTableName)
+						.append(" ");
 				appendPath(sb);
-				sb.append(PAGE_PREFIX).append(pn);
+				sb.append(PAGE_PREFIX)
+						.append(pn);
 				sb.append(" ");
-				if (sqc.getRdb().isSupportTableHint()) {
+				if (sqc.getRdb()
+						.isSupportTableHint()) {
 					sqc.appendTableHint(myAlias + PAGE_PREFIX + pn, sb);
 				}
-
 
 				sb.append("ON ");
 //				appendPath(sb);
 //				sb.append(".").append(ObjStoreTable.TENANT_ID);
 //				sb.append("=");
 				appendPath(sb);
-				sb.append(PAGE_PREFIX).append(pn);
-				sb.append(".").append(ObjStoreTable.TENANT_ID);
+				sb.append(PAGE_PREFIX)
+						.append(pn);
+				sb.append(".")
+						.append(ObjStoreTable.TENANT_ID);
 				sb.append("=");
 				sb.append(dataTenantId);
 
@@ -468,34 +485,47 @@ public class JoinPath {
 //				sb.append(".").append(ObjStoreTable.OBJ_DEF_ID);
 //				sb.append("=");
 				appendPath(sb);
-				sb.append(PAGE_PREFIX).append(pn);
-				sb.append(".").append(ObjStoreTable.OBJ_DEF_ID);
+				sb.append(PAGE_PREFIX)
+						.append(pn);
+				sb.append(".")
+						.append(ObjStoreTable.OBJ_DEF_ID);
 				sb.append("=");
-				sb.append("'").append(taregtObjDefId).append("'");
+				sb.append("'")
+						.append(taregtObjDefId)
+						.append("'");
 				sb.append(" AND ");
 				appendPath(sb);
-				sb.append(".").append(ObjStoreTable.OBJ_ID);
+				sb.append(".")
+						.append(ObjStoreTable.OBJ_ID);
 				sb.append("=");
 				appendPath(sb);
-				sb.append(PAGE_PREFIX).append(pn);
-				sb.append(".").append(ObjStoreTable.OBJ_ID);
+				sb.append(PAGE_PREFIX)
+						.append(pn);
+				sb.append(".")
+						.append(ObjStoreTable.OBJ_ID);
 				sb.append(" AND ");
 				appendPath(sb);
-				sb.append(".").append(ObjStoreTable.OBJ_VER);
+				sb.append(".")
+						.append(ObjStoreTable.OBJ_VER);
 				sb.append("=");
 				appendPath(sb);
-				sb.append(PAGE_PREFIX).append(pn);
-				sb.append(".").append(ObjStoreTable.OBJ_VER);
+				sb.append(PAGE_PREFIX)
+						.append(pn);
+				sb.append(".")
+						.append(ObjStoreTable.OBJ_VER);
 				sb.append(" AND ");
 				appendPath(sb);
-				sb.append(PAGE_PREFIX).append(pn);
-				sb.append(".").append(ObjStoreTable.PG_NO);
-				sb.append("=").append(pn);
+				sb.append(PAGE_PREFIX)
+						.append(pn);
+				sb.append(".")
+						.append(ObjStoreTable.PG_NO);
+				sb.append("=")
+						.append(pn);
 			}
 		}
 
 		if (children != null) {
-			for (JoinPath c: children) {
+			for (JoinPath c : children) {
 				c.appendJoinCause(sb, sqc);
 			}
 		}
@@ -523,7 +553,8 @@ public class JoinPath {
 
 	private void appendDataColEquals(String ownerColName, String targetColName, StringBuilder sb) {
 		if (parent.isRoot) {
-			sb.append(aliases.getAlias(null)).append(".");
+			sb.append(aliases.getAlias(null))
+					.append(".");
 		} else {
 			parent.appendPath(sb);
 			sb.append(".");
@@ -541,7 +572,8 @@ public class JoinPath {
 	//TODO どこかのユーティリティクラスに移動
 	private void appendRefTablePrefix(JoinPath table, StringBuilder sb) {
 		if (table.isRoot) {
-			sb.append(aliases.getAlias(null)).append(".");
+			sb.append(aliases.getAlias(null))
+					.append(".");
 		} else {
 			table.appendPath(sb);
 			sb.append("_r.");

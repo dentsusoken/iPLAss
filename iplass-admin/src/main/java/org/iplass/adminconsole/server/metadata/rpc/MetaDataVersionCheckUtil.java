@@ -28,19 +28,23 @@ import org.iplass.mtp.definition.DefinitionManager;
 public class MetaDataVersionCheckUtil {
 
 	public static DefinitionEntry versionCheck(boolean checkVersion, @SuppressWarnings("rawtypes") Class type, String defName, int currentVersion) {
-		DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
+		DefinitionManager dm = ManagerLocator.getInstance()
+				.getManager(DefinitionManager.class);
 
 		// バージョンの最新チェック
 		if (checkVersion) {
 			@SuppressWarnings("unchecked")
 			DefinitionEntry entry = dm.getDefinitionEntry(type, defName);
-			int latestVersion = entry.getDefinitionInfo().getVersion();
+			int latestVersion = entry.getDefinitionInfo()
+					.getVersion();
 			if (latestVersion != currentVersion) {
 				MetaVersionCheckException exception = new MetaVersionCheckException("Does not match the latest version.");
 				exception.setTargetVersion(currentVersion);
 				exception.setLatestVersion(latestVersion);
-				exception.setLatestShared(entry.getDefinitionInfo().isShared());
-				exception.setLatestSharedOverwrite(entry.getDefinitionInfo().isSharedOverwrite());
+				exception.setLatestShared(entry.getDefinitionInfo()
+						.isShared());
+				exception.setLatestSharedOverwrite(entry.getDefinitionInfo()
+						.isSharedOverwrite());
 				throw exception;
 			}
 			return entry;

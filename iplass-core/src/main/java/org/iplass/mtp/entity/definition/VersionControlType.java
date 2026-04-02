@@ -27,19 +27,19 @@ package org.iplass.mtp.entity.definition;
  *
  */
 public enum VersionControlType {
-	
+
 	/** バージョン管理に関しなにもしない（デフォルト） */
 	NONE,
-	
+
 	/** 複数バージョンの保持を可能にする（１つのバージョンのみ有効化可能） */
 	VERSIONED,
-	
+
 	/** 有効期間を持ち、時間ベースでデータを管理する */
 	TIMEBASE,
-	
+
 	/** 有効期間を持ち、時間ベースでデータを管理する。加えて異なるバージョンにおいて、有効期間の重複はない前提 */
 	SIMPLE_TIMEBASE,
-	
+
 	/** stateプロパティが有効となっているバージョンを有効とみなす。stateが有効なバージョンは最大でも１つである前提 */
 	STATEBASE
 }

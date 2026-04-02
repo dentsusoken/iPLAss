@@ -61,7 +61,8 @@ public class AsyncTaskManagerImpl implements AsyncTaskManager {
 
 	@Override
 	public <V> AsyncTaskFuture<V> execute(AsyncTaskOption option, Callable<V> task) {
-		if (option.getQueue() != null && option.getQueue().equals(AsyncTaskOption.LOCAL_THREAD_QUEUE_NAME)) {
+		if (option.getQueue() != null && option.getQueue()
+				.equals(AsyncTaskOption.LOCAL_THREAD_QUEUE_NAME)) {
 			return localThreadService.execute(task, option, true);
 		} else {
 			return queueService.execute(task, option, true);
@@ -94,7 +95,8 @@ public class AsyncTaskManagerImpl implements AsyncTaskManager {
 		info.setExceptionHandlingMode(task.getExceptionHandlingMode());
 		info.setReturnResult(task.isReturnResult());
 		if (task.getCallable() != null) {
-			info.setTask(task.getCallable().getActual());
+			info.setTask(task.getCallable()
+					.getActual());
 		}
 		info.setResult(task.getResult());
 
@@ -109,7 +111,8 @@ public class AsyncTaskManagerImpl implements AsyncTaskManager {
 			return null;
 		}
 		//TODO jmsの場合も考慮する
-		Queue q = ((RdbAsyncTaskService) queueService).getQueueService().getQueue(queueName);
+		Queue q = ((RdbAsyncTaskService) queueService).getQueueService()
+				.getQueue(queueName);
 		if (q == null) {
 			throw new IllegalArgumentException("queue:" + queueName + " is not defined.");
 		}
@@ -123,8 +126,10 @@ public class AsyncTaskManagerImpl implements AsyncTaskManager {
 		Queue q = getQueue(cond.getQueue());
 
 		TaskSearchCondition tsc = new TaskSearchCondition();
-		tsc.setTenantId(ExecuteContext.getCurrentContext().getClientTenantId());
-		tsc.setQueueId(q.getConfig().getId());
+		tsc.setTenantId(ExecuteContext.getCurrentContext()
+				.getClientTenantId());
+		tsc.setQueueId(q.getConfig()
+				.getId());
 		tsc.setTaskId(cond.getTaskId());
 		tsc.setStatus(cond.getStatus());
 		tsc.setWithHistory(cond.isWithHistory());
@@ -136,7 +141,7 @@ public class AsyncTaskManagerImpl implements AsyncTaskManager {
 
 		List<Task> taskList = q.search(tsc);
 		List<AsyncTaskInfo> result = new ArrayList<>(taskList.size());
-		for (Task t: taskList) {
+		for (Task t : taskList) {
 			result.add(toInfo(q.getName(), t));
 		}
 		return result;

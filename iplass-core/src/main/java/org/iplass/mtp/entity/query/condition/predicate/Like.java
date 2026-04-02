@@ -43,17 +43,17 @@ public class Like extends Predicate {
 	/**
 	 * pattern中、一文字のワイルドカードを示す。_、アンダースコア。
 	 */
-	public static final String US ="_";
+	public static final String US = "_";
 	/**
 	 * pattern中、複数文字のワイルドカードを示す。%、パーセントシンボル。
 	 */
 	public static final String PS = "%";
-	
+
 	/**
 	 * pattern中、_、%をエスケープする際のエスケープ文字。\（java文字列上は\\）。
 	 */
 	public static final String ES = "\\";
-	
+
 	public enum MatchPattern {
 		/** 前方一致 */
 		PREFIX,
@@ -62,21 +62,21 @@ public class Like extends Predicate {
 		/** 部分一致 */
 		PARTIAL
 	}
-	
+
 	public enum CaseType {
 		/** Case Insensitive。大文字小文字区別しない。デフォルト。 */
 		CI,
 		/** Case Sensitive。大文字小文字区別する。 */
 		CS
 	}
-	
+
 	private Literal pattern;
 	private ValueExpression property;
 	private CaseType caseType = CaseType.CI;
-	
+
 	public Like() {
 	}
-	
+
 	/**
 	 * <b>このメソッドのpatternは、自動的にエスケープ処理されない点、注意</b>
 	 * 
@@ -101,7 +101,7 @@ public class Like extends Predicate {
 		this.pattern = new Literal(pattern);
 		this.caseType = caseType;
 	}
-	
+
 	/**
 	 * <b>このメソッドのpatternは、自動的にエスケープ処理されない点、注意</b>
 	 * 
@@ -115,7 +115,7 @@ public class Like extends Predicate {
 		this.pattern = pattern;
 		this.caseType = caseType;
 	}
-	
+
 	/**
 	 * 指定のstrをエスケープしたのち、matchPatternの指定により、
 	 * 前後に%を付与する形でpatternを構築。
@@ -127,7 +127,7 @@ public class Like extends Predicate {
 	public Like(String property, String str, MatchPattern matchPattern) {
 		this(property, str, matchPattern, CaseType.CI);
 	}
-	
+
 	/**
 	 * 指定のstrをエスケープしたのち、matchPatternの指定により、
 	 * 前後に%を付与する形でpatternを構築。
@@ -153,7 +153,7 @@ public class Like extends Predicate {
 	public Like(String property, String str, MatchPattern matchPattern, CaseType caseType) {
 		this(property, str, matchPattern, caseType, true);
 	}
-	
+
 	/**
 	 * 指定のstrをエスケープしたのち、matchPatternの指定により、
 	 * 前後に%を付与する形でpatternを構築。
@@ -168,7 +168,7 @@ public class Like extends Predicate {
 	 */
 	public Like(String property, String str, MatchPattern matchPattern, CaseType caseType, boolean asBindVariable) {
 		setPropertyName(property);
-		StringBuilder sb= new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		if (matchPattern == MatchPattern.POSTFIX || matchPattern == MatchPattern.PARTIAL) {
 			sb.append(PS);
 		}
@@ -179,7 +179,7 @@ public class Like extends Predicate {
 		this.pattern = new Literal(sb.toString(), asBindVariable);
 		this.caseType = caseType;
 	}
-	
+
 	/**
 	 * <b>このメソッドのpatternは、自動的にエスケープ処理されない点、注意</b>
 	 * 
@@ -204,7 +204,7 @@ public class Like extends Predicate {
 		this.pattern = new Literal(pattern);
 		this.caseType = caseType;
 	}
-	
+
 	/**
 	 * <b>このメソッドのpatternは、自動的にエスケープ処理されない点、注意</b>
 	 * 
@@ -217,14 +217,14 @@ public class Like extends Predicate {
 		this.pattern = pattern;
 		this.caseType = caseType;
 	}
-	
+
 	public Like(ValueExpression property, String str, MatchPattern matchPattern, CaseType caseType) {
 		this(property, str, matchPattern, caseType, false);
 	}
-	
+
 	public Like(ValueExpression property, String str, MatchPattern matchPattern, CaseType caseType, boolean asBindVariable) {
 		setProperty(property);
-		StringBuilder sb= new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		if (matchPattern == MatchPattern.POSTFIX || matchPattern == MatchPattern.PARTIAL) {
 			sb.append(PS);
 		}
@@ -235,7 +235,7 @@ public class Like extends Predicate {
 		this.pattern = new Literal(sb.toString(), asBindVariable);
 		this.caseType = caseType;
 	}
-	
+
 	public CaseType getCaseType() {
 		return caseType;
 	}
@@ -250,38 +250,38 @@ public class Like extends Predicate {
 		}
 		return property.toString();
 	}
-	
+
 	public void setPropertyName(String propertyName) {
 		property = new EntityField(propertyName);
 	}
-	
+
 	public void setProperty(ValueExpression property) {
 		this.property = property;
 	}
-	
+
 	public ValueExpression getProperty() {
 		return property;
 	}
-	
+
 	public String getPattern() {
 		if (pattern == null) {
 			return null;
 		}
 		return (String) pattern.getValue();
 	}
-	
+
 	public void setPattern(String pattern) {
 		this.pattern = new Literal(pattern);
 	}
-	
+
 	public Literal getPatternAsLiteral() {
 		return pattern;
 	}
-	
+
 	public void setPatternAsLiteral(Literal pattern) {
 		this.pattern = pattern;
 	}
-	
+
 	public void accept(ConditionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (visitor instanceof ValueExpressionVisitor) {
@@ -291,11 +291,12 @@ public class Like extends Predicate {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getPropertyName()).append(" like ");
+		sb.append(getPropertyName())
+				.append(" like ");
 		if (pattern == null) {
 			sb.append("null");
 		} else {
@@ -306,6 +307,7 @@ public class Like extends Predicate {
 		}
 		return sb.toString();
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

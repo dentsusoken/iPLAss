@@ -25,8 +25,12 @@ import java.util.Map;
 
 public interface ParameterValueMap {
 	public Object getParam(String name);
+
 	public Object[] getParams(String name);
+
 	public Map<String, Object> getParamMap();
+
 	public Iterator<String> getParamNames();
+
 	public void cleanTempResource();
 }

@@ -38,7 +38,6 @@ import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Lobは、Copy on Write方式で実装。
  * 実際のLobDataの保存先は切り替え可能。
@@ -74,9 +73,10 @@ public class Lob {
 
 	private LobStoreService service;
 	private boolean updateSize;
- 
+
 	public Lob(int tenantId, long lobId, String name, String type,
-			String definitionId, String propertyId, String oid, Long version, String sessionId, String status, long lobDataId, LobStore lobStore, LobStoreService service) {
+			String definitionId, String propertyId, String oid, Long version, String sessionId, String status, long lobDataId, LobStore lobStore,
+			LobStoreService service) {
 		this.tenantId = tenantId;
 		this.lobId = lobId;
 		this.name = name;
@@ -119,7 +119,8 @@ public class Lob {
 
 	public InputStream getBinaryInputStream() {
 		if (getLobData() != null) {
-			return service.getAbandonedStreamDetector().registerOrNot(getLobData().getBinaryInputStream());
+			return service.getAbandonedStreamDetector()
+					.registerOrNot(getLobData().getBinaryInputStream());
 		} else {
 			return null;
 		}
@@ -127,7 +128,7 @@ public class Lob {
 
 	public OutputStream getBinaryOutputStream() {
 		allocateLobData(null);
-		
+
 		OutputStream os = null;
 		LobValidator lv = lobStore.getLobValidator();
 		if (lv == null) {
@@ -135,50 +136,57 @@ public class Lob {
 		} else {
 			os = new LobValidatedOutputStream(lobData.getBinaryOutputStream(), this, lv);
 		}
-		
+
 		if (updateSize) {
 			os = new SizeUpdateOutputStream(os, tenantId, lobData, service.getLobDao());
 		}
-		return service.getAbandonedStreamDetector().registerOrNot(os);
+		return service.getAbandonedStreamDetector()
+				.registerOrNot(os);
 	}
-	
+
 	private void allocateLobData(Long size) {
 		if (lobDataId == IS_NEW) {
 			//新規にLobDataをロケート
 			prevLobDataId = lobDataId;
 			lobDataId = lobId;
-			if (!service.getLobDao().updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
+			if (!service.getLobDao()
+					.updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
 				throw new EntityConcurrentUpdateException(resourceString("impl.lob.Lob.cantUpdate"));
 			}
 			//参照カウント用のレコード追加
-			service.getLobDao().initLobData(tenantId, lobDataId, size);
+			service.getLobDao()
+					.initLobData(tenantId, lobDataId, size);
 
 			lobData = lobStore.create(tenantId, lobDataId);
 		} else if (prevLobDataId == IS_NOT_INIT) {
 			//更新用に新しいLobDataをロケート
 			prevLobDataId = lobDataId;
-			lobDataId = service.getLobDao().nextLobDataId(tenantId);
-			if (!service.getLobDao().updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
+			lobDataId = service.getLobDao()
+					.nextLobDataId(tenantId);
+			if (!service.getLobDao()
+					.updateLobDataId(tenantId, lobId, prevLobDataId, lobDataId)) {
 				throw new EntityConcurrentUpdateException(resourceString("impl.lob.Lob.cantUpdate"));
 			}
 
 			//すげ変える前のLobDataの参照カウントの更新
-			service.getLobDao().refCountUp(tenantId, prevLobDataId, -1);
+			service.getLobDao()
+					.refCountUp(tenantId, prevLobDataId, -1);
 
 			//新しい参照カウント用のレコード追加
-			service.getLobDao().initLobData(tenantId, lobDataId, size);
+			service.getLobDao()
+					.initLobData(tenantId, lobDataId, size);
 
 			lobData = lobStore.create(tenantId, lobDataId);
 		}
 	}
-	
+
 	public void transferFrom(File file) throws IOException {
 		Long size = null;
 		if (updateSize) {
-			size  = file.length();
+			size = file.length();
 		}
 		allocateLobData(size);
-		
+
 		LobValidator lv = lobStore.getLobValidator();
 		if (lv == null) {
 			lobData.transferFrom(file);
@@ -195,7 +203,7 @@ public class Lob {
 			}
 		}
 	}
-	
+
 	public long getLobId() {
 		return lobId;
 	}
@@ -272,7 +280,6 @@ public class Lob {
 		return definitionId;
 	}
 
-
 	public String getOid() {
 		return oid;
 	}
@@ -281,16 +288,13 @@ public class Lob {
 		return version;
 	}
 
-
 	public String getPropertyId() {
 		return propertyId;
 	}
 
-
 	public String getSessionId() {
 		return sessionId;
 	}
-
 
 	public String getStatus() {
 		return status;

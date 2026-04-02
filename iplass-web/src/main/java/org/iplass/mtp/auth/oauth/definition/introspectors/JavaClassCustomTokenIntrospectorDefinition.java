@@ -34,7 +34,7 @@ public class JavaClassCustomTokenIntrospectorDefinition extends CustomTokenIntro
 	private static final long serialVersionUID = 7805854304702805608L;
 
 	private String className;
-	
+
 	public String getClassName() {
 		return className;
 	}

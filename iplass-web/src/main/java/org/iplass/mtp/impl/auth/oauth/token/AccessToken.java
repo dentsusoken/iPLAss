@@ -24,15 +24,23 @@ import java.util.List;
 import org.iplass.mtp.auth.User;
 
 public abstract class AccessToken {
-	
+
 	public abstract RefreshToken getRefreshToken();
+
 	public abstract List<String> getGrantedScopes();
+
 	public abstract String getTokenEncoded();
+
 	public abstract long getExpiresIn();
+
 	public abstract User getUser();
+
 	public abstract String getClientId();
+
 	public abstract long getExpirationTime();//秒
+
 	public abstract long getIssuedAt();//秒
+
 	public abstract long getNotBefore();//秒
-	
+
 }

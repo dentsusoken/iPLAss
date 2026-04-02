@@ -96,7 +96,7 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 	 * @return プロパティID
 	 */
 	public String getPropertyId() {
-	    return propertyId;
+		return propertyId;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 	 * @param propertyId プロパティID
 	 */
 	public void setPropertyId(String propertyId) {
-	    this.propertyId = propertyId;
+		this.propertyId = propertyId;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 	 * @return 検索条件
 	 */
 	public String getCondition() {
-	    return condition;
+		return condition;
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class MetaReferenceSelectFilterSetting implements MetaData {
 	 * @param condition 検索条件
 	 */
 	public void setCondition(String condition) {
-	    this.condition = condition;
+		this.condition = condition;
 	}
 
 	/**

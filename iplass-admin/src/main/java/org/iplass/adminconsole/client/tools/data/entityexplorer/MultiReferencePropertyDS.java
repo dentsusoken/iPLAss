@@ -75,7 +75,7 @@ public class MultiReferencePropertyDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(List<Entity> entities) {
 				List<ListGridRecord> records = createRecord(entities);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -84,7 +84,8 @@ public class MultiReferencePropertyDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_MultiReferencePropertyDS_failedToGetData", defName, oid) + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_MultiReferencePropertyDS_failedToGetData", defName, oid)
+						+ caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
@@ -106,17 +107,18 @@ public class MultiReferencePropertyDS extends AbstractAdminDataSource {
 					if (reference.getOid() != null) {
 						record.setAttribute("oid", SafeHtmlUtils.htmlEscape(reference.getOid()));
 					} else {
-						record.setAttribute("oid", (String)null);
+						record.setAttribute("oid", (String) null);
 					}
 					if (reference.getName() != null) {
 						record.setAttribute("name", SafeHtmlUtils.htmlEscape(reference.getName()));
 					} else {
-						record.setAttribute("name", (String)null);
+						record.setAttribute("name", (String) null);
 					}
 					if (reference.getVersion() != null) {
-						record.setAttribute("version", SafeHtmlUtils.htmlEscape(reference.getVersion().toString()));
+						record.setAttribute("version", SafeHtmlUtils.htmlEscape(reference.getVersion()
+								.toString()));
 					} else {
-						record.setAttribute("version", (String)null);
+						record.setAttribute("version", (String) null);
 					}
 					list.add(record);
 				}

@@ -133,15 +133,18 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		this(definition, out, option, null);
 	}
 
-	public EntityExcelWriter(EntityDefinition definition, OutputStream out, EntityExcelWriteOption option, ZipOutputStream binaryStore) throws IOException {
+	public EntityExcelWriter(EntityDefinition definition, OutputStream out, EntityExcelWriteOption option, ZipOutputStream binaryStore)
+			throws IOException {
 		this.definition = definition;
 		this.out = out;
 		this.option = option;
 		this.binaryStore = binaryStore;
 
 		auth = AuthContext.getCurrentContext();
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 
 		String sheetName = I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList());
 
@@ -194,22 +197,26 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		headerCellStyle.setBorderBottom(BorderStyle.THIN);
 		headerCellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 
-		int columnIndex[] = {0};
-		IntStream.range(0, properties.size()).forEach(i -> {
+		int columnIndex[] = { 0 };
+		IntStream.range(0, properties.size())
+				.forEach(i -> {
 
-			PropertyDefinition property = properties.get(i);
-			if (!(property instanceof ReferenceProperty) && property.getMultiplicity() != 1) {
-				IntStream.range(0, property.getMultiplicity()).forEach(j -> {
-					if (j != 0) {
-						columnIndex[0]++;
+					PropertyDefinition property = properties.get(i);
+					if (!(property instanceof ReferenceProperty) && property.getMultiplicity() != 1) {
+						IntStream.range(0, property.getMultiplicity())
+								.forEach(j -> {
+									if (j != 0) {
+										columnIndex[0]++;
+									}
+									writeHeaderColumn(columnIndex[0], option.getMultipleColumnName()
+											.apply(property, j));
+								});
+					} else {
+						writeHeaderColumn(columnIndex[0], option.getColumnName()
+								.apply(property));
 					}
-					writeHeaderColumn(columnIndex[0], option.getMultipleColumnName().apply(property, j));
+					columnIndex[0]++;
 				});
-			} else {
-				writeHeaderColumn(columnIndex[0], option.getColumnName().apply(property));
-			}
-			columnIndex[0]++;
-		});
 	}
 
 	private void writeHeaderColumn(int columnIndex, String text) {
@@ -227,16 +234,19 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		dateCellStyle = workbook.createCellStyle();
 		applyDataCellStyle(dateCellStyle);
 		dateCellStyle.setDataFormat(
-				createHelper.createDataFormat().getFormat(DATE_EXCEL_FORMAT));
+				createHelper.createDataFormat()
+						.getFormat(DATE_EXCEL_FORMAT));
 
 		dateTimeCellStyle = workbook.createCellStyle();
 		applyDataCellStyle(dateTimeCellStyle);
-		dateTimeCellStyle.setDataFormat(createHelper.createDataFormat().getFormat(DATE_EXCEL_FORMAT + " " + TIME_EXCEL_FORMAT));
+		dateTimeCellStyle.setDataFormat(createHelper.createDataFormat()
+				.getFormat(DATE_EXCEL_FORMAT + " " + TIME_EXCEL_FORMAT));
 
 		timeCellStyle = workbook.createCellStyle();
 		applyDataCellStyle(timeCellStyle);
 		timeCellStyle.setDataFormat(
-				createHelper.createDataFormat().getFormat(TIME_EXCEL_FORMAT));
+				createHelper.createDataFormat()
+						.getFormat(TIME_EXCEL_FORMAT));
 	}
 
 	/**
@@ -261,52 +271,55 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		rowIndex++;
 		currentRow = sheet.createRow(rowIndex);
 
-		int columnIndex[] = {0};
+		int columnIndex[] = { 0 };
 		for (Iterator<PropertyDefinition> it = properties.iterator(); it.hasNext();) {
 			PropertyDefinition property = it.next();
 
 			if (!(property instanceof ReferenceProperty) && property.getMultiplicity() != 1) {
-				Object[] values = (Object[])entity.getValue(property.getName());
+				Object[] values = (Object[]) entity.getValue(property.getName());
 
 				//SelectPropertyの出力方式を取得
-				if (property instanceof SelectProperty && option.getSortSelectValue().apply((SelectProperty)property)) {
+				if (property instanceof SelectProperty && option.getSortSelectValue()
+						.apply((SelectProperty) property)) {
 
 					//ソート出力
-					SelectProperty sp = (SelectProperty)property;
+					SelectProperty sp = (SelectProperty) property;
 					List<SelectValue> selectableValues = sp.getSelectValueList();
 
-					IntStream.range(0, property.getMultiplicity()).forEach(i -> {
-						if (i != 0) {
-							columnIndex[0]++;
-						}
-						if (values == null || i > selectableValues.size() - 1) {
-							//登録値がnullか選択可能値より多重度が多い場合
-							writeValue(columnIndex[0], null, property, binaryStore);
-						} else {
-							final SelectValue targetValue = selectableValues.get(i);
-							boolean exist = Arrays.stream(values).anyMatch(value ->
-								value != null && ((SelectValue)value).getValue().equals(targetValue.getValue())
-							);
-							if (exist) {
-								writeValue(columnIndex[0], targetValue, property, binaryStore);
-							} else {
-								writeValue(columnIndex[0], null, property, binaryStore);
-							}
-						}
-					});
+					IntStream.range(0, property.getMultiplicity())
+							.forEach(i -> {
+								if (i != 0) {
+									columnIndex[0]++;
+								}
+								if (values == null || i > selectableValues.size() - 1) {
+									//登録値がnullか選択可能値より多重度が多い場合
+									writeValue(columnIndex[0], null, property, binaryStore);
+								} else {
+									final SelectValue targetValue = selectableValues.get(i);
+									boolean exist = Arrays.stream(values)
+											.anyMatch(value -> value != null && ((SelectValue) value).getValue()
+													.equals(targetValue.getValue()));
+									if (exist) {
+										writeValue(columnIndex[0], targetValue, property, binaryStore);
+									} else {
+										writeValue(columnIndex[0], null, property, binaryStore);
+									}
+								}
+							});
 
-				}else {
+				} else {
 					//通常出力
-					IntStream.range(0, property.getMultiplicity()).forEach(i -> {
-						if (i != 0) {
-							columnIndex[0]++;
-						}
-						if (values == null || i >= values.length) {
-							writeValue(columnIndex[0], null, property, binaryStore);
-						} else {
-							writeValue(columnIndex[0], values[i], property, binaryStore);
-						}
-					});
+					IntStream.range(0, property.getMultiplicity())
+							.forEach(i -> {
+								if (i != 0) {
+									columnIndex[0]++;
+								}
+								if (values == null || i >= values.length) {
+									writeValue(columnIndex[0], null, property, binaryStore);
+								} else {
+									writeValue(columnIndex[0], values[i], property, binaryStore);
+								}
+							});
 				}
 			} else {
 				Object val = entity.getValue(property.getName());
@@ -338,19 +351,17 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		//対象プロパティの検証
 		properties = outputProperties.stream()
 				.filter(property ->
-					// 参照可能権限を保持している場合のみ追加
-					auth.checkPermission(
-							new EntityPropertyPermission(definition.getName(), property.getName(), EntityPropertyPermission.Action.REFERENCE))
-				)
+				// 参照可能権限を保持している場合のみ追加
+				auth.checkPermission(
+						new EntityPropertyPermission(definition.getName(), property.getName(), EntityPropertyPermission.Action.REFERENCE)))
 				.filter(property ->
-					// バージョン管理している場合のみversionプロパティを追加
-					!Entity.VERSION.equals(property.getName()) || definition.getVersionControlType() != VersionControlType.NONE
-				)
+				// バージョン管理している場合のみversionプロパティを追加
+				!Entity.VERSION.equals(property.getName()) || definition.getVersionControlType() != VersionControlType.NONE)
 				.filter(property -> {
 					//被参照の除外チェック
 					return option.isWithMappedByReference()
 							|| CollectionUtil.isNotEmpty(option.getProperties())
-							|| (!(property instanceof ReferenceProperty) || ((ReferenceProperty)property).getMappedBy() == null);
+							|| (!(property instanceof ReferenceProperty) || ((ReferenceProperty) property).getMappedBy() == null);
 				})
 				.filter(property -> {
 					//BinaryPropertyの除外チェック
@@ -378,10 +389,9 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 			outputProperties.add(definition.getProperty(Entity.OID));
 			outputProperties.add(definition.getProperty(Entity.VERSION));
 
-			outputProperties.addAll(option.getProperties().stream()
-					.filter(propertyName ->
-						!(propertyName.equals(Entity.OID) || propertyName.equals(Entity.VERSION))
-					)
+			outputProperties.addAll(option.getProperties()
+					.stream()
+					.filter(propertyName -> !(propertyName.equals(Entity.OID) || propertyName.equals(Entity.VERSION)))
 					.map(propertyName -> {
 						PropertyDefinition property = definition.getProperty(propertyName);
 						if (property == null) {
@@ -416,97 +426,103 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		}
 
 		switch (pd.getType()) {
-			case EXPRESSION:
-				ExpressionProperty ep = (ExpressionProperty)pd;
-				if (ep.getResultType() != null) {
-					writeValue(cell, val, ep.getResultType());
+		case EXPRESSION:
+			ExpressionProperty ep = (ExpressionProperty) pd;
+			if (ep.getResultType() != null) {
+				writeValue(cell, val, ep.getResultType());
+			} else {
+				writeValue(cell, val, ep.getType());
+			}
+			break;
+		case REFERENCE:
+			ReferenceProperty rpd = (ReferenceProperty) pd;
+			EntityDefinition ed = edm.get(rpd.getObjectDefinitionName());
+			if (rpd.getMultiplicity() == 1) {
+				Entity entity = (Entity) val;
+				if (ed.getVersionControlType()
+						.equals(VersionControlType.NONE) && !option.isWithReferenceVersion()) {
+					writeText(cell, entity.getOid());
 				} else {
-					writeValue(cell, val, ep.getType());
+					writeText(cell, entity.getOid() + "." + entity.getVersion());
 				}
-				break;
-			case REFERENCE:
-				ReferenceProperty rpd = (ReferenceProperty) pd;
-				EntityDefinition ed = edm.get(rpd.getObjectDefinitionName());
-				if (rpd.getMultiplicity() == 1) {
-					Entity entity = (Entity) val;
-					if (ed.getVersionControlType().equals(VersionControlType.NONE) && !option.isWithReferenceVersion()) {
-						writeText(cell, entity.getOid());
-					} else {
-						writeText(cell, entity.getOid() + "." + entity.getVersion());
+			} else {
+				Entity[] eList = (Entity[]) val;
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < eList.length; i++) {
+					if (i != 0) {
+						sb.append(",");
 					}
-				} else {
-					Entity[] eList = (Entity[]) val;
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < eList.length; i++) {
-						if (i != 0) {
-							sb.append(",");
-						}
-						if (eList[i] != null) {
-							if (ed.getVersionControlType().equals(VersionControlType.NONE) && !option.isWithReferenceVersion()) {
-								sb.append(eList[i].getOid());
-							} else {
-								sb.append(eList[i].getOid() + "." + eList[i].getVersion());
-							}
+					if (eList[i] != null) {
+						if (ed.getVersionControlType()
+								.equals(VersionControlType.NONE) && !option.isWithReferenceVersion()) {
+							sb.append(eList[i].getOid());
+						} else {
+							sb.append(eList[i].getOid() + "." + eList[i].getVersion());
 						}
 					}
-					writeText(cell, sb.toString());
 				}
-				break;
-			case BINARY:
-				BinaryReference br = (BinaryReference)val;
-				Map<String, String> valueMap = new LinkedHashMap<>();
-				valueMap.put("lobid", String.valueOf((br.getLobId())));
-				valueMap.put("name", br.getName());
-				valueMap.put("type", br.getType());
-				writeText(cell, toJsonString(valueMap));
+				writeText(cell, sb.toString());
+			}
+			break;
+		case BINARY:
+			BinaryReference br = (BinaryReference) val;
+			Map<String, String> valueMap = new LinkedHashMap<>();
+			valueMap.put("lobid", String.valueOf((br.getLobId())));
+			valueMap.put("name", br.getName());
+			valueMap.put("type", br.getType());
+			writeText(cell, toJsonString(valueMap));
 
-				writeBinaryData(br, binaryStore);
-				break;
-			default:
-				writeValue(cell, val, pd.getType());
+			writeBinaryData(br, binaryStore);
+			break;
+		default:
+			writeValue(cell, val, pd.getType());
 		}
 	}
 
 	private void writeValue(Cell cell, Object val, PropertyDefinitionType type) {
 
 		switch (type) {
-			case BOOLEAN:
-				Boolean b = (Boolean) val;
+		case BOOLEAN:
+			Boolean b = (Boolean) val;
 //				writeText(cell, b.booleanValue() ? "1" : "0");
-				writeText(cell, b.toString());
-				break;
-			case DATE:
-				writeText(cell, DateUtil.getSimpleDateFormat(getDateFormat(), false).format((java.sql.Date) val));
-				break;
-			case DATETIME:
-				// Timezoneをtrueにするとアップロード時にもTimezoneが適用されるためダウンロード時はfalseにする。
-				writeText(cell, DateUtil.getSimpleDateFormat(getDateTimeFormat(), false).format((Timestamp) val));
-				break;
-			case TIME:
-				writeText(cell, DateUtil.getSimpleDateFormat(getTimeFormat(), false).format((Time) val));
-				break;
-			case SELECT:
-				SelectValue sv = (SelectValue) val;
-				writeText(cell, sv.getValue());
-				break;
-			case DECIMAL:
-				writeText(cell, ((BigDecimal)val).toPlainString());
-				break;
-			case FLOAT:
-				writeText(cell, BigDecimal.valueOf((Double)val).toPlainString());
-				break;
-			case INTEGER:
-			case LONGTEXT:
-			case STRING:
-			case AUTONUMBER:
-			case EXPRESSION:
-				writeText(cell, val.toString());
-				break;
-			case BINARY:
-			case REFERENCE:
-				break;
-			default:
-				throw new EntityCsvException("can not convert from " + type + ":" + val);
+			writeText(cell, b.toString());
+			break;
+		case DATE:
+			writeText(cell, DateUtil.getSimpleDateFormat(getDateFormat(), false)
+					.format((java.sql.Date) val));
+			break;
+		case DATETIME:
+			// Timezoneをtrueにするとアップロード時にもTimezoneが適用されるためダウンロード時はfalseにする。
+			writeText(cell, DateUtil.getSimpleDateFormat(getDateTimeFormat(), false)
+					.format((Timestamp) val));
+			break;
+		case TIME:
+			writeText(cell, DateUtil.getSimpleDateFormat(getTimeFormat(), false)
+					.format((Time) val));
+			break;
+		case SELECT:
+			SelectValue sv = (SelectValue) val;
+			writeText(cell, sv.getValue());
+			break;
+		case DECIMAL:
+			writeText(cell, ((BigDecimal) val).toPlainString());
+			break;
+		case FLOAT:
+			writeText(cell, BigDecimal.valueOf((Double) val)
+					.toPlainString());
+			break;
+		case INTEGER:
+		case LONGTEXT:
+		case STRING:
+		case AUTONUMBER:
+		case EXPRESSION:
+			writeText(cell, val.toString());
+			break;
+		case BINARY:
+		case REFERENCE:
+			break;
+		default:
+			throw new EntityCsvException("can not convert from " + type + ":" + val);
 		}
 	}
 
@@ -542,20 +558,20 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 
 				ZipEntry zentry = new ZipEntry(entryName);
 				binaryStore.putNextEntry(zentry);
-				if(write(br, binaryStore)) {
+				if (write(br, binaryStore)) {
 					binaryStore.closeEntry();
 				}
 
 			} else {
 				//出力先ディレクトリが指定されている場合はExportする
-				if(StringUtil.isNotBlank(option.getExportBinaryDataDir())) {
+				if (StringUtil.isNotBlank(option.getExportBinaryDataDir())) {
 					File lobDir = new File(option.getExportBinaryDataDir());
 					if (!lobDir.exists()) {
 						lobDir.mkdir();
 					}
 					//ファイル名をEntity定義名.LOBIDに設定
 					//(参考)データ自体はLOBIDで一意（OracleはDB単位、MySQLはテナント単位）
-					File lobFile = new File(option.getExportBinaryDataDir() , definition.getName() + "." + br.getLobId());
+					File lobFile = new File(option.getExportBinaryDataDir(), definition.getName() + "." + br.getLobId());
 					if (lobFile.exists()) {
 						lobFile.delete();
 					}
@@ -595,7 +611,9 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
 			//for backward compatibility
-			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+			mapper.configOverride(java.sql.Date.class)
+					.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+							.withTimeZone(TimeZone.getDefault()));
 		}
 		try (StringWriter writer = new StringWriter()) {
 			mapper.writeValue(writer, value);
@@ -615,7 +633,9 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		if (option.getDateFormat() != null) {
 			dateFormat = option.getDateFormat();
 		} else {
-			dateFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDateFormat();
+			dateFormat = ExecuteContext.getCurrentContext()
+					.getLocaleFormat()
+					.getOutputDateFormat();
 		}
 		return dateFormat;
 
@@ -629,7 +649,9 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		if (option.getDatetimeSecFormat() != null) {
 			dateTimeFormat = option.getDatetimeSecFormat();
 		} else {
-			dateTimeFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDatetimeSecFormat();
+			dateTimeFormat = ExecuteContext.getCurrentContext()
+					.getLocaleFormat()
+					.getOutputDatetimeSecFormat();
 		}
 		return dateTimeFormat;
 	}
@@ -642,7 +664,9 @@ public class EntityExcelWriter implements AutoCloseable, Flushable {
 		if (option.getTimeSecFormat() != null) {
 			timeFormat = option.getTimeSecFormat();
 		} else {
-			timeFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputTimeSecFormat();
+			timeFormat = ExecuteContext.getCurrentContext()
+					.getLocaleFormat()
+					.getOutputTimeSecFormat();
 		}
 		return timeFormat;
 

@@ -24,9 +24,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
@@ -39,6 +36,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * EQL結果Export用Service実装クラス
@@ -67,7 +66,7 @@ public class EqlCsvDownloadServiceImpl extends AdminDownloadService {
 			//EQLエラー、CSVにエラーを出力
 			logger.error("failed to export eql result.", e);
 
-			try (QueryCsvWriter writer = new QueryCsvWriter(resp.getOutputStream(), null)){
+			try (QueryCsvWriter writer = new QueryCsvWriter(resp.getOutputStream(), null)) {
 
 				DownloadUtil.setCsvResponseHeader(resp, filename);
 
@@ -86,10 +85,11 @@ public class EqlCsvDownloadServiceImpl extends AdminDownloadService {
 		//実行Queryの設定
 		query.setVersioned(isSearchAllVersion);
 
-		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 		aals.logDownload("EqlWorkSheetCsvDownload", filename, query);
 
-		try (QueryCsvWriter writer = new QueryCsvWriter(resp.getOutputStream(), query)){
+		try (QueryCsvWriter writer = new QueryCsvWriter(resp.getOutputStream(), query)) {
 
 			DownloadUtil.setCsvResponseHeader(resp, filename);
 
@@ -106,7 +106,7 @@ public class EqlCsvDownloadServiceImpl extends AdminDownloadService {
 
 		} catch (IOException e) {
 			logger.error("failed to export eql result.", e);
-        	throw new DownloadRuntimeException(e);
+			throw new DownloadRuntimeException(e);
 		}
 	}
 

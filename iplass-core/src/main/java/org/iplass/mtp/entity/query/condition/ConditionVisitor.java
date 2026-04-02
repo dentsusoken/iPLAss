@@ -40,19 +40,34 @@ import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 public interface ConditionVisitor {
 
 	public boolean visit(And and);
+
 	public boolean visit(Between between);
+
 	public boolean visit(Paren paren);
+
 	public boolean visit(Equals equals);
+
 	public boolean visit(Greater greater);
+
 	public boolean visit(GreaterEqual greaterEqual);
+
 	public boolean visit(In in);
+
 	public boolean visit(Lesser lesser);
+
 	public boolean visit(LesserEqual lesserEqual);
+
 	public boolean visit(Like like);
+
 	public boolean visit(Not not);
+
 	public boolean visit(NotEquals notEquals);
+
 	public boolean visit(Or or);
+
 	public boolean visit(IsNotNull isNotNull);
+
 	public boolean visit(IsNull isNull);
+
 	public boolean visit(Contains contains);
 }

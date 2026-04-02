@@ -41,7 +41,7 @@ public class MessageResourceBundleControl extends UTF8ResourceBundleControl {
 		this.formats = formats;
 		fallbackFormats = new ArrayList<>(formats.size());
 		boolean afterMsg = false;
-		for (String f: formats) {
+		for (String f : formats) {
 			if (f.equals(MESSAGE_FORMAT_TYPE)) {
 				afterMsg = true;
 			} else if (afterMsg) {
@@ -56,7 +56,7 @@ public class MessageResourceBundleControl extends UTF8ResourceBundleControl {
 		if (format.equals("mtp.message")) {
 			ResourceBundle wrapped = null;
 			if (fallbackFormats != null) {
-				for (String f: fallbackFormats) {
+				for (String f : fallbackFormats) {
 					wrapped = super.newBundle(baseName, locale, f, loader, reload);
 					if (wrapped != null) {
 						break;
@@ -77,8 +77,11 @@ public class MessageResourceBundleControl extends UTF8ResourceBundleControl {
 	@Override
 	public Locale getFallbackLocale(String baseName, Locale locale) {
 //		Locale l = ExecuteContext.getCurrentContext().getTenantContext().getTenantRuntime().getLangLocale();
-		Locale l = ExecuteContext.getCurrentContext().getTenantContext().getTenantRuntime()
-				.getConfigRuntime(MetaTenantI18nInfoRuntime.class).getLangLocale();
+		Locale l = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getTenantRuntime()
+				.getConfigRuntime(MetaTenantI18nInfoRuntime.class)
+				.getLangLocale();
 		if (l != null && !locale.equals(l)) {
 			return l;
 		}

@@ -29,15 +29,15 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 	private String defName;
 
 	private String viewName;
-	
+
 	private String parentDefName;
-	
+
 	private String parentViewName;
-	
+
 	private String parentPropName;
-	
+
 	private String viewType;
-	
+
 	private Integer referenceSectionIndex;
 
 	private GetEntityNameListEntityParameter entity;

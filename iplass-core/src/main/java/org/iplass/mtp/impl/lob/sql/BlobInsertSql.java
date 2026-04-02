@@ -30,7 +30,7 @@ public class BlobInsertSql extends UpdateSqlHandler {
 			String oid, Long version, Long lobDataId, RdbAdapter rdb) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO " + ObjBlobTable.TABLE_NAME + "("
-				 + ObjBlobTable.TENANT_ID + ",");
+				+ ObjBlobTable.TENANT_ID + ",");
 		sql.append(ObjBlobTable.LOB_ID + ",");
 		sql.append(ObjBlobTable.LOB_NAME
 				+ "," + ObjBlobTable.LOB_TYPE
@@ -44,10 +44,16 @@ public class BlobInsertSql extends UpdateSqlHandler {
 				+ "," + ObjBlobTable.OBJ_ID
 				+ "," + ObjBlobTable.OBJ_VER
 				+ ") VALUES(");
-		sql.append(tenantId).append(",");
-		sql.append(lobId).append(",");
-		sql.append("'").append(rdb.sanitize(name)).append("',");
-		sql.append("'").append(rdb.sanitize(type)).append("',");
+		sql.append(tenantId)
+				.append(",");
+		sql.append(lobId)
+				.append(",");
+		sql.append("'")
+				.append(rdb.sanitize(name))
+				.append("',");
+		sql.append("'")
+				.append(rdb.sanitize(type))
+				.append("',");
 		if (!isTemporary) {
 			sql.append("'V',");
 		} else {
@@ -56,17 +62,28 @@ public class BlobInsertSql extends UpdateSqlHandler {
 		if (lobDataId == null) {
 			sql.append("null,");
 		} else {
-			sql.append(lobDataId).append(",");
+			sql.append(lobDataId)
+					.append(",");
 		}
-		sql.append(rdb.systimestamp()).append(",");
-		sql.append(rdb.systimestamp()).append(",");
+		sql.append(rdb.systimestamp())
+				.append(",");
+		sql.append(rdb.systimestamp())
+				.append(",");
 		if (isTemporary) {
-			sql.append("'").append(rdb.sanitize(sessionId)).append("',null,null,null,null");
+			sql.append("'")
+					.append(rdb.sanitize(sessionId))
+					.append("',null,null,null,null");
 		} else {
 			sql.append("null,");
-			sql.append("'").append(rdb.sanitize(defId)).append("',");
-			sql.append("'").append(rdb.sanitize(propId)).append("',");
-			sql.append("'").append(rdb.sanitize(oid)).append("',");
+			sql.append("'")
+					.append(rdb.sanitize(defId))
+					.append("',");
+			sql.append("'")
+					.append(rdb.sanitize(propId))
+					.append("',");
+			sql.append("'")
+					.append(rdb.sanitize(oid))
+					.append("',");
 			if (version != null) {
 				sql.append(version);
 			} else {
@@ -74,9 +91,8 @@ public class BlobInsertSql extends UpdateSqlHandler {
 			}
 		}
 		sql.append(")");
-		
+
 		return sql.toString();
 	}
-	
 
 }

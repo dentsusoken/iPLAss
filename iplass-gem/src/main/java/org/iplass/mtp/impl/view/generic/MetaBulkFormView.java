@@ -23,13 +23,13 @@ package org.iplass.mtp.impl.view.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.FormView;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaBulkFormView extends MetaFormView {
@@ -42,7 +42,7 @@ public class MetaBulkFormView extends MetaFormView {
 
 	/** 更新アクション名 */
 	private String updateActionName;
-	
+
 	/** 検索条件で更新アクション名*/
 	private String updateAllActionName;
 

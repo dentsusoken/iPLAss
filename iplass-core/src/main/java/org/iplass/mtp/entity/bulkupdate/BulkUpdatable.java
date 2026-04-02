@@ -21,7 +21,6 @@ package org.iplass.mtp.entity.bulkupdate;
 
 import java.util.List;
 
-
 /**
  * バルク更新対象を表すインタフェース。
  * {@link Iterable#iterator()}で更新対象のBulkUpdateEntityを返却するように実装する。
@@ -30,7 +29,7 @@ import java.util.List;
  *
  */
 public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable {
-	
+
 	/**
 	 * ラムダ式でBulkUpdatableを実装する場合に利用。
 	 * 
@@ -42,14 +41,14 @@ public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable
 	public static FunctionalEntityStream as(String definitionName) {
 		return new FunctionalEntityStream().definitionName(definitionName);
 	}
-	
+
 	/**
 	 * バルク更新対象のEntity定義名を返却するように実装。
 	 * 
 	 * @return
 	 */
 	public String getDefinitionName();
-	
+
 	/**
 	 * バルク更新対象のEntityの更新処理が成功した場合呼び出されるコールバック。
 	 * 
@@ -57,7 +56,7 @@ public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable
 	 */
 	public default void updated(BulkUpdateEntity updatedEntity) {
 	}
-	
+
 	/**
 	 * BulkUpdatableのクローズ処理を記述。
 	 * 
@@ -65,7 +64,7 @@ public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable
 	@Override
 	public default void close() {
 	}
-	
+
 	/**
 	 * バルク更新（UPDATEおよびMERGEで更新と判断された場合）の際の更新対象のプロパティを指定する。
 	 * 未指定（null）の場合は全項目を更新対象と判断。
@@ -74,7 +73,7 @@ public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable
 	public default List<String> getUpdateProperties() {
 		return null;
 	}
-	
+
 	/**
 	 * バルク更新（INSERT時）の際、EntityにcreateBy,createDate,updateBy,updateDateの値を
 	 * 指定してその値のまま登録する場合にtrueを指定します。
@@ -87,5 +86,5 @@ public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable
 	public default boolean isEnableAuditPropertySpecification() {
 		return false;
 	}
-	
+
 }

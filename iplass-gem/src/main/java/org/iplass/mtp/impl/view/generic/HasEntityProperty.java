@@ -100,7 +100,8 @@ public interface HasEntityProperty {
 			if (property == null) {
 				return null;
 			}
-			return property.getMetaData().currentConfig(context);
+			return property.getMetaData()
+					.currentConfig(context);
 		}
 	}
 
@@ -124,7 +125,8 @@ public interface HasEntityProperty {
 
 			PropertyHandler property = entity.getProperty(objPropName, context);
 			if (!(property instanceof ReferencePropertyHandler)) {
-				throw new IllegalArgumentException("path is invalid:" + objPropName + " is not ObjectReferenceProperty of " + entity.getMetaData().getName());
+				throw new IllegalArgumentException("path is invalid:" + objPropName + " is not ObjectReferenceProperty of " + entity.getMetaData()
+						.getName());
 			}
 			ReferencePropertyHandler refProp = (ReferencePropertyHandler) property;
 			EntityHandler refEntity = refProp.getReferenceEntityHandler(context);

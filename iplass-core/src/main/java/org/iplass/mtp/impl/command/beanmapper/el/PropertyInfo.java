@@ -35,7 +35,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SelectValue;
 
 class PropertyInfo {
-	
+
 	enum TypeKind {
 		SIMPLE,
 		BEAN,
@@ -44,7 +44,7 @@ class PropertyInfo {
 		LIST,
 		MAP
 	}
-	
+
 	private Method readMethod;
 	private Method writeMethod;
 	private PropertyDescriptor descriptor;
@@ -54,7 +54,7 @@ class PropertyInfo {
 
 	private Class<?> propertyType;
 	private Class<?> componentType;
-	
+
 	PropertyInfo(Class<?> baseClass, PropertyDescriptor descriptor) {
 		this.descriptor = descriptor;
 		readMethod = getMethod(baseClass, descriptor.getReadMethod());
@@ -75,7 +75,8 @@ class PropertyInfo {
 					if (t instanceof Class && !Object.class.equals(t)) {
 						componentType = (Class<?>) t;
 					} else if (t instanceof ParameterizedType) {
-						componentType = ((ParameterizedType) t).getRawType().getClass();
+						componentType = ((ParameterizedType) t).getRawType()
+								.getClass();
 					}
 				}
 				componentTypeKind = typeOf(componentType);
@@ -88,7 +89,8 @@ class PropertyInfo {
 					if (t instanceof Class && !Object.class.equals(t)) {
 						componentType = (Class<?>) t;
 					} else if (t instanceof ParameterizedType) {
-						componentType = ((ParameterizedType) t).getRawType().getClass();
+						componentType = ((ParameterizedType) t).getRawType()
+								.getClass();
 					}
 				}
 				componentTypeKind = typeOf(componentType);
@@ -98,7 +100,7 @@ class PropertyInfo {
 			}
 		}
 	}
-	
+
 	private TypeKind typeOf(Class<?> t) {
 		if (t == null) {
 			return null;
@@ -117,11 +119,11 @@ class PropertyInfo {
 			return TypeKind.BEAN;
 		}
 	}
-	
+
 	public PropertyDescriptor getDescriptor() {
 		return descriptor;
 	}
-	
+
 	public TypeKind getTypeKind() {
 		return typeKind;
 	}
@@ -166,34 +168,34 @@ class PropertyInfo {
 		}
 		return false;
 	}
-	
+
 	public Class<?> getComponentType() {
 		return componentType;
 	}
 
 	public Class<?> getPropertyType() {
-	    return descriptor.getPropertyType();
+		return descriptor.getPropertyType();
 	}
-	
+
 	public boolean isReadOnly() {
-	    return getWriteMethod() == null;
+		return getWriteMethod() == null;
 	}
-	
+
 	public Method getReadMethod() {
-	    return readMethod;
+		return readMethod;
 	}
-	
+
 	public Method getWriteMethod() {
-	    return writeMethod;
+		return writeMethod;
 	}
-	
+
 	//参考:ELUtil
 	//publicなメソッドを取得する
 	static Method getMethod(Class<?> type, Method m) {
 		if (m == null || Modifier.isPublic(type.getModifiers())) {
 			return m;
 		}
-		
+
 		Class<?>[] inf = type.getInterfaces();
 		Method mp = null;
 		for (int i = 0; i < inf.length; i++) {
@@ -206,7 +208,7 @@ class PropertyInfo {
 			} catch (NoSuchMethodException e) {
 			}
 		}
-		
+
 		Class<?> sup = type.getSuperclass();
 		if (sup != null) {
 			try {
@@ -220,5 +222,5 @@ class PropertyInfo {
 		}
 		return null;
 	}
-	
+
 }

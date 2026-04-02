@@ -39,7 +39,7 @@ public abstract class LogExplorerServiceFactory extends AbstractAdminServiceFact
 
 		LogExplorerServiceAsync service = GWT.create(LogExplorerService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		LogExplorerServiceFactory.service = service;
 
