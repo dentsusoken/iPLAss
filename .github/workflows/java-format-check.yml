@@ -9,6 +9,7 @@ on:
       - synchronize
       - reopened
       - ready_for_review
+  workflow_dispatch:
 
 jobs:
   java-format-check:
@@ -16,14 +17,14 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-slim
-    if: github.event.pull_request.draft == false
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@f9c9c575b8b21b6485636a91ffecd10e558c62f6 # v3.5.0
+        uses: gradle/actions/wrapper-validation@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
 
       - name: Setup Java
         uses: actions/setup-java@v4
