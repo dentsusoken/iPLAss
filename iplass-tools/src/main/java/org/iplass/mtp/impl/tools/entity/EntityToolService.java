@@ -345,7 +345,7 @@ public class EntityToolService implements Service {
 
 		return result;
 	}
-	
+
 	private Object getUpdateAllStoreValue(PropertyDefinition pd, UpdateAllValueType type, String stringValue, List<String> validateErrors) {
 		Object storeValue = null;
 		if (stringValue != null) {

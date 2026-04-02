@@ -81,7 +81,7 @@ public class UpdateAllValue implements Serializable {
 	public void setValueType(UpdateAllValueType valueType) {
 		this.valueType = valueType;
 	}
-	
+
 	public List<UpdateAllArrayValue> getArrayValues() {
 		return arrayValues;
 	}
@@ -99,7 +99,7 @@ public class UpdateAllValue implements Serializable {
 		private Integer index;
 		// 更新値
 		private String value;
-		
+
 		public UpdateAllValueType getValueType() {
 			return valueType;
 		}
