@@ -19,13 +19,13 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.jaas;
 
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
-
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
 
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.IdPasswordCredential;

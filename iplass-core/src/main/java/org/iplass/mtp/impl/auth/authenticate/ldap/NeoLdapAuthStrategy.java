@@ -19,6 +19,13 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.ldap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
@@ -29,13 +36,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapName;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
