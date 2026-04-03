@@ -19,6 +19,9 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.jaas;
 
+import java.io.IOException;
+import java.security.Principal;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -27,9 +30,6 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-
-import java.io.IOException;
-import java.security.Principal;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.User;
