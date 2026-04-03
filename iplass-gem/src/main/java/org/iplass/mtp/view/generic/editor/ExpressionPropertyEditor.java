@@ -39,9 +39,11 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/ExpressionPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/ExpressionPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
-	@Jsp(path="/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterExpressionPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
+		@Jsp(path = "/jsp/gem/generic/editor/ExpressionPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/ExpressionPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
+		@Jsp(
+				path = "/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterExpressionPropertyEditor.jsp",
+				key = ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
 })
 public class ExpressionPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 

@@ -41,9 +41,11 @@ import jakarta.xml.bind.annotation.XmlType;
  * @author lis3wg
  */
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/BooleanPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/BooleanPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
-	@Jsp(path="/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterBooleanPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
+		@Jsp(path = "/jsp/gem/generic/editor/BooleanPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/BooleanPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
+		@Jsp(
+				path = "/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterBooleanPropertyEditor.jsp",
+				key = ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
 })
 public class BooleanPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
