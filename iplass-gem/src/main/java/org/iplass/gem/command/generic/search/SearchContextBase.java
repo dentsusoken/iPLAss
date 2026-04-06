@@ -603,7 +603,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * ソート設定を取得します。
 	 * @return ソート設定
 	 */
-	protected List<SortSetting> getSortSetting() {
+	protected final List<SortSetting> getSortSetting() {
 		List<SortSetting> setting = new ArrayList<>();
 
 		//画面でソート条件が指定されれば第1キーに

@@ -49,7 +49,6 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
 
 public class SearchSelectListContext extends SearchContextBase {
 
@@ -202,11 +201,6 @@ public class SearchSelectListContext extends SearchContextBase {
 	@Override
 	protected boolean hasSortSetting() {
 		return context.hasSortSetting();
-	}
-
-	@Override
-	protected List<SortSetting> getSortSetting() {
-		return context.getSortSetting();
 	}
 
 	@Override
