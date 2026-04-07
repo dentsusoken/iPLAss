@@ -22,7 +22,7 @@ package org.iplass.gem.command.generic.upload;
 
 import org.iplass.gem.command.GemWebApiParameter;
 
-public class EntityFileUploadStatusParam implements GemWebApiParameter {
+public class CsvUploadStatusParam implements GemWebApiParameter {
 
 	private String defName;
 

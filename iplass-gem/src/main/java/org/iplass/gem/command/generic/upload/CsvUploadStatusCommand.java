@@ -61,7 +61,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		displayName=" CSVアップロードステータス確認",
 		accepts={RequestType.REST_FORM, RequestType.REST_JSON, RequestType.REST_XML},
 		methods=MethodType.POST,
-		restJson = @RestJson(parameterName = "params", parameterType = EntityFileUploadStatusParam.class),
+		restJson = @RestJson(parameterName = "params", parameterType = CsvUploadStatusParam.class),
 		restXml = @RestXml(parameterName = "params"),
 		results={WebApiRequestConstants.DEFAULT_RESULT}
 	)
