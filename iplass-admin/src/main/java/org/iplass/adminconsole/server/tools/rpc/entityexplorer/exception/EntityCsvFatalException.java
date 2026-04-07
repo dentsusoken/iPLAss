@@ -40,5 +40,4 @@ public class EntityCsvFatalException extends RuntimeException {
 		super(cause);
 	}
 
-	
 }

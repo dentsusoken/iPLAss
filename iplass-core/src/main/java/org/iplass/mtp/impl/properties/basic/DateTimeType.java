@@ -36,9 +36,9 @@ import org.slf4j.LoggerFactory;
 public class DateTimeType extends BasicType {
 	private static final long serialVersionUID = 3911004797303862636L;
 	private static final int hash = 19;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(DateTimeType.class);
-	
+
 	//FIXME 暫定対応。toStringを古いフォーマットで出力するか否か
 	static boolean OLD_FORMAT_FLAG = false;
 	static {
@@ -47,7 +47,6 @@ public class DateTimeType extends BasicType {
 			OLD_FORMAT_FLAG = true;
 		}
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -88,7 +87,8 @@ public class DateTimeType extends BasicType {
 			return null;
 		} else {
 			if (OLD_FORMAT_FLAG) {
-				return DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true).format(value);
+				return DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true)
+						.format(value);
 			} else {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(Literal.DATE_TIME_FROMAT, true);
 				return sdf.format(value);
@@ -103,10 +103,13 @@ public class DateTimeType extends BasicType {
 		}
 		try {
 			if (OLD_FORMAT_FLAG) {
-				return new Timestamp(DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true).parse(strValue).getTime());
+				return new Timestamp(DateUtil.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, true)
+						.parse(strValue)
+						.getTime());
 			} else {
 				SimpleDateFormat sdf = DateUtil.getSimpleDateFormat(Literal.DATE_TIME_FROMAT, true);
-				return new Timestamp(sdf.parse(strValue).getTime());
+				return new Timestamp(sdf.parse(strValue)
+						.getTime());
 			}
 		} catch (ParseException e) {
 			try {
@@ -119,6 +122,5 @@ public class DateTimeType extends BasicType {
 			}
 		}
 	}
-
 
 }

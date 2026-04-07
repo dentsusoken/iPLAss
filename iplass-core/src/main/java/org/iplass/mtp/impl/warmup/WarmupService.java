@@ -92,7 +92,8 @@ public class WarmupService implements Service {
 		Map<String, String> tenantTaskMap = config.getValue("tenantTaskMap", Map.class, Collections.emptyMap());
 
 		// タスク初期化
-		taskMap.values().forEach(WarmupTask::init);
+		taskMap.values()
+				.forEach(WarmupTask::init);
 
 		// アプリケーションのウォームアップタスク名を設定
 		// カンマ区切りのタスク名を分割
@@ -114,7 +115,8 @@ public class WarmupService implements Service {
 		}
 
 		// 全テナントID
-		var tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
+		var tenantService = ServiceRegistry.getRegistry()
+				.getService(TenantService.class);
 		var allTenantIdList = tenantService.getAllTenantIdList();
 
 		Map<Integer, List<String>> tenantTaskNameListMap = new HashMap<>();
@@ -125,9 +127,9 @@ public class WarmupService implements Service {
 			// カンマ区切りのテナントIDを分割。テナントIDは * が指定されていたら、全テナントと判断する。空文字は無視する。
 			List<Integer> tenantIdList = "*".equals(commaSeparatedTenantId) ? allTenantIdList
 					: Stream.of(commaSeparatedTenantId.split(","))
-					.filter(i -> StringUtil.isNotEmpty(i))
-					.map(i -> Integer.parseInt(i.trim()))
-					.toList();
+							.filter(i -> StringUtil.isNotEmpty(i))
+							.map(i -> Integer.parseInt(i.trim()))
+							.toList();
 
 			// カンマ区切りのタスク名を分割
 			var taskNames = Stream.of(commaSeparatedTaskName.split(","))
@@ -153,7 +155,8 @@ public class WarmupService implements Service {
 
 		// ステータスファイルが存在していたら削除
 		deleteFile(statusFile);
-		Stream.of(WarmupStatus.values()).forEach(s -> deleteFile(getStatusFile(s)));
+		Stream.of(WarmupStatus.values())
+				.forEach(s -> deleteFile(getStatusFile(s)));
 
 		this.taskMap = taskMap;
 		this.tenantTaskNameListMap = tenantTaskNameListMap;
@@ -169,13 +172,15 @@ public class WarmupService implements Service {
 		try {
 			if (null != taskMap) {
 				// タスク破棄
-				taskMap.values().forEach(WarmupTask::destroy);
+				taskMap.values()
+						.forEach(WarmupTask::destroy);
 			}
 
 		} finally {
 			// ステータスファイルを削除
 			deleteFile(getStatusFile());
-			Stream.of(WarmupStatus.values()).forEach(s -> deleteFile(getStatusFile(s)));
+			Stream.of(WarmupStatus.values())
+					.forEach(s -> deleteFile(getStatusFile(s)));
 			// インスタンス破棄
 			if (null != asyncTaskExecutor) {
 				asyncTaskExecutor.destroy();
@@ -273,7 +278,9 @@ public class WarmupService implements Service {
 			return;
 		}
 
-		var tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+		var tenantId = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getTenantId();
 		var taskNameList = tenantTaskNameListMap.get(tenantId);
 
 		if (taskNameList == null) {
@@ -432,7 +439,9 @@ public class WarmupService implements Service {
 		 */
 		public void destroy() {
 			// 未完了でキャンセルされていないタスクをキャンセル
-			futureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(f -> f.cancel(true));
+			futureList.stream()
+					.filter(f -> !f.isDone() && !f.isCancelled())
+					.forEach(f -> f.cancel(true));
 
 			if (null != executor) {
 				executor.close();

@@ -52,9 +52,11 @@ public class SmsServiceBaseImpl extends AbstractTypedMetaDataService<MetaSmsMail
 		public TypeMap() {
 			super(getFixedPath(), MetaSmsMailTemplate.class, SmsMailTemplateDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<SmsMailTemplateDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(SmsMailTemplateDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(SmsMailTemplateDefinitionManager.class);
 		}
 
 		@Override
@@ -102,7 +104,7 @@ public class SmsServiceBaseImpl extends AbstractTypedMetaDataService<MetaSmsMail
 
 	protected boolean fireOnSendMail(final SmsMail mail) {
 		if (listener != null) {
-			for (SendSmsMailListener l: listener) {
+			for (SendSmsMailListener l : listener) {
 				if (!l.beforeSend(mail)) {
 					logger.info("send mail canceled by Listener:" + l);
 					return false;
@@ -114,7 +116,7 @@ public class SmsServiceBaseImpl extends AbstractTypedMetaDataService<MetaSmsMail
 
 	protected void fireOnSuccess(SmsMail mail) {
 		if (listener != null) {
-			for (SendSmsMailListener l: listener) {
+			for (SendSmsMailListener l : listener) {
 				l.onSuccess(mail);
 			}
 		}
@@ -122,7 +124,7 @@ public class SmsServiceBaseImpl extends AbstractTypedMetaDataService<MetaSmsMail
 
 	protected void handleException(SmsMail mail, Exception e) {
 		if (listener != null) {
-			for (SendSmsMailListener l: listener) {
+			for (SendSmsMailListener l : listener) {
 				if (!l.onFailure(mail, e)) {
 					return;
 				}
@@ -137,7 +139,8 @@ public class SmsServiceBaseImpl extends AbstractTypedMetaDataService<MetaSmsMail
 
 	protected void sendSmsMailImpl(Tenant tenant, SmsMail sms) {
 		//noope
-		logger.warn("can't send sms, use TwilioSmsService or own implementation of SmsService.To:" + sms.getTo() + ", From:" + sms.getFrom() + ", Message:" + sms.getMessage());
+		logger.warn("can't send sms, use TwilioSmsService or own implementation of SmsService.To:" + sms.getTo() + ", From:" + sms.getFrom()
+				+ ", Message:" + sms.getMessage());
 	}
 
 	@Override

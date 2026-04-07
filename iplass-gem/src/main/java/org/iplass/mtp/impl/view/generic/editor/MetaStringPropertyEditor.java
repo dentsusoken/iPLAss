@@ -339,7 +339,6 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		return searchExactMatchCondition;
 	}
 
-
 	public void setSearchExactMatchCondition(boolean searchExactMatchCondition) {
 		this.searchExactMatchCondition = searchExactMatchCondition;
 	}

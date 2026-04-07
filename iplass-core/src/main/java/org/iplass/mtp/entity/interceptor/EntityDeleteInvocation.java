@@ -24,11 +24,13 @@ import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 
 public interface EntityDeleteInvocation extends EntityInvocation<Void> {
-	
+
 	public Entity getEntity();
+
 	public void setEntity(Entity entity);
-	
+
 	public DeleteOption getDeleteOption();
+
 	public void setDeleteOption(DeleteOption deleteOption);
-	
+
 }

@@ -75,7 +75,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 
 	private HttpClientConfig httpClientConfig;
 
-	private String endpoint ="https://fcm.googleapis.com/fcm/send";
+	private String endpoint = "https://fcm.googleapis.com/fcm/send";
 
 	private ObjectMapper jsonMapper;
 
@@ -126,10 +126,11 @@ public class FCMPushNotificationService extends PushNotificationService {
 	@Override
 	protected PushNotificationResult pushImpl(Tenant tenant, PushNotification notification) {
 		try {
-			boolean isMulti = notification.getToList().size() > 1;
+			boolean isMulti = notification.getToList()
+					.size() > 1;
 			long endTime = System.currentTimeMillis() + exponentialBackoff.getMaxElapsedTimeMillis();
 			PushNotificationResult result = new PushNotificationResult();
-			long[] retryAfter = new long[]{-1};
+			long[] retryAfter = new long[] { -1 };
 			exponentialBackoff.execute(() -> {
 
 				//retryAfter
@@ -311,7 +312,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 	@SuppressWarnings("unchecked")
 	private boolean simpleCall(PushNotification notification, PushNotificationResult result, long[] retryAfter) throws ParseException, IOException {
 
-		final String[] content = new String[]{null};
+		final String[] content = new String[] { null };
 
 		int status = sendMsg(notification, (res) -> {
 			retryAfter[0] = parseRetryAfter(res);
@@ -339,7 +340,8 @@ public class FCMPushNotificationService extends PushNotificationService {
 			rt = handleResult(cmap, null);
 		} else {
 			//direct message
-			rt = handleResult(((List<Map<String, Object>>) cmap.get(FCMConstants.RESULTS)).get(0), notification.getToList().get(0));
+			rt = handleResult(((List<Map<String, Object>>) cmap.get(FCMConstants.RESULTS)).get(0), notification.getToList()
+					.get(0));
 		}
 
 		switch (rt) {
@@ -356,7 +358,8 @@ public class FCMPushNotificationService extends PushNotificationService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean multiRegistrationIdCall(PushNotification notification, PushNotificationResult result, long[] retryAfter) throws ParseException, IOException {
+	private boolean multiRegistrationIdCall(PushNotification notification, PushNotificationResult result, long[] retryAfter)
+			throws ParseException, IOException {
 
 		List<Map<String, Object>> orgResults = (List<Map<String, Object>>) result.getDetail(FCMConstants.RESULTS);
 		List<Integer> indexMap = null;
@@ -368,7 +371,8 @@ public class FCMPushNotificationService extends PushNotificationService {
 			ids = new ArrayList<>();
 			List<String> orgList = notification.getToList();
 			for (int i = 0; i < orgList.size(); i++) {
-				String error = (String) orgResults.get(i).get(FCMConstants.ERROR);
+				String error = (String) orgResults.get(i)
+						.get(FCMConstants.ERROR);
 				if (error != null && isRetryableError(error)) {
 					indexMap.add(i);
 					ids.add(orgList.get(i));
@@ -381,7 +385,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 			ntf.setOptions(notification.getOptions());
 		}
 
-		final String[] content = new String[]{null};
+		final String[] content = new String[] { null };
 
 		int status = sendMsg(ntf, (res) -> {
 			retryAfter[0] = parseRetryAfter(res);
@@ -441,7 +445,8 @@ public class FCMPushNotificationService extends PushNotificationService {
 		//check success
 		boolean hasError = false;
 		for (int i = 0; i < orgResults.size(); i++) {
-			String error = (String) orgResults.get(i).get(FCMConstants.ERROR);
+			String error = (String) orgResults.get(i)
+					.get(FCMConstants.ERROR);
 			if (error != null) {
 				hasError = true;
 				break;
@@ -462,7 +467,8 @@ public class FCMPushNotificationService extends PushNotificationService {
 			throw new PushNotificationException("To list not specified.");
 		}
 		if (toList.size() == 1) {
-			if (conditionPattern.matcher(toList.get(0)).matches()) {
+			if (conditionPattern.matcher(toList.get(0))
+					.matches()) {
 				map.put(FCMConstants.CONDITION, toList.get(0));
 			} else {
 				map.put(FCMConstants.TO, toList.get(0));
@@ -475,18 +481,24 @@ public class FCMPushNotificationService extends PushNotificationService {
 			map.putAll(notification.getOptions());
 		}
 
-		if (notification.getData() != null && notification.getData().size() > 0) {
+		if (notification.getData() != null && notification.getData()
+				.size() > 0) {
 			HashMap<String, Object> dataMap = new HashMap<>();
-			for (String key: notification.getData().keySet()) {
-				dataMap.put(key, notification.getData().get(key));
+			for (String key : notification.getData()
+					.keySet()) {
+				dataMap.put(key, notification.getData()
+						.get(key));
 			}
 			map.put(FCMConstants.DATA, dataMap);
 		}
 
-		if (notification.getNotification() != null && notification.getNotification().size() > 0) {
+		if (notification.getNotification() != null && notification.getNotification()
+				.size() > 0) {
 			HashMap<String, Object> notificationMap = new HashMap<>();
-			for (String key: notification.getNotification().keySet()) {
-				notificationMap.put(key, notification.getNotification().get(key));
+			for (String key : notification.getNotification()
+					.keySet()) {
+				notificationMap.put(key, notification.getNotification()
+						.get(key));
 			}
 			map.put(FCMConstants.NOTIFICATION, notificationMap);
 		}

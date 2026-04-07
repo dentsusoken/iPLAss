@@ -39,7 +39,6 @@ public class BulkUpdateInterrupterHandler {
 	/** 詳細画面Context */
 	private RegistrationCommandContext context;
 
-
 	public BulkUpdateInterrupterHandler(RequestContext request, RegistrationCommandContext context, BulkOperationInterrupter interrupter) {
 		this.request = request;
 		this.context = context;
@@ -56,7 +55,6 @@ public class BulkUpdateInterrupterHandler {
 		BulkOperationContext ret = interrupter.beforeOperation(entities, request, context.getEntityDefinition(), view, BulkOperationType.UPDATE);
 		return ret;
 	}
-
 
 	/**
 	 * 一括更新した後の処理を行います。

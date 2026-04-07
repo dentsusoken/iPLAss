@@ -23,9 +23,9 @@ package org.iplass.mtp.mail.template.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * メールテンプレート定義
@@ -147,7 +147,7 @@ public class MailTemplateDefinition implements Definition {
 	 * @return 表示名
 	 */
 	public String getDisplayName() {
-	    return displayName;
+		return displayName;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class MailTemplateDefinition implements Definition {
 	 * @param displayName 表示名
 	 */
 	public void setDisplayName(String displayName) {
-	    this.displayName = displayName;
+		this.displayName = displayName;
 	}
 
 	/**

@@ -38,7 +38,6 @@ import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 
-
 public class MetaScriptingEventListener extends MetaEventListener {
 	private static final long serialVersionUID = -5525839977593609749L;
 
@@ -78,7 +77,6 @@ public class MetaScriptingEventListener extends MetaEventListener {
 		}
 		return copy;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -139,7 +137,6 @@ public class MetaScriptingEventListener extends MetaEventListener {
 		return d;
 	}
 
-
 	@Override
 	public ScriptingEventListenerHandler createRuntime(MetaEntity entity) {
 		return new ScriptingEventListenerHandler(entity);
@@ -167,14 +164,17 @@ public class MetaScriptingEventListener extends MetaEventListener {
 		public ScriptingEventListenerHandler(MetaEntity entity) {
 
 			//TODO tenantIDの決定は、このメソッドを呼び出した際のスレッドに紐付いているテナントIDとなる。これでセキュリティ的、動作的に大丈夫か？
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			scriptEngine = tc.getScriptEngine();
 
 			if (script != null) {
 				String scriptWithImport = "import " + EventType.class.getName() + ";\n" + script;
 				String scriptName = null;
-				for (int i = 0; i < entity.getEventListenerList().size(); i++) {
-					if (MetaScriptingEventListener.this == entity.getEventListenerList().get(i)) {
+				for (int i = 0; i < entity.getEventListenerList()
+						.size(); i++) {
+					if (MetaScriptingEventListener.this == entity.getEventListenerList()
+							.get(i)) {
 						scriptName = SCRIPT_PREFIX + "_" + entity.getId() + "_" + i;
 						break;
 					}
@@ -188,7 +188,7 @@ public class MetaScriptingEventListener extends MetaEventListener {
 				}
 
 				if (listenEvent != null) {
-					for (EventType type: listenEvent) {
+					for (EventType type : listenEvent) {
 						switch (type) {
 						case AFTER_DELETE:
 							isAfterDelete = true;
@@ -233,7 +233,8 @@ public class MetaScriptingEventListener extends MetaEventListener {
 			sc.setAttribute(EVENT_TYPE_BINDING_NAME, type);
 			sc.setAttribute(CONTEXT_BINDING_NAME, context);
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
-			sc.setAttribute(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
+			sc.setAttribute(USER_BINDING_NAME, AuthContextHolder.getAuthContext()
+					.newUserBinding());
 			sc.setAttribute(DATE_BINGING_NAME, ex.getCurrentTimestamp());
 			return compiledScript.eval(sc);
 		}

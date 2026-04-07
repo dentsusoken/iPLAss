@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -34,6 +32,7 @@ import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.ServletException;
 
 public class RedirectResult extends Result {
 
@@ -100,7 +99,8 @@ public class RedirectResult extends Result {
 		@Override
 		public void handle(WebRequestStack requestContext)
 				throws ServletException, IOException {
-			String redirectPath = (String) requestContext.getRequestContext().getAttribute(redirectPathAttributeName);
+			String redirectPath = (String) requestContext.getRequestContext()
+					.getAttribute(redirectPathAttributeName);
 			if (redirectPath == null) {
 				throw new ActionMappingRuntimeException("redirectPath can not specify by attributeName:" + redirectPathAttributeName);
 			}
@@ -108,9 +108,10 @@ public class RedirectResult extends Result {
 			// リダイレクト先に外部サイトが指定されていた場合はエラー
 			if (!allowExternalLocation && !WebUtil.isValidInternalUrl(redirectPath)) {
 
-				String serverName = requestContext.getRequest().getServerName();
+				String serverName = requestContext.getRequest()
+						.getServerName();
 				String redirectServerName = "";
-				
+
 				try {
 					URI uri = new URI(redirectPath);
 					redirectServerName = uri.getHost();
@@ -122,7 +123,8 @@ public class RedirectResult extends Result {
 					if (logger.isDebugEnabled()) {
 						logger.debug("redirect to URL:" + redirectPath);
 					}
-					requestContext.getResponse().sendRedirect(StringUtil.removeLineFeedCode(redirectPath));
+					requestContext.getResponse()
+							.sendRedirect(StringUtil.removeLineFeedCode(redirectPath));
 				} else {
 					throw new ActionMappingRuntimeException("Invalid redirect URL:" + redirectPath);
 				}
@@ -130,7 +132,8 @@ public class RedirectResult extends Result {
 				if (logger.isDebugEnabled()) {
 					logger.debug("redirect to URL:" + redirectPath);
 				}
-				requestContext.getResponse().sendRedirect(StringUtil.removeLineFeedCode(redirectPath));
+				requestContext.getResponse()
+						.sendRedirect(StringUtil.removeLineFeedCode(redirectPath));
 			}
 		}
 

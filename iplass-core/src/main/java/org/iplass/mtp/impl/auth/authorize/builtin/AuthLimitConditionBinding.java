@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.command.SessionBinding;
 import org.iplass.mtp.impl.query.prepared.PreparedQueryBinding;
 
 public class AuthLimitConditionBinding extends PreparedQueryBinding {
-	
+
 	private TenantAuthorizeContext authContext;
 
 	public AuthLimitConditionBinding(Timestamp date,
@@ -56,7 +56,7 @@ public class AuthLimitConditionBinding extends PreparedQueryBinding {
 				return Collections.emptyList();
 			}
 			ArrayList<String> ret = new ArrayList<>();
-			for (Object o: l) {
+			for (Object o : l) {
 				GroupContext gc = authContext.getGroupContext(o.toString());
 				if (gc != null) {
 					ret.add(gc.getOid());
@@ -69,7 +69,7 @@ public class AuthLimitConditionBinding extends PreparedQueryBinding {
 				return Collections.emptyList();
 			}
 			ArrayList<String> ret = new ArrayList<>();
-			for (Object o: l) {
+			for (Object o : l) {
 				GroupContext gc = authContext.getGroupContext(o.toString());
 				if (gc != null) {
 					ret.add(gc.getOid());
@@ -85,7 +85,5 @@ public class AuthLimitConditionBinding extends PreparedQueryBinding {
 			}
 		}
 	}
-	
-	
 
 }

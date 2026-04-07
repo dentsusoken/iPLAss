@@ -132,7 +132,6 @@ public interface DefinitionManager extends Manager {
 	 */
 	public <D extends Definition> void rename(Class<D> type, String oldDefinitionName, String newDefinitionName);
 
-
 	/**
 	 * 型付けされたDefinitionManagerのインスタンスを返します。
 	 *

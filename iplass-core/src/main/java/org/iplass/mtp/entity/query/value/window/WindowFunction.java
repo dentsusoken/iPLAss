@@ -32,25 +32,28 @@ public abstract class WindowFunction extends PrimaryValue {
 
 	private PartitionBy partitionBy;
 	private WindowOrderBy orderBy;
-	
+
 	public PartitionBy getPartitionBy() {
 		return partitionBy;
 	}
+
 	public void setPartitionBy(PartitionBy partitionBy) {
 		this.partitionBy = partitionBy;
 	}
+
 	public WindowOrderBy getOrderBy() {
 		return orderBy;
 	}
+
 	public void setOrderBy(WindowOrderBy orderBy) {
 		this.orderBy = orderBy;
 	}
-	
+
 	public WindowFunction partitionBy(Object... partitionField) {
 		if (partitionBy == null) {
 			partitionBy = new PartitionBy();
 		}
-		for (Object v: partitionField) {
+		for (Object v : partitionField) {
 			partitionBy.add(v);
 		}
 		return this;
@@ -60,12 +63,12 @@ public abstract class WindowFunction extends PrimaryValue {
 		if (orderBy == null) {
 			orderBy = new WindowOrderBy();
 		}
-		for (WindowSortSpec o: sortSpec) {
+		for (WindowSortSpec o : sortSpec) {
 			orderBy.add(o);
 		}
 		return this;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -75,6 +78,7 @@ public abstract class WindowFunction extends PrimaryValue {
 				+ ((partitionBy == null) ? 0 : partitionBy.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -96,7 +100,7 @@ public abstract class WindowFunction extends PrimaryValue {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -114,32 +118,22 @@ public abstract class WindowFunction extends PrimaryValue {
 		sb.append(")");
 		return sb.toString();
 	}
-	
+
 	protected abstract void writeWindowFunctionType(StringBuilder sb);
-	
+
 	//partition by
 	//order by
 	//とりあえずここまでサポートか。
-	
+
 	/*
-<window frame clause>  ::=   <window frame units> <window frame extent> [ <window frame exclusion> ] 
-<window frame units>    ::=   ROWS | RANGE
-<window frame extent>    ::=   <window frame start> | <window frame between>
-<window frame start>    ::=   UNBOUNDED PRECEDING | <window frame preceding> | CURRENT ROW
-<window frame preceding>    ::=   <unsigned value specification> PRECEDING
-<window frame between>    ::=   BETWEEN <window frame bound 1> AND <window frame bound 2>
-<window frame bound 1>    ::=   <window frame bound>
-<window frame bound 2>    ::=   <window frame bound>
-<window frame bound>    ::=
-         <window frame start>
-     |     UNBOUNDED FOLLOWING
-     |     <window frame following>
-<window frame following>    ::=   <unsigned value specification> FOLLOWING
-<window frame exclusion>    ::=
-         EXCLUDE CURRENT ROW
-     |     EXCLUDE GROUP
-     |     EXCLUDE TIES
-     |     EXCLUDE NO OTHERS 
-     */
+	 * <window frame clause> ::= <window frame units> <window frame extent> [ <window frame exclusion> ] <window frame
+	 * units> ::= ROWS | RANGE <window frame extent> ::= <window frame start> | <window frame between> <window frame
+	 * start> ::= UNBOUNDED PRECEDING | <window frame preceding> | CURRENT ROW <window frame preceding> ::= <unsigned
+	 * value specification> PRECEDING <window frame between> ::= BETWEEN <window frame bound 1> AND <window frame bound
+	 * 2> <window frame bound 1> ::= <window frame bound> <window frame bound 2> ::= <window frame bound> <window frame
+	 * bound> ::= <window frame start> | UNBOUNDED FOLLOWING | <window frame following> <window frame following> ::=
+	 * <unsigned value specification> FOLLOWING <window frame exclusion> ::= EXCLUDE CURRENT ROW | EXCLUDE GROUP |
+	 * EXCLUDE TIES | EXCLUDE NO OTHERS
+	 */
 
 }

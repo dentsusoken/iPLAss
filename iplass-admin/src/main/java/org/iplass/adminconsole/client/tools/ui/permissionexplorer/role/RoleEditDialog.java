@@ -112,7 +112,7 @@ public class RoleEditDialog extends AbstractWindow {
 				boolean commonValidate = form.validate();
 				boolean gridValidate = true;
 
-				for (int cnt = 0; cnt < listGrid.getRecords().length; cnt ++) {
+				for (int cnt = 0; cnt < listGrid.getRecords().length; cnt++) {
 					gridValidate = gridValidate && listGrid.validateRow(cnt);
 				}
 
@@ -141,11 +141,11 @@ public class RoleEditDialog extends AbstractWindow {
 
 		listGrid = new ListGrid();
 
-		listGrid.setCanResizeFields(true);	//列幅変更可
-		listGrid.setCanSort(false);			//ソート不可
-		listGrid.setCanGroupBy(false);		//Group化不可
-		listGrid.setCanPickFields(false);	//列の選択不可
-		listGrid.setCanAutoFitFields(false);	//自動列幅調整不可
+		listGrid.setCanResizeFields(true); //列幅変更可
+		listGrid.setCanSort(false); //ソート不可
+		listGrid.setCanGroupBy(false); //Group化不可
+		listGrid.setCanPickFields(false); //列の選択不可
+		listGrid.setCanAutoFitFields(false); //自動列幅調整不可
 		listGrid.setCanFreezeFields(false);
 
 		listGrid.setCanEdit(true);
@@ -219,7 +219,7 @@ public class RoleEditDialog extends AbstractWindow {
 	}
 
 	public void setEditRoleEntity(Entity roleEntity) {
-		this.roleEntity = (GenericEntity)roleEntity;
+		this.roleEntity = (GenericEntity) roleEntity;
 
 		txtNameField.setValue(roleEntity.getName());
 		txtRoleField.setValue(roleEntity.getValueAs(String.class, "code"));
@@ -236,7 +236,7 @@ public class RoleEditDialog extends AbstractWindow {
 				record.setAttribute("expression", condition.getValueAs(String.class, "expression"));
 				records.add(record);
 			}
-			listGrid.setData(records.toArray(new ListGridRecord[]{}));
+			listGrid.setData(records.toArray(new ListGridRecord[] {}));
 			listGrid.refreshFields();
 		}
 	}
@@ -272,7 +272,7 @@ public class RoleEditDialog extends AbstractWindow {
 				conditionEntity.setDefinitionName(MetaDataConstants.ENTITY_NAME_ROLE_CONDITION);
 
 				conditionEntityArray[cnt] = conditionEntity;
-				cnt ++;
+				cnt++;
 			}
 			editEntity.setValue("condition", conditionEntityArray);
 		}
@@ -290,10 +290,12 @@ public class RoleEditDialog extends AbstractWindow {
 			return true;
 		}
 
-		if (!roleEntity.getName().equals(editEntity.getName())) {
+		if (!roleEntity.getName()
+				.equals(editEntity.getName())) {
 			return true;
 		}
-		if (!roleEntity.getValue("code").equals(editEntity.getValue("code"))) {
+		if (!roleEntity.getValue("code")
+				.equals(editEntity.getValue("code"))) {
 			return true;
 		}
 		if (isChangeProperty(roleEntity.getValue("priority"), editEntity.getValue("priority"))) {
@@ -326,10 +328,13 @@ public class RoleEditDialog extends AbstractWindow {
 						//新規がある場合は比較できないのでtrue
 						return true;
 					}
-					if (storeCondition.getOid().equals(editCondition.getOid())) {
+					if (storeCondition.getOid()
+							.equals(editCondition.getOid())) {
 						isMatch = true;
-						if (!storeCondition.getName().equals(editCondition.getName())
-								|| !storeCondition.getValue("expression").equals(editCondition.getValue("expression"))) {
+						if (!storeCondition.getName()
+								.equals(editCondition.getName())
+								|| !storeCondition.getValue("expression")
+										.equals(editCondition.getValue("expression"))) {
 							return true;
 						}
 						break;

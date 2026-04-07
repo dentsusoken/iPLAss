@@ -20,7 +20,7 @@
 package org.iplass.mtp.web.staticresource;
 
 public interface EntryPathTranslator {
-	
+
 	public String translate(String requestPath);
 
 }

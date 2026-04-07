@@ -34,74 +34,78 @@ import org.iplass.mtp.impl.auth.oauth.util.IdTokenConstants;
 import org.iplass.mtp.impl.auth.oauth.util.OAuthUtil;
 
 public class IdToken {
-	
+
 	private Map<String, Object> userInfoClaims;//includes sub claims
-	
+
 	/**
 	 * Audience(s)
 	 */
 	private String aud;
-	
+
 	/**
 	 * Expiration time. seconds from 1970-01-01T0:0:0Z
 	 */
 	private long exp;
-	
+
 	/**
 	 * Time at which the JWT was issued. seconds from 1970-01-01T0:0:0Z
 	 */
 	private long iat;
-	
+
 	/**
 	 * Time when the End-User authentication occurred. seconds from 1970-01-01T0:0:0Z
 	 */
 	private long authTime;
-	
+
 	/**
 	 * nonce
 	 */
 	private String nonce;
-	
+
 	//currently not supported
 	//acr
 	//amr
 	//azp
-	
+
 	/**
 	 * Access Token for at_hash
 	 */
 	private String at;
-	
-	
+
 	/**
 	 * Code for c_hash
 	 */
 	private String c;
-	
+
 	private OAuthAuthorizationService service;
-	
-	public IdToken(AuthorizationCode code, AccessToken accessToken, OAuthAuthorizationRuntime server, OAuthClientRuntime client, OAuthAuthorizationService service) {
+
+	public IdToken(AuthorizationCode code, AccessToken accessToken, OAuthAuthorizationRuntime server, OAuthClientRuntime client,
+			OAuthAuthorizationService service) {
 		this.service = service;
-		
+
 		userInfoClaims = server.userInfo(accessToken, client);
-		
-		aud = client.getMetaData().getName();
+
+		aud = client.getMetaData()
+				.getName();
 		iat = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 		exp = iat + service.getIdTokenLifetimeSeconds();
-		authTime = code.getRequest().getAuthTime();
-		nonce = code.getRequest().getNonce();
+		authTime = code.getRequest()
+				.getAuthTime();
+		nonce = code.getRequest()
+				.getNonce();
 		at = accessToken.getTokenEncoded();
 		c = code.getCodeValue();
 	}
-	
+
 	public String getTokenEncoded(String issuerId) {
-		
+
 		JwtProcessor processor = service.getJwtProcessor();
 		if (service.getJwtKeyStore() == null) {
 			throw new NullPointerException("jwtKeyStore not defined on OAuthAuthorizationService.");
 		}
-		CertificateKeyPair key = service.getJwtKeyStore().getCertificateKeyPair();
-		
+		CertificateKeyPair key = service.getJwtKeyStore()
+				.getCertificateKeyPair();
+
 		Map<String, Object> claims = new HashMap<>(userInfoClaims);
 		claims.put(IdTokenConstants.CLAIM_ISS, issuerId);
 		claims.put(IdTokenConstants.CLAIM_AUD, aud);
@@ -111,7 +115,7 @@ public class IdToken {
 		if (nonce != null) {
 			claims.put(IdTokenConstants.CLAIM_NONCE, nonce);
 		}
-		
+
 		String jwtSignAlg = processor.preferredAlgorithm(key);
 		if (at != null) {
 			claims.put(IdTokenConstants.CLAIM_AT_HASH, OAuthUtil.atHash(at, jwtSignAlg));
@@ -119,10 +123,10 @@ public class IdToken {
 		if (c != null) {
 			claims.put(IdTokenConstants.CLAIM_C_HASH, OAuthUtil.cHash(c, jwtSignAlg));
 		}
-		
+
 		return processor.encode(claims, key);
 	}
-	
+
 	public Map<String, Object> getUserInfoClaims() {
 		return userInfoClaims;
 	}

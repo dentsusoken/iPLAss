@@ -38,9 +38,11 @@ public class PreferenceService extends AbstractTypedMetaDataService<MetaPreferen
 		public TypeMap() {
 			super(getFixedPath(), MetaPreference.class, Preference.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<Preference> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(PreferenceManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(PreferenceManager.class);
 		}
 
 		@Override

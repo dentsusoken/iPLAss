@@ -76,7 +76,6 @@ public abstract class AbstractOpenApiSupportDialog extends AbstractWindow {
 		container.setMargin(10);
 		addItem(container);
 
-
 		// --------------------------------------
 		// タイトル設定
 		setTitle(getDialogTitle());

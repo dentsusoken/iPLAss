@@ -22,13 +22,13 @@ package org.iplass.mtp.impl.web.template.report;
 import java.io.OutputStream;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 import org.jxls.builder.JxlsTemplateFillerBuilder;
 
-@XmlSeeAlso({MetaJavaClassJxlsReportOutputLogic.class, MetaGroovyJxlsReportOutputLogic.class})
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
+@XmlSeeAlso({ MetaJavaClassJxlsReportOutputLogic.class, MetaGroovyJxlsReportOutputLogic.class })
 public abstract class MetaJxlsReportOutputLogic implements MetaData {
 
 	private static final long serialVersionUID = 713508369259766066L;
@@ -45,7 +45,7 @@ public abstract class MetaJxlsReportOutputLogic implements MetaData {
 
 	public abstract JxlsReportOutputLogicRuntime createRuntime(MetaReportType reportType);
 
-	public abstract class JxlsReportOutputLogicRuntime /*implements MetaDataRuntime*/ {
+	public abstract class JxlsReportOutputLogicRuntime /* implements MetaDataRuntime */ {
 
 		public abstract void outputReport(JxlsTemplateFillerBuilder<?> builder, Map<String, Object> context, OutputStream out);
 

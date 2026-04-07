@@ -32,19 +32,18 @@ import org.iplass.mtp.impl.web.RequestPath;
 import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
 import org.iplass.mtp.impl.web.actionmapping.ParamMap.ParamMapRuntime;
 
-
 public class VariableParameterValueMap implements ParameterValueMap {
 
 	private ParameterValueMap wrapped;
 	private ActionMappingRuntime actionMapping;
 	private RequestPath reqPath;
-	
+
 	private boolean noSubPath;
 	private String subPath;
 	private String rawSubPath;//encoded path
 	private String[] fullPaths;
 	private String[] subPaths;
-	
+
 	private Map<String, Object> paramMap;
 
 	public VariableParameterValueMap(ParameterValueMap wrapped, RequestPath reqPath, ActionMappingRuntime actionMapping) {
@@ -52,25 +51,25 @@ public class VariableParameterValueMap implements ParameterValueMap {
 		this.wrapped = wrapped;
 		this.actionMapping = actionMapping;
 	}
-	
+
 	ParameterValueMap getWrapped() {
 		return wrapped;
 	}
-	
+
 	String getSubPath() {
 		initRawSubPath();
-		
+
 		if (noSubPath) {
 			return null;
 		}
-		
+
 		if (subPath == null) {
 			subPath = decodePath(rawSubPath);
 		}
-		
+
 		return subPath;
 	}
-	
+
 	private String decodePath(String path) {
 		try {
 			//pathは+は空白にしない
@@ -78,14 +77,15 @@ public class VariableParameterValueMap implements ParameterValueMap {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 	}
-	
+
 	private void initRawSubPath() {
 		if (noSubPath == false && rawSubPath == null) {
 			//Action名除去
 			String path = reqPath.getTargetPath(true);
-			String actionName = actionMapping.getMetaData().getName();
+			String actionName = actionMapping.getMetaData()
+					.getName();
 			if (path.length() > actionName.length()) {
 				rawSubPath = path.substring(actionName.length() + 1);
 			} else {
@@ -93,7 +93,7 @@ public class VariableParameterValueMap implements ParameterValueMap {
 			}
 		}
 	}
-	
+
 	String[] getFullPaths() {
 		if (fullPaths == null) {
 			String path = reqPath.getTargetPath(true);
@@ -121,7 +121,6 @@ public class VariableParameterValueMap implements ParameterValueMap {
 		}
 		return subPaths;
 	}
-	
 
 	@Override
 	public void cleanTempResource() {
@@ -134,31 +133,31 @@ public class VariableParameterValueMap implements ParameterValueMap {
 		if (map != null) {
 			List<ParamMapRuntime> pmrList = map.get(name);
 			if (pmrList != null) {
-				for (ParamMapRuntime pmr: pmrList) {
+				for (ParamMapRuntime pmr : pmrList) {
 					if (pmr.isTarget(this)) {
 						return pmr.getParam(this);
 					}
 				}
 			}
 		}
-		
+
 		return wrapped.getParam(name);
 	}
-	
+
 	@Override
 	public Object[] getParams(String name) {
 		Map<String, List<ParamMapRuntime>> map = actionMapping.getParamMapRuntimes();
 		if (map != null) {
 			List<ParamMapRuntime> pmrList = map.get(name);
 			if (pmrList != null) {
-				for (ParamMapRuntime pmr: pmrList) {
+				for (ParamMapRuntime pmr : pmrList) {
 					if (pmr.isTarget(this)) {
 						return pmr.getParams(this);
 					}
 				}
 			}
 		}
-		
+
 		return wrapped.getParams(name);
 	}
 
@@ -170,8 +169,8 @@ public class VariableParameterValueMap implements ParameterValueMap {
 				paramMap = wrapped.getParamMap();
 			} else {
 				paramMap = new HashMap<String, Object>(wrapped.getParamMap());
-				for (Map.Entry<String, List<ParamMapRuntime>> e: map.entrySet()) {
-					for (ParamMapRuntime pmr: e.getValue()) {
+				for (Map.Entry<String, List<ParamMapRuntime>> e : map.entrySet()) {
+					for (ParamMapRuntime pmr : e.getValue()) {
 						if (pmr.isTarget(this)) {
 							Object[] vals = pmr.getParams(this);
 							if (vals != null) {
@@ -183,15 +182,16 @@ public class VariableParameterValueMap implements ParameterValueMap {
 				}
 			}
 		}
-		
+
 		return paramMap;
 	}
 
 	@Override
 	public Iterator<String> getParamNames() {
-		return getParamMap().keySet().iterator();
+		return getParamMap().keySet()
+				.iterator();
 	}
-	
+
 	public boolean hasParamMapDefs() {
 		return actionMapping.getParamMapRuntimes() != null;
 	}

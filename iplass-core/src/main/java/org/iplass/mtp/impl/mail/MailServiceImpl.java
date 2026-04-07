@@ -27,26 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.Address;
-import jakarta.mail.Authenticator;
-import jakarta.mail.BodyPart;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
-import jakarta.mail.NoSuchProviderException;
-import jakarta.mail.Part;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Store;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.HeaderTokenizer;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
-import jakarta.mail.internet.MimeUtility;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
@@ -70,6 +50,26 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.activation.DataHandler;
+import jakarta.mail.Address;
+import jakarta.mail.Authenticator;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.NoSuchProviderException;
+import jakarta.mail.Part;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.HeaderTokenizer;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
+
 /**
  * @author 片野　博之
  *
@@ -82,26 +82,28 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	public static final String ISO_2022_JP = "ISO-2022-JP";
 	public static final String ENCODING_7BIT = "7bit";
 	public static final String DEFAULT_TIMEOUT_MILLIS = "60000";
-	
+
 	//custom properties
 	public static final String MAIL_SMTP_POPBEFORESMTP = "mail.smtp.popbeforesmtp";
-	public static final String MAIL_POP3_AUTH_ID ="mail.pop3.auth.id";
-	public static final String MAIL_POP3_AUTH_PASSWORD ="mail.pop3.auth.password";
-	public static final String MAIL_SMTP_AUTH_ID ="mail.smtp.auth.id";
-	public static final String MAIL_SMTP_AUTH_PASSWORD ="mail.smtp.auth.password";
-	public static final String MAIL_CHARSET ="mail.charset";
-	public static final String MAIL_ENCODING ="mail.encoding";
+	public static final String MAIL_POP3_AUTH_ID = "mail.pop3.auth.id";
+	public static final String MAIL_POP3_AUTH_PASSWORD = "mail.pop3.auth.password";
+	public static final String MAIL_SMTP_AUTH_ID = "mail.smtp.auth.id";
+	public static final String MAIL_SMTP_AUTH_PASSWORD = "mail.smtp.auth.password";
+	public static final String MAIL_CHARSET = "mail.charset";
+	public static final String MAIL_ENCODING = "mail.encoding";
 	public static final String MAIL_CUSTOM_HEADER_MAP = "mail.customHeaderMap";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<MailTemplateDefinition, MetaMailTemplate> {
 		public TypeMap() {
 			super(getFixedPath(), MetaMailTemplate.class, MailTemplateDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<MailTemplateDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(MailTemplateDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(MailTemplateDefinitionManager.class);
 		}
 
 		@Override
@@ -127,7 +129,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 	private long retryIntervalMillis;
 	private int retryCount;
-	
+
 	private SmimeHandler smimeHandler;
 
 	/**
@@ -167,14 +169,14 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
-		
+
 		listener = config.getValues("listener", SendMailListener.class);
 		retryIntervalMillis = config.getValue("retryIntervalMillis", Long.TYPE, 0L);
 		retryCount = config.getValue("retryCount", Integer.TYPE, 0);
 		debug = config.getValue("debug", Boolean.TYPE, false);
-		
+
 		sendProperties = new HashMap<>();
-		for (String name: config.getNames()) {
+		for (String name : config.getNames()) {
 			switch (name) {
 			case MAIL_SMTP_POPBEFORESMTP:
 				mailSmtpPopbeforesmtp = config.getValue(MAIL_SMTP_POPBEFORESMTP, Boolean.TYPE, false);
@@ -207,7 +209,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				break;
 			}
 		}
-		
+
 		//set default value
 		if (!sendProperties.containsKey("mail.smtp.connectiontimeout")) {
 			sendProperties.put("mail.smtp.connectiontimeout", DEFAULT_TIMEOUT_MILLIS);
@@ -227,7 +229,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		if (!sendProperties.containsKey("mail.pop3.timeout")) {
 			sendProperties.put("mail.pop3.timeout", DEFAULT_TIMEOUT_MILLIS);
 		}
-		
+
 		if ("TRUE".equalsIgnoreCase((String) sendProperties.get("mail.smtp.auth"))) {
 			mailSmtpAuth = true;
 		} else {
@@ -258,21 +260,22 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	public void sendMail(Tenant tenant, Mail mail) {
 		try {
 			String charset = mail.getCharset();
-			if(charset == null || charset.length() == 0) {
+			if (charset == null || charset.length() == 0) {
 				charset = this.mailCharset;
 			}
 			boolean isDefault = false;
 			TenantMailInfo tenantMailInfo = tenant.getTenantConfig(TenantMailInfo.class);
-			if(mail.getFromAddress() == null) {
+			if (mail.getFromAddress() == null) {
 				isDefault = true;
 				// デフォルトのFromを設定する
 				InternetAddress address = new InternetAddress(tenantMailInfo.getMailFrom(), tenantMailInfo.getMailFromName(), charset);
 				address.validate();
 				mail.setFromAddress(address);
 			}
-			if(mail.getReplyToAddress() == null) {
+			if (mail.getReplyToAddress() == null) {
 				// デフォルトのReplyToを設定する
-				if (isDefault && tenantMailInfo.getMailReply() != null && tenantMailInfo.getMailReply().length() != 0) {
+				if (isDefault && tenantMailInfo.getMailReply() != null && tenantMailInfo.getMailReply()
+						.length() != 0) {
 					InternetAddress address = new InternetAddress(tenantMailInfo.getMailReply(), tenantMailInfo.getMailReplyName(), charset);
 					address.validate();
 					mail.setReplyToAddress(address);
@@ -354,7 +357,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		// メッセージ内容の設定。
 		MimeMessage message = new MimeMessage(session);
 		message.setFrom(mail.getFromAddress());
-		message.setReplyTo(new Address[]{mail.getReplyToAddress()});
+		message.setReplyTo(new Address[] { mail.getReplyToAddress() });
 		setRecipients(mail, message);
 		// 件名の設定
 		message.setSubject(mail.getSubject(), charset);
@@ -378,7 +381,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		}
 
 		Date d = mail.getDate();
-		if(d == null) {
+		if (d == null) {
 			d = new Date();
 		}
 		message.setSentDate(d);
@@ -397,8 +400,6 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 		return value.replaceAll("\r\n|\r|\n", "");
 	}
-
-
 
 	/**
 	 * メール送信アドレスを設定する。
@@ -447,7 +448,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 			//CR -> CRLF
 			StringBuilder sb = new StringBuilder();
 			char pre = '\0';
-			for (int i = 0; i < text.length(); i++ ) {
+			for (int i = 0; i < text.length(); i++) {
 				char c = text.charAt(i);
 				if (c == '\r') {
 					sb.append("\r\n");
@@ -460,10 +461,10 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				}
 				pre = c;
 			}
-			
+
 			text = sb.toString();
 		}
-		
+
 		if (ISO_2022_JP.equalsIgnoreCase(charset)) {
 			//ISO-2022-JPの場合、プレーンテキストの最後が文字化けることがある。
 			if (!text.endsWith("\r\n")) {
@@ -475,16 +476,19 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 	protected final void setMessage(Mail mail, MimeMessage message, String charset) throws MessagingException {
 
-		boolean isAlt =
-			mail.getMessage() != null && mail.getMessage().length() != 0 &&
-			mail.getHtmlMessage() != null && mail.getHtmlMessage().getContent().length() != 0;
+		boolean isAlt = mail.getMessage() != null && mail.getMessage()
+				.length() != 0 &&
+				mail.getHtmlMessage() != null && mail.getHtmlMessage()
+						.getContent()
+						.length() != 0;
 		boolean hasAtt = mail.getAttachments() != null;
 
 		if (hasAtt) {
 			Multipart multipartMixed = new MimeMultipart("mixed");
 			//multipart/alternativeでない場合
 			if (!isAlt) {
-				if (mail.getMessage() != null && mail.getMessage().length() != 0) {
+				if (mail.getMessage() != null && mail.getMessage()
+						.length() != 0) {
 					//プレーンテキスト
 					BodyPart plainMessageBodyPart = new MimeBodyPart();
 					plainMessageBodyPart.setContent(handlePlainText(mail.getMessage(), charset), "text/plain; charset=" + charset);
@@ -516,18 +520,18 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 				multipartMixed.addBodyPart(altBodyPart);
 			}
-			for (DataHandler at: mail.getAttachments()) {
+			for (DataHandler at : mail.getAttachments()) {
 				MimeBodyPart attBodyPart = new MimeBodyPart();
 				attBodyPart.setDataHandler(at);
 				try {
 					String fileName = at.getName();
 					attBodyPart.setFileName(fileName);
-					
+
 					//for old outlook
 					String contentType = at.getContentType();
 					if (contentType != null) {
 						String fileNameEnc = MimeUtility.quote(MimeUtility.encodeText(fileName), HeaderTokenizer.MIME);
-						
+
 						StringBuilder sb = new StringBuilder();
 						sb.append(contentType);
 						sb.append(";\r\n");
@@ -535,7 +539,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 						sb.append(MimeUtility.fold(7, fileNameEnc));
 						attBodyPart.setHeader("Content-Type", sb.toString());
 					}
-					
+
 				} catch (UnsupportedEncodingException e) {
 					logger.warn("file name cant encoded... cause " + e.getMessage(), e);
 				}
@@ -547,7 +551,8 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		} else {
 			//multipart/alternativeでない場合
 			if (!isAlt) {
-				if (mail.getMessage() != null && mail.getMessage().length() != 0) {
+				if (mail.getMessage() != null && mail.getMessage()
+						.length() != 0) {
 					//プレーンテキスト
 					message.setText(handlePlainText(mail.getMessage(), charset), charset);
 					// Content-Transfer-Encoding設定
@@ -580,24 +585,26 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		if (htmlCharset == null) {
 			htmlCharset = charset;
 		}
-		
-		if (htmlMessage.getInlineContents() == null || htmlMessage.getInlineContents().size() == 0) {
+
+		if (htmlMessage.getInlineContents() == null || htmlMessage.getInlineContents()
+				.size() == 0) {
 			part.setContent(htmlMessage.getContent(), "text/html; charset=\"" + htmlCharset + "\"");
 			part.setHeader("Content-Transfer-Encoding", "base64");
 		} else {
 			//with inline images
 			Multipart multipart = new MimeMultipart("related");
-			
+
 			MimeBodyPart htmlpart = new MimeBodyPart();
 			htmlpart.setContent(htmlMessage.getContent(), "text/html; charset=\"" + htmlCharset + "\"");
 			htmlpart.setHeader("Content-Transfer-Encoding", "base64");
 			multipart.addBodyPart(htmlpart);
-			
-			for (InlineContent ii: htmlMessage.getInlineContents()) {
+
+			for (InlineContent ii : htmlMessage.getInlineContents()) {
 				MimeBodyPart iiBodyPart = new MimeBodyPart();
 				iiBodyPart.setDataHandler(ii.getDataHandler());
 				try {
-					iiBodyPart.setFileName(MimeUtility.encodeWord(ii.getDataHandler().getName()));
+					iiBodyPart.setFileName(MimeUtility.encodeWord(ii.getDataHandler()
+							.getName()));
 				} catch (UnsupportedEncodingException e) {
 					logger.warn("file name cant encoded... cause " + e.getMessage(), e);
 				}
@@ -606,7 +613,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				iiBodyPart.setHeader("Content-Transfer-Encoding", "base64");
 				multipart.addBodyPart(iiBodyPart);
 			}
-			
+
 			part.setContent(multipart);
 		}
 	}
@@ -693,15 +700,16 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	private Properties createSendMailProperty(Mail mail) {
 		Properties props = new Properties();
 		props.putAll(sendProperties);
-		
+
 		//Message-IDでローカルサーバ名/ローカルユーザーが出ないように
-		props.setProperty("mail.from", mail.getFromAddress().getAddress());
+		props.setProperty("mail.from", mail.getFromAddress()
+				.getAddress());
 
 		//mail.smtp.from
 		if (mail.getReturnPath() != null) {
 			props.setProperty("mail.smtp.from", mail.getReturnPath());
 		}
-		
+
 		return props;
 	}
 
@@ -713,7 +721,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	 */
 	protected boolean fireOnSendMail(final Mail mail) {
 		if (listener != null) {
-			for (SendMailListener l: listener) {
+			for (SendMailListener l : listener) {
 				if (!l.beforeSend(mail)) {
 					logger.info("send mail canceled by Listener:" + l);
 					return false;
@@ -725,7 +733,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 	protected void fireOnSuccess(Mail mail) {
 		if (listener != null) {
-			for (SendMailListener l: listener) {
+			for (SendMailListener l : listener) {
 				l.onSuccess(mail);
 			}
 		}
@@ -733,7 +741,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 	protected void handleException(Mail mail, Exception e) {
 		if (listener != null) {
-			for (SendMailListener l: listener) {
+			for (SendMailListener l : listener) {
 				if (!l.onFailure(mail, e)) {
 					return;
 				}

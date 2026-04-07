@@ -60,6 +60,7 @@ public class AuthContextHolder {
 			this.tenantId = tenantId;
 			this.role = role;
 		}
+
 		@Override
 		public final int hashCode() {
 			final int prime = 31;
@@ -68,6 +69,7 @@ public class AuthContextHolder {
 			result = prime * result + tenantId;
 			return result;
 		}
+
 		@Override
 		public final boolean equals(Object obj) {
 			if (this == obj)
@@ -86,6 +88,7 @@ public class AuthContextHolder {
 				return false;
 			return true;
 		}
+
 		@Override
 		public String toString() {
 			return "UserInRoleCacheKey [tenantId=" + tenantId + ", role=" + role + "]";
@@ -111,7 +114,9 @@ public class AuthContextHolder {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		AuthContextHolder holder = (AuthContextHolder) ec.getAttribute(AuthService.HOLDER_NAME);
 		if (holder == null) {
-			holder = ServiceRegistry.getRegistry().getService(AuthService.class).newAuthContextHolder();
+			holder = ServiceRegistry.getRegistry()
+					.getService(AuthService.class)
+					.newAuthContextHolder();
 			ec.setAttribute(AuthService.HOLDER_NAME, holder, false);
 		}
 		return holder;
@@ -121,7 +126,8 @@ public class AuthContextHolder {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		AuthContextHolder holder = (AuthContextHolder) ec.getAttribute(AuthService.HOLDER_NAME);
 		if (holder != null) {
-			AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+			AuthService as = ServiceRegistry.getRegistry()
+					.getService(AuthService.class);
 			UserContext account = as.getCurrentSessionUserContext();
 			if (account == null) {
 				//anonymous
@@ -137,7 +143,9 @@ public class AuthContextHolder {
 	}
 
 	public UserBinding newUserBinding() {
-		return newUserBinding(ExecuteContext.getCurrentContext().getTenantContext().getResource(TenantAuthorizeContext.class));
+		return newUserBinding(ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getResource(TenantAuthorizeContext.class));
 	}
 
 	public UserBinding newUserBinding(TenantAuthorizeContext authContext) {
@@ -189,7 +197,8 @@ public class AuthContextHolder {
 
 	public User getUserCopy() {
 		if (userForApl == null) {
-			userForApl = (User) getUserContext().getUser().deepCopy();
+			userForApl = (User) getUserContext().getUser()
+					.deepCopy();
 		}
 		return userForApl;
 	}
@@ -197,7 +206,8 @@ public class AuthContextHolder {
 	public AuthenticationPolicyRuntime getPolicy() {
 		if (policy == null) {
 			String policyName = (String) userContext.getAttribute(User.ACCOUNT_POLICY);
-			AuthenticationPolicyService ps = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+			AuthenticationPolicyService ps = ServiceRegistry.getRegistry()
+					.getService(AuthenticationPolicyService.class);
 			policy = ps.getOrDefault(policyName);
 		}
 		return policy;
@@ -209,7 +219,8 @@ public class AuthContextHolder {
 
 	private boolean userInRole(int tenantId, String role) {
 		if (isSecuredAction()) {
-			return authService.getAuthorizationProvider().userInRole(this, tenantId, role);
+			return authService.getAuthorizationProvider()
+					.userInRole(this, tenantId, role);
 		} else {
 			return true;
 		}
@@ -226,7 +237,7 @@ public class AuthContextHolder {
 		UserInRoleCacheKey cacheKey = new UserInRoleCacheKey(tenantId, role);
 		Boolean result = userInRoleCache.get(cacheKey);
 		if (result != null) {
-			if(log.isTraceEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.trace("userInRole Cache Hit role={}, result={}", cacheKey, result);
 			}
 		}
@@ -251,7 +262,9 @@ public class AuthContextHolder {
 			throw new NullPointerException("permission is null");
 		}
 		if (permissionCache == null) {
-			permissionCache = ServiceRegistry.getRegistry().getService(CacheService.class).createLocalCache(PERMISSION_CACHE_NAMESPACE);
+			permissionCache = ServiceRegistry.getRegistry()
+					.getService(CacheService.class)
+					.createLocalCache(PERMISSION_CACHE_NAMESPACE);
 		}
 
 		//check from cache

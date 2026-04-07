@@ -77,7 +77,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(SimpleEntityTreeNode result) {
 				TreeNode root = createTreeNode(result);
-				response.setData(new Record[]{root});
+				response.setData(new Record[] { root });
 				processResponse(requestId, response);
 			}
 
@@ -93,7 +93,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 	private TreeNode createTreeNode(SimpleEntityTreeNode root) {
 		TreeNode rootNode = new TreeNode("root");
 		rootNode.setAttribute(FIELD_NAME.NAME.name(), root.getName());
-		rootNode.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), root.getName());	//フォルダの場合はNameをセット
+		rootNode.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), root.getName()); //フォルダの場合はNameをセット
 		rootNode.setAttribute(FIELD_NAME.IS_ERROR.name(), root.isError());
 		rootNode.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), root.getErrorMessage());
 
@@ -101,7 +101,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 		children.addAll(createChildrenTreeNodeList(root.getChildren()));
 		children.addAll(createEntityTreeNodeList(root.getItems()));
 		if (!children.isEmpty()) {
-			rootNode.setChildren(children.toArray(new TreeNode[]{}));
+			rootNode.setChildren(children.toArray(new TreeNode[] {}));
 		}
 		rootNode.setIsFolder(true);
 		return rootNode;
@@ -123,7 +123,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 	private TreeNode createChildTreeNode(SimpleEntityTreeNode metaNode) {
 		TreeNode node = new TreeNode(metaNode.getPath());
 		node.setAttribute(FIELD_NAME.NAME.name(), metaNode.getName());
-		node.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaNode.getName());	//フォルダの場合はNameをセット
+		node.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaNode.getName()); //フォルダの場合はNameをセット
 		node.setAttribute(FIELD_NAME.PATH.name(), metaNode.getPath());
 		node.setAttribute(FIELD_NAME.IS_ERROR.name(), metaNode.isError());
 		node.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), metaNode.getErrorMessage());
@@ -133,7 +133,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 		children.addAll(createChildrenTreeNodeList(metaNode.getChildren()));
 		children.addAll(createEntityTreeNodeList(metaNode.getItems()));
 		if (!children.isEmpty()) {
-			node.setChildren(children.toArray(new TreeNode[]{}));
+			node.setChildren(children.toArray(new TreeNode[] {}));
 			return node;
 		} else {
 			return null;

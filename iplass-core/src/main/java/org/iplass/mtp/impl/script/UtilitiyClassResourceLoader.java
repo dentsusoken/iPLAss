@@ -42,7 +42,6 @@ public class UtilitiyClassResourceLoader implements GroovyResourceLoader {
 	private final GroovyScriptService service;
 	private HashSet<String> utilityClassNames;
 
-
 	public UtilitiyClassResourceLoader(GroovyResourceLoader parentResourceLoader, GroovyScriptService service) {
 		this.parentResourceLoader = parentResourceLoader;
 		this.service = service;
@@ -98,12 +97,14 @@ public class UtilitiyClassResourceLoader implements GroovyResourceLoader {
 				fatalLog.error("utility class:" + name + " cant load. maybe need Reload or restart." + e, e);
 				error = e;
 			}
-			if (ucr == null || ucr.getMetaData() == null || ucr.getMetaData().getScript() == null) {
+			if (ucr == null || ucr.getMetaData() == null || ucr.getMetaData()
+					.getScript() == null) {
 				fatalLog.error("utility class:" + name + " cant load(metaData or script is null...). maybe need Reload or restart.");
 				error = new IOException(name + " not found or no script...");
 			}
 
-			source = ucr.getMetaData().getScript();
+			source = ucr.getMetaData()
+					.getScript();
 		}
 
 		protected URLConnection openConnection(URL u) throws IOException {
@@ -164,7 +165,8 @@ public class UtilitiyClassResourceLoader implements GroovyResourceLoader {
 
 			UtilityClassRuntime ucr;
 			try {
-				ucr = service.getRuntimeByName(getURL().getPath().substring(1));
+				ucr = service.getRuntimeByName(getURL().getPath()
+						.substring(1));
 			} catch (Exception e) {
 				fatalLog.error("utility class:" + getURL().getPath() + " cant load. maybe need Reload or restart." + e, e);
 				throw new IOException(getURL().getPath() + " cant read from UtilityMetaData:" + e, e);
@@ -172,11 +174,14 @@ public class UtilitiyClassResourceLoader implements GroovyResourceLoader {
 				fatalLog.error("utility class:" + getURL().getPath() + " cant load. maybe need Reload or restart." + e, e);
 				throw e;
 			}
-			if (ucr == null || ucr.getMetaData() == null || ucr.getMetaData().getScript() == null) {
+			if (ucr == null || ucr.getMetaData() == null || ucr.getMetaData()
+					.getScript() == null) {
 				fatalLog.error("utility class:" + getURL().getPath() + " cant load(metaData or script is null...). maybe need Reload or restart.");
 				throw new IOException(getURL().getPath() + " not found or no script...");
 			}
-			return new ByteArrayInputStream(ucr.getMetaData().getScript().getBytes("UTF-8"));
+			return new ByteArrayInputStream(ucr.getMetaData()
+					.getScript()
+					.getBytes("UTF-8"));
 		}
 
 	}

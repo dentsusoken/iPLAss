@@ -120,16 +120,19 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 					} catch (NoSuchMethodException e) {
 						//use default constructor
 						if (logger.isDebugEnabled()) {
-							logger.debug(className + " has no constructor of signature (UserDictionary, Mode, CharArraySet, Set), so use default constructor.");
+							logger.debug(className
+									+ " has no constructor of signature (UserDictionary, Mode, CharArraySet, Set), so use default constructor.");
 						}
 					}
 				}
 
 				if (analyzer == null) {
-					analyzer = (Analyzer) clazz.getConstructor().newInstance();
+					analyzer = (Analyzer) clazz.getConstructor()
+							.newInstance();
 				}
 
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e1) {
 				throw new FulltextSearchRuntimeException("can not instantiate Analyzer class: " + className, e1);
 			}
 		}
@@ -140,7 +143,8 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 			return null;
 		}
 
-		try (InputStreamReader reader = new InputStreamReader(JapaneseAnalyzerSettingInternalAnalyzer.class.getResourceAsStream(userDictionary), Charset.forName("utf-8"))) {
+		try (InputStreamReader reader = new InputStreamReader(JapaneseAnalyzerSettingInternalAnalyzer.class.getResourceAsStream(userDictionary),
+				Charset.forName("utf-8"))) {
 			return UserDictionary.open(reader);
 		} catch (IOException e) {
 			throw new FulltextSearchRuntimeException("User Dictionary can not read. : " + userDictionary, e);
@@ -168,7 +172,7 @@ public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 				return JapaneseAnalyzer.getDefaultStopSet();
 			}
 
-			try(InputStream input = JapaneseAnalyzerSettingInternalAnalyzer.class.getResourceAsStream(stopwords);
+			try (InputStream input = JapaneseAnalyzerSettingInternalAnalyzer.class.getResourceAsStream(stopwords);
 					Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
 				return WordlistLoader.getWordSet(reader, WORDS_COMMENT, new CharArraySet(CHAR_ARRAY_SET_INITIAL_CAPACITY, true));
 			} catch (IOException e) {

@@ -18,9 +18,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/pushnotification",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/pushnotification", prefix="def-push")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/pushnotification",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/pushnotification", prefix = "def-push")
+		}
 )
 package org.iplass.mtp.pushnotification.template.definition;

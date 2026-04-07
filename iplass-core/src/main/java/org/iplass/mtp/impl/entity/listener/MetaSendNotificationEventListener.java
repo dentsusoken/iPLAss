@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityEventContext;
@@ -80,7 +81,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private List<EventType> listenEvent;
 	private boolean sendTogether;
 	private List<String> destinationList;
-
 
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
@@ -164,10 +164,10 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			copy.listenEvent.addAll(listenEvent);
 		}
 		copy.setSynchronous(synchronous);
-		if (destinationList !=null) {
-			copy.destinationList = new ArrayList<>(destinationList );
+		if (destinationList != null) {
+			copy.destinationList = new ArrayList<>(destinationList);
 			copy.destinationList.addAll(destinationList);
-		}		
+		}
 		return copy;
 	}
 
@@ -212,22 +212,22 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 				return false;
 		} else if (!tmplDefName.equals(other.tmplDefName)) {
 			return false;
-			
-		} else if (!synchronous==other.synchronous) {
+
+		} else if (!synchronous == other.synchronous) {
 			return false;
-		} else if (destinationList==null) {
-			if (other.destinationList!=null) {
+		} else if (destinationList == null) {
+			if (other.destinationList != null) {
 				return false;
 			}
-		} else if(!destinationList.equals(other.destinationList)) {
+		} else if (!destinationList.equals(other.destinationList)) {
 			return false;
-		} else if (responseHandler==null) {
-			if (other.responseHandler!=null) {
+		} else if (responseHandler == null) {
+			if (other.responseHandler != null) {
 				return false;
 			}
 		} else if (!responseHandler.equals(other.responseHandler)) {
 			return false;
-		} else if (!sendTogether==other.sendTogether) {
+		} else if (!sendTogether == other.sendTogether) {
 			return false;
 		}
 		return true;
@@ -268,7 +268,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		d.setNotificationCondScript(notificationCondScript);
 		d.setResponseHandler(responseHandler);
 		d.setSendTogether(sendTogether);
-		
+
 		if (listenEvent != null) {
 			List<EventType> es = new ArrayList<EventType>();
 			es.addAll(listenEvent);
@@ -320,14 +320,17 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		public SendNotificationListenerEventHandler(MetaEntity entity) {
 
 			// TODO tenantIDの決定は、このメソッドを呼び出した際のスレッドに紐付いているテナントIDとなる。これでセキュリティ的、動作的に大丈夫か？
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			scriptEngine = tc.getScriptEngine();
 
 			if (StringUtil.isNotEmpty(notificationCondScript)) {
 				String scriptWithImport = "import " + EventType.class.getName() + ";\n" + notificationCondScript;
 				String scriptName = null;
-				for (int i = 0; i < entity.getEventListenerList().size(); i++) {
-					if (MetaSendNotificationEventListener.this == entity.getEventListenerList().get(i)) {
+				for (int i = 0; i < entity.getEventListenerList()
+						.size(); i++) {
+					if (MetaSendNotificationEventListener.this == entity.getEventListenerList()
+							.get(i)) {
 						scriptName = SCRIPT_PREFIX + "_" + entity.getId() + "_" + i;
 						break;
 					}
@@ -336,7 +339,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			}
 
 			destinationTemplateList = createDestinationTemplate(destinationList, entity);
-			
+
 			if (listenEvent != null) {
 				for (EventType eType : listenEvent) {
 					switch (eType) {
@@ -377,7 +380,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		}
 
 		private void setupHandleAfterCommit(Entity entity, EventType type, EntityEventContext context) {
-			Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+			Transaction t = ManagerLocator.getInstance()
+					.getManager(TransactionManager.class)
+					.currentTransaction();
 			final Object n = createNotification(entity, type, context);
 			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 				t.afterCommit(() -> {
@@ -404,7 +409,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			sc.setAttribute(EVENT_TYPE_BINDING_NAME, type);
 			sc.setAttribute(CONTEXT_BINDING_NAME, context);
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
-			sc.setAttribute(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
+			sc.setAttribute(USER_BINDING_NAME, AuthContextHolder.getAuthContext()
+					.newUserBinding());
 			sc.setAttribute(DATE_BINGING_NAME, ex.getCurrentTimestamp());
 
 			Object val = compiledScript.eval(sc);
@@ -528,7 +534,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		public MetaSendNotificationEventListener getMetaData() {
 			return MetaSendNotificationEventListener.this;
 		}
-		
+
 		protected Map<String, Object> generateBindings(Entity entity, EventType type, EntityEventContext context) {
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
 
@@ -537,7 +543,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			bindings.put(ENTITY_BINDING_NAME, entity);
 			bindings.put(EVENT_TYPE_BINDING_NAME, type);
 			bindings.put(CONTEXT_BINDING_NAME, context);
-			bindings.put(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
+			bindings.put(USER_BINDING_NAME, AuthContextHolder.getAuthContext()
+					.newUserBinding());
 			bindings.put(DATE_BINGING_NAME, ex.getCurrentTimestamp());
 			return bindings;
 		}
@@ -556,31 +563,37 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 					throw new RuntimeException(e);
 				}
 				String temp = sw.toString();
-				if (temp != null && !temp.replaceAll("\\s+", "").isEmpty()) {
+				if (temp != null && !temp.replaceAll("\\s+", "")
+						.isEmpty()) {
 					processedDestinationList.add(temp);
 				}
 			}
 			return processedDestinationList;
 		}
 
-		private List<GroovyTemplate> createDestinationTemplate(List<String> destinationList, MetaEntity entity){
+		private List<GroovyTemplate> createDestinationTemplate(List<String> destinationList, MetaEntity entity) {
 			List<GroovyTemplate> templateList = new ArrayList<GroovyTemplate>();
 			if (destinationList == null) {
 				return templateList;
 			}
 			String entityName = new String(entity.getName());
-			
+
 			//何番目のeventlisterのかを計算
 			int i = 0;
-			for (; i < entity.getEventListenerList().size(); i++) {
-				if (MetaSendNotificationEventListener.this == entity.getEventListenerList().get(i)) {
+			for (; i < entity.getEventListenerList()
+					.size(); i++) {
+				if (MetaSendNotificationEventListener.this == entity.getEventListenerList()
+						.get(i)) {
 					break;
 				}
 			}
-			for (int j = 0; j< destinationList.size(); j++) {
+			for (int j = 0; j < destinationList.size(); j++) {
 				String script = destinationList.get(j);
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, DESTINATION_PREFIX + "_Entity_" + entityName + "_listener" + i + "_destination" + j, (GroovyScriptEngine) se);
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
+				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script,
+						DESTINATION_PREFIX + "_Entity_" + entityName + "_listener" + i + "_destination" + j, (GroovyScriptEngine) se);
 				templateList.add(destinationTemplate);
 			}
 			return templateList;
@@ -589,7 +602,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	public class SendMailNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
-		private MailManager mm = ManagerLocator.getInstance().getManager(MailManager.class);
+		private MailManager mm = ManagerLocator.getInstance()
+				.getManager(MailManager.class);
 
 		public SendMailNotificationEventListenerHandler(MetaEntity entity) {
 			super(entity);
@@ -599,8 +613,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
-			List<Mail> mailList= new ArrayList<Mail>();
-			if(sendTogether) {
+			List<Mail> mailList = new ArrayList<Mail>();
+			if (sendTogether) {
 				Mail mail = mm.createMail(tmplDefName, bindings);
 				for (String destination : processedDestinationList) {
 					mail.addRecipientTo(destination, "");
@@ -627,7 +641,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	public class SendSMSNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
-		private SmsMailManager smm = ManagerLocator.getInstance().getManager(SmsMailManager.class);
+		private SmsMailManager smm = ManagerLocator.getInstance()
+				.getManager(SmsMailManager.class);
 
 		public SendSMSNotificationEventListenerHandler(MetaEntity entity) {
 			super(entity);
@@ -657,7 +672,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	public class SendPushNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
-		private PushNotificationManager pm = ManagerLocator.getInstance().getManager(PushNotificationManager.class);
+		private PushNotificationManager pm = ManagerLocator.getInstance()
+				.getManager(PushNotificationManager.class);
 
 		public SendPushNotificationEventListenerHandler(MetaEntity entity) {
 			super(entity);
@@ -666,9 +682,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			List<PushNotification> pushNotificationList= new ArrayList<PushNotification>();
+			List<PushNotification> pushNotificationList = new ArrayList<PushNotification>();
 			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
-			if(sendTogether) {
+			if (sendTogether) {
 				PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
 				for (String destination : processedDestinationList) {
 					pushNotification.addTo(destination);
@@ -695,11 +711,13 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	public class SendWebhookNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
-		private WebhookManager wm = ManagerLocator.getInstance().getManager(WebhookManager.class);
+		private WebhookManager wm = ManagerLocator.getInstance()
+				.getManager(WebhookManager.class);
 
 		public SendWebhookNotificationEventListenerHandler(MetaEntity entity) {
 			super(entity);
 		}
+
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
@@ -708,13 +726,14 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			for (String endpoint : processedDestinationList) {
 				Webhook webhook = wm.createWebhook(tmplDefName, bindings, endpoint);
 				WebhookResponseHandler whrh;
-				if (responseHandler==null||responseHandler.isEmpty()) {
-					whrh= new DefaultWebhookResponseHandler();
+				if (responseHandler == null || responseHandler.isEmpty()) {
+					whrh = new DefaultWebhookResponseHandler();
 				} else {
 					try {
-						whrh= (WebhookResponseHandler) Class.forName(responseHandler).newInstance();
+						whrh = (WebhookResponseHandler) Class.forName(responseHandler)
+								.newInstance();
 					} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-						whrh= new DefaultWebhookResponseHandler();
+						whrh = new DefaultWebhookResponseHandler();
 					}
 				}
 				webhook.setResponseHandler(whrh);
@@ -728,11 +747,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected void sendNotification(Object webhookList) {
 			//call async and sync
 			if (synchronous) {
-				for (Webhook wh : (List<Webhook>)webhookList) {
+				for (Webhook wh : (List<Webhook>) webhookList) {
 					wm.sendWebhookSync(wh);
 				}
 			} else {
-				for (Webhook wh : (List<Webhook>)webhookList) {
+				for (Webhook wh : (List<Webhook>) webhookList) {
 					wm.sendWebhookAsync(wh);
 				}
 			}

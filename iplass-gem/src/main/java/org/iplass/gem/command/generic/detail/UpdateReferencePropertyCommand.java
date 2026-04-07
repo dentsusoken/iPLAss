@@ -54,42 +54,55 @@ import org.iplass.mtp.view.generic.EntityViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @ActionMappings({
-	@ActionMapping(name=UpdateReferencePropertyCommand.ACTION_NAME,
-		displayName="参照プロパティ更新",
-		command={
-			@CommandConfig(commandClass=UpdateReferencePropertyCommand.class),
-			@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;")
-		},
-		paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-		}
-	),
-	@ActionMapping(name=UpdateReferencePropertyCommand.REF_ACTION_NAME,
-		displayName="参照ダイアログ参照プロパティ更新",
-		command={
-			@CommandConfig(commandClass=UpdateReferencePropertyCommand.class),
-			@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;")
-		},
-		paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
-		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-		}
-	)
+		@ActionMapping(
+				name = UpdateReferencePropertyCommand.ACTION_NAME,
+				displayName = "参照プロパティ更新",
+				command = {
+						@CommandConfig(commandClass = UpdateReferencePropertyCommand.class),
+						@CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=false;")
+				},
+				paramMapping = @ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}"),
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_TOKEN,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+				}
+		),
+		@ActionMapping(
+				name = UpdateReferencePropertyCommand.REF_ACTION_NAME,
+				displayName = "参照ダイアログ参照プロパティ更新",
+				command = {
+						@CommandConfig(commandClass = UpdateReferencePropertyCommand.class),
+						@CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=false;")
+				},
+				paramMapping = @ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}"),
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_VIEW),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_TOKEN,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+						@Result(
+								status = Constants.CMD_EXEC_ERROR_VIEW,
+								type = Type.TEMPLATE,
+								value = Constants.TEMPLATE_COMMON_ERROR,
+								layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+				}
+		)
 })
-@CommandClass(name="gem/generic/detail/UpdateReferencePropertyCommand", displayName="参照プロパティ更新")
+@CommandClass(name = "gem/generic/detail/UpdateReferencePropertyCommand", displayName = "参照プロパティ更新")
 public final class UpdateReferencePropertyCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdateReferencePropertyCommand.class);
@@ -102,9 +115,12 @@ public final class UpdateReferencePropertyCommand implements Command {
 	private EntityViewManager evm;
 
 	public UpdateReferencePropertyCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -125,7 +141,8 @@ public final class UpdateReferencePropertyCommand implements Command {
 		if (pd instanceof ReferenceProperty) {
 			ReferenceProperty rp = (ReferenceProperty) pd;
 			EntityDefinition red = edm.get(rp.getObjectDefinitionName());
-			if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
+			if (rp.getMappedBy() == null || rp.getMappedBy()
+					.isEmpty()) {
 				//順参照
 				return updateEntity(context, oid, red, rp);
 			} else {
@@ -180,7 +197,8 @@ public final class UpdateReferencePropertyCommand implements Command {
 		}
 		UpdateOption option = new UpdateOption(true);
 		option.setUpdateProperties(rp.getName());
-		option.setPurgeCompositionedEntity(context.getView().isPurgeCompositionedEntity());
+		option.setPurgeCompositionedEntity(context.getView()
+				.isPurgeCompositionedEntity());
 		try {
 			em.update(entity, option);
 		} catch (EntityValidationException e) {
@@ -226,7 +244,8 @@ public final class UpdateReferencePropertyCommand implements Command {
 				ReferenceProperty rrp = (ReferenceProperty) red.getProperty(rp.getMappedBy());
 				if (rrp.getMultiplicity() == 1) {
 					Entity entity = refEntity.getValue(rrp.getName());
-					if (entity != null && entity.getOid().equals(oid)) {
+					if (entity != null && entity.getOid()
+							.equals(oid)) {
 						refEntity.setValue(rrp.getName(), null);
 					}
 				} else {
@@ -234,7 +253,8 @@ public final class UpdateReferencePropertyCommand implements Command {
 					if (array != null) {
 						List<Entity> entityList = new ArrayList<Entity>();
 						for (Entity entity : array) {
-							if (entity != null && !entity.getOid().equals(oid)) {
+							if (entity != null && !entity.getOid()
+									.equals(oid)) {
 								entityList.add(entity);
 							}
 						}
@@ -243,7 +263,8 @@ public final class UpdateReferencePropertyCommand implements Command {
 				}
 				UpdateOption option = new UpdateOption(true);
 				option.setUpdateProperties(rrp.getName());
-				option.setPurgeCompositionedEntity(context.getView().isPurgeCompositionedEntity());
+				option.setPurgeCompositionedEntity(context.getView()
+						.isPurgeCompositionedEntity());
 				try {
 					em.update(refEntity, option);
 				} catch (EntityValidationException e) {
@@ -260,7 +281,8 @@ public final class UpdateReferencePropertyCommand implements Command {
 				//親子の場合、親が複数になることはない
 				//また親から削除された時点で子は削除対処となる
 				DeleteOption option = new DeleteOption(false);
-				option.setPurge(context.getView().isPurgeCompositionedEntity());
+				option.setPurge(context.getView()
+						.isPurgeCompositionedEntity());
 				em.delete(refEntity, option);
 			}
 		}
@@ -270,9 +292,12 @@ public final class UpdateReferencePropertyCommand implements Command {
 
 	private Entity createEntity(EntityDefinition ed, String oid, Long version, Long updateDate) {
 		Entity entity = null;
-		if (ed.getMapping() != null && ed.getMapping().getMappingModelClass() != null) {
+		if (ed.getMapping() != null && ed.getMapping()
+				.getMappingModelClass() != null) {
 			try {
-				entity = (Entity) Class.forName(ed.getMapping().getMappingModelClass()).newInstance();
+				entity = (Entity) Class.forName(ed.getMapping()
+						.getMappingModelClass())
+						.newInstance();
 			} catch (InstantiationException e) {
 				throw new EntityRuntimeException(e);
 			} catch (IllegalAccessException e) {

@@ -93,7 +93,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 			for (int i = 0; i < info.getEnumValues().length; i++) {
 				enms.add(info.getEnumValues()[i].toString());
 			}
-			item.setValueMap(enms.toArray(new String[]{}));
+			item.setValueMap(enms.toArray(new String[] {}));
 			((SelectItem) item).setMultiple(info.isMultiple());
 			((SelectItem) item).setMultipleAppearance(MultipleAppearance.GRID);
 			if (info.isRequired()) {
@@ -101,14 +101,15 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 			}
 			if (pane.getValue(info.getName()) != null) {
 				if (info.isMultiple()) {
-					List<Object> values = (List<Object>)pane.getValue(info.getName());
+					List<Object> values = (List<Object>) pane.getValue(info.getName());
 					List<String> strValues = new ArrayList<>();
 					for (Object value : values) {
 						strValues.add(value.toString());
 					}
 					((SelectItem) item).setValues(strValues.toArray(new String[0]));
 				} else {
-					item.setValue(pane.getValue(info.getName()).toString());
+					item.setValue(pane.getValue(info.getName())
+							.toString());
 				}
 			}
 		} else if (info.getInputType() == InputType.ACTION) {

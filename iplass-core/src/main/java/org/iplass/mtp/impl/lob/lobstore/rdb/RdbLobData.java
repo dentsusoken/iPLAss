@@ -52,14 +52,12 @@ public class RdbLobData implements LobData {
 
 	private long sizeCache = -1;
 
-
 	public RdbLobData(int tenantId, long lobDataId, boolean manageLobSizeOnRdb, RdbAdapter rdb) {
 		this.tenantId = tenantId;
 		this.lobDataId = lobDataId;
 		this.manageLobSizeOnRdb = manageLobSizeOnRdb;
 		this.rdb = rdb;
 	}
-
 
 	@Override
 	public long getLobDataId() {
@@ -386,7 +384,6 @@ public class RdbLobData implements LobData {
 			}
 			return Boolean.TRUE;
 		}
-
 
 		private Boolean storeBlob() throws SQLException {
 

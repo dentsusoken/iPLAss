@@ -63,7 +63,8 @@ public class TenantInfoHolder {
 	}
 
 	public static int getId() {
-		return tenantEnv.getTenant().getId();
+		return tenantEnv.getTenant()
+				.getId();
 	}
 
 	public static String getLanguage() {
@@ -71,7 +72,9 @@ public class TenantInfoHolder {
 	}
 
 	public static boolean isUseMultilingual() {
-		return tenantEnv.getTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual();
+		return tenantEnv.getTenant()
+				.getTenantConfig(TenantI18nInfo.class)
+				.isUseMultilingual();
 	}
 
 	public static String getInputLocale() {

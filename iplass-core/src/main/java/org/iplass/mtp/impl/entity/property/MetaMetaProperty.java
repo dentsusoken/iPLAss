@@ -30,17 +30,21 @@ public class MetaMetaProperty implements MetaData {
 	private static final long serialVersionUID = 5255856138532385269L;
 
 	private Class<?> propertyType;
+
 	public Class<?> getPropertyType() {
 		return propertyType;
 	}
+
 	public void setPropertyType(Class<?> propertyType) {
 		this.propertyType = propertyType;
 	}
+
 	private RdbTypeAdapter rdbTypeMapping;
 
 	public RdbTypeAdapter getRdbTypeMapping() {
 		return rdbTypeMapping;
 	}
+
 	public void setRdbTypeMapping(RdbTypeAdapter rdbTypeMapping) {
 		this.rdbTypeMapping = rdbTypeMapping;
 	}
@@ -49,6 +53,7 @@ public class MetaMetaProperty implements MetaData {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	public MetaDataRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		// TODO Auto-generated method stub
 		return null;

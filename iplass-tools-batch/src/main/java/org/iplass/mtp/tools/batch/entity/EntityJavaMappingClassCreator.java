@@ -33,8 +33,8 @@ import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +45,13 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 
 	private static final String ROOT_ENTITY = "/entity/Entity";
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static EntityToolService entityToolService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static EntityToolService entityToolService = ServiceRegistry.getRegistry()
+			.getService(EntityToolService.class);
 
-	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
 
 	/** 実行モード */
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -215,13 +218,13 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Wizard");
 			logInfo("");
 
 			// Wizardの実行
 			return startWizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Silent");
 			logInfo("");
 
@@ -231,7 +234,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 			return executeTask(null, (param) -> {
 				return proceed();
 			});
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -250,7 +253,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 					logWarn(rs("EntityJavaMappingClassCreator.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
-		} while(validTenantId == false);
+		} while (validTenantId == false);
 
 		// EntityPath
 		String entityPath = readConsole(rs("EntityJavaMappingClassCreator.Wizard.entityPathMsg"));
@@ -302,8 +305,10 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 				// Entity直接指定
 				String entityName = ed.getName();
 				if (StringUtil.isBlank(basePackage)
-						&& ed.getMapping() != null && StringUtil.isNotBlank(ed.getMapping().getMappingModelClass())) {
-					entityName = ed.getMapping().getMappingModelClass();
+						&& ed.getMapping() != null && StringUtil.isNotBlank(ed.getMapping()
+								.getMappingModelClass())) {
+					entityName = ed.getMapping()
+							.getMappingModelClass();
 				}
 				File file = new File(generateJavaClassFileName(entityName));
 				if (!isForce && file.exists()) {
@@ -326,8 +331,10 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 					String entityName = ds.getName();
 					EntityDefinition edx = edm.get(ds.getName());
 					if (StringUtil.isBlank(basePackage)
-							&& edx.getMapping() != null && StringUtil.isNotBlank(edx.getMapping().getMappingModelClass())) {
-						entityName = edx.getMapping().getMappingModelClass();
+							&& edx.getMapping() != null && StringUtil.isNotBlank(edx.getMapping()
+									.getMappingModelClass())) {
+						entityName = edx.getMapping()
+								.getMappingModelClass();
 					}
 					File file = new File(generateJavaClassFileName(entityName));
 					if (!isForce && file.exists()) {
@@ -350,11 +357,14 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 	private String generateJavaClassFileName(String entityName) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(outDir).append('/');
+		sb.append(outDir)
+				.append('/');
 		if (StringUtil.isNotBlank(basePackage)) {
-			sb.append(basePackage.replace('.', '/')).append('/');
+			sb.append(basePackage.replace('.', '/'))
+					.append('/');
 		}
-		sb.append(entityName.replace('.', '/')).append(".java");
+		sb.append(entityName.replace('.', '/'))
+				.append(".java");
 
 		return sb.toString();
 	}

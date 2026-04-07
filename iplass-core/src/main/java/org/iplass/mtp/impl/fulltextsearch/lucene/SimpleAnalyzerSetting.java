@@ -30,7 +30,7 @@ import org.iplass.mtp.spi.ServiceInitListener;
 public class SimpleAnalyzerSetting implements AnalyzerSetting, ServiceInitListener<LuceneFulltextSearchService> {
 
 	private String className;
-	
+
 	private Analyzer analyzer;
 
 	public String getClassName() {
@@ -45,18 +45,21 @@ public class SimpleAnalyzerSetting implements AnalyzerSetting, ServiceInitListen
 	public Analyzer getAnalyzer(int tenantId, String entityDefName) {
 		return analyzer;
 	}
-	
+
 	@Override
 	public void inited(LuceneFulltextSearchService service, Config config) {
 		if (service.isUseFulltextSearch()) {
 			try {
-				analyzer = (Analyzer) Class.forName(className).getConstructor().newInstance();
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+				analyzer = (Analyzer) Class.forName(className)
+						.getConstructor()
+						.newInstance();
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e1) {
 				throw new FulltextSearchRuntimeException("can not instantiate Analyzer class: " + className, e1);
 			}
 		}
 	}
-	
+
 	@Override
 	public void destroyed() {
 		if (analyzer != null) {

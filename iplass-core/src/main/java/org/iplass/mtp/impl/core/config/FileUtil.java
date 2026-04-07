@@ -31,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class FileUtil {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
-	
+
 	static String readContent(String fileName) throws IOException {
 		InputStream is = null;
 		try {
@@ -61,7 +61,7 @@ class FileUtil {
 			if (is == null) {
 				return null;
 			}
-			
+
 			InputStreamReader r = new InputStreamReader(is, "utf-8");
 			StringBuffer str = new StringBuffer();
 			char[] buf = new char[1024];

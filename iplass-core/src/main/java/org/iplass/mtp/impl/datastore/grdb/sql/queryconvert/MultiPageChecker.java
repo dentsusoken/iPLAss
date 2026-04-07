@@ -30,24 +30,24 @@ import org.iplass.mtp.impl.entity.property.PrimitivePropertyHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 
 class MultiPageChecker extends QueryVisitorSupport {
-	
+
 	private EntityHandler eh;
 	private EntityContext ec;
 	private String targetRef;
 
 	private boolean multiPage = false;
 	private boolean allPropertyUnderRef = true;
-	
+
 	MultiPageChecker(EntityHandler eh, EntityContext ec, String targetRef) {
 		this.eh = eh;
 		this.ec = ec;
 		this.targetRef = targetRef + ".";
 	}
-	
+
 	boolean isMultiPage() {
 		return multiPage;
 	}
-	
+
 	public boolean isAllPropertyUnderRef() {
 		return allPropertyUnderRef;
 	}
@@ -55,19 +55,22 @@ class MultiPageChecker extends QueryVisitorSupport {
 	@Override
 	public boolean visit(EntityField entityField) {
 		if (!multiPage) {
-			if (entityField.getPropertyName().startsWith(targetRef)) {
+			if (entityField.getPropertyName()
+					.startsWith(targetRef)) {
 				PropertyHandler ph = eh.getPropertyCascade(entityField.getPropertyName(), ec);
 				if (ph != null && ph instanceof PrimitivePropertyHandler) {
 					PrimitivePropertyHandler pph = (PrimitivePropertyHandler) ph;
 					GRdbPropertyStoreRuntime psr = (GRdbPropertyStoreRuntime) pph.getStoreSpecProperty();
-					for (GRdbPropertyStoreHandler gpsh: psr.asList()) {
-						if (gpsh.getMetaData().getPageNo() > 0) {
+					for (GRdbPropertyStoreHandler gpsh : psr.asList()) {
+						if (gpsh.getMetaData()
+								.getPageNo() > 0) {
 							multiPage = true;
 						}
 						if (!psr.isNative() && !psr.isMulti()) {
 							//native、multipleは値カラムのみのはずなのでチェックしない
 							if (!gpsh.isExternalIndex() && gpsh.getIndexColName() != null) {
-								if (gpsh.getMetaData().getIndexPageNo() > 0) {
+								if (gpsh.getMetaData()
+										.getIndexPageNo() > 0) {
 									multiPage = true;
 								}
 							}
@@ -79,14 +82,15 @@ class MultiPageChecker extends QueryVisitorSupport {
 				}
 			}
 		}
-		
-		if (!entityField.getPropertyName().startsWith(targetRef)) {
+
+		if (!entityField.getPropertyName()
+				.startsWith(targetRef)) {
 			allPropertyUnderRef = false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean visit(SubQuery scalarSubQuery) {
 		//ScalarSubQuery内のEntityFieldは未評価でOK

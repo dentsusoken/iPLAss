@@ -36,7 +36,6 @@ import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class AuthenticationPolicyPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -108,23 +107,28 @@ public class AuthenticationPolicyPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), AuthenticationPolicyDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_deleteAuthenticationPolicyComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), AuthenticationPolicyDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString(
+								"ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy") + caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_completion"),
+									AdminClientMessageUtil
+											.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_deleteAuthenticationPolicyComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString(
+									"ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy") + result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -134,6 +138,6 @@ public class AuthenticationPolicyPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{AuthenticationPolicyEditPane.class};
+		return new Class[] { AuthenticationPolicyEditPane.class };
 	}
 }

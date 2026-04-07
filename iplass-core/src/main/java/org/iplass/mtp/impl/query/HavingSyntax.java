@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
 
 public class HavingSyntax implements Syntax<Having>, QueryConstants {
-	
+
 	private OrSyntax or;
 
 	public void init(SyntaxContext context) {
@@ -38,19 +38,19 @@ public class HavingSyntax implements Syntax<Having>, QueryConstants {
 	}
 
 	public Having parse(ParseContext str) throws ParseException {
-		
+
 		//HAVING
 		if (!str.equalsNextToken(HAVING, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("HAVING expected.", this, str));
 		}
 		str.consumeChars(HAVING.length());
-		
+
 		Having having = new Having();
-		
+
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		//Condition
 		Condition cond = or.parse(str);
 		having.setCondition(cond);

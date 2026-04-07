@@ -27,5 +27,6 @@ import jakarta.servlet.jsp.PageContext;
 
 public interface Token {
 	void printOut(PageContext page) throws ServletException, IOException;
+
 	String getKey();
 }

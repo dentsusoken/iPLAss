@@ -33,7 +33,7 @@ public class CreateWebhookTemplateDialog extends MetaDataCreateDialog {
 
 	@Override
 	protected void saveAction(final SaveInfo saveInfo, final boolean isCopyMode) {
-		
+
 		checkExist(saveInfo.getName(), new Callable<Void>() {
 			@Override
 			public Void call() {
@@ -42,18 +42,18 @@ public class CreateWebhookTemplateDialog extends MetaDataCreateDialog {
 			}
 		});
 	}
-	
-	
+
 	private void createWebhookTemplate(SaveInfo saveInfo, boolean isCopyMode) {
 		if (isCopyMode) {
-			service.copyDefinition(TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(), saveInfo.getName(), saveInfo.getDisplayName(), saveInfo.getDescription(), new SaveResultCallback());
+			service.copyDefinition(TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(), saveInfo.getName(), saveInfo.getDisplayName(),
+					saveInfo.getDescription(), new SaveResultCallback());
 		} else {
 			WebhookTemplateDefinition definition = new WebhookTemplateDefinition();
-			
+
 			definition.setName(saveInfo.getName());
 			definition.setDisplayName(saveInfo.getDisplayName());
 			definition.setDescription(saveInfo.getDescription());
-			
+
 			service.createDefinition(TenantInfoHolder.getId(), definition, new SaveResultCallback());
 		}
 	}

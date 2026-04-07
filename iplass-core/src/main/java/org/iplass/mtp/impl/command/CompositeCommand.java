@@ -30,21 +30,21 @@ import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.TransactionOption;
 
-
 public class CompositeCommand implements Command {
-	
+
 	private Command[] commands;
-	
+
 	private Script executeRule;
 	private Command[] proxied;
-	
+
 	public CompositeCommand() {
 	}
-	
+
 	public CompositeCommand(CommandRuntime[] crs, Script executeRule) {
 		this.executeRule = executeRule;
-		
-		InterceptorService is = ServiceRegistry.getRegistry().getService(InterceptorService.class);
+
+		InterceptorService is = ServiceRegistry.getRegistry()
+				.getService(InterceptorService.class);
 		commands = new Command[crs.length];
 		proxied = new Command[crs.length];
 		for (int i = 0; i < proxied.length; i++) {
@@ -52,7 +52,7 @@ public class CompositeCommand implements Command {
 			proxied[i] = new CommandProxy(crs[i].name(), commands[i], crs[i].getTransactionOption(), is);
 		}
 	}
-	
+
 	public Command[] getCommands() {
 		return commands;
 	}
@@ -62,21 +62,23 @@ public class CompositeCommand implements Command {
 		if (executeRule == null) {
 			//TODO 最後のCommandの結果しか返していないが、よいか？
 			String result = null;
-			for (Command c: proxied) {
+			for (Command c : proxied) {
 				result = c.execute(request);
 			}
 			return result;
 		} else {
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
-			ScriptContext sc = tc.getScriptEngine().newScriptContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
+			ScriptContext sc = tc.getScriptEngine()
+					.newScriptContext();
 			sc.setAttribute(MetaCommand.CMD_BINDING_NAME, proxied);
 			sc.setAttribute("request", request);
- 			return (String) executeRule.eval(sc);
+			return (String) executeRule.eval(sc);
 		}
 	}
-	
+
 	private static class CommandProxy implements Command {
-		
+
 		private String cmdName;
 		private Command actual;
 		private TransactionOption transactionOption;
@@ -91,7 +93,8 @@ public class CompositeCommand implements Command {
 
 		@Override
 		public String execute(RequestContext request) {
-			InvocationImpl invocation = new InvocationImpl(interceptorService.getInterceptors(CommandInvokerImpl.INVOKER_INTERCEPTOR_NAME), actual, request, transactionOption, cmdName);
+			InvocationImpl invocation = new InvocationImpl(interceptorService.getInterceptors(CommandInvokerImpl.INVOKER_INTERCEPTOR_NAME), actual,
+					request, transactionOption, cmdName);
 			return invocation.proceedCommand();
 		}
 	}

@@ -28,12 +28,12 @@ package org.iplass.mtp.prefs;
  *
  */
 public interface PreferenceAware {
-	
+
 	/**
 	 * Preferenceが初期化される際に呼び出される。
 	 * 
 	 * @param pref Preference自体
 	 */
 	public void initialize(Preference pref);
-	
+
 }

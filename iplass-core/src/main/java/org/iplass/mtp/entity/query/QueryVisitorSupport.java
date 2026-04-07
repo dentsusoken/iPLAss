@@ -281,7 +281,7 @@ public abstract class QueryVisitorSupport implements QueryVisitor {
 	public boolean visit(Cast cast) {
 		return true;
 	}
-	
+
 	@Override
 	public boolean visit(Refer refer) {
 		return true;

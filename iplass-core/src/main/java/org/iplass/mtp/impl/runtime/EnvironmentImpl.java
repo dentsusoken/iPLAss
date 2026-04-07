@@ -27,28 +27,31 @@ public class EnvironmentImpl implements Environment {
 
 	@Override
 	public boolean serverInRole(String serverRole) {
-		String[] srs = ServerEnv.getInstance().getServerRoles();
+		String[] srs = ServerEnv.getInstance()
+				.getServerRoles();
 		if (srs == null || srs.length == 0) {
 			return true;
 		}
-		
-		for (String sr: srs) {
+
+		for (String sr : srs) {
 			if (serverRole.equals(sr)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	@Override
 	public String getServerId() {
-		return ServerEnv.getInstance().getServerId();
+		return ServerEnv.getInstance()
+				.getServerId();
 	}
 
 	@Override
 	public String getVersion() {
-		return PlatformUtil.getPlatformInformation().getVersion();
+		return PlatformUtil.getPlatformInformation()
+				.getVersion();
 	}
 
 }

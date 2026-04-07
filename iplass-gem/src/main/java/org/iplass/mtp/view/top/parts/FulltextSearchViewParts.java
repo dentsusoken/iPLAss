@@ -34,7 +34,7 @@ public class FulltextSearchViewParts extends TopViewParts {
 	private boolean dispSearchWindow;
 
 	private boolean showUserNameWithPrivilegedValue;
-	
+
 	public boolean isDispSearchWindow() {
 		return dispSearchWindow;
 	}
@@ -42,7 +42,7 @@ public class FulltextSearchViewParts extends TopViewParts {
 	public void setDispSearchWindow(boolean dispSearchWindow) {
 		this.dispSearchWindow = dispSearchWindow;
 	}
-	
+
 	public boolean isShowUserNameWithPrivilegedValue() {
 		return showUserNameWithPrivilegedValue;
 	}

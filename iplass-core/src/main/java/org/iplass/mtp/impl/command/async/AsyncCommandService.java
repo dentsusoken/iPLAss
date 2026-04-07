@@ -38,9 +38,11 @@ public class AsyncCommandService extends AbstractTypedMetaDataService<MetaAsyncC
 		public TypeMap() {
 			super(getFixedPath(), MetaAsyncCommand.class, AsyncCommandDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<AsyncCommandDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(AsyncCommandDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(AsyncCommandDefinitionManager.class);
 		}
 
 		@Override
@@ -70,6 +72,5 @@ public class AsyncCommandService extends AbstractTypedMetaDataService<MetaAsyncC
 	public Class<AsyncCommandRuntime> getRuntimeType() {
 		return AsyncCommandRuntime.class;
 	}
-
 
 }

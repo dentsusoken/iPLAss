@@ -31,7 +31,7 @@ import org.iplass.mtp.entity.ValidateResult;
  *
  */
 public class EntityInterceptorAdapter implements EntityInterceptor {
-	
+
 	@Override
 	public final Object intercept(EntityInvocation<?> invocation) {
 		switch (invocation.getType()) {
@@ -166,7 +166,7 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 	public void bulkUpdate(EntityBulkUpdateInvocation invocation) {
 		invocation.proceed();
 	}
-	
+
 	/**
 	 * {@link InvocationType#DELETE_ALL}の際、呼び出される。
 	 * 
@@ -176,7 +176,7 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 	public int deleteAll(EntityDeleteAllInvocation invocation) {
 		return invocation.proceed();
 	}
-	
+
 	/**
 	 * {@link InvocationType#GET_RECYCLE_BIN}の際、呼び出される。
 	 * 

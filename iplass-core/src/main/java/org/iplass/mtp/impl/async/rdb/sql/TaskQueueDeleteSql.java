@@ -67,7 +67,8 @@ public class TaskQueueDeleteSql extends UpdateSqlHandler {
 		ps.setTimestamp(1, date, rdb.rdbCalendar());
 
 		if (isDirectTenant) {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
 			ps.setInt(2, tenantId);
 		}
 	}

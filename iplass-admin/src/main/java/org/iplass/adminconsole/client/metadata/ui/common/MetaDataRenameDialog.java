@@ -70,7 +70,6 @@ public class MetaDataRenameDialog extends MtpDialog {
 	/** 対象Definition表示名 */
 	private String nodeDisplayName;
 
-
 	/**
 	 * コンストラクタ
 	 *
@@ -109,7 +108,7 @@ public class MetaDataRenameDialog extends MtpDialog {
 		IButton save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					saveAction();
 				}
 			}
@@ -176,7 +175,7 @@ public class MetaDataRenameDialog extends MtpDialog {
 
 		toField.setValidators(nameRegExpValidator);
 	}
-	
+
 	/**
 	 * 名前に対する規則を直接カスタマイズします。
 	 *
@@ -187,7 +186,7 @@ public class MetaDataRenameDialog extends MtpDialog {
 	public void setCustomNameValidator(Validator... validators) {
 		toField.setValidators(validators);
 	}
-	
+
 	/**
 	 * <p>保存処理です。</p>
 	 *
@@ -195,7 +194,7 @@ public class MetaDataRenameDialog extends MtpDialog {
 	 *
 	 * <p>Entityの場合など、特殊な処理を必要とする場合はdoRenameをOverrideしてください。</p>
 	 */
-	private void saveAction(){
+	private void saveAction() {
 
 		String fromName = SmartGWTUtil.getStringValue(fromField);
 		String toName = SmartGWTUtil.getStringValue(toField);
@@ -263,16 +262,16 @@ public class MetaDataRenameDialog extends MtpDialog {
 				//メッセージ表示前にデータ変更通知をしてしまう(ツリーをリロード)
 				fireDataChanged();
 
-				SC.say(rs("ui_metadata_common_MetaDataRenameDialog_completeTitle")
-						, rs("ui_metadata_common_MetaDataRenameDialog_renameComplete"), new BooleanCallback() {
+				SC.say(rs("ui_metadata_common_MetaDataRenameDialog_completeTitle"), rs("ui_metadata_common_MetaDataRenameDialog_renameComplete"),
+						new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
+							@Override
+							public void execute(Boolean value) {
 
-						//ダイアログ消去
-						destroy();
-					}
-				});
+								//ダイアログ消去
+								destroy();
+							}
+						});
 			} else {
 				SC.warn(rs("ui_metadata_common_MetaDataRenameDialog_renameErr", result.getMessage()));
 			}

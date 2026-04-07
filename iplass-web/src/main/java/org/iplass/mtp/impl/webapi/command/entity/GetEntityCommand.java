@@ -26,11 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.core.StreamingOutput;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -72,11 +67,23 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.StreamingOutput;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
-@WebApi(name = "mtp/entity/GET", accepts = { RequestType.REST_FORM }, methods = { MethodType.GET }, results = {
-		GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY,
-		GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON,
-		GetEntityCommand.RESULT_XML }, responseType = "application/json, application/xml, text/csv;charset=utf-8", supportBearerToken = true, overwritable = false)
+@WebApi(
+		name = "mtp/entity/GET",
+		accepts = { RequestType.REST_FORM },
+		methods = { MethodType.GET },
+		results = {
+				GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY,
+				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON,
+				GetEntityCommand.RESULT_XML },
+		responseType = "application/json, application/xml, text/csv;charset=utf-8",
+		supportBearerToken = true,
+		overwritable = false)
 @CommandClass(name = "mtp/entity/GetEntityCommand", displayName = "Entity Query/Load Web API", overwritable = false)
 public final class GetEntityCommand extends AbstractEntityCommand {
 	private static final Logger logger = LoggerFactory.getLogger(GetEntityCommand.class);
@@ -105,10 +112,15 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private final ObjectMapper mapper;
 
 	public GetEntityCommand() {
-		context = ServiceRegistry.getRegistry().getService(WebApiJaxbService.class).getJAXBContext();
+		context = ServiceRegistry.getRegistry()
+				.getService(WebApiJaxbService.class)
+				.getJAXBContext();
 		nameSpaceMap = new HashMap<String, String>();
 		jsonFactory = new JsonFactory();
-		mapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper().copy();
+		mapper = ServiceRegistry.getRegistry()
+				.getService(WebApiObjectMapperService.class)
+				.getObjectMapper()
+				.copy();
 		// write,read時の自動closeを無効に設定
 		mapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
 		mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
@@ -117,7 +129,9 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		Document doc;
 		Marshaller marshaller;
 		try {
-			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+			doc = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder()
+					.newDocument();
 			marshaller = context.createMarshaller();
 			marshaller.marshal(webApiResponse, doc);
 		} catch (ParserConfigurationException | JAXBException e) {
@@ -128,8 +142,11 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		NamedNodeMap namedNodeMap = element.getAttributes();
 
 		for (int i = 0; i < namedNodeMap.getLength(); i++) {
-			String[] str = namedNodeMap.item(i).getNodeName().split(":");
-			nameSpaceMap.put(str[1], namedNodeMap.item(i).getNodeValue());
+			String[] str = namedNodeMap.item(i)
+					.getNodeName()
+					.split(":");
+			nameSpaceMap.put(str[1], namedNodeMap.item(i)
+					.getNodeValue());
 		}
 	}
 
@@ -162,7 +179,10 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryImpl(Query query, RequestContext request, boolean byQuery, ResType resType,
 			boolean withMappedBy) {
 
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
+		checkPermission(query.getFrom()
+				.getEntityName(),
+				def -> def.getMetaData()
+						.isQuery());
 
 		if (!entityWebApiService.isEnableNativeHint()) {
 			QueryVisitor qv = new QueryVisitorSupport() {
@@ -224,7 +244,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			query.limit(entityWebApiService.getMaxLimit());
 		}
 
-		if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
+		if (query.getLimit()
+				.getLimit() > entityWebApiService.getMaxLimit()) {
 			throw new IllegalArgumentException("Can not specify limit more than " + entityWebApiService.getMaxLimit());
 		}
 
@@ -265,18 +286,22 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 	private void listCsv(Query query, RequestContext request, boolean withMappedBy) {
 
-		CsvUploadService csvUploadService = ServiceRegistry.getRegistry().getService(CsvUploadService.class);
+		CsvUploadService csvUploadService = ServiceRegistry.getRegistry()
+				.getService(CsvUploadService.class);
 
 		// TODO
 		// EntitySearchCsvWriter使う場合、queryのselect項目利用できず再度EntitySearchCsvWriterで項目選択させる必要あり、、
 		StreamingOutput stream = out -> {
 
-			EntityCsvWriteOption option = new EntityCsvWriteOption().where(query.getWhere()).orderBy(query.getOrderBy())
+			EntityCsvWriteOption option = new EntityCsvWriteOption().where(query.getWhere())
+					.orderBy(query.getOrderBy())
 					.dateFormat(entityWebApiService.getCsvDateFormat())
 					.datetimeSecFormat(entityWebApiService.getCsvDateTimeFormat())
-					.timeSecFormat(entityWebApiService.getCsvTimeFormat()).withMappedByReference(withMappedBy)
+					.timeSecFormat(entityWebApiService.getCsvTimeFormat())
+					.withMappedByReference(withMappedBy)
 					.mustOrderByWithLimit(csvUploadService.isMustOrderByWithLimit());
-			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(),
+			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom()
+					.getEntityName(),
 					option)) {
 				writer.write();
 				if (request.getParam(FOOTER, Boolean.class, false)) {
@@ -341,7 +366,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	// api/entity/[definitionName]/[oid]
 	// api/entity/[definitionName]/[oid]/[version]
 	private void load(String entityDef, String oid, String ver, RequestContext request) {
-		checkPermission(entityDef, def -> def.getMetaData().isLoad());
+		checkPermission(entityDef, def -> def.getMetaData()
+				.isLoad());
 
 		Long version = null;
 		if (ver != null) {

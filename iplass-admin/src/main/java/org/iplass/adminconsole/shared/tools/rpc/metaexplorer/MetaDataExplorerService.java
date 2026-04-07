@@ -39,8 +39,7 @@ import com.google.gwt.user.client.rpc.XsrfProtectedService;
  * MetaDataExplorer用Service
  */
 @RemoteServiceRelativePath("service/metaexplorer")
-public interface MetaDataExplorerService extends XsrfProtectedService , EntityDataTransferService {
-
+public interface MetaDataExplorerService extends XsrfProtectedService, EntityDataTransferService {
 
 	public MetaTreeNode getMetaTree(final int tenantId);
 

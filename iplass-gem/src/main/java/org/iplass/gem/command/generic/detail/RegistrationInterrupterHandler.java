@@ -144,7 +144,8 @@ public class RegistrationInterrupterHandler {
 					String refEntityProp = addtionalProperty.substring(addtionalProperty.indexOf(".") + 1);
 					PropertyDefinition pd = ed.getProperty(refEntityProp);
 					if (pd != null && pd.isUpdatable()) {
-						option.getSpecifiedUpdateNestProperties().add(refEntityProp);
+						option.getSpecifiedUpdateNestProperties()
+								.add(refEntityProp);
 					}
 				}
 			}

@@ -56,7 +56,7 @@ public class MetaUserPropertyEditor extends MetaCustomPropertyEditor {
 	 * @return 表示タイプ
 	 */
 	public UserDisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class MetaUserPropertyEditor extends MetaCustomPropertyEditor {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(UserDisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	/**

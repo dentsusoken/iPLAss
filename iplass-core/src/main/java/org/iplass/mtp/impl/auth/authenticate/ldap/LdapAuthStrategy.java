@@ -25,7 +25,9 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 public interface LdapAuthStrategy {
 
 	public AccountHandle login(Credential credential);
+
 	public void logout(AccountHandle user);
+
 	public void destroyed();
 
 }

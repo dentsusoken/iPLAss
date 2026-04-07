@@ -25,8 +25,9 @@ import org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService;
 import org.iplass.mtp.spi.ServiceInitListener;
 
 public interface JwtKeyStore extends ServiceInitListener<OAuthAuthorizationService> {
-	
+
 	public CertificateKeyPair getCertificateKeyPair();
+
 	public List<CertificateKeyPair> list();
 
 }

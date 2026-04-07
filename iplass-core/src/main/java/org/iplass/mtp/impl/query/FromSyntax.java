@@ -29,15 +29,15 @@ import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
 
 public class FromSyntax implements Syntax<From>, QueryConstants {
-	
+
 	private AsOfSyntax asOf;
-	
+
 	public void init(SyntaxContext context) {
 		asOf = context.getSyntax(AsOfSyntax.class);
 	}
 
 	public From parse(ParseContext str) throws ParseException {
-		
+
 		if (!str.equalsNextToken(FROM, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("from expected.", this, str));
 		}
@@ -45,15 +45,15 @@ public class FromSyntax implements Syntax<From>, QueryConstants {
 		if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 			throw new ParseException(new EvalError("space expected.", this, str));
 		}
-		
+
 		String entityName = str.nextToken(ParseContext.TOKEN_DELIMITERS);
 		if (entityName == null) {
 			throw new ParseException(new EvalError("entityName expected.", this, str));
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		From f = new From(entityName);
-		
+
 		//AS OF
 		if (str.equalsNextToken(AS, ParseContext.TOKEN_DELIMITERS)) {
 			AsOf ao = asOf.parse(str);
@@ -62,7 +62,7 @@ public class FromSyntax implements Syntax<From>, QueryConstants {
 		}
 
 		return f;
-		
+
 	}
 
 }

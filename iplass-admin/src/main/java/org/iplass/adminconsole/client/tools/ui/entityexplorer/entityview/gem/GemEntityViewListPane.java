@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.entityview.gem;
 
-
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -75,7 +74,8 @@ public class GemEntityViewListPane extends VLayout {
 		final ToolStripButton configExportButton = new ToolStripButton();
 		configExportButton.setIcon(EXPORT_ICON);
 		configExportButton.setTitle("ConfigExport");
-		configExportButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_exportEntityDef")));
+		configExportButton
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_exportEntityDef")));
 		configExportButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -89,7 +89,8 @@ public class GemEntityViewListPane extends VLayout {
 
 		showCountItem = new CheckboxItem();
 		showCountItem.setTitle("Get Data Count");
-		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_dataNumOften")));
+		showCountItem
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_dataNumOften")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 
 			@Override
@@ -109,7 +110,8 @@ public class GemEntityViewListPane extends VLayout {
 
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_refreshList")));
+		refreshButton
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_GemEntityListPane_refreshList")));
 		refreshButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -180,7 +182,6 @@ public class GemEntityViewListPane extends VLayout {
 		dialog.show();
 
 	}
-
 
 	private void refreshGrid() {
 		boolean isGetDataCount = showCountItem.getValueAsBoolean();

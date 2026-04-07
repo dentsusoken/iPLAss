@@ -20,14 +20,14 @@
 package org.iplass.adminconsole.client.metadata.data.tenant;
 
 public enum TenantCategory {
-	BASICINFO("BasicInfo")
-	, AUTHSETTING("AuthSetting")
-	, AUTHPASSSETTING("AuthPassSetting")
-	, SCREENDISPSETTING("ScreenDispSetting")
-	, SCREENTRANSETTING("ScreenTranSetting")
-	, MULTILINGUALSETTING("MultilingualSetting")
-	, MAILSENDSETTING("MailSendSetting")
-	, EXTENDSETTING("ExtendSetting");
+	BASICINFO("BasicInfo"),
+	AUTHSETTING("AuthSetting"),
+	AUTHPASSSETTING("AuthPassSetting"),
+	SCREENDISPSETTING("ScreenDispSetting"),
+	SCREENTRANSETTING("ScreenTranSetting"),
+	MULTILINGUALSETTING("MultilingualSetting"),
+	MAILSENDSETTING("MailSendSetting"),
+	EXTENDSETTING("ExtendSetting");
 
 	private String displayName;
 

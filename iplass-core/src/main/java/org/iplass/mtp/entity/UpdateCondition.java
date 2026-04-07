@@ -35,7 +35,6 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.query.WhereSyntax;
 
-
 /**
  * Entityデータを一括更新する際の更新条件。
  *
@@ -155,7 +154,9 @@ public class UpdateCondition {
 	public UpdateCondition where(String whereClause) {
 		String whereStr = QueryConstants.WHERE + " " + whereClause;
 		try {
-			where = QueryServiceHolder.getInstance().getQueryParser().parse(whereStr, WhereSyntax.class);
+			where = QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(whereStr, WhereSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
@@ -197,24 +198,31 @@ public class UpdateCondition {
 	public List<UpdateValue> getValues() {
 		return values;
 	}
+
 	public void setValues(List<UpdateValue> values) {
 		this.values = values;
 	}
+
 	public String getDefinitionName() {
 		return definitionName;
 	}
+
 	public void setDefinitionName(String definitionName) {
 		this.definitionName = definitionName;
 	}
+
 	public Where getWhere() {
 		return where;
 	}
+
 	public void setWhere(Where where) {
 		this.where = where;
 	}
+
 	public boolean isLockStrictly() {
 		return lockStrictly;
 	}
+
 	/**
 	 * 更新時に厳密にロック（oid順にソートしてロック取得）を取得する場合trueを設定。
 	 * デフォルトfalse。
@@ -225,7 +233,6 @@ public class UpdateCondition {
 	public void setLockStrictly(boolean lockStrictly) {
 		this.lockStrictly = lockStrictly;
 	}
-
 
 	/**
 	 * 一括更新時の更新項目を表すクラス。
@@ -335,6 +342,7 @@ public class UpdateCondition {
 		public ValueExpression getValue() {
 			return value;
 		}
+
 		public void setValue(ValueExpression value) {
 			this.value = value;
 		}
@@ -356,7 +364,7 @@ public class UpdateCondition {
 		UpdateCondition copy = new UpdateCondition();
 		if (values != null) {
 			copy.values = new ArrayList<>(values.size());
-			for (UpdateValue uv: values) {
+			for (UpdateValue uv : values) {
 				copy.values.add(uv.copy());
 			}
 		}
@@ -373,7 +381,8 @@ public class UpdateCondition {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("update ").append(definitionName);
+		sb.append("update ")
+				.append(definitionName);
 		sb.append(" set ");
 		if (values != null) {
 			for (int i = 0; i < values.size(); i++) {
@@ -381,11 +390,14 @@ public class UpdateCondition {
 					sb.append(",");
 				}
 				UpdateValue uv = values.get(i);
-				sb.append(uv.propertyName).append("=").append(uv.value);
+				sb.append(uv.propertyName)
+						.append("=")
+						.append(uv.value);
 			}
 		}
 		if (where != null) {
-			sb.append(" ").append(where);
+			sb.append(" ")
+					.append(where);
 		}
 		return sb.toString();
 	}

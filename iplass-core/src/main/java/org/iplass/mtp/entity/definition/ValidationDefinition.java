@@ -37,7 +37,6 @@ import org.iplass.mtp.entity.definition.validations.RegexValidation;
 import org.iplass.mtp.entity.definition.validations.ScriptingValidation;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**

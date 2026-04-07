@@ -45,11 +45,11 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 	public static final String TYPE_CLIENT = "OC";
 	public static final String TYPE_RESOURCE_SERVER = "ORS";
 	public static final String TYPE_POST_FIX_OLD = "$OLD";
-	
+
 	private AuthTokenStore oldCredentialStore;
 
 	private int oldCredentialValidDays;
-	
+
 	public int getOldCredentialValidDays() {
 		return oldCredentialValidDays;
 	}
@@ -57,32 +57,39 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 	public void setOldCredentialValidDays(int oldCredentialValidDays) {
 		this.oldCredentialValidDays = oldCredentialValidDays;
 	}
-	
+
 	private String metaDataId(String clientId) {
 		if (TYPE_CLIENT.equals(getType())) {
-			OAuthClientRuntime c = ServiceRegistry.getRegistry().getService(OAuthClientService.class).getRuntimeByName(clientId);
+			OAuthClientRuntime c = ServiceRegistry.getRegistry()
+					.getService(OAuthClientService.class)
+					.getRuntimeByName(clientId);
 			if (c == null) {
 				return null;
 			}
-			return c.getMetaData().getId();
+			return c.getMetaData()
+					.getId();
 		} else if (TYPE_RESOURCE_SERVER.equals(getType())) {
-			OAuthResourceServerRuntime r = ServiceRegistry.getRegistry().getService(OAuthResourceServerService.class).getRuntimeByName(clientId);
+			OAuthResourceServerRuntime r = ServiceRegistry.getRegistry()
+					.getService(OAuthResourceServerService.class)
+					.getRuntimeByName(clientId);
 			if (r == null) {
 				return null;
 			}
-			return r.getMetaData().getId();
+			return r.getMetaData()
+					.getId();
 		} else {
 			return null;
 		}
 	}
 
 	public Credential generateCredential(String clientId) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		String clientMetaDataId = metaDataId(clientId);
 		if (clientMetaDataId == null) {
 			throw new IllegalArgumentException("invalid clientId or clientType:" + clientId + ", " + getType());
 		}
-		
+
 		if (oldCredentialValidDays > 0) {
 			AuthToken current = authTokenStore().getBySeries(tenantId, getType(), clientMetaDataId);
 			if (current != null) {
@@ -94,7 +101,7 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 				oldCredentialStore.create(current);
 			}
 		}
-		
+
 		authTokenStore().deleteBySeries(tenantId, getType(), clientMetaDataId);
 		AuthToken at = newAuthToken(clientMetaDataId, null, new OAuthClientCredentialHandler.OAuthClientCredentialInfo(getType()));
 		authTokenStore().create(at);
@@ -103,11 +110,11 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 		}
 		return new IdPasswordCredential(clientId, at.getToken());
 	}
-	
+
 	private int nextIndex(List<AuthToken> ats) {
 		int max = -1;
 		if (ats != null) {
-			for (AuthToken at: ats) {
+			for (AuthToken at : ats) {
 				String series = at.getSeries();
 				int i = Integer.parseInt(series.substring(series.lastIndexOf('$') + 1));
 				if (max < i) {
@@ -117,14 +124,14 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 		}
 		return max + 1;
 	}
-	
-	
+
 	public boolean validateCredential(Credential cre, String clientId) {
 		if (!(cre instanceof IdPasswordCredential)) {
 			throw new OAuthRuntimeException("Currently, only IdPasswordCredential is supported.");
 		}
-		
-		if (!cre.getId().equals(clientId)) {
+
+		if (!cre.getId()
+				.equals(clientId)) {
 			if (logger.isWarnEnabled()) {
 				logger.warn(clientId + ",clientValidate,fail");
 			}
@@ -137,21 +144,23 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 			}
 			return false;
 		}
-		
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		AuthToken stToken = authTokenStore().getBySeries(tenantId, getType(), clientMetaDataId);
 		if (stToken != null) {
 			if (checkTokenValid(((IdPasswordCredential) cre).getPassword(), stToken)) {
 				return true;
 			}
 		}
-		
+
 		if (oldCredentialValidDays > 0) {
 			//fallback old credentials
 			List<AuthToken> ats = oldCredentialStore.getByOwner(tenantId, getType() + TYPE_POST_FIX_OLD, clientMetaDataId);
 			if (ats != null) {
-				for (AuthToken at: ats) {
-					if (at.getStartDate().getTime() + TimeUnit.DAYS.toMillis(oldCredentialValidDays) > System.currentTimeMillis()) {
+				for (AuthToken at : ats) {
+					if (at.getStartDate()
+							.getTime() + TimeUnit.DAYS.toMillis(oldCredentialValidDays) > System.currentTimeMillis()) {
 						if (checkTokenValid(((IdPasswordCredential) cre).getPassword(), at)) {
 							return true;
 						}
@@ -159,22 +168,23 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 				}
 			}
 		}
-			
+
 		if (logger.isWarnEnabled()) {
 			logger.warn(clientId + ",clientValidate,fail");
 		}
 		return false;
 	}
-	
+
 	public void deleteOldCredential(String clientId) {
 		String clientMetaDataId = metaDataId(clientId);
 		if (clientMetaDataId == null) {
 			throw new IllegalArgumentException("invalid clientId or clientType:" + clientId + ", " + getType());
 		}
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		oldCredentialStore.delete(tenantId, getType() + TYPE_POST_FIX_OLD, clientMetaDataId);
 	}
-	
+
 	@Override
 	public void inited(AuthTokenService service, Config config) {
 		super.inited(service, config);
@@ -186,12 +196,12 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 	public AuthTokenInfo toAuthTokenInfo(AuthToken authToken) {
 		return null;
 	}
-	
+
 	@Override
 	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		return null;
 	}
-	
+
 	@Override
 	public Credential toCredential(AuthToken newToken) {
 		return new IdPasswordCredential(newToken.getOwnerId(), newToken.getToken());
@@ -201,30 +211,34 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 	public String newSeriesString(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		return userUniqueId;
 	}
-	
+
 	static class OAuthClientCredentialInfo implements AuthTokenInfo {
-		
+
 		private String type;
-		
+
 		OAuthClientCredentialInfo(String type) {
 			this.type = type;
 		}
+
 		@Override
 		public String getType() {
 			return type;
 		}
+
 		@Override
 		public String getKey() {
 			return null;
 		}
+
 		@Override
 		public String getDescription() {
 			return null;
 		}
+
 		@Override
 		public Timestamp getStartDate() {
 			return null;
 		}
 	}
-	
+
 }

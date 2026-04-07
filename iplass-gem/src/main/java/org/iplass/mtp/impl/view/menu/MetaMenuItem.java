@@ -48,7 +48,7 @@ public class MetaMenuItem implements Serializable {
 	 * @return メニュー定義ID
 	 */
 	public String getMenuRefId() {
-	    return menuRefId;
+		return menuRefId;
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class MetaMenuItem implements Serializable {
 	 * @param menuRefId メニュー定義ID
 	 */
 	public void setMenuRefId(String menuRefId) {
-	    this.menuRefId = menuRefId;
+		this.menuRefId = menuRefId;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class MetaMenuItem implements Serializable {
 	 * @return 子メニュー
 	 */
 	public List<MetaMenuItem> getChilds() {
-	    return childs;
+		return childs;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class MetaMenuItem implements Serializable {
 	 * @param metaMenuItem 追加するメニュー
 	 */
 	public void addChild(MetaMenuItem metaMenuItem) {
-		if(childs == null) {
+		if (childs == null) {
 			childs = new ArrayList<MetaMenuItem>();
 		}
 		childs.add(metaMenuItem);
@@ -93,12 +93,15 @@ public class MetaMenuItem implements Serializable {
 	public void applyConfig(MenuItem definition) {
 
 		//name -> id 変換
-		MenuItemService service = ServiceRegistry.getRegistry().getService(MenuItemService.class);
+		MenuItemService service = ServiceRegistry.getRegistry()
+				.getService(MenuItemService.class);
 		MetaMenu.MetaMenuHandler handler = service.getRuntimeByName(definition.getName());
-		menuRefId = handler.getMetaData().getId();
+		menuRefId = handler.getMetaData()
+				.getId();
 
 		if (definition.getChilds() != null) {
-			childs = new ArrayList<MetaMenuItem>(definition.getChilds().size());
+			childs = new ArrayList<MetaMenuItem>(definition.getChilds()
+					.size());
 			for (MenuItem item : definition.getChilds()) {
 				MetaMenuItem child = new MetaMenuItem();
 				child.applyConfig(item);
@@ -112,23 +115,25 @@ public class MetaMenuItem implements Serializable {
 	//Meta → Definition
 	public MenuItem currentConfig() {
 
-		MenuItemService service = ServiceRegistry.getRegistry().getService(MenuItemService.class);
+		MenuItemService service = ServiceRegistry.getRegistry()
+				.getService(MenuItemService.class);
 		MetaMenu.MetaMenuHandler handler = service.getRuntimeById(menuRefId);
 
-		if(handler == null) {
+		if (handler == null) {
 			return null;
 		}
-		if(handler instanceof MetaNodeMenu.MetaNodeMenuHandler && (childs == null || childs.size() == 0)) {
+		if (handler instanceof MetaNodeMenu.MetaNodeMenuHandler && (childs == null || childs.size() == 0)) {
 			// Nodeで子階層が0の場合はNullを返す。
 			return null;
 		}
 
-		MenuItem item = handler.getMetaData().currentConfig();
-		if(item == null) {
-			return  null;
+		MenuItem item = handler.getMetaData()
+				.currentConfig();
+		if (item == null) {
+			return null;
 		}
 		// 子供がいない場合は終了
-		if(childs == null) {
+		if (childs == null) {
 			return item;
 		}
 
@@ -136,11 +141,11 @@ public class MetaMenuItem implements Serializable {
 		ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>(childs.size());
 		for (MetaMenuItem metaMenuItem : childs) {
 			MenuItem child = metaMenuItem.currentConfig();
-			if(child != null) {
+			if (child != null) {
 				menuItems.add(child);
 			}
 		}
-		if(menuItems.size() != 0) {
+		if (menuItems.size() != 0) {
 			menuItems.trimToSize();
 			item.setChilds(menuItems);
 		}

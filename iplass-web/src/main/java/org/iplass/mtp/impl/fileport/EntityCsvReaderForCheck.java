@@ -42,7 +42,8 @@ public class EntityCsvReaderForCheck extends EntityCsvReader {
 		this.errorLimit = errorLimit;
 	}
 
-	public EntityCsvReaderForCheck(EntityDefinition definition, InputStream inputStream, String charset, int errorLimit) throws UnsupportedEncodingException {
+	public EntityCsvReaderForCheck(EntityDefinition definition, InputStream inputStream, String charset, int errorLimit)
+			throws UnsupportedEncodingException {
 		super(definition, inputStream, charset);
 		this.errorLimit = errorLimit;
 	}
@@ -61,8 +62,8 @@ public class EntityCsvReaderForCheck extends EntityCsvReader {
 			List<String> errorMsgList = new ArrayList<String>();
 
 			int cnt = 0;
-			while((list = readLine()) != null) {
-				cnt ++;
+			while ((list = readLine()) != null) {
+				cnt++;
 				try {
 					validateLine(list);
 				} catch (EntityCsvException e) {

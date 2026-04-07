@@ -41,7 +41,6 @@ import org.iplass.mtp.transaction.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class LocalTransaction implements Transaction {
 
 	private static Logger logger = LoggerFactory.getLogger(LocalTransaction.class);
@@ -64,7 +63,6 @@ public class LocalTransaction implements Transaction {
 
 	//for test use only
 	private boolean testRollbackMode;
-
 
 	public LocalTransaction(boolean readOnly) {
 		this(readOnly, null);
@@ -110,7 +108,8 @@ public class LocalTransaction implements Transaction {
 		this.con = con;
 		try {
 			if (con.getAutoCommit()) {
-				con.getWrapped().setAutoCommit(false);
+				con.getWrapped()
+						.setAutoCommit(false);
 			}
 
 			this.con.setReadOnly(readOnly);
@@ -118,12 +117,14 @@ public class LocalTransaction implements Transaction {
 		} catch (SQLException e) {
 			//Connecionは生成されているけど、setAutoCommit()、setReadOnlyに失敗
 			try {
-				con.getWrapped().rollback();
+				con.getWrapped()
+						.rollback();
 			} catch (SQLException ee) {
 				e.addSuppressed(ee);
 			}
 			try {
-				con.getWrapped().close();
+				con.getWrapped()
+						.close();
 			} catch (SQLException ee) {
 				e.addSuppressed(ee);
 			}
@@ -149,11 +150,14 @@ public class LocalTransaction implements Transaction {
 			throw new RollbackException("setRolbackOnly called");//TODO ちゃんとしたメッセージ
 		}
 		try {
-			if (con != null && !con.getWrapped().isClosed()) {
+			if (con != null && !con.getWrapped()
+					.isClosed()) {
 				if (testRollbackMode) {
-					con.getWrapped().rollback();
+					con.getWrapped()
+							.rollback();
 				} else {
-					con.getWrapped().commit();
+					con.getWrapped()
+							.commit();
 				}
 			}
 			//初回のcommit時のみ、listenerに通知するようにする
@@ -164,9 +168,11 @@ public class LocalTransaction implements Transaction {
 		} catch (SQLException | RuntimeException e) {
 			status = TransactionStatus.NONE;
 			//Oracleの遅延制約の場合は、このタイミングで整合性エラーが発生
-			RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+			RdbAdapter rdb = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class)
+					.getRdbAdapter();
 			if (e instanceof SQLException && rdb.isDuplicateValueException((SQLException) e)) {
-				throw new EntityDuplicateValueException(resourceString("impl.transaction.LocalTransaction.duplicate", (Object[])null), e);
+				throw new EntityDuplicateValueException(resourceString("impl.transaction.LocalTransaction.duplicate", (Object[]) null), e);
 			}
 			throw new TransactionException(e);
 		} finally {
@@ -179,7 +185,8 @@ public class LocalTransaction implements Transaction {
 					}
 				}
 				try {
-					con.getWrapped().setAutoCommit(true);
+					con.getWrapped()
+							.setAutoCommit(true);
 				} catch (SQLException e) {
 					logger.error("set AutoCommit failed at transaction commit...:" + e, e);
 				}
@@ -194,7 +201,7 @@ public class LocalTransaction implements Transaction {
 		}
 
 		if (isCommit && listenerList != null) {
-			for (TransactionListener l: listenerList) {
+			for (TransactionListener l : listenerList) {
 				l.afterCommit(this);
 			}
 		}
@@ -229,8 +236,10 @@ public class LocalTransaction implements Transaction {
 
 		boolean isRollback = false;
 		try {
-			if (con != null && !con.getWrapped().isClosed()) {
-				con.getWrapped().rollback();
+			if (con != null && !con.getWrapped()
+					.isClosed()) {
+				con.getWrapped()
+						.rollback();
 			}
 			//初回のrollback時のみ、listenerに通知するようにする
 			if (status == TransactionStatus.ACTIVE) {
@@ -251,7 +260,8 @@ public class LocalTransaction implements Transaction {
 					}
 				}
 				try {
-					con.getWrapped().setAutoCommit(true);
+					con.getWrapped()
+							.setAutoCommit(true);
 				} catch (SQLException e) {
 					logger.error("set AutoCommit failed at transaction commit...:" + e, e);
 				}
@@ -266,7 +276,7 @@ public class LocalTransaction implements Transaction {
 		}
 
 		if (isRollback && listenerList != null) {
-			for (TransactionListener l: listenerList) {
+			for (TransactionListener l : listenerList) {
 				l.afterRollback(this);
 			}
 		}

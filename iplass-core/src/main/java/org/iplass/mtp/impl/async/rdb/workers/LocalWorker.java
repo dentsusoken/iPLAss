@@ -55,48 +55,53 @@ public abstract class LocalWorker implements Worker {
 	private static Logger logger = LoggerFactory.getLogger(LocalWorker.class);
 	private static Logger mtpLogger = LoggerFactory.getLogger("mtp.async.rdb");
 	private static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal.async.rdb");
-	
+
 	//Executerが2本。
 	//キューからPull&タイムアウト監視用Executer
 	//実タスクを実行するExecuter（もしくは別プロセス）
-	
-	private static Random rand = new Random(ServerEnv.getInstance().getServerId().hashCode());
-	
+
+	private static Random rand = new Random(ServerEnv.getInstance()
+			.getServerId()
+			.hashCode());
+
 	protected final QueueConfig queueConfig;
 	protected final WorkerConfig workerConfig;
 	protected final int workerId;
 	protected final Queue queue;
-	
+
 	protected volatile WorkerState state;
 	private ScheduledExecutorService queuePoller;
-	
+
 	protected AtomicInteger counter = new AtomicInteger();
-	
+
 	public LocalWorker(Queue queue, int workerId) {
 		this.queue = queue;
 		this.queueConfig = queue.getConfig();
-		this.workerConfig = queue.getConfig().getWorker();
+		this.workerConfig = queue.getConfig()
+				.getWorker();
 		this.workerId = workerId;
 		this.state = WorkerState.STOPPED;
 	}
-	
+
 	@Override
 	public void start() {
 		if (state != WorkerState.STOPPED) {
 			logger.warn(queueConfig.getName() + "'s worker:" + workerId + " is not stopped. so can not (re)start worker...");
 			return;
 		}
-		
+
 		synchronized (this) {
 			if (state == WorkerState.STOPPED) {
 				SecurityManager s = System.getSecurityManager();
-				final ThreadGroup group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+				final ThreadGroup group = (s != null) ? s.getThreadGroup()
+						: Thread.currentThread()
+								.getThreadGroup();
 				queuePoller = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
 					@Override
 					public Thread newThread(Runnable r) {
-			            Thread t = new Thread(group, r,
-			            		queueConfig.getName() + "-" + workerId + "-poller-" + counter.incrementAndGet(),
-                                0);
+						Thread t = new Thread(group, r,
+								queueConfig.getName() + "-" + workerId + "-poller-" + counter.incrementAndGet(),
+								0);
 						if (t.isDaemon()) {
 							t.setDaemon(false);
 						}
@@ -106,9 +111,9 @@ public abstract class LocalWorker implements Worker {
 						return t;
 					}
 				});
-				
+
 				startImpl();
-				
+
 				state = WorkerState.STARTED;
 				long delay = (long) (workerConfig.getPollingInterval() * rand.nextDouble());
 				queuePoller.schedule(new PollingTask(false), delay, TimeUnit.MILLISECONDS);
@@ -118,16 +123,16 @@ public abstract class LocalWorker implements Worker {
 			}
 		}
 	}
-	
+
 	protected abstract void startImpl();
-	
+
 	@Override
 	public void stop() {
 		if (state != WorkerState.STARTED) {
 			logger.warn(queueConfig.getName() + "'s worker:" + workerId + " is not stared.");
 			return;
 		}
-		
+
 		synchronized (this) {
 			if (state == WorkerState.STARTED) {
 				state = WorkerState.STOPPING;
@@ -148,22 +153,22 @@ public abstract class LocalWorker implements Worker {
 			}
 		}
 	}
-	
+
 	protected abstract void stopImpl();
-	
+
 	protected abstract Future<Void> doTaskAndStatusUpdate(Task task);
-	
+
 	@Override
 	public void wakeup() {
 		if (state == WorkerState.STARTED) {
 			queuePoller.schedule(new PollingTask(true), 0, TimeUnit.MILLISECONDS);
 		}
 	}
-	
+
 	private class PollingTask implements Runnable {
-		
+
 		private final boolean oneshot;
-		
+
 		public PollingTask(boolean oneshot) {
 			this.oneshot = oneshot;
 		}
@@ -172,42 +177,47 @@ public abstract class LocalWorker implements Worker {
 		public void run() {
 			try {
 				ResourceHolder.init();
-				
+
 				//テナント-1で初期化
 				if (!ExecuteContext.isInited()) {
-					TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+					TenantContextService tcs = ServiceRegistry.getRegistry()
+							.getService(TenantContextService.class);
 					TenantContext tContext = tcs.getSharedTenantContext();
 					ExecuteContext econtext = new ExecuteContext(tContext);
 					ExecuteContext.initContext(econtext);
 				}
-				
+
 				try {
 					for (;;) {
 						if (state == WorkerState.STARTED) {
 							final Task task = Transaction.required(t -> {
 								return queue.poll(workerId, workerConfig.isLocal());
 							});
-							
+
 							if (task == null) {
 								return;
 							}
-							
+
 							//TaskのContextに切り替え
-							TenantContext taskTC = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(task.getTenantId());
+							TenantContext taskTC = ServiceRegistry.getRegistry()
+									.getService(TenantContextService.class)
+									.getTenantContext(task.getTenantId());
 							ExecuteContext.executeAs(taskTC, new Executable<Void>() {
 								@Override
 								public Void execute() {
 									if (logger.isDebugEnabled()) {
 										logger.debug("polled task:" + task);
 									}
-										
+
 									Future<Void> ft = doTaskAndStatusUpdate(task);
 									try {
 										ft.get(workerConfig.getExecutionTimeout(), TimeUnit.MILLISECONDS);
-										
+
 									} catch (InterruptedException e) {
-										mtpLogger.error("queue:" + queueConfig.getName() + "'s queuePoller is interrupted on task execution wait...", e);
-										Thread.currentThread().interrupt();
+										mtpLogger.error("queue:" + queueConfig.getName() + "'s queuePoller is interrupted on task execution wait...",
+												e);
+										Thread.currentThread()
+												.interrupt();
 									} catch (final TimeoutException | ExecutionException | RuntimeException | Error e) {
 										//例外処理は、サブクラス側でつぶす想定なので、ここでは実質、TimeoutExceptionが発生する可能性だけが残るはず
 										String msg;
@@ -216,10 +226,11 @@ public abstract class LocalWorker implements Worker {
 										} else {
 											msg = "failed";
 										}
-										
+
 										switch (task.getExceptionHandlingMode()) {
 										case RESTART:
-											mtpLogger.error("queue:" + queueConfig.getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") is " + msg + ". re-run after a while.", e);
+											mtpLogger.error("queue:" + queueConfig.getName() + "'s task:" + task.getTaskId() + "(tenantId:"
+													+ task.getTenantId() + ") is " + msg + ". re-run after a while.", e);
 											if (!ft.cancel(true)) {
 												logger.debug("task process cant cancel.may be completed." + task);
 											}
@@ -227,10 +238,12 @@ public abstract class LocalWorker implements Worker {
 										case ABORT_LOG_FATAL:
 										case ABORT:
 											if (task.getExceptionHandlingMode() == ExceptionHandlingMode.ABORT_LOG_FATAL
-												|| e instanceof Error) {
-												fatalLogger.error("queue:" + queueConfig.getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") " + msg + ", so abort task.", e);
+													|| e instanceof Error) {
+												fatalLogger.error("queue:" + queueConfig.getName() + "'s task:" + task.getTaskId() + "(tenantId:"
+														+ task.getTenantId() + ") " + msg + ", so abort task.", e);
 											} else {
-												mtpLogger.error("queue:" + queueConfig.getName() + "'s task:" + task.getTaskId() + "(tenantId:" + task.getTenantId() + ") is " + msg + ", so abort task.", e);
+												mtpLogger.error("queue:" + queueConfig.getName() + "'s task:" + task.getTaskId() + "(tenantId:"
+														+ task.getTenantId() + ") is " + msg + ", so abort task.", e);
 											}
 											if (ft.cancel(true)) {
 												Transaction.required(transaction -> {
@@ -241,22 +254,31 @@ public abstract class LocalWorker implements Worker {
 														t = e;
 													}
 													if (queue.taskAbort(task, true, t, false, false)) {
-														if (task.getCallable().getActual() instanceof ExceptionHandleable) {
-															AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(task.getTaskId(), queue.getName());
+														if (task.getCallable()
+																.getActual() instanceof ExceptionHandleable) {
+															AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(task.getTaskId(),
+																	queue.getName());
 															ExecuteContext ec = ExecuteContext.getCurrentContext();
 															try {
 																ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
-																if (task.getCallable().getTraceId() != null) {
-																	ec.mdcPut(ExecuteContext.MDC_TRACE_ID, task.getCallable().getTraceId());
+																if (task.getCallable()
+																		.getTraceId() != null) {
+																	ec.mdcPut(ExecuteContext.MDC_TRACE_ID, task.getCallable()
+																			.getTraceId());
 																}
 
 																if (e instanceof TimeoutException) {
-																	((ExceptionHandleable) task.getCallable().getActual()).timeouted();
+																	((ExceptionHandleable) task.getCallable()
+																			.getActual()).timeouted();
 																} else {
-																	((ExceptionHandleable) task.getCallable().getActual()).aborted(t);
+																	((ExceptionHandleable) task.getCallable()
+																			.getActual()).aborted(t);
 																}
 															} catch (Throwable ee) {
-																fatalLogger.error("ExceptionHandleable's aborted()/timeouted() call failed(queue:" + queue.getConfig().getName() + ", task:" + task.getTaskId() + ",tenantId:" + task.getTenantId() + ")", ee);
+																fatalLogger.error("ExceptionHandleable's aborted()/timeouted() call failed(queue:"
+																		+ queue.getConfig()
+																				.getName()
+																		+ ", task:" + task.getTaskId() + ",tenantId:" + task.getTenantId() + ")", ee);
 																//timeoutの場合は、ステータスは更新する
 																if (t instanceof TaskTimeoutException && transaction.isRollbackOnly()) {
 																	transaction.addTransactionListener(new TransactionListener() {
@@ -272,7 +294,8 @@ public abstract class LocalWorker implements Worker {
 															}
 														}
 													} else {
-														mtpLogger.warn("task status cant update to [abort]. may be another process update status." + task);
+														mtpLogger.warn(
+																"task status cant update to [abort]. may be another process update status." + task);
 													}
 												});
 											} else {
@@ -299,13 +322,13 @@ public abstract class LocalWorker implements Worker {
 						queuePoller.schedule(this, workerConfig.getPollingInterval(), TimeUnit.MILLISECONDS);
 					}
 				}
-				
+
 			} finally {
 				ExecuteContext.finContext();
 				ResourceHolder.fin();
 			}
-			
+
 		}
 	}
-	
+
 }

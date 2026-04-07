@@ -27,10 +27,9 @@ package org.iplass.mtp.spi;
  *
  */
 public interface Service {
-	
+
 	public void init(Config config);
-	
+
 	public void destroy();
-	
 
 }

@@ -35,19 +35,21 @@ public class SchemaControlSearchSql extends QuerySqlHandler {
 				" FROM SCHEMA_CTRL" +
 				" WHERE TENANT_ID=");
 		sb.append(tenantId);
-		sb.append(" AND OBJ_DEF_ID='").append(rdb.sanitize(objDefId)).append("'");
+		sb.append(" AND OBJ_DEF_ID='")
+				.append(rdb.sanitize(objDefId))
+				.append("'");
 		return withLock ? rdb.createRowLockSql(sb.toString()) : sb.toString();
 	}
 
 	public int getCurrentVersion(ResultSet rs) throws SQLException {
-		while(rs.next()) {
+		while (rs.next()) {
 			return rs.getInt(3);
 		}
 		return -1;
 	}
 
 	public boolean isLocked(ResultSet rs) throws SQLException {
-		while(rs.next()) {
+		while (rs.next()) {
 			return "1".equals(rs.getString(4));
 		}
 		return false;

@@ -90,7 +90,8 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter, Service
 	@Override
 	public TikaMimeType getMimeType(String type) {
 		try {
-			MimeType registered = tikaConfig.getMimeRepository().getRegisteredMimeType(type);
+			MimeType registered = tikaConfig.getMimeRepository()
+					.getRegisteredMimeType(type);
 			if (null != registered) {
 				return new TikaMimeTypeImpl(registered);
 			}
@@ -113,7 +114,8 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter, Service
 		// NOTE getSupertype() の仕様の注意点
 		// getSupertype() の戻り値として、親が見つからない場合 "application/octet-stream" 以外の場合は "application/octet-stream" が返却される。
 		// 実際には関連のない MimeType となることがある。
-		MediaType superMediaType = tikaConfig.getMediaTypeRegistry().getSupertype(mediaType);
+		MediaType superMediaType = tikaConfig.getMediaTypeRegistry()
+				.getSupertype(mediaType);
 		return null == superMediaType ? null : getMimeType(superMediaType.toString());
 	}
 
@@ -123,7 +125,8 @@ public class FileUploadTikaAdapterImpl implements FileUploadTikaAdapter, Service
 		MediaType childMediaType = getMediaTypeInner(childType);
 
 		// superMediaType の子として mediaType が定義されているか確認する。
-		Set<MediaType> childs = tikaConfig.getMediaTypeRegistry().getChildTypes(parentMediaType);
+		Set<MediaType> childs = tikaConfig.getMediaTypeRegistry()
+				.getChildTypes(parentMediaType);
 		return childs.contains(childMediaType);
 	}
 

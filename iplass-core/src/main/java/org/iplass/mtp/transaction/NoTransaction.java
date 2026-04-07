@@ -26,7 +26,7 @@ package org.iplass.mtp.transaction;
  *
  */
 final class NoTransaction implements Transaction {
-	
+
 	NoTransaction() {
 	}
 
@@ -88,7 +88,8 @@ final class NoTransaction implements Transaction {
 
 	@Override
 	public int hashCode() {
-		return NoTransaction.class.getName().hashCode();
+		return NoTransaction.class.getName()
+				.hashCode();
 	}
 
 }

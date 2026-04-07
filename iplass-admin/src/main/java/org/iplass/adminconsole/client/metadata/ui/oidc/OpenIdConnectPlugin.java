@@ -27,7 +27,7 @@ public class OpenIdConnectPlugin extends DefaultMetaDataPlugin {
 
 	/** ノード名 */
 	private static final String NODE_NAME = "/OpenIDConnect_RP";
-	
+
 	/** ノード表示名 */
 	private static final String NODE_DISPLAY_NAME = "OpenIDConnect(RP)";
 
@@ -94,27 +94,30 @@ public class OpenIdConnectPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), OpenIdConnectDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+		service.deleteDefinition(TenantInfoHolder.getId(), OpenIdConnectDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
 
-			@Override
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_deleteOidcTemplateComp"));
+					@Override
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_deleteOidcTemplateComp"));
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_failedToDeleteOidcTemplate") + result.getMessage());
-				}
-			}
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPlugin_failedToDeleteOidcTemplate")
+									+ result.getMessage());
+						}
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPluginManager_failedToDeleteOidcTemplate") + caught.getMessage());
-			}
-		});
+					@Override
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_oidc_OpenIdConnectPluginManager_failedToDeleteOidcTemplate")
+								+ caught.getMessage());
+					}
+				});
 	}
 
 	@Override
@@ -124,7 +127,7 @@ public class OpenIdConnectPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{OpenIdConnectEditPane.class};
+		return new Class[] { OpenIdConnectEditPane.class };
 	}
 
 }

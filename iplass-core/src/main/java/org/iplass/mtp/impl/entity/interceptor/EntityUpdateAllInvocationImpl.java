@@ -27,9 +27,9 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityUpdateAllInvocationImpl extends EntityInvocationImpl<Integer> implements EntityUpdateAllInvocation {
-	
+
 	private UpdateCondition updateCondition;
-	
+
 	public EntityUpdateAllInvocationImpl(
 			UpdateCondition updateCondition,
 			EntityInterceptor[] entityInterceptors,
@@ -37,14 +37,15 @@ public class EntityUpdateAllInvocationImpl extends EntityInvocationImpl<Integer>
 		super(entityInterceptors, entityHandler);
 		this.updateCondition = updateCondition;
 	}
-	
+
 	public UpdateCondition getUpdateCondition() {
 		return updateCondition;
 	}
+
 	public void setUpdateCondition(UpdateCondition updateCondition) {
 		this.updateCondition = updateCondition;
 	}
-	
+
 	@Override
 	protected Integer callEntityHandler(EntityHandler eh) {
 		return eh.updateAll(updateCondition);
@@ -54,5 +55,5 @@ public class EntityUpdateAllInvocationImpl extends EntityInvocationImpl<Integer>
 	public InvocationType getType() {
 		return InvocationType.UPDATE_ALL;
 	}
-	
+
 }

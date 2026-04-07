@@ -152,7 +152,6 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		}
 	}
 
-
 	private CacheStore createCacheStoreInternal(String namespace) {
 		if (getIndexCount() == 0) {
 			return new InfinispanCacheStore(this, namespace, cacheConfigrationName);
@@ -164,20 +163,28 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 			}
 			Cache<IndexKey, IndexEntry> indexStore = cm.getCache(namespace + INDEX_STORE_POSTFIX);
 
-			switch (realStore.cache.getCacheConfiguration().clustering().cacheMode()) {
+			switch (realStore.cache.getCacheConfiguration()
+					.clustering()
+					.cacheMode()) {
 			case LOCAL:
-				return new InfinispanIndexedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount, indexRemoveRetryInterval * 1000 * 1000, false);
+				return new InfinispanIndexedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount,
+						indexRemoveRetryInterval * 1000 * 1000, false);
 			case REPL_ASYNC:
 			case REPL_SYNC:
-				return new InfinispanIndexedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount, indexRemoveRetryInterval * 1000 * 1000, false);
+				return new InfinispanIndexedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount,
+						indexRemoveRetryInterval * 1000 * 1000, false);
 			case INVALIDATION_ASYNC:
 			case INVALIDATION_SYNC:
-				return new InfinispanIndexedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount, indexRemoveRetryInterval * 1000 * 1000, true);
+				return new InfinispanIndexedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount,
+						indexRemoveRetryInterval * 1000 * 1000, true);
 			case DIST_ASYNC:
 			case DIST_SYNC:
-				return new InfinispanIndexedDistributedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount, indexRemoveRetryInterval * 1000 * 1000);
+				return new InfinispanIndexedDistributedCacheStore(realStore, indexStore, getIndexCount(), indexRemoveRetryCount,
+						indexRemoveRetryInterval * 1000 * 1000);
 			default:
-				throw new IllegalStateException("no support of " + realStore.cache.getCacheConfiguration().clustering().cacheMode() + " mode of infinispan config");
+				throw new IllegalStateException("no support of " + realStore.cache.getCacheConfiguration()
+						.clustering()
+						.cacheMode() + " mode of infinispan config");
 			}
 		}
 	}
@@ -361,7 +368,8 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 		@Override
 		public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-			if (!oldEntry.getKey().equals(newEntry.getKey())) {
+			if (!oldEntry.getKey()
+					.equals(newEntry.getKey())) {
 				throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 			}
 			if (timeToLiveCalculator != null) {

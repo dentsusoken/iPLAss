@@ -37,11 +37,11 @@ public class StdDevSamp extends Aggregate {
 
 	public StdDevSamp() {
 	}
-	
+
 	public StdDevSamp(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public StdDevSamp(ValueExpression value) {
 		setValue(value);
 	}

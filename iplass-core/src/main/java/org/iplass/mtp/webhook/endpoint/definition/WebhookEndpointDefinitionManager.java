@@ -23,6 +23,7 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 
 public interface WebhookEndpointDefinitionManager extends TypedDefinitionManager<WebhookEndpointDefinition> {
 
-	void modifySecurityToken(int tenantId,String definitionName, String secret, String TokenType);
+	void modifySecurityToken(int tenantId, String definitionName, String secret, String TokenType);
+
 	String generateHmacKey();
 }

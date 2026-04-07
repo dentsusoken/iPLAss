@@ -38,6 +38,7 @@ public class CacheRelatedEntityDefinition implements Serializable {
 	public String getDefinitionName() {
 		return definitionName;
 	}
+
 	public void setDefinitionName(String definitionName) {
 		this.definitionName = definitionName;
 	}
@@ -52,6 +53,7 @@ public class CacheRelatedEntityDefinition implements Serializable {
 	public RelatedEntityType getType() {
 		return type;
 	}
+
 	public void setType(RelatedEntityType type) {
 		this.type = type;
 	}

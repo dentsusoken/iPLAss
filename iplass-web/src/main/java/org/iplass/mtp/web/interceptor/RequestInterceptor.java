@@ -21,7 +21,7 @@
 package org.iplass.mtp.web.interceptor;
 
 public interface RequestInterceptor {
-	
+
 	public void intercept(RequestInvocation invocation);
 
 	public default void interceptResult(RequestInvocation invocation) {

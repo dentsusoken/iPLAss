@@ -26,7 +26,7 @@ import org.iplass.mtp.entity.definition.properties.BooleanProperty;
 public class BooleanType extends BasicType {
 	private static final long serialVersionUID = 2354914642251405724L;
 	private static final int hash = 18;
-	
+
 	@Override
 	public int hashCode() {
 		return hash;
@@ -54,7 +54,7 @@ public class BooleanType extends BasicType {
 	public Class<?> storeType() {
 		return Boolean.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.BOOLEAN;

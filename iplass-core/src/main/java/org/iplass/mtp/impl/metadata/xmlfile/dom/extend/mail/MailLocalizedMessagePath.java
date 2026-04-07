@@ -20,17 +20,19 @@
 package org.iplass.mtp.impl.metadata.xmlfile.dom.extend.mail;
 
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute;
-import org.iplass.mtp.impl.metadata.xmlfile.dom.MultiLangExternalRefPath;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
+import org.iplass.mtp.impl.metadata.xmlfile.dom.MultiLangExternalRefPath;
 import org.w3c.dom.Node;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/localizedMailTemplateList/message/content", 
+		path = "/metaDataEntry/metaData/localizedMailTemplateList/message/content",
 		fileExtension = FileExtention.TMPL)
 public class MailLocalizedMessagePath extends MultiLangExternalRefPath {
 
 	@Override
 	protected Node getLocaleParentNode(Node targetTextNode) {
-		return targetTextNode.getParentNode().getParentNode().getParentNode();
+		return targetTextNode.getParentNode()
+				.getParentNode()
+				.getParentNode();
 	}
 }

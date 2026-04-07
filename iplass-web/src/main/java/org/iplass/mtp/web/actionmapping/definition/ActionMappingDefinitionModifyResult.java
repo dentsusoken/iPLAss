@@ -22,7 +22,7 @@ package org.iplass.mtp.web.actionmapping.definition;
 
 import org.iplass.mtp.definition.DefinitionModifyResult;
 
-public class ActionMappingDefinitionModifyResult extends DefinitionModifyResult{
+public class ActionMappingDefinitionModifyResult extends DefinitionModifyResult {
 
 	private static final long serialVersionUID = -602888911643019662L;
 

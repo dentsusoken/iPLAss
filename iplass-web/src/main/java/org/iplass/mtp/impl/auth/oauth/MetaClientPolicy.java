@@ -36,7 +36,7 @@ public class MetaClientPolicy implements MetaData {
 	//tokenEndpointAuthMethod
 
 	private ClientType clientType;
-	
+
 	private long accessTokenLifetimeSeconds;
 	private boolean supportRefreshToken;
 	private long refreshTokenLifetimeSeconds;
@@ -104,29 +104,29 @@ public class MetaClientPolicy implements MetaData {
 	public MetaClientPolicy copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public ClientPolicyRuntime createRuntime(MetaOAuthAuthorization metaOauth) {
 		return new ClientPolicyRuntime(metaOauth);
 	}
-	
+
 	public class ClientPolicyRuntime {
-		
+
 		private ConsentTypeRuntime consentTypeRuntime;
 		private List<String> scopeList;
-		
+
 		private ClientPolicyRuntime(MetaOAuthAuthorization metaOauth) {
 			if (consentType != null) {
 				consentTypeRuntime = consentType.createRuntime(metaOauth.getId(), clientType);
 			}
-			
+
 			scopeList = new ArrayList<>();
-			for (MetaScope ms: metaOauth.getScopes()) {
+			for (MetaScope ms : metaOauth.getScopes()) {
 				if (getScopes() == null
 						|| getScopes().contains(ms.getName())) {
 					scopeList.add(ms.getName());
 				}
 			}
-			
+
 			//add standard scopes
 			if (supportRefreshToken) {
 				if (!scopeList.contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
@@ -138,38 +138,38 @@ public class MetaClientPolicy implements MetaData {
 					scopeList.add(OAuthConstants.SCOPE_OPENID);
 				}
 			}
-			
+
 		}
-		
+
 		public MetaClientPolicy getMetaData() {
 			return MetaClientPolicy.this;
 		}
-		
+
 		public ConsentTypeRuntime consentType() {
 			return consentTypeRuntime;
 		}
-		
+
 		public List<String> scopeList() {
 			return scopeList;
 		}
-		
+
 		public boolean isRequireRefreshToken(List<String> grantedScopes) {
 			if (supportRefreshToken) {
 				if (grantedScopes != null && grantedScopes.contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
-		
+
 		public boolean isRequireIdToken(List<String> grantedScopes) {
 			if (supportOpenIDConnect) {
 				if (grantedScopes != null && grantedScopes.contains(OAuthConstants.SCOPE_OPENID)) {
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
 	}
@@ -192,7 +192,7 @@ public class MetaClientPolicy implements MetaData {
 		}
 		supportOpenIDConnect = def.isSupportOpenIDConnect();
 	}
-	
+
 	public ClientPolicyDefinition currentConfig() {
 		ClientPolicyDefinition def = new ClientPolicyDefinition();
 		def.setClientType(clientType);

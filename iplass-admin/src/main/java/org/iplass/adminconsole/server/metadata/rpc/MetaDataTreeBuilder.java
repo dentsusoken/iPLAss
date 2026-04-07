@@ -72,14 +72,15 @@ public class MetaDataTreeBuilder {
 		} else {
 			this.rootPath = "/";
 		}
-		this.items = MetaDataContext.getContext().definitionList(rootPath);
+		this.items = MetaDataContext.getContext()
+				.definitionList(rootPath);
 	}
 
 	private MetaTreeNode createTreeNode() {
 
 		MetaTreeNode root = new MetaTreeNode();
 		root.setPath(rootPath);
-		root.setName(rootPath);	//RootはPathをNameとする
+		root.setName(rootPath); //RootはPathをNameとする
 
 		if (items != null) {
 			Map<String, MetaTreeNode> treeNodeMap = new HashMap<String, MetaTreeNode>();
@@ -111,7 +112,8 @@ public class MetaDataTreeBuilder {
 					}
 				}
 
-				if (entry.getPath().endsWith("/")) {
+				if (entry.getPath()
+						.endsWith("/")) {
 					//最後がブランクの場合(最後の名前がブランク)、splitすると消えるのでフォルダを作成(例：gemのTopAction：/action/gem/)
 					String folderName = nodePaths[nodePaths.length - 1];
 					String folderPath = prePath + folderName + "/";
@@ -148,7 +150,6 @@ public class MetaDataTreeBuilder {
 		return newTreeNode;
 	}
 
-
 	private MetaTreeNode createItemTreeNode(MetaDataEntryInfo entry, String defTypeClassName) {
 		MetaTreeNode item = new MetaTreeNode();
 		item.setPath(entry.getPath());
@@ -157,7 +158,8 @@ public class MetaDataTreeBuilder {
 		item.setDescription(entry.getDescription());
 		item.setId(entry.getId());
 		if (entry.getState() != null) {
-			item.setState(entry.getState().toString());
+			item.setState(entry.getState()
+					.toString());
 		}
 		item.setVersion(entry.getVersion());
 		item.setRepository(entry.getRepository());
@@ -185,7 +187,8 @@ public class MetaDataTreeBuilder {
 	private String getDefinitionClassName(String path) {
 		DefinitionPath defPath = ds.resolvePath(path);
 		if (defPath != null && defPath.getType() != null) {
-			return defPath.getType().getName();
+			return defPath.getType()
+					.getName();
 		}
 		return null;
 	}

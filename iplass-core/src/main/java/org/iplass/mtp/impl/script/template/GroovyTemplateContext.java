@@ -26,18 +26,18 @@ import org.slf4j.LoggerFactory;
 
 public class GroovyTemplateContext {
 	private static Logger sysout = LoggerFactory.getLogger("mtp.script.template.out");
-	
-	
+
 	public static GroovyTemplateContext getContext() {
-		return (GroovyTemplateContext) ExecuteContext.getCurrentContext().getAttribute(GroovyTemplateContext.class.getName());
+		return (GroovyTemplateContext) ExecuteContext.getCurrentContext()
+				.getAttribute(GroovyTemplateContext.class.getName());
 	}
-	
+
 	static void init(GroovyTemplateBinding bindings) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		GroovyTemplateContext stack = (GroovyTemplateContext) ec.getAttribute(GroovyTemplateContext.class.getName());
 		ec.setAttribute(GroovyTemplateContext.class.getName(), new GroovyTemplateContext(bindings, stack), false);
 	}
-	
+
 	static void fin() {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		GroovyTemplateContext ctx = (GroovyTemplateContext) ec.getAttribute(GroovyTemplateContext.class.getName());
@@ -45,12 +45,12 @@ public class GroovyTemplateContext {
 			ec.setAttribute(GroovyTemplateContext.class.getName(), ctx.stack, false);
 		}
 	}
-	
+
 	private GroovyTemplateContext stack;
-	
+
 	private LoggerPrintWriter lpw;
 	private GroovyTemplateBinding bindings;
-	
+
 	GroovyTemplateContext(GroovyTemplateBinding bindings, GroovyTemplateContext stack) {
 		this.bindings = bindings;
 		this.stack = stack;
@@ -58,11 +58,11 @@ public class GroovyTemplateContext {
 			lpw = stack.lpw;
 		}
 	}
-	
+
 	public GroovyTemplateBinding bindings() {
 		return bindings;
 	}
-	
+
 	public LoggerPrintWriter loggerPrintWriter() {
 		if (lpw == null) {
 			lpw = new LoggerPrintWriter(sysout);

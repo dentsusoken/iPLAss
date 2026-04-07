@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.iplass.mtp.spi.ServiceInitListener;
 
 public interface AnalyzerSetting extends ServiceInitListener<LuceneFulltextSearchService> {
-	
+
 	public Analyzer getAnalyzer(int tenantId, String entityDefName);
 
 }

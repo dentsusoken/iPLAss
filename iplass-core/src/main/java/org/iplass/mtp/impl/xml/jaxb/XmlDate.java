@@ -23,10 +23,11 @@ package org.iplass.mtp.impl.xml.jaxb;
 import java.sql.Date;
 import java.util.GregorianCalendar;
 
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 
 /**
  *
@@ -36,7 +37,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author K.Higuchi
  *
  */
-@XmlType(name="date", namespace="http://www.w3.org/2001/XMLSchema")
+@XmlType(name = "date", namespace = "http://www.w3.org/2001/XMLSchema")
 public class XmlDate {
 
 	public XmlDate() {
@@ -71,7 +72,7 @@ public class XmlDate {
 		GregorianCalendar cal = xmlCal.toGregorianCalendar();
 		return new Date(cal.getTimeInMillis());
 	}
-	
+
 	public String toXmlString() {
 		return value;
 	}

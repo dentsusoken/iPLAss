@@ -34,7 +34,6 @@ import org.iplass.mtp.impl.core.config.ServiceDefinitionParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Serviceのレジストリです。
  * iPLAssが管理するServiceのインスタンスを取得可能です。
@@ -70,7 +69,8 @@ public class ServiceRegistry {
 	}
 
 	private String configFileName() {
-		return BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
+		return BootstrapProps.getInstance()
+				.getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	private ServiceEntry createService(String serviceName, List<String> dependStack) {
@@ -105,7 +105,7 @@ public class ServiceRegistry {
 			ConfigImpl config = new ConfigImpl(serviceName, sc.getProperty(), sc.getBean());
 
 			if (sc.getDepend() != null) {
-				for (String depend: sc.getDepend()) {
+				for (String depend : sc.getDepend()) {
 					ServiceEntry dependService = services.get(depend);
 					if (dependService == null) {
 						dependService = createService(depend, dependStack);
@@ -128,7 +128,8 @@ public class ServiceRegistry {
 				Class<?> implClassType = Class.forName(className);
 				if (!interfaceType.isAssignableFrom(implClassType)) {
 					logger.error("Can not regist Service." + sc.getClassName() + "must implements " + sc.getInterfaceName() + " interface.");
-					throw new ServiceConfigrationException("Can not regist Service." + sc.getClassName() + " must implements " + sc.getInterfaceName() + " interface.");
+					throw new ServiceConfigrationException(
+							"Can not regist Service." + sc.getClassName() + " must implements " + sc.getInterfaceName() + " interface.");
 				}
 
 				Service s = (Service) implClassType.newInstance();
@@ -170,7 +171,7 @@ public class ServiceRegistry {
 	 * @return サービスインスタンス
 	 */
 	public <T extends Service> T getService(String serviceName) {
-		return this.<T>getService(serviceName, true);
+		return this.<T> getService(serviceName, true);
 	}
 
 	/**
@@ -265,7 +266,8 @@ public class ServiceRegistry {
 	 * @param service
 	 */
 	public void setService(Service service) {
-		setService(service.getClass().getName(), service);
+		setService(service.getClass()
+				.getName(), service);
 	}
 
 	/**
@@ -274,8 +276,9 @@ public class ServiceRegistry {
 	 */
 	public void destroyAllService() {
 		destroyed = true;
-		for (Map.Entry<String, ServiceEntry> e: services.entrySet()) {
-			e.getValue().destroy();
+		for (Map.Entry<String, ServiceEntry> e : services.entrySet()) {
+			e.getValue()
+					.destroy();
 		}
 		services.clear();
 	}
@@ -291,7 +294,7 @@ public class ServiceRegistry {
 			}
 
 			List<ServiceEntry> forDest = new ArrayList<>(services.size());
-			for (Map.Entry<String, ServiceEntry> e: services.entrySet()) {
+			for (Map.Entry<String, ServiceEntry> e : services.entrySet()) {
 				forDest.add(e.getValue());
 			}
 
@@ -299,7 +302,7 @@ public class ServiceRegistry {
 			services.clear();
 			serviceDefinition = parser.read(configFileName());
 
-			for (ServiceEntry se: forDest) {
+			for (ServiceEntry se : forDest) {
 				se.destroy();
 			}
 
@@ -329,6 +332,5 @@ public class ServiceRegistry {
 			}
 		}
 	}
-
 
 }

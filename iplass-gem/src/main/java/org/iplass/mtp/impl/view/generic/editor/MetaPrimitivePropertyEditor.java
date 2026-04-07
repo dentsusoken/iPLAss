@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -33,14 +31,16 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
 
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author lis3wg
  */
-@XmlSeeAlso( {MetaAutoNumberPropertyEditor.class, MetaBinaryPropertyEditor.class, MetaBooleanPropertyEditor.class,
-	MetaDateTimePropertyEditor.class, MetaExpressionPropertyEditor.class,
-	MetaNumberPropertyEditor.class, MetaSelectPropertyEditor.class,
-	MetaStringPropertyEditor.class})
+@XmlSeeAlso({ MetaAutoNumberPropertyEditor.class, MetaBinaryPropertyEditor.class, MetaBooleanPropertyEditor.class,
+		MetaDateTimePropertyEditor.class, MetaExpressionPropertyEditor.class,
+		MetaNumberPropertyEditor.class, MetaSelectPropertyEditor.class,
+		MetaStringPropertyEditor.class })
 public abstract class MetaPrimitivePropertyEditor extends MetaPropertyEditor {
 
 	/** シリアルバージョンUID */

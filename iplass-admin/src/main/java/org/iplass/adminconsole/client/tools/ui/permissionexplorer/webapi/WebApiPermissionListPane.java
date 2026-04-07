@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.permissionexplorer.webapi;
 
-
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
@@ -28,8 +27,8 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionTreeGridDS;
-import org.iplass.adminconsole.client.tools.data.permissionexplorer.WebApiPermissionInfoDS;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionTreeGridDS.PermissionTreeNode;
+import org.iplass.adminconsole.client.tools.data.permissionexplorer.WebApiPermissionInfoDS;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionEditDialog;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionEditPane;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionListPane;
@@ -84,18 +83,22 @@ public class WebApiPermissionListPane extends PermissionListPane {
 		if (grid != null) {
 			//対象が多いと時間がかかるのでProgress表示(効かない、先にhideまで処理が進んでしまう)
 			//SmartGWTUtil.showProgress();
-			grid.getTree().openAll();
+			grid.getTree()
+					.openAll();
 			//SmartGWTUtil.hideProgress();
 		}
 	}
 
-
 	@Override
 	protected void doGridContractAll() {
 		if (grid != null) {
-			grid.getTree().closeAll();
-			grid.getTree().openFolders(
-					grid.getTree().getChildren(grid.getTree().getRoot()));
+			grid.getTree()
+					.closeAll();
+			grid.getTree()
+					.openFolders(
+							grid.getTree()
+									.getChildren(grid.getTree()
+											.getRoot()));
 		}
 	}
 
@@ -143,7 +146,8 @@ public class WebApiPermissionListPane extends PermissionListPane {
 			}
 
 			@Override
-			public void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex, DataChangedEvent event) {
+			public void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex,
+					DataChangedEvent event) {
 
 				Entity[] permissionArray = event.getValueObject(Entity[].class);
 
@@ -155,7 +159,8 @@ public class WebApiPermissionListPane extends PermissionListPane {
 			}
 
 			@Override
-			public void showRolePermissionEditDialog(final PermissionTreeNode record, final String defName, final String roleCode, final int roleIndex, final PermissionEditDialog dialog) {
+			public void showRolePermissionEditDialog(final PermissionTreeNode record, final String defName, final String roleCode, final int roleIndex,
+					final PermissionEditDialog dialog) {
 
 				Entity[] permissionArray = record.getPermission(roleIndex);
 

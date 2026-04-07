@@ -31,32 +31,32 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class Chunk {
 	private static Logger logger = LoggerFactory.getLogger(Chunk.class);
-	
+
 	private final boolean marshalMode;
 	private int length;
 	private long offset;
 	private BinaryMetaData binMeta;
-	
+
 	private Path tempFile;
 	private byte[] bin;
-	
+
 	Chunk(long offset, int length, BinaryMetaData binMeta) {
 		marshalMode = true;
 		this.offset = offset;
 		this.length = length;
 		this.binMeta = binMeta;
 	}
-	
+
 	public Chunk() {
 		marshalMode = false;
 	}
-	
+
 	public long getOffset() {
 		return offset;
 	}
+
 	public void setOffset(long offset) throws IOException {
 		this.offset = offset;
 		if (!marshalMode) {
@@ -65,6 +65,7 @@ public class Chunk {
 			}
 		}
 	}
+
 	public byte[] getBin() throws IOException {
 		if (marshalMode) {
 			try (InputStream is = binMeta.getInputStream()) {
@@ -80,7 +81,7 @@ public class Chunk {
 			return bin;
 		}
 	}
-	
+
 	public void setBin(byte[] bin) throws IOException {
 		this.bin = bin;
 		if (!marshalMode) {
@@ -89,15 +90,16 @@ public class Chunk {
 			}
 		}
 	}
-	
+
 	private void toFile() throws IOException {
-		BinaryMetaDataService service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
+		BinaryMetaDataService service = ServiceRegistry.getRegistry()
+				.getService(BinaryMetaDataService.class);
 		Path dir = service.getTempFileDir();
 		tempFile = Files.createTempFile(dir, "cr_", ".tmp");
 		Files.write(tempFile, bin);
 		bin = null;
 	}
-	
+
 	void dispose() {
 		if (tempFile != null) {
 			try {
@@ -108,7 +110,7 @@ public class Chunk {
 			tempFile = null;
 		}
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();

@@ -79,7 +79,8 @@ public class EntityAttributePaneControllerImpl implements EntityAttributePaneCon
 
 				@Override
 				public void onFailure(Throwable caught) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_failed"), AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_failedGetScreenInfo"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_failed"),
+							AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_failedGetScreenInfo"));
 
 					GWT.log(caught.toString(), caught);
 				}
@@ -87,7 +88,7 @@ public class EntityAttributePaneControllerImpl implements EntityAttributePaneCon
 				@Override
 				public void onSuccess(List<String> result) {
 
-					storageSpaces = result.toArray(new String[]{});
+					storageSpaces = result.toArray(new String[] {});
 					select.setValueMap(storageSpaces);
 				}
 			});
@@ -109,8 +110,7 @@ public class EntityAttributePaneControllerImpl implements EntityAttributePaneCon
 		versionControleType = new SelectItem("versionControleType", "Versioning");
 		versionControleType.setWidth(200);
 		SmartGWTUtil.addHoverToFormItem(versionControleType,
-				AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_versionControleTypeComment")
-				);
+				AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_versionControleTypeComment"));
 		setVersionTypes(versionControleType);
 		items.add(versionControleType);
 
@@ -133,7 +133,8 @@ public class EntityAttributePaneControllerImpl implements EntityAttributePaneCon
 		mappingClass.setWidth("100%");
 		mappingClass.setColSpan(3);
 		mappingClass.setStartRow(true);
-		SmartGWTUtil.addHoverToFormItem(mappingClass, AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_mappingClassComment"));
+		SmartGWTUtil.addHoverToFormItem(mappingClass,
+				AdminClientMessageUtil.getString("ui_metadata_entity_EntityAttributeEditPane_mappingClassComment"));
 		items.add(mappingClass);
 
 		ButtonItem createMappginClassBtn = new ButtonItem("createMappginClass", "Create Java Class");
@@ -164,18 +165,20 @@ public class EntityAttributePaneControllerImpl implements EntityAttributePaneCon
 		if (definition.getMapping() == null) {
 			mappingClass.clearValue();
 		} else {
-			mappingClass.setValue(definition.getMapping().getMappingModelClass());
+			mappingClass.setValue(definition.getMapping()
+					.getMappingModelClass());
 		}
 		if (definition.getVersionControlType() == null) {
 			versionControleType.setValue(VersionControlType.NONE.name());
 		} else {
-			versionControleType.setValue(definition.getVersionControlType().name());
+			versionControleType.setValue(definition.getVersionControlType()
+					.name());
 		}
 		//SchemalessRdbStore固定
 		if (definition.getStoreDefinition() == null) {
 			storageSpace.setValue(SchemalessRdbStore.DEFAULT_STORAGE_SPACE);
 		} else {
-			storageSpace.setValue(((SchemalessRdbStore)definition.getStoreDefinition()).getStorageSpace());
+			storageSpace.setValue(((SchemalessRdbStore) definition.getStoreDefinition()).getStorageSpace());
 		}
 
 	}

@@ -38,34 +38,37 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class BinaryMetaDataService implements Service {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(BinaryMetaDataService.class);
-	
+
 	private int keepInMemoryThreshold = 64 * 1024;
 	private int cacheMemoryThreshold = 1024 * 1024;
 	private String tempFileDir;
-	
+
 	private int xmlBinaryChunkSize = 256 * 1024;
-	
+
 	private Path tempFileDirPath;
-	
+
 	private boolean deleteTempFileOnDestroy = true;
-	
+
 	private volatile boolean cleanedup;
 
 	public int getXmlBinaryChunkSize() {
 		return xmlBinaryChunkSize;
 	}
+
 	public int getKeepInMemoryThreshold() {
 		return keepInMemoryThreshold;
 	}
+
 	public int getCacheMemoryThreshold() {
 		return cacheMemoryThreshold;
 	}
+
 	public Path getTempFileDir() {
 		return tempFileDirPath;
 	}
-	
+
 	@Override
 	public void init(Config config) {
 		if (config.getValue("keepInMemoryThreshold") != null) {
@@ -80,7 +83,7 @@ public class BinaryMetaDataService implements Service {
 		if (config.getValue("deleteTempFileOnDestroy") != null) {
 			deleteTempFileOnDestroy = Boolean.valueOf(config.getValue("deleteTempFileOnDestroy"));
 		}
-		
+
 		tempFileDir = config.getValue("tempFileDir");
 		if (tempFileDir == null) {
 			try {
@@ -90,28 +93,30 @@ public class BinaryMetaDataService implements Service {
 			}
 		} else {
 			try {
-				tempFileDirPath = Files.createTempDirectory(FileSystems.getDefault().getPath(tempFileDir), "bmd_");
+				tempFileDirPath = Files.createTempDirectory(FileSystems.getDefault()
+						.getPath(tempFileDir), "bmd_");
 			} catch (IOException e) {
 				throw new ServiceConfigrationException("can't create temporary file dir on " + tempFileDir, e);
 			}
 		}
-		
+
 		logger.info("create temporary dir for binary metadata:" + tempFileDirPath);
-		
+
 		if (deleteTempFileOnDestroy) {
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-				if (!cleanedup) {
-					synchronized (BinaryMetaDataService.this) {
+			Runtime.getRuntime()
+					.addShutdownHook(new Thread(() -> {
 						if (!cleanedup) {
-							cleanupTempDir();
+							synchronized (BinaryMetaDataService.this) {
+								if (!cleanedup) {
+									cleanupTempDir();
+								}
+							}
 						}
-					}
-				}
-			}));
+					}));
 		}
-		
+
 	}
-	
+
 	private void cleanupTempDir() {
 		if (!cleanedup) {
 			synchronized (this) {
@@ -126,12 +131,12 @@ public class BinaryMetaDataService implements Service {
 			}
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		if (deleteTempFileOnDestroy) {
 			cleanupTempDir();
 		}
 	}
-	
+
 }

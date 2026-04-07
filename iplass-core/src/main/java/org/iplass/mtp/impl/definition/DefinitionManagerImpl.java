@@ -47,27 +47,37 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class DefinitionManagerImpl implements DefinitionManager {
 
-	private final MetaDataRepository repository = ServiceRegistry.getRegistry().getService(MetaDataRepository.class);
-	private final DefinitionService defService = ServiceRegistry.getRegistry().getService(DefinitionService.class);
+	private final MetaDataRepository repository = ServiceRegistry.getRegistry()
+			.getService(MetaDataRepository.class);
+	private final DefinitionService defService = ServiceRegistry.getRegistry()
+			.getService(DefinitionService.class);
 
 	@Override
 	public <D extends Definition> void setSharedConfig(Class<D> type,
 			String definitionName, SharedConfig config) {
-		MetaDataContext.getContext().updateConfig(DefinitionService.getInstance().getPath(type, definitionName), new MetaDataConfig(config.isSharable(), config.isOverwritable(), config.isDataSharable(), config.isPermissionSharable()));
+		MetaDataContext.getContext()
+				.updateConfig(DefinitionService.getInstance()
+						.getPath(type, definitionName),
+						new MetaDataConfig(config.isSharable(), config.isOverwritable(), config.isDataSharable(), config.isPermissionSharable()));
 	}
 
 	@Override
 	public <D extends Definition> DefinitionInfo getInfo(Class<D> type,
 			String definitionName) {
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(DefinitionService.getInstance().getPath(type, definitionName));
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(DefinitionService.getInstance()
+						.getPath(type, definitionName));
 		if (entry == null) {
 			return null;
 		}
 		DefinitionInfo info = new DefinitionInfo();
 		if (entry.getMetaData() != null) {
-			info.setName(entry.getMetaData().getName());
-			info.setDisplayName(entry.getMetaData().getDisplayName());
-			info.setDescription(entry.getMetaData().getDescription());
+			info.setName(entry.getMetaData()
+					.getName());
+			info.setDisplayName(entry.getMetaData()
+					.getDisplayName());
+			info.setDescription(entry.getMetaData()
+					.getDescription());
 			info.setType(type.getSimpleName());
 		}
 		info.setSharedConfig(new SharedConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable()));
@@ -92,7 +102,8 @@ public class DefinitionManagerImpl implements DefinitionManager {
 			path = defService.getPath(type, filterPath);
 		}
 
-		List<MetaDataEntryInfo> entryInfoList = MetaDataContext.getContext().definitionList(path);
+		List<MetaDataEntryInfo> entryInfoList = MetaDataContext.getContext()
+				.definitionList(path);
 
 		List<DefinitionSummary> ret = new ArrayList<DefinitionSummary>(entryInfoList.size());
 		for (MetaDataEntryInfo definition : entryInfoList) {
@@ -104,11 +115,15 @@ public class DefinitionManagerImpl implements DefinitionManager {
 				ret.add(def);
 			} else {
 				if (path.endsWith("/")) {
-					if (!definition.getPath().substring(path.length()).contains("/")) {
+					if (!definition.getPath()
+							.substring(path.length())
+							.contains("/")) {
 						ret.add(def);
 					}
 				} else {
-					if (!definition.getPath().substring(path.length() + 1).contains("/")) {
+					if (!definition.getPath()
+							.substring(path.length() + 1)
+							.contains("/")) {
 						ret.add(def);
 					}
 				}
@@ -125,12 +140,14 @@ public class DefinitionManagerImpl implements DefinitionManager {
 		if (filterPath == null || "/".equals(filterPath)) {
 			path = fixedPath;
 		} else {
-			path = DefinitionService.getInstance().getPath(type, filterPath);
+			path = DefinitionService.getInstance()
+					.getPath(type, filterPath);
 		}
 
-		List<MetaDataEntryInfo> entryInfoList = MetaDataContext.getContext().definitionList(path);
+		List<MetaDataEntryInfo> entryInfoList = MetaDataContext.getContext()
+				.definitionList(path);
 		ArrayList<DefinitionInfo> infoList = new ArrayList<DefinitionInfo>(entryInfoList.size());
-		for (MetaDataEntryInfo entry: entryInfoList) {
+		for (MetaDataEntryInfo entry : entryInfoList) {
 			DefinitionInfo info = new DefinitionInfo();
 			info.setName(defService.getDefinitionName(type, entry.getPath()));
 			info.setDisplayName(entry.getDisplayName());
@@ -149,10 +166,17 @@ public class DefinitionManagerImpl implements DefinitionManager {
 	public <D extends Definition> void checkState(Class<D> type,
 			String definitionName) throws IllegalDefinitionStateException {
 		try {
-			MetaDataContext.getContext().checkState(DefinitionService.getInstance().getPath(type, definitionName));
+			MetaDataContext.getContext()
+					.checkState(DefinitionService.getInstance()
+							.getPath(type, definitionName));
 		} catch (MetaDataIllegalStateException e) {
 			if (e.getCause() != e) {
-				throw new IllegalDefinitionStateException("Illegal State. Check Definition on AdminConsole. Message:" + e.getCause().getMessage() + "(" + e.getCause().getClass().getName() + ")");
+				throw new IllegalDefinitionStateException("Illegal State. Check Definition on AdminConsole. Message:" + e.getCause()
+						.getMessage() + "("
+						+ e.getCause()
+								.getClass()
+								.getName()
+						+ ")");
 			} else {
 				throw new IllegalDefinitionStateException("Illegal State. Check Definition on AdminConsole. Message:" + e.getMessage());
 			}
@@ -161,23 +185,29 @@ public class DefinitionManagerImpl implements DefinitionManager {
 
 	@Override
 	public <D extends Definition> DefinitionEntry getDefinitionEntry(Class<D> type, String definitionName) {
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(DefinitionService.getInstance().getPath(type, definitionName));
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(DefinitionService.getInstance()
+						.getPath(type, definitionName));
 		if (entry == null) {
 			return null;
 		}
 
 		DefinitionInfo info = new DefinitionInfo();
 		if (entry.getMetaData() != null) {
-			info.setName(entry.getMetaData().getName());
-			info.setDisplayName(entry.getMetaData().getDisplayName());
-			info.setDescription(entry.getMetaData().getDescription());
+			info.setName(entry.getMetaData()
+					.getName());
+			info.setDisplayName(entry.getMetaData()
+					.getDisplayName());
+			info.setDescription(entry.getMetaData()
+					.getDescription());
 			info.setType(type.getSimpleName());
 		}
 		info.setSharedConfig(new SharedConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable()));
 		info.setShared(entry.getRepositryType() == RepositoryType.SHARED);
 		info.setSharedOverwrite(entry.getRepositryType() == RepositoryType.SHARED_OVERWRITE);
 		info.setVersion(entry.getVersion());
-		info.setObjDefId(entry.getMetaData().getId());
+		info.setObjDefId(entry.getMetaData()
+				.getId());
 
 		DefinitionEntry definitionEntry = new DefinitionEntry();
 		definitionEntry.setDefinitionInfo(info);
@@ -192,24 +222,32 @@ public class DefinitionManagerImpl implements DefinitionManager {
 
 	@Override
 	public <D extends Definition> DefinitionEntry getDefinitionEntry(Class<D> type, String definitionName, int version) {
-		MetaDataEntry temp = MetaDataContext.getContext().getMetaDataEntry(DefinitionService.getInstance().getPath(type, definitionName));
+		MetaDataEntry temp = MetaDataContext.getContext()
+				.getMetaDataEntry(DefinitionService.getInstance()
+						.getPath(type, definitionName));
 		if (temp == null) {
 			return null;
 		}
 
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntryById(temp.getMetaData().getId(), version);
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntryById(temp.getMetaData()
+						.getId(), version);
 		DefinitionInfo info = new DefinitionInfo();
 		if (entry.getMetaData() != null) {
-			info.setName(entry.getMetaData().getName());
-			info.setDisplayName(entry.getMetaData().getDisplayName());
-			info.setDescription(entry.getMetaData().getDescription());
+			info.setName(entry.getMetaData()
+					.getName());
+			info.setDisplayName(entry.getMetaData()
+					.getDisplayName());
+			info.setDescription(entry.getMetaData()
+					.getDescription());
 			info.setType(type.getSimpleName());
 		}
 		info.setSharedConfig(new SharedConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable()));
 		info.setShared(entry.getRepositryType() == RepositoryType.SHARED);
 		info.setSharedOverwrite(entry.getRepositryType() == RepositoryType.SHARED_OVERWRITE);
 		info.setVersion(entry.getVersion());
-		info.setObjDefId(entry.getMetaData().getId());
+		info.setObjDefId(entry.getMetaData()
+				.getId());
 
 		DefinitionEntry definitionEntry = new DefinitionEntry();
 		definitionEntry.setDefinitionInfo(info);
@@ -224,12 +262,14 @@ public class DefinitionManagerImpl implements DefinitionManager {
 
 //	@Override
 	public <D extends Definition> DefinitionInfo getHistoryById(Class<D> type, String definitionId) {
-		int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getTenantId();
 		List<MetaDataEntryInfo> entryInfoList = repository.getHistoryById(tenantId, definitionId);
 
 		DefinitionInfo info = new DefinitionInfo();
 		ArrayList<VersionHistory> versionList = new ArrayList<VersionHistory>(entryInfoList.size());
-		for (MetaDataEntryInfo entry: entryInfoList) {
+		for (MetaDataEntryInfo entry : entryInfoList) {
 			VersionHistory history = new VersionHistory();
 			history.setUpdateBy(entry.getCreateUser());
 			history.setUpdateDate(entry.getCreateDate());
@@ -241,7 +281,8 @@ public class DefinitionManagerImpl implements DefinitionManager {
 				info.setDisplayName(entry.getDisplayName());
 				info.setDescription(entry.getDescription());
 				info.setType(type.getSimpleName());
-				info.setSharedConfig(new SharedConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable()));
+				info.setSharedConfig(
+						new SharedConfig(entry.isSharable(), entry.isOverwritable(), entry.isDataSharable(), entry.isPermissionSharable()));
 				info.setShared(entry.getRepositryType() == RepositoryType.SHARED);
 				info.setVersion(entry.getVersion());
 			}
@@ -267,7 +308,8 @@ public class DefinitionManagerImpl implements DefinitionManager {
 			throw new MetaDataRuntimeException(checkResult.getErrorMessage());
 		}
 
-		RootMetaData renamed = current.getMetaData().copy();
+		RootMetaData renamed = current.getMetaData()
+				.copy();
 		renamed.setName(newDefinitionName);
 		metaContext.update(newPath, renamed);
 	}

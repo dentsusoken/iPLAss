@@ -42,7 +42,7 @@ public class LangDataPortingInfo implements Serializable {
 	 * @return 定義情報のコンテキストコンテキストパス
 	 */
 	public String getContextPath() {
-	    return contextPath;
+		return contextPath;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class LangDataPortingInfo implements Serializable {
 	 * @param contextPath 定義情報のコンテキストコンテキストパス
 	 */
 	public void setContextPath(String contextPath) {
-	    this.contextPath = contextPath;
+		this.contextPath = contextPath;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class LangDataPortingInfo implements Serializable {
 	 * @return 定義情報の名前
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class LangDataPortingInfo implements Serializable {
 	 * @param name 定義情報の名前
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class LangDataPortingInfo implements Serializable {
 	 * @return 定義情報
 	 */
 	public Definition getDefinition() {
-	    return definition;
+		return definition;
 	}
 
 	/**
@@ -82,6 +82,6 @@ public class LangDataPortingInfo implements Serializable {
 	 * @param definition 定義情報
 	 */
 	public void setDefinition(Definition definition) {
-	    this.definition = definition;
+		this.definition = definition;
 	}
 }

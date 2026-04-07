@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.utilityclass.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * テナント内のロジック（Command、Templateなど）で共通的に利用したい

@@ -21,8 +21,8 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.property.type;
 
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute.DefaultAttribute;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.AutoNumberProperty;
@@ -46,7 +46,7 @@ public class PropertyTypeAttributeControllerImpl implements PropertyTypeAttribut
 
 	public PropertyTypeAttributeControllerImpl() {
 
-		expressionResultTypes = new PropertyDefinitionType[]{
+		expressionResultTypes = new PropertyDefinitionType[] {
 				PropertyDefinitionType.BOOLEAN,
 				PropertyDefinitionType.DATE,
 				PropertyDefinitionType.DATETIME,
@@ -61,22 +61,26 @@ public class PropertyTypeAttributeControllerImpl implements PropertyTypeAttribut
 
 	@Override
 	public String getTypeDisplayName(PropertyDefinitionType type) {
-		return PropertyViewControllType.valueOfDefinitionType(type).displayName();
+		return PropertyViewControllType.valueOfDefinitionType(type)
+				.displayName();
 	}
 
 	@Override
 	public PropertyAttribute createTypeAttribute(PropertyDefinitionType type) {
-		return PropertyViewControllType.valueOfDefinitionType(type).createAttribute();
+		return PropertyViewControllType.valueOfDefinitionType(type)
+				.createAttribute();
 	}
 
 	@Override
 	public PropertyAttributePane createTypeAttributePane(PropertyDefinitionType type) {
-		return PropertyViewControllType.valueOfDefinitionType(type).createAttributePane();
+		return PropertyViewControllType.valueOfDefinitionType(type)
+				.createAttributePane();
 	}
 
 	@Override
 	public PropertyDefinition createTypeDefinition(PropertyDefinitionType type) {
-		return PropertyViewControllType.valueOfDefinitionType(type).createDefinition();
+		return PropertyViewControllType.valueOfDefinitionType(type)
+				.createDefinition();
 	}
 
 	@Override
@@ -320,7 +324,9 @@ public class PropertyTypeAttributeControllerImpl implements PropertyTypeAttribut
 		}
 
 		public abstract PropertyDefinition createDefinition();
+
 		public abstract PropertyAttribute createAttribute();
+
 		public abstract PropertyAttributePane createAttributePane();
 
 		public PropertyDefinitionType getDefinitionType() {

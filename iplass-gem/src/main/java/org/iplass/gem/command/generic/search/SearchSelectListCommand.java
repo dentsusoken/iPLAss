@@ -33,19 +33,18 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
-
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-	name=SearchSelectListCommand.WEBAPI_NAME,
-	displayName="選択対象検索",
-	accepts=RequestType.REST_FORM,
-	methods=MethodType.POST,
-	results={"data"},
-	checkXRequestedWithHeader=true
+		name = SearchSelectListCommand.WEBAPI_NAME,
+		displayName = "選択対象検索",
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		results = { "data" },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/search/SearchSelectListCommand", displayName="選択対象")
+@CommandClass(name = "gem/generic/search/SearchSelectListCommand", displayName = "選択対象")
 public final class SearchSelectListCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/search/searchSelectList";
@@ -56,7 +55,8 @@ public final class SearchSelectListCommand implements Command {
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 
 		SearchCommandBase command = null;
-		CommandInvoker ci = ManagerLocator.getInstance().getManager(CommandInvoker.class);
+		CommandInvoker ci = ManagerLocator.getInstance()
+				.getManager(CommandInvoker.class);
 		if (Constants.SEARCH_TYPE_NORMAL.equals(searchType)) {
 			command = (SearchCommandBase) ci.getCommandInstance(NormalSearchCommand.CMD_NAME);
 		} else if (Constants.SEARCH_TYPE_DETAIL.equals(searchType)) {
@@ -73,7 +73,9 @@ public final class SearchSelectListCommand implements Command {
 				SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
 				if (result != null) {
 					List<String> data = new ArrayList<>();
-					result.getList().stream().forEach(e -> data.add(e.getOid() + "_" + e.getVersion()));
+					result.getList()
+							.stream()
+							.forEach(e -> data.add(e.getOid() + "_" + e.getVersion()));
 					request.setAttribute("data", data);
 				}
 			} else if (Constants.CMD_EXEC_ERROR_PARAMETER.equals(ret)) {

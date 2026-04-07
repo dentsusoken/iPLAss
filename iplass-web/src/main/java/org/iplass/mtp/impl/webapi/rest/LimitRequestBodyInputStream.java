@@ -32,12 +32,12 @@ class LimitRequestBodyInputStream extends InputStream {
 	private InputStream actual;
 	private long maxBodySize;
 	private boolean contentLengthOver;
-	
+
 	LimitRequestBodyInputStream(InputStream actual, long maxBodySize, long contentLength) {
 		if (contentLength >= 0 && contentLength > maxBodySize) {
 			contentLengthOver = true;
 		}
-		
+
 		this.maxBodySize = maxBodySize;
 		this.actual = actual;
 	}
@@ -49,7 +49,7 @@ class LimitRequestBodyInputStream extends InputStream {
 		if (i >= 0) {
 			countup(1);
 		}
-		return i;			
+		return i;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ class LimitRequestBodyInputStream extends InputStream {
 			throw ex;
 		}
 	}
-	
+
 	private void checkContentLength() {
 		if (contentLengthOver) {
 			WebApplicationException ex = new WebApplicationException(Status.REQUEST_ENTITY_TOO_LARGE);
@@ -96,5 +96,5 @@ class LimitRequestBodyInputStream extends InputStream {
 			throw ex;
 		}
 	}
-	
+
 }

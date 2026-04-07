@@ -84,7 +84,8 @@ public class JGroupsMessageChannel implements MessageChannel, ServiceInitListene
 		channel.setReceiver(new Receiver() {
 			@Override
 			public void receive(org.jgroups.Message msg) {
-				if (!channel.getAddress().equals(msg.getSrc())) {
+				if (!channel.getAddress()
+						.equals(msg.getSrc())) {
 					Message m = msg.getObject();
 					messageReceiver.receiveMessage(m);
 					if (logger.isDebugEnabled()) {
@@ -95,10 +96,10 @@ public class JGroupsMessageChannel implements MessageChannel, ServiceInitListene
 
 			@Override
 			public void receive(MessageBatch batch) {
-				for (org.jgroups.Message msg: batch) {
+				for (org.jgroups.Message msg : batch) {
 					try {
 						receive(msg);
-					} catch(Throwable t) {
+					} catch (Throwable t) {
 						logger.error("exception occurred while handling MessageBatch: " + msg + ": " + t.getMessage(), t);
 					}
 				}

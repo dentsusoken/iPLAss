@@ -43,7 +43,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 
-@WebApi(name=RegistrationOptionsCommand.WEBAPI_NAME,
+@WebApi(
+		name = RegistrationOptionsCommand.WEBAPI_NAME,
 		accepts = { RequestType.REST_FORM, RequestType.REST_JSON },
 		methods = MethodType.POST,
 		cacheControlType = CacheControlType.NO_CACHE,
@@ -59,14 +60,17 @@ public class RegistrationOptionsCommand implements Command {
 	static final String STAT_SUCCESS = "ok";
 	static final String SESSION_WEBAUTHN_STATE_REGISTRATION = "org.iplass.mtp.webauthn.registration.state";
 
-
 	private static Logger logger = LoggerFactory.getLogger(RegistrationOptionsCommand.class);
 
-	private WebAuthnService service = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
+	private WebAuthnService service = ServiceRegistry.getRegistry()
+			.getService(WebAuthnService.class);
 
 	@Override
 	public String execute(RequestContext request) {
-		if (!ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn()) {
+		if (!ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseWebAuthn()) {
 			throw new WebAuthnRuntimeException("WebAuthn is not enabled");
 		}
 		String defName = StringUtil.stripToNull(request.getParam(PARAM_DEFINITION_NAME));
@@ -80,7 +84,8 @@ public class RegistrationOptionsCommand implements Command {
 
 		DefaultWebAuthnServer server = new DefaultWebAuthnServer(request, SESSION_WEBAUTHN_STATE_REGISTRATION);
 		String options = webauthn.publicKeyCredentialCreationOptions(authContext.getUser(), server);
-		ResponseBuilder builder = Response.ok(options).type(MediaType.APPLICATION_JSON);
+		ResponseBuilder builder = Response.ok(options)
+				.type(MediaType.APPLICATION_JSON);
 		request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, builder);
 
 		if (logger.isDebugEnabled()) {

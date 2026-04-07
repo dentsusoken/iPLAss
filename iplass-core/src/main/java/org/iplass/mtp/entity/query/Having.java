@@ -32,18 +32,18 @@ public class Having implements ASTNode {
 	private static final long serialVersionUID = -2306091495633643396L;
 
 	private Condition condition;
-	
+
 	public Having() {
 	}
-	
+
 	public Having(Condition condition) {
 		this.condition = condition;
 	}
-	
+
 	public void setCondition(Condition condition) {
 		this.condition = condition;
 	}
-	
+
 	public Condition getCondition() {
 		return condition;
 	}
@@ -63,6 +63,7 @@ public class Having implements ASTNode {
 			}
 		}
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

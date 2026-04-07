@@ -79,21 +79,28 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 
 		slctCreateUserMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Create User MailTemplate", new ItemOption(true, false));
 
-		slctCredentialResetMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Reset MailTemplate", new ItemOption(true, false));
+		slctCredentialResetMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Reset MailTemplate",
+				new ItemOption(true, false));
 
-		slctCreateUserWithSpecifiedPasswordMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Create User With SpecifiedPassword MailTemplate", new ItemOption(true, false));
+		slctCreateUserWithSpecifiedPasswordMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class,
+				"Create User With SpecifiedPassword MailTemplate", new ItemOption(true, false));
 
-		slctCredentialResetWithSpecifiedPasswordMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Reset WithSpecified PasswordMailTemplate", new ItemOption(true, false));
+		slctCredentialResetWithSpecifiedPasswordMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class,
+				"Credential Reset WithSpecified PasswordMailTemplate", new ItemOption(true, false));
 
 		slctLockedoutMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Lockedout MailTemplate", new ItemOption(true, false));
 
-		slctCredentialUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Updated MailTemplate", new ItemOption(true, false));
+		slctCredentialUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Updated MailTemplate",
+				new ItemOption(true, false));
 
-		slctPropertyUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Property Updated MailTemplate", new ItemOption(true, false));
+		slctPropertyUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Property Updated MailTemplate",
+				new ItemOption(true, false));
 
-		slctRemovedUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Remove User MailTemplate", new ItemOption(true, false));
+		slctRemovedUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Remove User MailTemplate",
+				new ItemOption(true, false));
 
-		slctLoginSuccessUserMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Logged in User MailTemplate", new ItemOption(true, false));
+		slctLoginSuccessUserMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Logged in User MailTemplate",
+				new ItemOption(true, false));
 
 		propertiesForUpdateNotificationPane = new PropertiesForUpdateNotificationPane();
 
@@ -115,7 +122,7 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 	 */
 	@Override
 	public void setDefinition(AccountNotificationListenerDefinition definition) {
-		MailAccountNotificationListenerDefinition listener = (MailAccountNotificationListenerDefinition)definition;
+		MailAccountNotificationListenerDefinition listener = (MailAccountNotificationListenerDefinition) definition;
 		slctCreateUserMailTemplateField.setValue(listener.getCreateUserMailTemplate());
 		slctCredentialResetMailTemplateField.setValue(listener.getCredentialResetMailTemplate());
 		slctCreateUserWithSpecifiedPasswordMailTemplateField.setValue(listener.getCreateUserWithSpecifiedPasswordMailTemplate());
@@ -135,11 +142,13 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 	 */
 	@Override
 	public AccountNotificationListenerDefinition getEditDefinition(AccountNotificationListenerDefinition definition) {
-		MailAccountNotificationListenerDefinition listener = (MailAccountNotificationListenerDefinition)definition;
+		MailAccountNotificationListenerDefinition listener = (MailAccountNotificationListenerDefinition) definition;
 		listener.setCreateUserMailTemplate(SmartGWTUtil.getStringValue(slctCreateUserMailTemplateField, true));
 		listener.setCredentialResetMailTemplate(SmartGWTUtil.getStringValue(slctCredentialResetMailTemplateField, true));
-		listener.setCreateUserWithSpecifiedPasswordMailTemplate(SmartGWTUtil.getStringValue(slctCreateUserWithSpecifiedPasswordMailTemplateField, true));
-		listener.setCredentialResetWithSpecifiedPasswordMailTemplate(SmartGWTUtil.getStringValue(slctCredentialResetWithSpecifiedPasswordMailTemplateField, true));
+		listener.setCreateUserWithSpecifiedPasswordMailTemplate(
+				SmartGWTUtil.getStringValue(slctCreateUserWithSpecifiedPasswordMailTemplateField, true));
+		listener.setCredentialResetWithSpecifiedPasswordMailTemplate(
+				SmartGWTUtil.getStringValue(slctCredentialResetWithSpecifiedPasswordMailTemplateField, true));
 		listener.setLockedoutMailTemplate(SmartGWTUtil.getStringValue(slctLockedoutMailTemplateField, true));
 		listener.setCredentialUpdatedMailTemplate(SmartGWTUtil.getStringValue(slctCredentialUpdatedMailTemplateField, true));
 		listener.setPropertyUpdatedMailTemplate(SmartGWTUtil.getStringValue(slctPropertyUpdatedMailTemplateField, true));
@@ -180,7 +189,7 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 			grid = new PropertiesForUpdateNotificationGrid();
 			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editPropertiesForUpdateNotification((ListGridRecord)event.getRecord());
+					editPropertiesForUpdateNotification((ListGridRecord) event.getRecord());
 				}
 			});
 
@@ -213,9 +222,9 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 			if (propertiesForUpdateNotificationList != null) {
 				List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 				for (String propertiesForUpdateNotification : propertiesForUpdateNotificationList) {
-						records.add(createRecord(propertiesForUpdateNotification, null));
+					records.add(createRecord(propertiesForUpdateNotification, null));
 				}
-				grid.setData(records.toArray(new ListGridRecord[]{}));
+				grid.setData(records.toArray(new ListGridRecord[] {}));
 			}
 		}
 
@@ -269,7 +278,7 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 
 			if (record != null) {
 				dialog.setPropertiesForUpdateNotification(
-						(String)record.getAttributeAsObject("propertyName"));
+						(String) record.getAttributeAsObject("propertyName"));
 			}
 			dialog.show();
 		}
@@ -284,14 +293,14 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 				setWidth100();
 				setHeight(1);
 
-				setShowAllColumns(true);							//列を全て表示
-				setShowAllRecords(true);							//レコードを全て表示
-				setCanResizeFields(true);							//列幅変更可能
-				setCanSort(false);									//ソート不可
-				setCanPickFields(false);							//表示フィールドの選択不可
-				setCanGroupBy(false);								//GroupByの選択不可
-				setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-				setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+				setShowAllColumns(true); //列を全て表示
+				setShowAllRecords(true); //レコードを全て表示
+				setCanResizeFields(true); //列幅変更可能
+				setCanSort(false); //ソート不可
+				setCanPickFields(false); //表示フィールドの選択不可
+				setCanGroupBy(false); //GroupByの選択不可
+				setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+				setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 				setBodyOverflow(Overflow.VISIBLE);
 				setOverflow(Overflow.VISIBLE);
 

@@ -42,54 +42,71 @@ public class TreeViewJqTreeData extends JqTreeData {
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	public String getPath() {
 		return path;
 	}
+
 	public void setPath(String path) {
 		this.path = path;
 	}
+
 	public String getStyle() {
 		return style;
 	}
+
 	public void setStyle(String style) {
 		this.style = style;
 	}
+
 	public String getIcon() {
 		return icon;
 	}
+
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
+
 	public String getOid() {
 		return oid;
 	}
+
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
+
 	public int getOffset() {
 		return offset;
 	}
+
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
+
 	public String getDefName() {
 		return defName;
 	}
+
 	public void setDefName(String defName) {
 		this.defName = defName;
 	}
+
 	public String getAction() {
 		return action;
 	}
+
 	public void setAction(String action) {
 		this.action = action;
 	}
+
 	public String getViewName() {
 		return viewName;
 	}
+
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
 	}

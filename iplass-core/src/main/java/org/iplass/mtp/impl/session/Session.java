@@ -24,13 +24,21 @@ import java.util.Iterator;
 
 public interface Session {
 	public String getId();
+
 	public Object getAttribute(String name);
+
 	public void setAttribute(String name, Object value);
+
 	public void removeAttribute(String name);
+
 	public Iterator<String> getAttributeNames();
+
 	public void invalidate();
+
 	public void changeSessionId();
+
 	public Object getSessionMutexObject();
+
 	public long getCreationTime();
-	
+
 }

@@ -59,9 +59,12 @@ public final class SearchNameListCommand extends SearchListPartsCommandBase {
 	private EntityFilterManager efm;
 
 	public SearchNameListCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		efm = ManagerLocator.getInstance()
+				.getManager(EntityFilterManager.class);
 	}
 
 	@Override

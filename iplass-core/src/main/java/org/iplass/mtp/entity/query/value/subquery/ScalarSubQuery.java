@@ -41,36 +41,36 @@ public class ScalarSubQuery extends PrimaryValue {
 	private static final long serialVersionUID = -7160903530841092122L;
 
 	private SubQuery subQuery;//ValueExpressionが1つと言う制約あり。
-	
+
 	public ScalarSubQuery() {
 	}
-	
+
 	public ScalarSubQuery(Query query) {
 		this.subQuery = new SubQuery(query);
 	}
-	
+
 	public ScalarSubQuery(Query query, Condition on) {
 		this.subQuery = new SubQuery(query, on);
 	}
-	
+
 	public ScalarSubQuery(SubQuery subQuery) {
 		this.subQuery = subQuery;
 	}
-	
+
 	public Query getQuery() {
 		if (subQuery == null) {
 			return null;
 		}
 		return subQuery.getQuery();
 	}
-	
+
 	public Condition getOn() {
 		if (subQuery == null) {
 			return null;
 		}
 		return subQuery.getOn();
 	}
-	
+
 	public SubQuery getSubQuery() {
 		return subQuery;
 	}
@@ -78,8 +78,7 @@ public class ScalarSubQuery extends PrimaryValue {
 	public void setSubQuery(SubQuery subQuery) {
 		this.subQuery = subQuery;
 	}
-	
-	
+
 	public ScalarSubQuery on(Condition on) {
 		if (subQuery == null) {
 			subQuery = new SubQuery();
@@ -87,7 +86,7 @@ public class ScalarSubQuery extends PrimaryValue {
 		subQuery.on(on);
 		return this;
 	}
-	
+
 	public ScalarSubQuery on(EntityField mainQueryProperty, EntityField subQueryProperty, int unnestCount) {
 		if (subQuery == null) {
 			subQuery = new SubQuery();
@@ -95,7 +94,7 @@ public class ScalarSubQuery extends PrimaryValue {
 		subQuery.on(mainQueryProperty, subQueryProperty, unnestCount);
 		return this;
 	}
-	
+
 	public ScalarSubQuery on(String mainQueryProperyName, String subQueryPropertyName, int unnestCount) {
 		if (subQuery == null) {
 			subQuery = new SubQuery();
@@ -103,7 +102,7 @@ public class ScalarSubQuery extends PrimaryValue {
 		subQuery.on(mainQueryProperyName, subQueryPropertyName, unnestCount);
 		return this;
 	}
-	
+
 	public ScalarSubQuery on(String mainQueryProperyName, String subQueryPropertyName) {
 		if (subQuery == null) {
 			subQuery = new SubQuery();
@@ -111,7 +110,7 @@ public class ScalarSubQuery extends PrimaryValue {
 		subQuery.on(mainQueryProperyName, subQueryPropertyName);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		if (subQuery == null) {
@@ -120,7 +119,7 @@ public class ScalarSubQuery extends PrimaryValue {
 			return subQuery.toString();
 		}
 	}
-	
+
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (visitor instanceof QueryVisitor && subQuery != null) {
@@ -128,6 +127,7 @@ public class ScalarSubQuery extends PrimaryValue {
 			}
 		}
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

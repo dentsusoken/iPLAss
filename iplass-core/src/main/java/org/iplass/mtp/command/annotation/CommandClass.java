@@ -41,43 +41,45 @@ public @interface CommandClass {
 	 * @return
 	 */
 	String name() default "##default";
+
 	/**
 	 * 表示名。
 	 * @return
 	 */
 	String displayName() default "##default";
+
 	/**
 	 * 表示名（多言語設定）。
 	 * @return
 	 */
 	LocalizedString[] localizedDisplayName() default {};
+
 	/**
 	 * 概要説明文。
 	 * @return
 	 */
 	String description() default "##default";
-	
+
 	/**
 	 * ローカルテナントで上書き可能か否か。
 	 * @return
 	 */
 	boolean overwritable() default true;
-	
+
 	/**
 	 * このCommandの処理がreadOnly（トランザクションの意味合いで）の場合trueを設定。
 	 * デフォルトfalse。
 	 * @return
 	 */
 	boolean readOnly() default false;
-	
+
 	/**
 	 * このCommandのインスタンスを処理（execute）の都度生成するか否か。
 	 * デフォルトfalse（同一のインスタンスを使い回す）。
 	 * @return
 	 */
 	boolean newInstancePerRequest() default false;
-	
-	
+
 //	/**
 //	 * Commandの実行結果ステータスの一覧定義（現状、未指定でも可。仕様明確化のためのメモの位置づけ）。
 //	 * @return

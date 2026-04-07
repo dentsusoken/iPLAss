@@ -46,7 +46,8 @@ public class SqlDateConverter extends TypeConverter {
 	private Date toDate(String exp, DateFormat sdf) {
 		try {
 			sdf.setLenient(false);
-			return new Date(sdf.parse(exp).getTime());
+			return new Date(sdf.parse(exp)
+					.getTime());
 		} catch (ParseException e) {
 		}
 		return null;

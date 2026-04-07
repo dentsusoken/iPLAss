@@ -32,20 +32,19 @@ import org.iplass.mtp.impl.query.OrderBySyntax;
 import org.iplass.mtp.impl.query.QueryConstants;
 
 public class WindowOrderBySyntax implements Syntax<WindowOrderBy>, QueryConstants {
-	
+
 	private OrderBySyntax orderBy;
 
 	public WindowOrderBy parse(ParseContext str) throws ParseException {
-		
+
 		OrderBy ob = orderBy.parse(str);
 		WindowOrderBy wob = new WindowOrderBy();
-		for (SortSpec ss: ob.getSortSpecList()) {
+		for (SortSpec ss : ob.getSortSpecList()) {
 			WindowSortSpec wss = new WindowSortSpec(ss.getSortKey(), ss.getType(), ss.getNullOrderingSpec());
 			wob.add(wss);
 		}
 		return wob;
 	}
-
 
 	public void init(SyntaxContext context) {
 		orderBy = context.getSyntax(OrderBySyntax.class);

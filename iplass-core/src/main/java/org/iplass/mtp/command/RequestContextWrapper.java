@@ -34,9 +34,9 @@ import org.iplass.mtp.entity.BinaryReference;
  *
  */
 public class RequestContextWrapper implements RequestContext {
-	
+
 	private static final Object TOMB = new Object();
-	
+
 	/**
 	 * ラップするRequestContextの扱い方のモードをあらわします。
 	 * 非同期処理に渡すRequestContextを生成する場合は、COPYモードを利用してください。
@@ -84,7 +84,7 @@ public class RequestContextWrapper implements RequestContext {
 		default:
 			break;
 		}
-		
+
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class RequestContextWrapper implements RequestContext {
 	public RequestContextWrapper(RequestContext context) {
 		this(context, Mode.COPY);
 	}
-	
+
 	/**
 	 * ラップされるContextの扱い方に関するモードを取得します。
 	 * 
@@ -252,7 +252,8 @@ public class RequestContextWrapper implements RequestContext {
 	public Iterator<String> getParamNames() {
 		if (paramMap.size() > 0) {
 			if (mode == Mode.COPY) {
-				return paramMap.keySet().iterator();
+				return paramMap.keySet()
+						.iterator();
 			} else {
 				HashSet<String> ret = new HashSet<>();
 				for (Iterator<String> it = context.getParamNames(); it.hasNext();) {
@@ -269,7 +270,8 @@ public class RequestContextWrapper implements RequestContext {
 			}
 		} else {
 			if (mode == Mode.COPY) {
-				return Collections.<String>emptySet().iterator();
+				return Collections.<String> emptySet()
+						.iterator();
 			} else {
 				return context.getParamNames();
 			}
@@ -313,7 +315,8 @@ public class RequestContextWrapper implements RequestContext {
 		if (mode == Mode.SHARED) {
 			return context.getAttributeNames();
 		} else {
-			return attribteMap.keySet().iterator();
+			return attribteMap.keySet()
+					.iterator();
 		}
 	}
 
@@ -334,23 +337,28 @@ public class RequestContextWrapper implements RequestContext {
 				if (create && session == null) {
 					session = new SessionContext() {
 						private Map<String, Object> map = new HashMap<>();
+
 						@Override
 						public void setAttribute(String name, Object value) {
 							map.put(name, value);
 						}
+
 						@Override
 						public void removeAttribute(String name) {
 							map.remove(name);
 						}
+
 						@Override
 						public Iterator<String> getAttributeNames() {
-							return map.keySet().iterator();
+							return map.keySet()
+									.iterator();
 						}
-						
+
 						@Override
 						public Object getAttribute(String name) {
 							return map.get(name);
 						}
+
 						@Override
 						public BinaryReference loadFromTemporary(long lobId) {
 							return null;

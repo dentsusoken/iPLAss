@@ -28,11 +28,11 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
 
 public class CountFunctionAdapter extends AggregateFunctionAdapter<Count> {
-	
+
 	public CountFunctionAdapter() {
 		super("COUNT", Long.class);
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Count function, RdbAdapter rdb) {
 		if (function.getValue() == null) {

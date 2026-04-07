@@ -29,10 +29,10 @@ import org.iplass.mtp.impl.web.preview.PreviewHandler;
 import org.iplass.mtp.transaction.TransactionManager;
 
 public class InitialInterceptor implements CommandInterceptor {
-	
+
 	private LangSelector lang = new LangSelector();
 	private PreviewHandler preview = new PreviewHandler();
-	
+
 	@Override
 	public String intercept(CommandInvocation invocation) {
 		//initial processing for webapi
@@ -44,11 +44,12 @@ public class InitialInterceptor implements CommandInterceptor {
 			return invocation.proceedCommand();
 		} finally {
 			//transaction resource cleaning
-			TransactionManager tm = ManagerLocator.getInstance().getManager(TransactionManager.class);
+			TransactionManager tm = ManagerLocator.getInstance()
+					.getManager(TransactionManager.class);
 			if (tm instanceof LocalTransactionManager) {
 				((LocalTransactionManager) tm).checkAndClean();
 			}
 		}
 	}
-	
+
 }

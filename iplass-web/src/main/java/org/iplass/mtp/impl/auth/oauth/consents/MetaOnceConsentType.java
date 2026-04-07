@@ -43,7 +43,7 @@ public class MetaOnceConsentType extends MetaConsentType {
 	public OnceConsentTypeRuntime createRuntime(String metaId, ClientType ct) {
 		return new OnceConsentTypeRuntime();
 	}
-	
+
 	public class OnceConsentTypeRuntime extends ConsentTypeRuntime {
 
 		@Override
@@ -51,13 +51,14 @@ public class MetaOnceConsentType extends MetaConsentType {
 			if (currentToken == null || currentToken.getGrantedScopes() == null) {
 				return true;
 			}
-			
+
 			//offline_accessを含む場合は、承認画面を出す
 			if (scopes.contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
 				return true;
 			}
-			
-			return currentToken.getGrantedScopes().containsAll(scopes) == false;
+
+			return currentToken.getGrantedScopes()
+					.containsAll(scopes) == false;
 		}
 	}
 

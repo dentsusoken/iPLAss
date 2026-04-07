@@ -51,7 +51,8 @@ public class TemplateService extends AbstractTypedMetaDataService<MetaTemplate, 
 
 		@Override
 		public TypedDefinitionManager<TemplateDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(TemplateDefinitionManager.class);
 		}
 	}
 

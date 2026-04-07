@@ -35,7 +35,7 @@ import net.logstash.logback.argument.StructuredArguments;
 
 public class Slf4jAuthLogger extends AuthLoggerBase {
 
-	public static final String DEFAULT_LOGGER_NAME ="mtp.auth";
+	public static final String DEFAULT_LOGGER_NAME = "mtp.auth";
 
 	protected Logger auditLog;
 
@@ -123,7 +123,8 @@ public class Slf4jAuthLogger extends AuthLoggerBase {
 	 */
 	protected StructuredArgument argId(Credential credential) {
 		if (credential.getId() == null) {
-			return StructuredArguments.value(LogKey.ID, "unknown:" + credential.getClass().getSimpleName());
+			return StructuredArguments.value(LogKey.ID, "unknown:" + credential.getClass()
+					.getSimpleName());
 		}
 		return StructuredArguments.value(LogKey.ID, credential.getId());
 	}
@@ -134,7 +135,8 @@ public class Slf4jAuthLogger extends AuthLoggerBase {
 	 * @return ログ引数
 	 */
 	protected StructuredArgument argId(UserContext user) {
-		return StructuredArguments.value(LogKey.ID, user.getUser().getAccountId());
+		return StructuredArguments.value(LogKey.ID, user.getUser()
+				.getAccountId());
 	}
 
 	/**

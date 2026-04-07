@@ -80,8 +80,7 @@ public class EntityCsvWriteOption extends ParseOption {
 	private Function<PropertyDefinition, String> columnName = property -> property.getName();
 
 	/** 多重度複数プロパティの列名の出力文字列を返す関数 */
-	private BiFunction<PropertyDefinition, Integer, String> multipleColumnName
-			= (property, index) -> property.getName() + "[" + index + "]";
+	private BiFunction<PropertyDefinition, Integer, String> multipleColumnName = (property, index) -> property.getName() + "[" + index + "]";
 
 	/** SelectPropertyのソートをするかを返す関数 */
 	private Function<SelectProperty, Boolean> sortSelectValue = property -> false;
@@ -90,7 +89,8 @@ public class EntityCsvWriteOption extends ParseOption {
 	private Function<Query, SearchQueryCsvContext> beforeSearch = query -> new SearchQueryCsvContext(query);
 
 	/** 検索実行後Query処理 */
-	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {};
+	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {
+	};
 
 	/**
 	 * 出力文字コードを返します。
@@ -674,19 +674,19 @@ public class EntityCsvWriteOption extends ParseOption {
 		}
 
 		public Query getQuery() {
-		    return query;
+			return query;
 		}
 
 		public void setQuery(Query query) {
-		    this.query = query;
+			this.query = query;
 		}
 
 		public boolean isDoPrivileged() {
-		    return doPrivileged;
+			return doPrivileged;
 		}
 
 		public void setDoPrivileged(boolean doPrivileged) {
-		    this.doPrivileged = doPrivileged;
+			this.doPrivileged = doPrivileged;
 		}
 
 		public String[] getWithoutConditionReferenceName() {

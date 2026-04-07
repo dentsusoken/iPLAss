@@ -33,27 +33,27 @@ import java.io.Serializable;
  */
 public class BinaryReference implements Serializable {
 	private static final long serialVersionUID = -8654202685558160763L;
-	
+
 	private long lobId = -1;
 	private String name;
 	private String type;
-	
+
 	//TODO 以下のプロパティ必要か？
 	private String definitionName;
 	private String propertyName;
 	private String oid;
 	private long size;
-	
+
 	public BinaryReference() {
 	}
-	
+
 	public BinaryReference(long lobId, String name, String type, long size) {
 		this.lobId = lobId;
 		this.name = name;
 		this.type = type;
 		this.size = size;
 	}
-	
+
 	public BinaryReference(long lobId, String name, String type, long size, String definitionName, String propertyName, String oid) {
 		this.lobId = lobId;
 		this.name = name;
@@ -63,11 +63,11 @@ public class BinaryReference implements Serializable {
 		this.propertyName = propertyName;
 		this.oid = oid;
 	}
-	
+
 	public String toString() {
 		return "BinaryReference(lobId=" + lobId + ",name=" + name + ",type=" + type + ")";
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -105,7 +105,7 @@ public class BinaryReference implements Serializable {
 	public String getPropertyName() {
 		return propertyName;
 	}
-	
+
 	/**
 	 * バイナリファイルを一意に特定するID
 	 * 
@@ -118,7 +118,7 @@ public class BinaryReference implements Serializable {
 	public void setLobId(long lobId) {
 		this.lobId = lobId;
 	}
-	
+
 	/**
 	 * バイナリファイルのファイル名
 	 * 
@@ -145,7 +145,7 @@ public class BinaryReference implements Serializable {
 	public String getOid() {
 		return oid;
 	}
-	
+
 	/**
 	 * バイナリのサイズ（byte）
 	 * 
@@ -154,6 +154,7 @@ public class BinaryReference implements Serializable {
 	public long getSize() {
 		return size;
 	}
+
 	public void setSize(long size) {
 		this.size = size;
 	}

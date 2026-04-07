@@ -63,10 +63,11 @@ public class FormViewRuntime {
 		}
 
 		//Script用のKEYを設定
-		metaData.scriptKey = "FormView_ButtonStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
+		metaData.scriptKey = "FormView_ButtonStyle_" + GroovyTemplateCompiler.randomName()
+				.replace("-", "_");
 
 		//EntityViewに登録
-		entityView.addCustomStyle(metaData.scriptKey , customStyleMap);
+		entityView.addCustomStyle(metaData.scriptKey, customStyleMap);
 	}
 
 	/**

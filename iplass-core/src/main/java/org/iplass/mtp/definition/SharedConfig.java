@@ -30,26 +30,26 @@ import java.io.Serializable;
  */
 public class SharedConfig implements Serializable {
 	private static final long serialVersionUID = 5040486452347455302L;
-	
+
 	private boolean sharable;
 	private boolean overwritable;
 	private boolean dataSharable;
 	private boolean permissionSharable;
-	
+
 	public SharedConfig() {
 	}
-	
+
 	public SharedConfig(boolean sharable, boolean overwritable) {
 		this(sharable, overwritable, false, false);
 	}
-	
+
 	public SharedConfig(boolean sharable, boolean overwritable, boolean dataSharable, boolean permissionSharable) {
 		this.sharable = sharable;
 		this.overwritable = overwritable;
 		this.dataSharable = dataSharable;
 		this.permissionSharable = permissionSharable;
 	}
-	
+
 	/**
 	 * 当該Definitionが各テナントで共有される場合、
 	 * 各テナントでのDefinitionの上書きを許可するかどうか。
@@ -59,11 +59,11 @@ public class SharedConfig implements Serializable {
 	public boolean isOverwritable() {
 		return overwritable;
 	}
-	
+
 	public void setOverwritable(boolean overwritable) {
 		this.overwritable = overwritable;
 	}
-	
+
 	/**
 	 * 当該Definitionを各テナントで共有可能である場合true。
 	 * 
@@ -72,11 +72,11 @@ public class SharedConfig implements Serializable {
 	public boolean isSharable() {
 		return sharable;
 	}
-	
+
 	public void setSharable(boolean sharable) {
 		this.sharable = sharable;
 	}
-	
+
 	/**
 	 * 当該のDefinitionが扱うデータを各テナントで共有可能にする場合true。
 	 * 現時点では、EntityDefinitionでのみこの設定が有効。

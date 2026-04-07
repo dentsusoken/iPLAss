@@ -35,7 +35,8 @@ public class ToolsBatchResourceBundleUtil {
 	/** Tool用リソースファイル名 */
 	public static final String RESOURCE_NAME = "mtp-tools-batch-messages";
 
-	private ToolsBatchResourceBundleUtil(){}
+	private ToolsBatchResourceBundleUtil() {
+	}
 
 	/**
 	 * バッチの実行言語を返します。
@@ -48,7 +49,8 @@ public class ToolsBatchResourceBundleUtil {
 
 		if (StringUtil.isEmpty(lang) || "system".equals(lang.toLowerCase())) {
 			//Systemのデフォルトを取得
-			lang = Locale.getDefault().getLanguage();
+			lang = Locale.getDefault()
+					.getLanguage();
 		}
 		lang = lang.toLowerCase();
 
@@ -71,7 +73,8 @@ public class ToolsBatchResourceBundleUtil {
 		if (StringUtil.isNotEmpty(lang)) {
 			langLocale = Locale.forLanguageTag(lang);
 		} else {
-			langLocale = ExecuteContext.getCurrentContext().getLangLocale();
+			langLocale = ExecuteContext.getCurrentContext()
+					.getLangLocale();
 		}
 		return ResourceBundleUtil.getResourceBundle(RESOURCE_NAME, langLocale);
 	}

@@ -31,18 +31,20 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.web.template.TemplateUtil;
 
-@ActionMapping(name=LogoutCommand.ACTION_LOOUT,
-		clientCacheType=ClientCacheType.NO_CACHE,
-		privileged=true,
-		result={@Result(status="SUCCESS", type=Type.REDIRECT, value=LogoutCommand.RESULT_REDIRECT_PATH)
-})
-@CommandClass(name="gem/auth/LogoutCommand", displayName="ログアウト処理")
+@ActionMapping(
+		name = LogoutCommand.ACTION_LOOUT,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		privileged = true,
+		result = { @Result(status = "SUCCESS", type = Type.REDIRECT, value = LogoutCommand.RESULT_REDIRECT_PATH)
+		})
+@CommandClass(name = "gem/auth/LogoutCommand", displayName = "ログアウト処理")
 public final class LogoutCommand implements Command {
 
 	public static final String ACTION_LOOUT = "gem/auth/logout";
 	public static final String RESULT_REDIRECT_PATH = "mtp.auth.LogoutCommand.redirectPath";
 
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	@Override
 	public String execute(RequestContext request) {

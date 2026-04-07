@@ -26,10 +26,10 @@ package org.iplass.mtp.message;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * メッセージカテゴリ情報格納クラス
@@ -53,7 +53,7 @@ public class MessageCategory implements Definition {
 
 	/** メッセージ情報 */
 	@MultiLang(isMultiLangValue = false, itemKey = "messageItems", itemGetter = "getMessageItems", itemSetter = "setMessageItems")
-	Map<String,MessageItem> messageItems;
+	Map<String, MessageItem> messageItems;
 
 	/**
 	 * コンストラクタ
@@ -120,8 +120,8 @@ public class MessageCategory implements Definition {
 	 *
 	 * @return メッセージ情報
 	 */
-	public Map<String,MessageItem> getMessageItems() {
-	    return messageItems;
+	public Map<String, MessageItem> getMessageItems() {
+		return messageItems;
 	}
 
 	/**
@@ -130,8 +130,8 @@ public class MessageCategory implements Definition {
 	 * @param messageItems
 	 *            メッセージ情報
 	 */
-	public void setMessageItems(Map<String,MessageItem> messageItems) {
-	    this.messageItems = messageItems;
+	public void setMessageItems(Map<String, MessageItem> messageItems) {
+		this.messageItems = messageItems;
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class MessageCategory implements Definition {
 	 */
 	public void addMessageItem(MessageItem messageItem) {
 		if (messageItems == null) {
-			messageItems = new LinkedHashMap<String,MessageItem>();
+			messageItems = new LinkedHashMap<String, MessageItem>();
 		}
 		messageItems.put(messageItem.getMessageId(), messageItem);
 	}

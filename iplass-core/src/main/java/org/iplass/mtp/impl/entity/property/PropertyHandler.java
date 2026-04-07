@@ -40,8 +40,7 @@ import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.validation.MetaValidation;
 import org.iplass.mtp.impl.validation.ValidationHandler;
 
-
-public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
+public abstract class PropertyHandler /* implements MetaDataRuntime */ {
 
 	protected MetaProperty metaData;
 	private List<ValidationHandler> validators;
@@ -58,18 +57,21 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 		List<MetaValidation> vDefs = metaproperty.getValidations();
 		if (vDefs != null && !vDefs.isEmpty()) {
 			validators = new ArrayList<ValidationHandler>();
-			for (MetaValidation vDef: vDefs) {
+			for (MetaValidation vDef : vDefs) {
 				validators.add(vDef.createRuntime(metaEntity, metaproperty));
 			}
 		}
-		if (metaproperty.getNormalizers() != null && !metaproperty.getNormalizers().isEmpty()) {
-			normalizers = new ArrayList<>(metaproperty.getNormalizers().size());
-			for (MetaNormalizer nDef: metaproperty.getNormalizers()) {
+		if (metaproperty.getNormalizers() != null && !metaproperty.getNormalizers()
+				.isEmpty()) {
+			normalizers = new ArrayList<>(metaproperty.getNormalizers()
+					.size());
+			for (MetaNormalizer nDef : metaproperty.getNormalizers()) {
 				normalizers.add(nDef.createRuntime(metaEntity, metaproperty));
 			}
 		}
 		if (metaproperty.getEntityStoreProperty() != null) {
-			entityStorePropertyHandler = metaproperty.getEntityStoreProperty().createRuntime(this, metaEntity);
+			entityStorePropertyHandler = metaproperty.getEntityStoreProperty()
+					.createRuntime(this, metaEntity);
 		}
 		if (metaData.getLocalizedDisplayNameList() != null) {
 			for (MetaLocalizedString mls : metaData.getLocalizedDisplayNameList()) {
@@ -88,7 +90,7 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 			return false;
 		}
 	}
-	
+
 	public boolean isUniqueIndexed() {
 		if (getMetaData().getIndexType() == IndexType.UNIQUE
 				|| getMetaData().getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
@@ -132,39 +134,44 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 	public void setLocalizedStringMap(Map<String, String> localizedStringMap) {
 		this.localizedStringMap = localizedStringMap;
 	}
-	
+
 	public void normalize(ValidationContext context) {
 		if (normalizers != null) {
-			Object value = context.getEntity().getValue(metaData.getName());
-			for (NormalizerRuntime n: normalizers) {
+			Object value = context.getEntity()
+					.getValue(metaData.getName());
+			for (NormalizerRuntime n : normalizers) {
 				Object valueAfter;
 				if (getMetaData().getMultiplicity() != 1
 						&& value != null
-						&& value.getClass().isArray()) {
+						&& value.getClass()
+								.isArray()) {
 					valueAfter = n.normalizeArray((Object[]) value, context);
 				} else {
 					valueAfter = n.normalize(value, context);
 				}
 				if (value != valueAfter) {
-					context.getEntity().setValue(metaData.getName(), valueAfter);
+					context.getEntity()
+							.setValue(metaData.getName(), valueAfter);
 					value = valueAfter;
 				}
 			}
 		}
-		
+
 	}
 
 	public ValidateError validate(ValidationContext context) {
-		
+
 		if (validators != null) {
 			String entityDispName = parent.getLocalizedDisplayName();
 			String propDispName = getLocalizedDisplayName();
 
-			for (ValidationHandler v: validators) {
-				Object value = context.getEntity().getValue(metaData.getName());
+			for (ValidationHandler v : validators) {
+				Object value = context.getEntity()
+						.getValue(metaData.getName());
 				if (getMetaData().getMultiplicity() != 1
 						&& value != null
-						&& value.getClass().isArray()) {
+						&& value.getClass()
+								.isArray()) {
 					if (!v.validateArray((Object[]) value, context)) {
 						ValidateError res = new ValidateError();
 						res.setPropertyName(metaData.getName());
@@ -196,9 +203,9 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 	}
 
 	public abstract PropertyDefinitionType getEnumType();
-	
+
 	public abstract MetaProperty getMetaData();
-	
+
 	public abstract Object[] newArrayInstance(int size, EntityContext ec);
 
 }

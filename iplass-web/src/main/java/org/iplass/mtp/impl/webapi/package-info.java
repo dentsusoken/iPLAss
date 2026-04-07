@@ -18,10 +18,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/webapi",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/webapi", prefix="webapi"),
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://jaxb.dev.java.net/array", prefix="array")
-	}
+		namespace = "http://mtp.iplass.org/xml/webapi",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/webapi", prefix = "webapi"),
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://jaxb.dev.java.net/array", prefix = "array")
+		}
 )
 package org.iplass.mtp.impl.webapi;

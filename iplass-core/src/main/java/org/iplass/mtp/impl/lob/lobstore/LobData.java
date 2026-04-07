@@ -26,17 +26,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface LobData {
-	
+
 	public long getLobDataId();
-	
+
 	public long getSize();
-	
+
 	public InputStream getBinaryInputStream();
-	
+
 	public OutputStream getBinaryOutputStream();
-	
+
 	public void transferFrom(File file) throws IOException;
-	
+
 	public boolean exists();
 
 }

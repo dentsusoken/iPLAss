@@ -32,16 +32,18 @@ public class MultiLangFieldInfo implements Serializable {
 	private String defaultString;
 	private List<LocalizedStringDefinition> localizedStringList;
 
-
 	public String getDefaultString() {
 		return defaultString;
 	}
+
 	public void setDefaultString(String defaultString) {
 		this.defaultString = defaultString;
 	}
+
 	public List<LocalizedStringDefinition> getLocalizedStringList() {
 		return localizedStringList;
 	}
+
 	public void setLocalizedStringList(List<LocalizedStringDefinition> localizedStringList) {
 		this.localizedStringList = localizedStringList;
 	}

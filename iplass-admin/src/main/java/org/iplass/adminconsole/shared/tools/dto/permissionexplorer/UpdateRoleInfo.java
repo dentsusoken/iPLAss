@@ -33,7 +33,7 @@ public class UpdateRoleInfo implements Serializable {
 
 	private List<String> removeOidList;
 
-	public UpdateRoleInfo(){
+	public UpdateRoleInfo() {
 	}
 
 	public UpdateRoleInfo(List<Entity> storeEntityList, List<String> removeOidList) {

@@ -53,7 +53,8 @@ public class RdbAccountStore implements AccountStore {
 
 	@Override
 	public void inited(AuthenticationProvider provider, Config config) {
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 		accountSelect = rdb.getQuerySqlCreator(AccountSelectSQL.class);
 		accountControl = rdb.getUpdateSqlCreator(AccountControlSQL.class);
 		passSelect = rdb.getQuerySqlCreator(PasswordHistorySelectSQL.class);
@@ -85,9 +86,11 @@ public class RdbAccountStore implements AccountStore {
 				PreparedStatement ps = getPreparedStatement(accountControl.createUpdatePasswordSQL(rdb));
 				Date date = null;
 				if (pass.getUpdateDate() != null) {
-					date = new Date(pass.getUpdateDate().getTime());
+					date = new Date(pass.getUpdateDate()
+							.getTime());
 				}
-				accountControl.setUpdatePasswordParameter(rdb, ps, pass.getTenantId(), pass.getUid(), pass.getConvertedPassword(), pass.getSalt(), date, updateUser);
+				accountControl.setUpdatePasswordParameter(rdb, ps, pass.getTenantId(), pass.getUid(), pass.getConvertedPassword(), pass.getSalt(), date,
+						updateUser);
 				int cnt = ps.executeUpdate();
 				if (cnt != 1) {
 					throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.updateErr"));

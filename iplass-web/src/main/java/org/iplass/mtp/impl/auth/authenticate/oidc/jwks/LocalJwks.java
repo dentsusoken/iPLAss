@@ -27,7 +27,7 @@ import java.util.Map;
 import org.iplass.mtp.impl.auth.authenticate.oidc.OpenIdConnectService;
 
 public class LocalJwks extends Jwks {
-	
+
 	private Map<String, Map<String, Object>> jwks;
 
 	public LocalJwks(String jwksContents, OpenIdConnectService opService) {

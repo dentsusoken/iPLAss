@@ -48,7 +48,7 @@ public final class MetaDataUtil {
 		if (isShared) {
 			return "Shared";
 		} else if (isSharedOverwrite) {
-				return "Shared Overwrite";
+			return "Shared Overwrite";
 		} else {
 			return "Local";
 		}
@@ -61,7 +61,7 @@ public final class MetaDataUtil {
 			if (!isOverwritable) {
 				typeName += " , Not Overwrite";
 			}
-		} else if (isSharedOverwrite){
+		} else if (isSharedOverwrite) {
 			typeName = "Tenant Local (Shared Overwrite)";
 		} else {
 			typeName = "Tenant Local";

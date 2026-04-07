@@ -23,8 +23,9 @@ package org.iplass.mtp.entity.interceptor;
 import org.iplass.mtp.entity.query.Query;
 
 public interface EntityCountInvocation extends EntityInvocation<Integer> {
-	
+
 	public Query getQuery();
+
 	public void setQuery(Query query);
 
 }

@@ -30,11 +30,11 @@ public class GetRequestBuilder {
 	private static final String QUESTIONMARK = "?";
 	private static final String EQUAL_TO = "=";
 	private static final String PARAMETER_DELIMITER = "&";
-	
+
 	private Map<String, String> params = new LinkedHashMap<String, String>();
 	private String baseUrl;
 	private String targetUrl;
-	
+
 	public GetRequestBuilder baseUrl(String baseUrl) {
 		this.baseUrl = baseUrl;
 		return this;
@@ -44,9 +44,9 @@ public class GetRequestBuilder {
 		this.targetUrl = targetUrl;
 		return this;
 	}
-	
+
 	public GetRequestBuilder parameterWithValue(String name, String value) {
-		if(value != null){
+		if (value != null) {
 			params.put(name, value);
 		}
 		return this;
@@ -54,13 +54,14 @@ public class GetRequestBuilder {
 
 	public String toEncodedUrl() {
 		StringBuilder url = new StringBuilder();
-		if(baseUrl != null) {
+		if (baseUrl != null) {
 			url.append(baseUrl);
 		}
-		if(targetUrl != null) {
+		if (targetUrl != null) {
 			url.append(targetUrl);
 		}
-		if(!params.entrySet().isEmpty()) {
+		if (!params.entrySet()
+				.isEmpty()) {
 			url.append(QUESTIONMARK);
 		}
 		int size = params.size();
@@ -74,7 +75,7 @@ public class GetRequestBuilder {
 				count++;
 			}
 		}
-		
+
 		return URL.encode(url.toString());
 	}
 }

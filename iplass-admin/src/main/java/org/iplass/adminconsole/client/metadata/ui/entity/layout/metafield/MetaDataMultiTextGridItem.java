@@ -71,17 +71,17 @@ public class MetaDataMultiTextGridItem extends MetaFieldCanvasItem {
 		grid.setWidth100();
 		grid.setHeight(120);
 
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+		grid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-		grid.setCanSort(false);			//ソート不可
-		grid.setCanGroupBy(false);		//Group化不可
-		grid.setCanPickFields(false);	//列の選択不可
-		grid.setCanAutoFitFields(false);	//列幅の自動調整不可(崩れるので)
+		grid.setCanSort(false); //ソート不可
+		grid.setCanGroupBy(false); //Group化不可
+		grid.setCanPickFields(false); //列の選択不可
+		grid.setCanAutoFitFields(false); //列幅の自動調整不可(崩れるので)
 		grid.setCanFreezeFields(false);
 
-		grid.setCanResizeFields(true);	//列幅変更可
+		grid.setCanResizeFields(true); //列幅変更可
 
-		grid.setCanDragRecordsOut(true);				//grid内でのD&Dでの並べ替えを許可
+		grid.setCanDragRecordsOut(true); //grid内でのD&Dでの並べ替えを許可
 		grid.setCanAcceptDroppedRecords(true);
 		grid.setCanReorderRecords(true);
 
@@ -102,7 +102,6 @@ public class MetaDataMultiTextGridItem extends MetaFieldCanvasItem {
 		// カラムの構築
 		grid.setFields(new ListGridField(RECORD_ATTRIBUTE_VALUE, displayName));
 
-
 		IButton addButton = new IButton(
 				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_add"));
 		addButton.addClickHandler(new AddClickHandler());
@@ -121,11 +120,11 @@ public class MetaDataMultiTextGridItem extends MetaFieldCanvasItem {
 		setColSpan(2);
 		setCanvas(container);
 
-		valueList = (List<String>)pane.getValue(info.getName());
+		valueList = (List<String>) pane.getValue(info.getName());
 		if (valueList == null) {
 			// フィールドの値がnullなら空のリストを詰めておく(インスタンスを確定するため)
 			valueList = new ArrayList<>();
-			pane.setValue(info.getName(), (Serializable)valueList);
+			pane.setValue(info.getName(), (Serializable) valueList);
 		}
 		for (String textValue : valueList) {
 			ListGridRecord record = new ListGridRecord();

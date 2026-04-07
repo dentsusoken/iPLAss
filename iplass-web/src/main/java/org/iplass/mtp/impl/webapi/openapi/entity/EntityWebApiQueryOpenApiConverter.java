@@ -65,37 +65,53 @@ public class EntityWebApiQueryOpenApiConverter extends AbstractEntityWebApiOpenA
 	public void convert(OpenAPI openApi, EntityDefinition entityDefinition) {
 		var queryDescription = getResponseDescription("GET", getEntityPath(entityDefinition));
 		var queryOperation = createOperation(openApi, entityDefinition, queryDescription);
-		var filter = new QueryParameter().name(GetEntityCommand.PARAM_FILTER).required(Boolean.FALSE).schema(new StringSchema());
-		var withMappedByReference = new QueryParameter().name(GetEntityCommand.PARAM_WITH_MAPPED_BY_REFERENCE).required(Boolean.FALSE)
+		var filter = new QueryParameter().name(GetEntityCommand.PARAM_FILTER)
+				.required(Boolean.FALSE)
+				.schema(new StringSchema());
+		var withMappedByReference = new QueryParameter().name(GetEntityCommand.PARAM_WITH_MAPPED_BY_REFERENCE)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		queryOperation.addParametersItem(filter).addParametersItem(withMappedByReference);
+		queryOperation.addParametersItem(filter)
+				.addParametersItem(withMappedByReference);
 		getEntityPathItem(openApi, entityDefinition).setGet(queryOperation);
 
 		var basePathItem = getBasePathItem(openApi, entityDefinition);
 		if (null == basePathItem.getGet()) {
 			var baseDescription = getResponseDescription("GET", getBasePath());
 			var baseOperation = createOperation(openApi, entityDefinition, baseDescription);
-			var query = new QueryParameter().name(GetEntityCommand.PARAM_QUERY).required(Boolean.TRUE).schema(new StringSchema());
+			var query = new QueryParameter().name(GetEntityCommand.PARAM_QUERY)
+					.required(Boolean.TRUE)
+					.schema(new StringSchema());
 			baseOperation.addParametersItem(query);
 			basePathItem.setGet(baseOperation);
 
 		} else {
 			// 既に定義されている場合は、response list にエンティティのデータ型を追加する
-			var okResponse = basePathItem.getGet().getResponses().get(STATUS_OK);
+			var okResponse = basePathItem.getGet()
+					.getResponses()
+					.get(STATUS_OK);
 			var okContent = okResponse.getContent();
 			var okMediaType = okContent.get(jakarta.ws.rs.core.MediaType.APPLICATION_JSON);
-			List<Schema<?>> okSchema = okMediaType.getSchema().getOneOf();
+			List<Schema<?>> okSchema = okMediaType.getSchema()
+					.getOneOf();
 
-			var listSchema = okSchema.stream().filter(s -> !s.getProperties().containsKey("listHeader")).findFirst().get();
-			var listProperty = listSchema.getProperties().get("list");
+			var listSchema = okSchema.stream()
+					.filter(s -> !s.getProperties()
+							.containsKey("listHeader"))
+					.findFirst()
+					.get();
+			var listProperty = listSchema.getProperties()
+					.get("list");
 			var listPropertyItems = listProperty.getItems();
 			if ("object".equals(listPropertyItems.getType())) {
 				listPropertyItems = new ComposedSchema().addOneOfItem(listPropertyItems);
 				listProperty.setItems(listPropertyItems);
 			}
 
-			var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-			var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+			var service = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class);
+			var componentsSchemaRef = service.getReusableSchemaFactory()
+					.addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 			listPropertyItems.addOneOfItem(new ObjectSchema().$ref(componentsSchemaRef));
 		}
 
@@ -105,16 +121,24 @@ public class EntityWebApiQueryOpenApiConverter extends AbstractEntityWebApiOpenA
 		var operation = new Operation().responses(new ApiResponses());
 
 		// parameters
-		var tabular = new QueryParameter().name(GetEntityCommand.PARAM_TABLE_MODE).required(Boolean.FALSE).schema(new BooleanSchema());
-		var countTotal = new QueryParameter().name(GetEntityCommand.PARAM_COUNT_TOTAL).required(Boolean.FALSE).schema(new BooleanSchema());
-		var footer = new QueryParameter().name(GetEntityCommand.FOOTER).required(Boolean.FALSE).schema(new BooleanSchema());
+		var tabular = new QueryParameter().name(GetEntityCommand.PARAM_TABLE_MODE)
+				.required(Boolean.FALSE)
+				.schema(new BooleanSchema());
+		var countTotal = new QueryParameter().name(GetEntityCommand.PARAM_COUNT_TOTAL)
+				.required(Boolean.FALSE)
+				.schema(new BooleanSchema());
+		var footer = new QueryParameter().name(GetEntityCommand.FOOTER)
+				.required(Boolean.FALSE)
+				.schema(new BooleanSchema());
 		operation
-		.addParametersItem(tabular)
-		.addParametersItem(countTotal)
-		.addParametersItem(footer);
+				.addParametersItem(tabular)
+				.addParametersItem(countTotal)
+				.addParametersItem(footer);
 
-		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var service = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
+		var componentsSchemaRef = service.getReusableSchemaFactory()
+				.addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// responses
 		var listSchema = new ObjectSchema()
@@ -128,15 +152,18 @@ public class EntityWebApiQueryOpenApiConverter extends AbstractEntityWebApiOpenA
 				.addProperty("list", new ArraySchema().items(new ComposedSchema()
 						.addAnyOfItem(new StringSchema())
 						.addAnyOfItem(new IntegerSchema())
-						// NOTE 値としては null はあり得るが、OpenAPI 仕様として出力されないのでコメント化する
-						//.addAnyOfItem(new ArbitrarySchema().type("null"))
-						))
+				// NOTE 値としては null はあり得るが、OpenAPI 仕様として出力されないのでコメント化する
+				//.addAnyOfItem(new ArbitrarySchema().type("null"))
+				))
 				.addProperty("totalCount", new IntegerSchema());
-		var okMediaType = new MediaType().schema(new ComposedSchema().addOneOfItem(listSchema).addOneOfItem(tabularSchema));
+		var okMediaType = new MediaType().schema(new ComposedSchema().addOneOfItem(listSchema)
+				.addOneOfItem(tabularSchema));
 		var okContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, okMediaType);
-		var okResponse = new ApiResponse().content(okContent).description(description);
+		var okResponse = new ApiResponse().content(okContent)
+				.description(description);
 
-		operation.getResponses().addApiResponse(STATUS_OK, okResponse);
+		operation.getResponses()
+				.addApiResponse(STATUS_OK, okResponse);
 
 		return operation;
 

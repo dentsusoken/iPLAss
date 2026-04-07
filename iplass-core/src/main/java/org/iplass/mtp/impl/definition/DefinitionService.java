@@ -42,7 +42,8 @@ import org.iplass.mtp.util.StringUtil;
 public class DefinitionService implements Service {
 
 	public static DefinitionService getInstance() {
-		return ServiceRegistry.getRegistry().getService(DefinitionService.class);
+		return ServiceRegistry.getRegistry()
+				.getService(DefinitionService.class);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -63,9 +64,10 @@ public class DefinitionService implements Service {
 		contextNode = new MetaDataContextNode("root");
 
 		if (config.getNames() != null) {
-			for (String typeMapClass: config.getValues("typeMap")) {
+			for (String typeMapClass : config.getValues("typeMap")) {
 				try {
-					DefinitionMetaDataTypeMap typeMap = (DefinitionMetaDataTypeMap) Class.forName(typeMapClass).newInstance();
+					DefinitionMetaDataTypeMap typeMap = (DefinitionMetaDataTypeMap) Class.forName(typeMapClass)
+							.newInstance();
 					defMap.put(typeMap.defType, typeMap);
 					metaMap.put(typeMap.metaType, typeMap);
 					typeNameMap.put(typeMap.typeName(), typeMap);
@@ -91,7 +93,7 @@ public class DefinitionService implements Service {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * MetaDataのパスからDefinitionの型、Definitionのプレフィックスパス以降の相対パスを取得。
 	 * 
@@ -103,10 +105,10 @@ public class DefinitionService implements Service {
 		if (typeMap == null) {
 			return null;
 		}
-		
+
 		return new DefinitionPath(typeMap.defType, path.substring(typeMap.pathPrefix.length()));
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private <D extends Definition> DefinitionMetaDataTypeMap getByDef(Class<D> defType) {
 		DefinitionMetaDataTypeMap ret = defMap.get(defType);
@@ -172,7 +174,6 @@ public class DefinitionService implements Service {
 		return td.toPath(defName);
 	}
 
-
 	@SuppressWarnings("unchecked")
 	public <D extends Definition, M extends RootMetaData> Class<D> getDefinitionType(Class<M> metaType) {
 		return (Class<D>) getByMeta(metaType).defType;
@@ -224,7 +225,8 @@ public class DefinitionService implements Service {
 	@SuppressWarnings({ "rawtypes" })
 	public <D extends Definition> DefinitionNameCheckResult checkDefinitionName(Class<D> defType, String defName) {
 		DefinitionMetaDataTypeMap typeMap = this.getByDef(defType);
-		return typeMap.getDefinitionNameChecker().check(defName);
+		return typeMap.getDefinitionNameChecker()
+				.check(defName);
 	}
 
 	/**
@@ -238,7 +240,8 @@ public class DefinitionService implements Service {
 	@SuppressWarnings({ "rawtypes" })
 	public <M extends RootMetaData> DefinitionNameCheckResult checkDefinitionNameByMeta(Class<M> metaType, String defName) {
 		DefinitionMetaDataTypeMap typeMap = this.getByMeta(metaType);
-		return typeMap.getDefinitionNameChecker().check(defName);
+		return typeMap.getDefinitionNameChecker()
+				.check(defName);
 	}
 
 	private static class MetaDataContextNode<D extends Definition> {

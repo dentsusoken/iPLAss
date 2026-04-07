@@ -29,12 +29,12 @@ class WrappedRestException extends RuntimeException {
 	public WrappedRestException(Exception cause) {
 		super(cause);
 	}
-	
+
 	public WrappedRestException(Exception cause, WebApiResponse response) {
 		super(cause);
 		this.response = response;
 	}
-	
+
 	WebApiResponse getResponse() {
 		return response;
 	}

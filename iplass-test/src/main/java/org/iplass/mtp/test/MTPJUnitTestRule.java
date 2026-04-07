@@ -283,7 +283,8 @@ public class MTPJUnitTestRule implements TestRule {
 				configFile = configFileName;
 			}
 
-			ConfigFile cf = description.getTestClass().getAnnotation(ConfigFile.class);
+			ConfigFile cf = description.getTestClass()
+					.getAnnotation(ConfigFile.class);
 			if (cf != null) {
 				configFile = cf.value();
 			}
@@ -297,8 +298,10 @@ public class MTPJUnitTestRule implements TestRule {
 		public void evaluate() throws Throwable {
 
 			if (configFile != null) {
-				if (BootstrapProps.getInstance().replaceProperty(BootstrapProps.CONFIG_FILE_NAME, configFile)) {
-					ServiceRegistry.getRegistry().reInit();
+				if (BootstrapProps.getInstance()
+						.replaceProperty(BootstrapProps.CONFIG_FILE_NAME, configFile)) {
+					ServiceRegistry.getRegistry()
+							.reInit();
 				}
 			}
 
@@ -319,7 +322,8 @@ public class MTPJUnitTestRule implements TestRule {
 				tname = tenantName;
 			}
 
-			TenantName tn = description.getTestClass().getAnnotation(TenantName.class);
+			TenantName tn = description.getTestClass()
+					.getAnnotation(TenantName.class);
 			if (tn != null) {
 				tname = tn.value();
 			}
@@ -337,29 +341,36 @@ public class MTPJUnitTestRule implements TestRule {
 				isInit = ResourceHolder.init();
 
 				//ここでセットしておかないと、TransactionManagerが初期化されてしまう
-				TransactionService ts = ServiceRegistry.getRegistry().getService(TransactionService.class);
+				TransactionService ts = ServiceRegistry.getRegistry()
+						.getService(TransactionService.class);
 				if (!(ts instanceof TestTransactionService)) {
-					ServiceRegistry.getRegistry().setService(TransactionService.class.getName(), new TestTransactionService());
+					ServiceRegistry.getRegistry()
+							.setService(TransactionService.class.getName(), new TestTransactionService());
 				}
 
-				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext("/" + tname);
+				TenantContext tc = ServiceRegistry.getRegistry()
+						.getService(TenantContextService.class)
+						.getTenantContext("/" + tname);
 				if (tc == null) {
 					throw new IllegalArgumentException("tenantName:" + tname + " not found");
 				}
 				try {
 					ExecuteContext.executeAs(tc, () -> {
 						try {
-							ClassLoader cl = Thread.currentThread().getContextClassLoader();
+							ClassLoader cl = Thread.currentThread()
+									.getContextClassLoader();
 							boolean replaceCl = isGroovy;
 							try {
 								if (replaceCl) {
-									Thread.currentThread().setContextClassLoader(((GroovyScriptEngine) tc.getScriptEngine()).getSharedClassLoader());
+									Thread.currentThread()
+											.setContextClassLoader(((GroovyScriptEngine) tc.getScriptEngine()).getSharedClassLoader());
 								}
 								base.evaluate();
 
 							} finally {
 								if (replaceCl) {
-									Thread.currentThread().setContextClassLoader(cl);
+									Thread.currentThread()
+											.setContextClassLoader(cl);
 								}
 							}
 							return null;
@@ -390,11 +401,13 @@ public class MTPJUnitTestRule implements TestRule {
 			isRollback = rollbackTransaction;
 
 			//class level annotation
-			Commit tc = description.getTestClass().getAnnotation(Commit.class);
+			Commit tc = description.getTestClass()
+					.getAnnotation(Commit.class);
 			if (tc != null) {
 				isRollback = false;
 			}
-			Rollback tr = description.getTestClass().getAnnotation(Rollback.class);
+			Rollback tr = description.getTestClass()
+					.getAnnotation(Rollback.class);
 			if (tr != null) {
 				isRollback = true;
 			}
@@ -412,9 +425,11 @@ public class MTPJUnitTestRule implements TestRule {
 
 		@Override
 		public void evaluate() throws Throwable {
-			TransactionService ts = ServiceRegistry.getRegistry().getService(TransactionService.class);
+			TransactionService ts = ServiceRegistry.getRegistry()
+					.getService(TransactionService.class);
 			if (!(ts instanceof TestTransactionService)) {
-				ServiceRegistry.getRegistry().setService(TransactionService.class.getName(), new TestTransactionService());
+				ServiceRegistry.getRegistry()
+						.setService(TransactionService.class.getName(), new TestTransactionService());
 			}
 			TestTransactionService.rollback = isRollback;
 			base.evaluate();
@@ -436,12 +451,14 @@ public class MTPJUnitTestRule implements TestRule {
 			password = MTPJUnitTestRule.this.password;
 
 			//class level annotation
-			AuthUser au = description.getTestClass().getAnnotation(AuthUser.class);
+			AuthUser au = description.getTestClass()
+					.getAnnotation(AuthUser.class);
 			if (au != null) {
 				userId = au.userId();
 				password = au.password();
 			}
-			NoAuthUser nau = description.getTestClass().getAnnotation(NoAuthUser.class);
+			NoAuthUser nau = description.getTestClass()
+					.getAnnotation(NoAuthUser.class);
 			if (nau != null) {
 				userId = null;
 				password = null;
@@ -463,7 +480,8 @@ public class MTPJUnitTestRule implements TestRule {
 		@Override
 		public void evaluate() throws Throwable {
 
-			AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+			AuthService as = ServiceRegistry.getRegistry()
+					.getService(AuthService.class);
 			if (userId != null) {
 				as.login(new IdPasswordCredential(userId, password));
 			} else {
@@ -511,6 +529,5 @@ public class MTPJUnitTestRule implements TestRule {
 			super(cause);
 		}
 	}
-
 
 }

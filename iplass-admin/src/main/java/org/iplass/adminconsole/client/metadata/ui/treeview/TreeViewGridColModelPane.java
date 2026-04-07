@@ -125,16 +125,16 @@ public class TreeViewGridColModelPane extends VLayout {
 			setHeight(135);
 
 			setDragDataAction(DragDataAction.MOVE);
-			setSelectionType(SelectionStyle.SINGLE);	//単一行選択
+			setSelectionType(SelectionStyle.SINGLE); //単一行選択
 
-			setLeaveScrollbarGap(false);		//←falseで縦スクロールバーの領域が自動表示
-			setEmptyMessage("No ColModel Items");	//←空の場合のメッセージ
-			setCanReorderRecords(true);			//←Dragによるレコードの並べ替え許可指定（Default false）
-			setCanAcceptDroppedRecords(true);	//←レコードのDropの許可指定（Default false）
-			setCanDragRecordsOut(true);			//←レコードをDragして他にDropできるか（Default false）
-			setCanSort(false);					//←ソートできるか（Default true）
-			setCanFreezeFields(false);			//←列を固定できるか（Default null）
-			setCanPickFields(false);			//←ヘッダで列を選択できるか（Default true）
+			setLeaveScrollbarGap(false); //←falseで縦スクロールバーの領域が自動表示
+			setEmptyMessage("No ColModel Items"); //←空の場合のメッセージ
+			setCanReorderRecords(true); //←Dragによるレコードの並べ替え許可指定（Default false）
+			setCanAcceptDroppedRecords(true); //←レコードのDropの許可指定（Default false）
+			setCanDragRecordsOut(true); //←レコードをDragして他にDropできるか（Default false）
+			setCanSort(false); //←ソートできるか（Default true）
+			setCanFreezeFields(false); //←列を固定できるか（Default null）
+			setCanPickFields(false); //←ヘッダで列を選択できるか（Default true）
 			setDropTypes("ColModel");
 			setDragType("ColModel");
 
@@ -146,9 +146,10 @@ public class TreeViewGridColModelPane extends VLayout {
 		}
 
 		protected ListGridField[] getGridFields() {
-			ListGridField[] fields = new ListGridField[]{
+			ListGridField[] fields = new ListGridField[] {
 					new ListGridField("name", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_columnName")),
-					new ListGridField("displayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_columnDisplayName")),
+					new ListGridField("displayLabel",
+							AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_columnDisplayName")),
 					new ListGridField("editAction", " "),
 					new ListGridField("delAction", " ")
 			};
@@ -183,7 +184,8 @@ public class TreeViewGridColModelPane extends VLayout {
 							@Override
 							public void onDataChanged(DataChangedEvent event) {
 								TreeViewGridColModel _definition = event.getValue(TreeViewGridColModel.class, "definition");
-								if (!definition.getName().equals(_definition.getName()) && grid.existSameNameNode(_definition.getName())) {
+								if (!definition.getName()
+										.equals(_definition.getName()) && grid.existSameNameNode(_definition.getName())) {
 									SC.say(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_settingAlreadyExists"));
 								} else {
 									target.setDefinition(_definition);
@@ -214,18 +216,19 @@ public class TreeViewGridColModelPane extends VLayout {
 					public void onClick(ClickEvent event) {
 
 						SC.confirm(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_deleteConfirm"),
-								AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_deleteItemConf", record.getAttribute("name"))
-								, new BooleanCallback() {
+								AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_deleteItemConf",
+										record.getAttribute("name")),
+								new BooleanCallback() {
 
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									removeData(record);
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											removeData(record);
 
-									fireDataChanged();
-								}
-							}
-						});
+											fireDataChanged();
+										}
+									}
+								});
 					}
 				});
 				ret = deleteBtn;
@@ -416,7 +419,7 @@ public class TreeViewGridColModelPane extends VLayout {
 			IButton save = new IButton("Save");
 			save.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					if (validate()){
+					if (validate()) {
 						TreeViewGridColModel definition = new TreeViewGridColModel();
 						definition.setName(SmartGWTUtil.getStringValue(nameField));
 						definition.setDisplayLabel(SmartGWTUtil.getStringValue(displayLabelField));

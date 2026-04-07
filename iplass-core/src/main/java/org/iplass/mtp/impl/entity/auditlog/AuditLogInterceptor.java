@@ -42,9 +42,9 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
 
 public class AuditLogInterceptor extends EntityInterceptorAdapter implements ServiceInitListener<EntityService> {
-	
+
 	private AuditLoggingService historyLoggingService;
-	
+
 	@Override
 	public int count(EntityCountInvocation invocation) {
 		historyLoggingService.logQuery(invocation.getQuery(), true);
@@ -68,8 +68,15 @@ public class AuditLogInterceptor extends EntityInterceptorAdapter implements Ser
 	public void update(EntityUpdateInvocation invocation) {
 		EntityHandler eh = ((EntityUpdateInvocationImpl) invocation).getEntityHandler();
 		Entity beforeUpdate = null;
-		if (historyLoggingService.isLogBeforeEntity(eh.getMetaData().getName())) {
-			beforeUpdate = new EntityLoadInvocationImpl(invocation.getEntity().getOid(), invocation.getEntity().getVersion(), new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
+		if (historyLoggingService.isLogBeforeEntity(eh.getMetaData()
+				.getName())) {
+			beforeUpdate = new EntityLoadInvocationImpl(invocation.getEntity()
+					.getOid(),
+					invocation.getEntity()
+							.getVersion(),
+					new LoadOption(true, false), false, eh.getService()
+							.getInterceptors(),
+					eh).proceed();
 		}
 		invocation.proceed();
 		historyLoggingService.logUpdate(beforeUpdate, invocation.getEntity(), invocation.getUpdateOption());
@@ -79,9 +86,16 @@ public class AuditLogInterceptor extends EntityInterceptorAdapter implements Ser
 	public void delete(EntityDeleteInvocation invocation) {
 		Entity entity = null;
 		EntityHandler eh = ((EntityDeleteInvocationImpl) invocation).getEntityHandler();
-		if (historyLoggingService.isLogBeforeEntity(eh.getMetaData().getName())) {
+		if (historyLoggingService.isLogBeforeEntity(eh.getMetaData()
+				.getName())) {
 			//削除前の状態のEntityの情報がほしいので、ロードする。
-			entity = new EntityLoadInvocationImpl(invocation.getEntity().getOid(), invocation.getEntity().getVersion(), new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
+			entity = new EntityLoadInvocationImpl(invocation.getEntity()
+					.getOid(),
+					invocation.getEntity()
+							.getVersion(),
+					new LoadOption(true, false), false, eh.getService()
+							.getInterceptors(),
+					eh).proceed();
 		}
 		invocation.proceed();
 		if (entity == null) {
@@ -120,7 +134,8 @@ public class AuditLogInterceptor extends EntityInterceptorAdapter implements Ser
 	@Override
 	public void bulkUpdate(EntityBulkUpdateInvocation invocation) {
 		invocation.proceed();
-		historyLoggingService.logBulkUpdate(invocation.getBulkUpdatable().getDefinitionName());
+		historyLoggingService.logBulkUpdate(invocation.getBulkUpdatable()
+				.getDefinitionName());
 	}
 
 	@Override

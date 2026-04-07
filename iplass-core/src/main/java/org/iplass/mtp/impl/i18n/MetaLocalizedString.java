@@ -39,7 +39,6 @@ public class MetaLocalizedString implements MetaData {
 		this.stringValue = stringValue;
 	}
 
-
 	@Override
 	public MetaLocalizedString copy() {
 		return ObjectUtil.deepCopy(this);

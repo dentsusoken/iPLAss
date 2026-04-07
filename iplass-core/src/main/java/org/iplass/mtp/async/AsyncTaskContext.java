@@ -32,7 +32,7 @@ import org.iplass.mtp.tenant.Tenant;
  *
  */
 public abstract class AsyncTaskContext {
-	
+
 	/**
 	 * 現在のAsyncTaskContextのインスタンスを取得。
 	 * これを呼び出した処理が、非同期処理で呼ばれたタスクではない場合は、nullが返却される。
@@ -40,23 +40,24 @@ public abstract class AsyncTaskContext {
 	 * @return
 	 */
 	public static AsyncTaskContext getCurrentContext() {
-		return (AsyncTaskContext) ExecuteContext.getCurrentContext().getAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
+		return (AsyncTaskContext) ExecuteContext.getCurrentContext()
+				.getAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
 	}
-	
+
 	/**
 	 * 現在実行中の非同期タスクのタスクIDを取得。
 	 * 
 	 * @return
 	 */
 	public abstract long getTaskId();
-	
+
 	/**
 	 * 現在実行中の非同期タスクのキュー名を取得。
 	 * 
 	 * @return
 	 */
 	public abstract String getQueueName();
-	
+
 	/**
 	 * 現在実行中の非同期タスクのテナントを取得。
 	 * @return

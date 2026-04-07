@@ -311,8 +311,9 @@ public class MetaDataListPane extends VLayout {
 					return;
 				}
 
-				TreeNode node = (TreeNode)record;
-				if (grid.getTree().isFolder(node)) {
+				TreeNode node = (TreeNode) record;
+				if (grid.getTree()
+						.isFolder(node)) {
 					//Folderは対象外
 					return;
 				}
@@ -359,13 +360,13 @@ public class MetaDataListPane extends VLayout {
 			SC.ask(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_confirm"),
 					AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataListPane_shareMetaDataInclud"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						showXMLDownloadDialog();
-					}
-				}
-			});
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								showXMLDownloadDialog();
+							}
+						}
+					});
 		} else {
 			showXMLDownloadDialog();
 		}
@@ -403,11 +404,11 @@ public class MetaDataListPane extends VLayout {
 
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + NameListDownloadProperty.ACTION_URL)
-			.addParameter(NameListDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-			.addParameter(NameListDownloadProperty.TARGET_MODE, TargetMode.LIVE.name())
-			.addParameter(NameListDownloadProperty.TARGET_PATH, pathArrayString(paths))
-			.addParameter(NameListDownloadProperty.REPOSITORY_TYPE, type)
-			.execute();
+				.addParameter(NameListDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+				.addParameter(NameListDownloadProperty.TARGET_MODE, TargetMode.LIVE.name())
+				.addParameter(NameListDownloadProperty.TARGET_PATH, pathArrayString(paths))
+				.addParameter(NameListDownloadProperty.REPOSITORY_TYPE, type)
+				.execute();
 
 	}
 
@@ -449,7 +450,8 @@ public class MetaDataListPane extends VLayout {
 		if (records == null || records.length == 0) {
 			//全件対象
 //			records = grid.getRecords();
-			records = grid.getTree().getAllNodes();
+			records = grid.getTree()
+					.getAllNodes();
 		}
 
 		for (ListGridRecord record : records) {
@@ -460,8 +462,9 @@ public class MetaDataListPane extends VLayout {
 			}
 
 			if (record instanceof TreeNode) {
-				TreeNode node = (TreeNode)record;
-				if (grid.getTree().isLeaf(node)) {
+				TreeNode node = (TreeNode) record;
+				if (grid.getTree()
+						.isLeaf(node)) {
 					selectPaths.add(path);
 				}
 			} else {

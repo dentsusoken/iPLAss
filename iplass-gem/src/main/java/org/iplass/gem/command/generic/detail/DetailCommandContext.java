@@ -146,7 +146,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 	}
 
 	private void init() {
-		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		gemConfig = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 	}
 
 	/**
@@ -247,13 +248,17 @@ public class DetailCommandContext extends RegistrationCommandContext
 				ReferenceSection rs = (ReferenceSection) section;
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
-					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
+					Optional<ReferenceSectionPropertyItem> ret = propList.stream()
+							.filter(p -> p instanceof ReferenceSectionPropertyItem)
 							.map(p -> (ReferenceSectionPropertyItem) p)
-							.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
+							.filter(p -> p.getPropertyName()
+									.equals(rs.getPropertyName()))
 							.findFirst();
 
 					if (ret.isPresent()) {
-						ret.get().getSections().add(rs);
+						ret.get()
+								.getSections()
+								.add(rs);
 					} else {
 						propList.add(createReferenceSectionPropertyItem(rs));
 					}
@@ -274,15 +279,17 @@ public class DetailCommandContext extends RegistrationCommandContext
 		List<PropertyItem> propList = getProperty();
 
 		//EditorのLabel形式のチェック
-		List<PropertyItem> updateList = propList.stream().filter(property -> {
-			if (property.getEditor() instanceof LabelablePropertyEditor) {
-				LabelablePropertyEditor editor = (LabelablePropertyEditor) property.getEditor();
-				if (editor.isLabel() && !editor.isUpdateWithLabelValue()) {
-					return false;
-				}
-			}
-			return true;
-		}).collect(Collectors.toList());
+		List<PropertyItem> updateList = propList.stream()
+				.filter(property -> {
+					if (property.getEditor() instanceof LabelablePropertyEditor) {
+						LabelablePropertyEditor editor = (LabelablePropertyEditor) property.getEditor();
+						if (editor.isLabel() && !editor.isUpdateWithLabelValue()) {
+							return false;
+						}
+					}
+					return true;
+				})
+				.collect(Collectors.toList());
 
 		return updateList;
 	}
@@ -331,13 +338,17 @@ public class DetailCommandContext extends RegistrationCommandContext
 				ReferenceSection rs = (ReferenceSection) elem;
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
-					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
+					Optional<ReferenceSectionPropertyItem> ret = propList.stream()
+							.filter(p -> p instanceof ReferenceSectionPropertyItem)
 							.map(p -> (ReferenceSectionPropertyItem) p)
-							.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
+							.filter(p -> p.getPropertyName()
+									.equals(rs.getPropertyName()))
 							.findFirst();
 
 					if (ret.isPresent()) {
-						ret.get().getSections().add(rs);
+						ret.get()
+								.getSections()
+								.add(rs);
 					} else {
 						propList.add(createReferenceSectionPropertyItem(rs));
 					}
@@ -356,7 +367,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 		ReferenceSectionPropertyItem property = new ReferenceSectionPropertyItem();
 		property.setPropertyName(section.getPropertyName());
 		//		property.setDispFlag(section.getDispFlag());
-		property.getSections().add(section);
+		property.getSections()
+				.add(section);
 		return property;
 	}
 
@@ -421,7 +433,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 		}
 
 		public ReferenceSection getSection(int index) {
-			Optional<ReferenceSection> ret = sections.stream().filter(s -> s.getIndex() == index).findFirst();
+			Optional<ReferenceSection> ret = sections.stream()
+					.filter(s -> s.getIndex() == index)
+					.findFirst();
 			if (ret.isPresent()) {
 				return ret.get();
 			}
@@ -668,7 +682,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 				//Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix + p.getName();
 				getErrors().stream()
-						.filter(error -> error.getPropertyName().equals(name))
+						.filter(error -> error.getPropertyName()
+								.equals(name))
 						.forEach(error -> error.setPropertyName(errorName));
 			}
 		}
@@ -823,15 +838,18 @@ public class DetailCommandContext extends RegistrationCommandContext
 			entity.setValue(Constants.REF_RELOAD, Boolean.FALSE);
 
 			//Validationエラーが出るとhiddenに"null"が入るのでクリアする
-			if (entity.getOid() != null && entity.getOid().equals("null")) {
+			if (entity.getOid() != null && entity.getOid()
+					.equals("null")) {
 				entity.setOid(null);
 			}
 
 			//Entity生成時にエラーが発生していないかチェック
 			String checkPrefix = (errorPrefix != null ? errorPrefix : paramPrefix);
 			boolean hasError = getErrors().stream()
-					.filter(error -> error.getPropertyName().startsWith(checkPrefix))
-					.findFirst().isPresent();
+					.filter(error -> error.getPropertyName()
+							.startsWith(checkPrefix))
+					.findFirst()
+					.isPresent();
 
 			//エラーがなくて、何もデータが入ってないものは破棄する
 			if (hasError || !isEmpty(entity)) {
@@ -849,7 +867,10 @@ public class DetailCommandContext extends RegistrationCommandContext
 		setEntityDefinition(ed);//元の定義に詰め替える
 
 		// ネストテーブル用の登録処理を追加
-		Optional<PropertyItem> ret = getProperty().stream().filter(pi -> pi.getPropertyName().equals(p.getName())).findFirst();
+		Optional<PropertyItem> ret = getProperty().stream()
+				.filter(pi -> pi.getPropertyName()
+						.equals(p.getName()))
+				.findFirst();
 		if (ret.isPresent()) {
 			addNestTableRegistHandler(p, list, red, ret.get());
 		}
@@ -871,7 +892,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 			// isSpecifyAllPropertiesがtrue、且つReference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
 			// 参照先EntityにおけるEntityのデータ追加、更新不可
 			if (option.isSpecifyAllProperties() && !option.isSpecifiedAsReference()
-					&& option.getSpecifiedUpdateNestProperties().isEmpty()) {
+					&& option.getSpecifiedUpdateNestProperties()
+							.isEmpty()) {
 				return;
 			}
 		}
@@ -884,7 +906,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 			PropertyDefinition pd = red.getProperty(editor.getTableOrderPropertyName());
 			target = EntityViewUtil.sortByOrderProperty(list, Constants.REF_TABLE_ORDER_INDEX);
 			for (int i = 0; i < target.size(); i++) {
-				target.get(i).setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
+				target.get(i)
+						.setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
 			}
 		} else {
 			target = list;
@@ -919,7 +942,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 		Optional<ReferenceSectionPropertyItem> ret = properties.stream()
 				.filter(pi -> pi instanceof ReferenceSectionPropertyItem)
 				.map(pi -> (ReferenceSectionPropertyItem) pi)
-				.filter(pi -> pi.getPropertyName().equals(p.getName())).findFirst();
+				.filter(pi -> pi.getPropertyName()
+						.equals(p.getName()))
+				.findFirst();
 		ReferenceSectionPropertyItem rsProperty = ret.isPresent() ? ret.get() : null;
 
 		for (int i = 0; i < count; i++) {
@@ -932,15 +957,18 @@ public class DetailCommandContext extends RegistrationCommandContext
 			entity.setValue(Constants.REF_RELOAD, Boolean.FALSE);
 
 			//Validationエラーが出るとhiddenに"null"が入るのでクリアする
-			if (entity.getOid() != null && entity.getOid().equals("null")) {
+			if (entity.getOid() != null && entity.getOid()
+					.equals("null")) {
 				entity.setOid(null);
 			}
 
 			//Entity生成時にエラーが発生していないかチェック
 			String checkPrefix = (errorPrefix != null ? errorPrefix : paramPrefix);
 			boolean hasError = getErrors().stream()
-					.filter(error -> error.getPropertyName().startsWith(checkPrefix))
-					.findFirst().isPresent();
+					.filter(error -> error.getPropertyName()
+							.startsWith(checkPrefix))
+					.findFirst()
+					.isPresent();
 
 			//エラーがなくて、何もデータが入ってないものは破棄する
 			if (hasError || !isEmpty(entity)) {
@@ -950,8 +978,10 @@ public class DetailCommandContext extends RegistrationCommandContext
 				if (rsProperty != null) {
 					// entity,sectionでまとめる
 					if (p.getMultiplicity() == 1) {
-						if (rsProperty.getSections().size() > 0) {
-							ReferenceSection section = rsProperty.getSections().get(0);
+						if (rsProperty.getSections()
+								.size() > 0) {
+							ReferenceSection section = rsProperty.getSections()
+									.get(0);
 							ReferenceSectionValue rsv = new ReferenceSectionValue();
 							rsv.entity = entity;
 							rsv.section = section;
@@ -1000,7 +1030,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 			// isSpecifyAllPropertiesがtrue、且つReference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
 			// 参照先EntityにおけるEntityのデータ更新不可
 			if (option.isSpecifyAllProperties() && !option.isSpecifiedAsReference()
-					&& option.getSpecifiedUpdateNestProperties().isEmpty()) {
+					&& option.getSpecifiedUpdateNestProperties()
+							.isEmpty()) {
 				return;
 			}
 		}
@@ -1261,7 +1292,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
 				// ネストの項目を確認
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
-				if (!editor.getNestProperties().isEmpty()) {
+				if (!editor.getNestProperties()
+						.isEmpty()) {
 					Set<String> nest = getUseUserPropertyEditorNestPropertyName(editor);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = propertyName + "." + nestPropertyName;
@@ -1284,7 +1316,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 			if (property.getEditor() instanceof ReferencePropertyEditor) {
 				//再ネストの項目を確認
 				ReferencePropertyEditor nestEditor = (ReferencePropertyEditor) property.getEditor();
-				if (!nestEditor.getNestProperties().isEmpty()) {
+				if (!nestEditor.getNestProperties()
+						.isEmpty()) {
 					Set<String> nest = getUseUserPropertyEditorNestPropertyName(nestEditor);
 					for (String nestPropertyName : nest) {
 						String _nestPropertyName = property.getPropertyName() + "." + nestPropertyName;
@@ -1332,7 +1365,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 
 				if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE
 						&& ary != null && ary.length > 0
-						&& editor.getNestProperties() != null && !editor.getNestProperties().isEmpty()) {
+						&& editor.getNestProperties() != null && !editor.getNestProperties()
+								.isEmpty()) {
 					//NestTable、参照セクション
 					for (int i = 0; i < ary.length; i++) {
 						String errorPrefix = property.getPropertyName() + "[" + i + "].";
@@ -1448,7 +1482,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 			return;
 		}
 
-		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		GemConfigService service = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 
 		// SectionRuntime のプロパティはネストプロパティを意識した形で情報を保管している。
 		// そのため、ネストプロパティの場合は、parent[0].child というプロパティ名でプロパティエディタを取得する
@@ -1462,11 +1497,15 @@ public class DetailCommandContext extends RegistrationCommandContext
 			// ファイル MIME Type の検査
 			if (null != editorRuntime && null != editorRuntime.getUploadAcceptMimeTypesPattern()) {
 				// プロパティエディタに許可する MIME Type が指定されている場合は、プロパティエディタを優先する
-				isAccept = editorRuntime.getUploadAcceptMimeTypesPattern().matcher(value.getType()).matches();
+				isAccept = editorRuntime.getUploadAcceptMimeTypesPattern()
+						.matcher(value.getType())
+						.matches();
 
 			} else if (null != service.getBinaryUploadAcceptMimeTypesPattern()) {
 				// プロパティエディタに設定が無く、GemConfigServiceの受け入れ許可設定が存在する場合は、GemConfigService の設定で許可設定を行う
-				isAccept = service.getBinaryUploadAcceptMimeTypesPattern().matcher(value.getType()).matches();
+				isAccept = service.getBinaryUploadAcceptMimeTypesPattern()
+						.matcher(value.getType())
+						.matches();
 			}
 			// else {
 			// // プロパティエディタ、GemServiceConfig に設定が無い場合はチェックしない
@@ -1478,7 +1517,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 		if (!errorBinaryList.isEmpty()) {
 			// 許可されていない（パターンマッチしない）ファイルタイプの場合は、エラーメッセージ設定
 			String errorMessage = resourceString("command.generic.detail.DetailCommandContext.unacceptedFileType",
-					String.join(",", errorBinaryList.stream().map(v -> v.getName()).collect(Collectors.toList())));
+					String.join(",", errorBinaryList.stream()
+							.map(v -> v.getName())
+							.collect(Collectors.toList())));
 			ValidateError e = new ValidateError();
 			e.setPropertyName(fullPropertyName);
 			e.addErrorMessage(errorMessage);
@@ -1501,7 +1542,8 @@ public class DetailCommandContext extends RegistrationCommandContext
 
 		List<R> result = new ArrayList<>();
 
-		if (null != value && value.getClass().isArray()) {
+		if (null != value && value.getClass()
+				.isArray()) {
 			// 値が配列の場合
 			for (R o : (R[]) value) {
 				if (!logic.apply(o)) {

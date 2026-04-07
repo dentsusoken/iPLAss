@@ -39,6 +39,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
@@ -61,8 +62,7 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class WebhookEndpointEditPane extends MetaDataMainEditPane {
-	
-	
+
 	private final static String BASIC_DISPLAY_NAME = "Basic Authentication";
 	private final static String BEARER_DISPLAY_NAME = "Bearer Authentication";
 	private final static String CUSTOM_DISPLAY_NAME = "Custom Authentication";
@@ -71,27 +71,26 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 	private final static String BEARER_TYPE_CODE = "WHBT";
 	private final static String CUSTOM_TYPE_CODE = "WHCT";
 	private final static String HMAC_TYPE_CODE = "WHHM";
-	
+
 	private final MetaDataServiceAsync service;
 	/** 編集対象 */
 	private WebhookEndpointDefinition curDefinition;
 	private int curVersion;
 	private String curDefinitionId;
 	private MetaCommonHeaderPane headerPane;
-	
+
 	/** 共通属性 */
 	private MetaCommonAttributeSection<WebhookEndpointDefinition> commonSection;
-	
+
 	/** 個別属性 */
 	private WebhookEndpointAttributePane webhookEndpointAttributePane;
-
 
 	public WebhookEndpointEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
 		service = MetaDataServiceFactory.get();
 		//レイアウト設定
 		setWidth100();
-		
+
 		//ヘッダ（ボタン）部分
 		headerPane = new MetaCommonHeaderPane(targetNode);
 		headerPane.setSaveClickHandler(new SaveClickHandler());
@@ -100,19 +99,20 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
 		commonSection = new MetaCommonAttributeSection<>(targetNode, WebhookEndpointDefinition.class);
-		
+
 		webhookEndpointAttributePane = new WebhookEndpointAttributePane();
 		SectionStackSection webhookEndpointAttributeSection = createSection("Web End Point Addresses", webhookEndpointAttributePane);
-		
-		setMainSections(commonSection,webhookEndpointAttributeSection);
+
+		setMainSections(commonSection, webhookEndpointAttributeSection);
 		addMember(headerPane);
 		addMember(mainStack);
-		
+
 		initializeData();
 	}
 
@@ -122,14 +122,16 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 	 * @param definition 編集対象
 	 */
 	protected void setDefinition(DefinitionEntry entry) {
-		
+
 		this.curDefinition = (WebhookEndpointDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
-		
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
+
 		commonSection.setDefinition(curDefinition);
 		webhookEndpointAttributePane.setDefinition(curDefinition);
-		
+
 	}
 
 	/**
@@ -183,7 +185,7 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			}
 		});
 	}
-	
+
 	/**
 	 * 更新完了処理
 	 *
@@ -210,7 +212,7 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			}
 		});
 	}
-	
+
 	/**
 	 * 保存ボタンイベント
 	 */
@@ -225,17 +227,17 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_saveWebhookTemplateComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						WebhookEndpointDefinition definition = curDefinition;
-						definition = commonSection.getEditDefinition(definition);
-						definition = webhookEndpointAttributePane.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								WebhookEndpointDefinition definition = curDefinition;
+								definition = commonSection.getEditDefinition(definition);
+								definition = webhookEndpointAttributePane.getEditDefinition(definition);
 
-						updateWebhookEndpointDefinition(definition, true);
-					}
-				}
-			});
+								updateWebhookEndpointDefinition(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -247,28 +249,26 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
-	
-	
+
 	private class WebhookEndpointAttributePane extends VLayout {
-		
+
 		private DynamicForm urlForm;
 		private DynamicForm headerAuthForm;
 		private DynamicForm hmacForm;
 		private DynamicForm headerAuthCustomSchemeForm;
 		private TextItem webhookEndpointUrlField;
-		
+
 		//header auth
 		private VLayout headerAuthPane = new VLayout();
 		private SelectItem authTypeItemField;
@@ -280,24 +280,25 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 
 		private VLayout hmacPane = new VLayout();
 		private TextItem hmacHeaderNameField;//key for hmac header
-		
+
 		public WebhookEndpointAttributePane() {
 			setOverflow(Overflow.AUTO);
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
 			mainPane.setMembersMargin(5);
 
-			urlForm =new DynamicForm();
+			urlForm = new DynamicForm();
 			urlForm.setPadding(10);
 			urlForm.setNumCols(2);
-			urlForm.setColWidths(100,"*");
+			urlForm.setColWidths(100, "*");
 			urlForm.setIsGroup(true);
 			urlForm.setGroupTitle("Endpoint Address");
 			urlForm.setWidth(800);
 			webhookEndpointUrlField = new MtpTextItem("subscriberurl", "Endpoint URL");
 			webhookEndpointUrlField.setWidth("100%");
 			webhookEndpointUrlField.setBrowserSpellCheck(false);
-			webhookEndpointUrlField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_webhookEndpointUrlFieldHoverInfo"));
+			webhookEndpointUrlField
+					.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_webhookEndpointUrlFieldHoverInfo"));
 			SmartGWTUtil.setRequired(webhookEndpointUrlField);
 			urlForm.setItems(webhookEndpointUrlField);
 
@@ -313,33 +314,34 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			headerAuthContentLayout.setMargin(5);
 			headerAuthContentLayout.setMembersMargin(5);
 			headerAuthContentLayout.setAlign(Alignment.CENTER);
-			
-			headerAuthForm =new DynamicForm();
+
+			headerAuthForm = new DynamicForm();
 			headerAuthForm.setPadding(10);
 			headerAuthForm.setNumCols(2);
-			headerAuthForm.setColWidths(100,"*");
+			headerAuthForm.setColWidths(100, "*");
 
-			headerAuthCustomSchemeForm =new DynamicForm();
+			headerAuthCustomSchemeForm = new DynamicForm();
 			headerAuthCustomSchemeForm.setPadding(10);
 			headerAuthCustomSchemeForm.setNumCols(2);
-			headerAuthCustomSchemeForm.setColWidths(100,"*");
-			webhookEndpointAuthorizationAltTokenTypeNameField = new MtpTextItem("alterTokenTypeName","Customize Token Type Name");
-			webhookEndpointAuthorizationAltTokenTypeNameField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_webhookEndpointAuthorizationAltTokenTypeNameField"));
+			headerAuthCustomSchemeForm.setColWidths(100, "*");
+			webhookEndpointAuthorizationAltTokenTypeNameField = new MtpTextItem("alterTokenTypeName", "Customize Token Type Name");
+			webhookEndpointAuthorizationAltTokenTypeNameField.setPrompt(
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_webhookEndpointAuthorizationAltTokenTypeNameField"));
 			webhookEndpointAuthorizationAltTokenTypeNameField.setCanEdit(true);
 			headerAuthCustomSchemeForm.setItems(webhookEndpointAuthorizationAltTokenTypeNameField);
 
-			authTypeItemField = new SelectItem("tokenType","Token Type");
+			authTypeItemField = new SelectItem("tokenType", "Token Type");
 			authTypeItemField.setWidth("100%");
 			authTypeItemField.setValueMap(BASIC_DISPLAY_NAME, BEARER_DISPLAY_NAME, CUSTOM_DISPLAY_NAME, NO_HEADER_AUTH_DISPLAY_NAME);
 			authTypeItemField.addChangedHandler(new ChangedHandler() {
 				public void onChanged(ChangedEvent event) {
-					
+
 					String selectedValue = SmartGWTUtil.getStringValue(authTypeItemField);
 					if (BASIC_DISPLAY_NAME.equals(selectedValue)) {
 						curDefinition.setHeaderAuthType(BASIC_TYPE_CODE);
-					}else if (BEARER_DISPLAY_NAME.equals(selectedValue)) {
+					} else if (BEARER_DISPLAY_NAME.equals(selectedValue)) {
 						curDefinition.setHeaderAuthType(BEARER_TYPE_CODE);
-					}else if (CUSTOM_DISPLAY_NAME.equals(selectedValue)) {
+					} else if (CUSTOM_DISPLAY_NAME.equals(selectedValue)) {
 						curDefinition.setHeaderAuthType(CUSTOM_TYPE_CODE);
 					} else if (NO_HEADER_AUTH_DISPLAY_NAME.equals(selectedValue)) {
 						curDefinition.setHeaderAuthType(null);
@@ -349,45 +351,49 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 				}
 			});
 
-			authHeaderSecretStatusLabel = new Label();  
+			authHeaderSecretStatusLabel = new Label();
 			authHeaderSecretStatusLabel.setWidth("75%");
-	        authHeaderSecretStatusLabel.setHeight(30);  
-	        authHeaderSecretStatusLabel.setPadding(10);  
-	        authHeaderSecretStatusLabel.setAlign(Alignment.CENTER);  
-	        authHeaderSecretStatusLabel.setValign(VerticalAlignment.CENTER);  
-	        authHeaderSecretStatusLabel.setWrap(false);  
+			authHeaderSecretStatusLabel.setHeight(30);
+			authHeaderSecretStatusLabel.setPadding(10);
+			authHeaderSecretStatusLabel.setAlign(Alignment.CENTER);
+			authHeaderSecretStatusLabel.setValign(VerticalAlignment.CENTER);
+			authHeaderSecretStatusLabel.setWrap(false);
 //	        label.setIcon("approved.png");  
-	        authHeaderSecretStatusLabel.setShowEdges(true);  
+			authHeaderSecretStatusLabel.setShowEdges(true);
 
-	        DynamicForm headerAuthButtonForm =new DynamicForm();
+			DynamicForm headerAuthButtonForm = new DynamicForm();
 			headerAuthButtonForm.setPadding(10);
 			headerAuthButtonForm.setNumCols(1);
 			headerAuthButtonForm.setColWidths(200);
 			headerAuthButtonForm.setAlign(Alignment.CENTER);
 
-			ButtonItem editHeaderAuthButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_editHeaderAuthButton"));
+			ButtonItem editHeaderAuthButton = new ButtonItem(
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_editHeaderAuthButton"));
 			editHeaderAuthButton.setWidth(150);
 			editHeaderAuthButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_headerAuthFormHoverInfo"));
 			editHeaderAuthButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					if (curDefinition.getHeaderAuthType()==null || curDefinition.getHeaderAuthType().isEmpty()) {
+					if (curDefinition.getHeaderAuthType() == null || curDefinition.getHeaderAuthType()
+							.isEmpty()) {
 						return;
 					}
-					service.getWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), curDefinition.getHeaderAuthType(), new AdminAsyncCallback<String>() {
-						@Override
-						public void onSuccess(String result) {
-							editMap(curDefinition.getHeaderAuthType(), result);
-						}
+					service.getWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), curDefinition.getHeaderAuthType(),
+							new AdminAsyncCallback<String>() {
+								@Override
+								public void onSuccess(String result) {
+									editMap(curDefinition.getHeaderAuthType(), result);
+								}
 
-						@Override
-						protected void beforeFailure(Throwable caught){
-							SmartGWTUtil.hideProgress();
-						};
-					});
+								@Override
+								protected void beforeFailure(Throwable caught) {
+									SmartGWTUtil.hideProgress();
+								};
+							});
 				}
 			});
-			ButtonItem deleteHeaderAuthButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_deleteHeaderAuthButton"));
+			ButtonItem deleteHeaderAuthButton = new ButtonItem(
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_deleteHeaderAuthButton"));
 			deleteHeaderAuthButton.setWidth(150);
 			deleteHeaderAuthButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
@@ -413,28 +419,29 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			hmacContentLayout.setMargin(5);
 			hmacContentLayout.setMembersMargin(5);
 			hmacContentLayout.setAlign(Alignment.CENTER);
-			
-			hmacForm =new DynamicForm();
+
+			hmacForm = new DynamicForm();
 			hmacForm.setPadding(10);
 			hmacForm.setNumCols(2);
-			hmacForm.setColWidths(100,"*");
+			hmacForm.setColWidths(100, "*");
 
-			hmacSecretStatusLabel = new Label();  
+			hmacSecretStatusLabel = new Label();
 			hmacSecretStatusLabel.setWidth("75%");
-	        hmacSecretStatusLabel.setHeight(30);  
-	        hmacSecretStatusLabel.setPadding(10);  
-	        hmacSecretStatusLabel.setAlign(Alignment.CENTER);  
-	        hmacSecretStatusLabel.setValign(VerticalAlignment.CENTER);  
-	        hmacSecretStatusLabel.setWrap(false);  
+			hmacSecretStatusLabel.setHeight(30);
+			hmacSecretStatusLabel.setPadding(10);
+			hmacSecretStatusLabel.setAlign(Alignment.CENTER);
+			hmacSecretStatusLabel.setValign(VerticalAlignment.CENTER);
+			hmacSecretStatusLabel.setWrap(false);
 //	        label.setIcon("icons/16/approved.png");  
-	        hmacSecretStatusLabel.setShowEdges(true);
+			hmacSecretStatusLabel.setShowEdges(true);
 
-	        DynamicForm hmacButtonForm = new DynamicForm(); 
-	        hmacButtonForm.setPadding(10);
-	        hmacButtonForm.setNumCols(1);
-	        hmacButtonForm.setColWidths(200);
+			DynamicForm hmacButtonForm = new DynamicForm();
+			hmacButtonForm.setPadding(10);
+			hmacButtonForm.setNumCols(1);
+			hmacButtonForm.setColWidths(200);
 
-			ButtonItem generateHmacButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_generateHmacButton"));
+			ButtonItem generateHmacButton = new ButtonItem(
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_generateHmacButton"));
 			generateHmacButton.setWidth(150);
 			generateHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
@@ -447,23 +454,25 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			editHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					service.getWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), HMAC_TYPE_CODE, new AdminAsyncCallback<String>() {
+					service.getWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), HMAC_TYPE_CODE,
+							new AdminAsyncCallback<String>() {
 
-						@Override
-						public void onSuccess(String result) {
-							editMap(HMAC_TYPE_CODE, result);
-						}
+								@Override
+								public void onSuccess(String result) {
+									editMap(HMAC_TYPE_CODE, result);
+								}
 
-						@Override
-						protected void beforeFailure(Throwable caught){
-							SmartGWTUtil.hideProgress();
-						};
-					});
+								@Override
+								protected void beforeFailure(Throwable caught) {
+									SmartGWTUtil.hideProgress();
+								};
+							});
 				}
 			});
 			generateHmacButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_HmacButtonHoverInfo"));
 			editHmacButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_HmacButtonHoverInfo"));
-			ButtonItem deleteHmacButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_deleteHmacButton"));
+			ButtonItem deleteHmacButton = new ButtonItem(
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_deleteHmacButton"));
 			deleteHmacButton.setWidth(150);
 			deleteHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
@@ -471,14 +480,15 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 					delMap(HMAC_TYPE_CODE);
 				}
 			});
-			
+
 			hmacHeaderNameField = new TextItem("webhookTokenName", "Header Name");
 			hmacHeaderNameField.setWidth("100%");
-			SmartGWTUtil.addHoverToFormItem(hmacHeaderNameField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_tokenNameFieldHoverInfo"));
-			
-			isHmacEnabledField = new CheckboxItem("webhookIsHmacEnabledField","Enable HMAC");
-			
-			hmacButtonForm.setItems(generateHmacButton,editHmacButton,deleteHmacButton);
+			SmartGWTUtil.addHoverToFormItem(hmacHeaderNameField,
+					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_tokenNameFieldHoverInfo"));
+
+			isHmacEnabledField = new CheckboxItem("webhookIsHmacEnabledField", "Enable HMAC");
+
+			hmacButtonForm.setItems(generateHmacButton, editHmacButton, deleteHmacButton);
 			hmacForm.setItems(isHmacEnabledField, hmacHeaderNameField);
 			hmacContentLayout.setChildren(hmacButtonForm, hmacSecretStatusLabel);
 			hmacPane.setChildren(hmacForm, hmacContentLayout);
@@ -486,7 +496,7 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			mainPane.addMember(urlForm);
 			mainPane.addMember(headerAuthPane);
 			mainPane.addMember(hmacPane);
-			
+
 			addMember(mainPane);
 		}
 
@@ -495,11 +505,11 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			if (definition != null) {
 				webhookEndpointUrlField.setValue(definition.getUrl());
 				webhookEndpointAuthorizationAltTokenTypeNameField.setValue(definition.getHeaderAuthCustomTypeName());
-				if(BASIC_TYPE_CODE.equals(definition.getHeaderAuthType())) {
+				if (BASIC_TYPE_CODE.equals(definition.getHeaderAuthType())) {
 					authTypeItemField.setValue(BASIC_DISPLAY_NAME);
-				} else if(BEARER_TYPE_CODE.equals(definition.getHeaderAuthType())) {
+				} else if (BEARER_TYPE_CODE.equals(definition.getHeaderAuthType())) {
 					authTypeItemField.setValue(BEARER_DISPLAY_NAME);
-				} else if(CUSTOM_TYPE_CODE.equals(definition.getHeaderAuthType())) {
+				} else if (CUSTOM_TYPE_CODE.equals(definition.getHeaderAuthType())) {
 					authTypeItemField.setValue(CUSTOM_DISPLAY_NAME);
 				} else {
 					authTypeItemField.setValue(NO_HEADER_AUTH_DISPLAY_NAME);
@@ -519,6 +529,7 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 				toggleCustomHeaderName();
 			}
 		}
+
 		/** pane -> definition */
 		public WebhookEndpointDefinition getEditDefinition(WebhookEndpointDefinition definition) {
 			definition.setUrl(SmartGWTUtil.getStringValue(webhookEndpointUrlField));
@@ -528,7 +539,7 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			definition.setHmacEnabled(SmartGWTUtil.getBooleanValue(isHmacEnabledField));
 			return definition;
 		}
-		
+
 		public boolean validate() {
 			return true;
 		}
@@ -539,6 +550,7 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			hmacForm.clearErrors(true);
 			headerAuthCustomSchemeForm.clearErrors(true);
 		}
+
 		protected void generateHmac() {
 			service.generateHmacTokenString(new AdminAsyncCallback<String>() {
 
@@ -548,73 +560,78 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 				}
 
 				@Override
-				protected void beforeFailure(Throwable caught){
+				protected void beforeFailure(Throwable caught) {
 					SmartGWTUtil.hideProgress();
 				};
 			});
 		}
+
 		protected void editMap(String tokenType, String tokenContent) {
-			if(tokenType==null || tokenType.isEmpty()) {
+			if (tokenType == null || tokenType.isEmpty()) {
 				return;//タイプが選択してないなら何もしない。
 			}
-			final WebhookEndpointSecurityInfoEditDialog dialog = new WebhookEndpointSecurityInfoEditDialog(tokenType,tokenContent);
+			final WebhookEndpointSecurityInfoEditDialog dialog = new WebhookEndpointSecurityInfoEditDialog(tokenType, tokenContent);
 			dialog.addDataChangeHandler(new DataChangedHandler() {
 				@Override
 				public void onDataChanged(DataChangedEvent event) {
-					String content =(String) event.getValue(String.class, "result");
-					 if (content==null||content.replaceAll("\\s", "").isEmpty()) {
+					String content = (String) event.getValue(String.class, "result");
+					if (content == null || content.replaceAll("\\s", "")
+							.isEmpty()) {
 						delMap(tokenType);
 						dialog.destroy();
 					} else {
-							service.updateWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), content, tokenType, new AdminAsyncCallback<Void>() {
-								@Override
-								public void onSuccess(Void result) {
-									refreshSecurityInfo();
-									webhookEndpointAttributePane.markForRedraw();
-									dialog.destroy();
-									SmartGWTUtil.hideProgress();
-								}
-	
-								@Override
-								protected void beforeFailure(Throwable caught){
-									SmartGWTUtil.hideProgress();
-								};
-							});
-						}
+						service.updateWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), content, tokenType,
+								new AdminAsyncCallback<Void>() {
+									@Override
+									public void onSuccess(Void result) {
+										refreshSecurityInfo();
+										webhookEndpointAttributePane.markForRedraw();
+										dialog.destroy();
+										SmartGWTUtil.hideProgress();
+									}
+
+									@Override
+									protected void beforeFailure(Throwable caught) {
+										SmartGWTUtil.hideProgress();
+									};
+								});
 					}
+				}
 			});
 			dialog.show();
 		}
-		
+
 		protected void delMap(String tokenType) {
 			//confirmation
 			SC.ask(AdminClientMessageUtil.getString("LocaleInfo.ui_metadata_webhook_WebhookEndpointEditPane_deleteSecurityInfoDialogTitle"),
 					AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_deleteSecurityInfoComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						if (tokenType!=null) {
-							//delete data
-							service.updateWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), null, tokenType, new AdminAsyncCallback<Void>() {
-								@Override
-								public void onSuccess(Void result) {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								if (tokenType != null) {
+									//delete data
+									service.updateWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), null, tokenType,
+											new AdminAsyncCallback<Void>() {
+												@Override
+												public void onSuccess(Void result) {
+												}
+
+												@Override
+												protected void beforeFailure(Throwable caught) {
+													SC.warn("error happened when Communicating with Database");
+													SmartGWTUtil.hideProgress();
+												};
+											});
+									if (HMAC_TYPE_CODE.equals(tokenType)) {
+										setHmacLabelStatus(false);
+									} else {
+										setHeaderAuthLabelStatus(false);
+									}
 								}
-								@Override
-								protected void beforeFailure(Throwable caught){
-									SC.warn("error happened when Communicating with Database");
-									SmartGWTUtil.hideProgress();
-								};
-							});
-							if (HMAC_TYPE_CODE.equals(tokenType)) {
-								setHmacLabelStatus(false);
-							} else {
-								setHeaderAuthLabelStatus(false);
 							}
 						}
-					}
-				}
-			});
+					});
 			webhookEndpointAttributePane.markForRedraw();
 		}
 
@@ -622,21 +639,26 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			if (isSecretStored) {
 				hmacSecretStatusLabel.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_hmacSecretStoredTrue"));
 			} else {
-				hmacSecretStatusLabel.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_hmacSecretStoredFalse"));
+				hmacSecretStatusLabel
+						.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_hmacSecretStoredFalse"));
 			}
 		}
+
 		private void setHeaderAuthLabelStatus(boolean isSecretStored) {
 			if (isSecretStored) {
-				authHeaderSecretStatusLabel.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_headerAuthSecretStoredTrue"));
+				authHeaderSecretStatusLabel
+						.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_headerAuthSecretStoredTrue"));
 			} else {
-				authHeaderSecretStatusLabel.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_headerAuthSecretStoredFalse"));
+				authHeaderSecretStatusLabel
+						.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_headerAuthSecretStoredFalse"));
 			}
 		}
+
 		private void refreshSecretIsStoredStatus(String type) {
 			service.getWebhookEndpointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), type, new AdminAsyncCallback<String>() {
 				@Override
 				public void onSuccess(String result) {
-					if (result==null||result.isEmpty()) {
+					if (result == null || result.isEmpty()) {
 						if (HMAC_TYPE_CODE.equals(type)) {
 							setHmacLabelStatus(false);
 						} else {
@@ -650,19 +672,21 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 						}
 					}
 				}
+
 				@Override
-				protected void beforeFailure(Throwable caught){
+				protected void beforeFailure(Throwable caught) {
 					SmartGWTUtil.hideProgress();
 				};
 			});
 		}
+
 		private void refreshSecurityInfo() {
 			refreshSecretIsStoredStatus(HMAC_TYPE_CODE);
 			refreshSecretIsStoredStatus(curDefinition.getHeaderAuthType());
 		}
 
 		private void toggleCustomHeaderName() {
-			if("WHCT".equals(curDefinition.getHeaderAuthType())) {
+			if ("WHCT".equals(curDefinition.getHeaderAuthType())) {
 				headerAuthCustomSchemeForm.setVisible(true);
 			} else {
 				headerAuthCustomSchemeForm.setVisible(false);

@@ -26,12 +26,12 @@ import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.util.DateUtil;
 
 public class SimpleAuthTokenInfo implements AuthTokenInfo {
-	
+
 	private String type;
 	private String key;
 	private String application;
 	private Timestamp startDate;
-	
+
 	public SimpleAuthTokenInfo() {
 	}
 
@@ -39,7 +39,7 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 		this.type = type;
 		this.application = application;
 	}
-	
+
 	@Override
 	public String getType() {
 		return type;
@@ -48,12 +48,12 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public String getKey() {
 		return key;
 	}
-	
+
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -65,7 +65,7 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 	public void setApplication(String application) {
 		this.application = application;
 	}
-	
+
 	@Override
 	public Timestamp getStartDate() {
 		return startDate;
@@ -74,14 +74,15 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Personal Access Token for : ");
 		sb.append(application);
 		sb.append(", Generated on : ");
-		sb.append(DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true).format(startDate));
+		sb.append(DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true)
+				.format(startDate));
 		return sb.toString();
 	}
 

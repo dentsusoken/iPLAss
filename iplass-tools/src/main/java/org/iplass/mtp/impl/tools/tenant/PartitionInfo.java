@@ -49,18 +49,23 @@ public class PartitionInfo implements Serializable {
 	public String getTableName() {
 		return tableName;
 	}
+
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
+
 	public String getPostfix() {
 		return postfix;
 	}
+
 	public void setPostfix(String postfix) {
 		this.postfix = postfix;
 	}
+
 	public Integer getMaxTenantId() {
 		return maxTenantId;
 	}
+
 	public void setMaxTenantId(Integer maxTenantId) {
 		this.maxTenantId = maxTenantId;
 	}

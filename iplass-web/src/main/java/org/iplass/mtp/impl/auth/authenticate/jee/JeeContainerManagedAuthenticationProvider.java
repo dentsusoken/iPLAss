@@ -22,9 +22,6 @@ package org.iplass.mtp.impl.auth.authenticate.jee;
 import java.security.Principal;
 import java.util.ArrayList;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.command.RequestContext;
@@ -42,12 +39,15 @@ import org.iplass.mtp.web.WebRequestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+
 public class JeeContainerManagedAuthenticationProvider extends AuthenticationProviderBase implements AutoLoginHandler {
 	private static Logger logger = LoggerFactory.getLogger(JeeContainerManagedAuthenticationProvider.class);
 
 	private String[] roleAsGroup;
 	private boolean validateOnlyLogin;
-	
+
 	public boolean isValidateOnlyLogin() {
 		return validateOnlyLogin;
 	}
@@ -67,45 +67,47 @@ public class JeeContainerManagedAuthenticationProvider extends AuthenticationPro
 	@Override
 	public void inited(AuthService service, Config config) {
 		boolean userEntityResolverIsNull = getUserEntityResolver() == null;
-		
+
 		super.inited(service, config);
-		
+
 		if (userEntityResolverIsNull) {
 			//accountIdで一致させる
 			((DefaultUserEntityResolver) getUserEntityResolver()).setUnmodifiableUniqueKeyProperty(User.ACCOUNT_ID);
 		}
 	}
-	
+
 	@Override
 	public AccountHandle login(Credential credential) {
 		if (!(credential instanceof JeeContainerManagedCredential)) {
 			return null;
 		}
-		
+
 		WebRequestStack reqStack = WebRequestStack.getCurrent();
 		HttpServletRequest req = reqStack.getRequest();
 		Principal up = req.getUserPrincipal();
 		if (up == null) {
 			return null;
 		}
-		
-		if (!up.getName().equals(credential.getId())) {
+
+		if (!up.getName()
+				.equals(credential.getId())) {
 			return null;
 		}
 
 		JeeContainerManagedAccountHandle ret = new JeeContainerManagedAccountHandle(credential.getId());
 		if (roleAsGroup != null) {
 			ArrayList<String> groups = new ArrayList<>();
-			for (String r: roleAsGroup) {
+			for (String r : roleAsGroup) {
 				if (req.isUserInRole(r)) {
 					groups.add(r);
 				}
 			}
 			if (groups.size() > 0) {
-				ret.getAttributeMap().put(AccountHandle.GROUP_CODE, groups.toArray(new String[groups.size()]));
+				ret.getAttributeMap()
+						.put(AccountHandle.GROUP_CODE, groups.toArray(new String[groups.size()]));
 			}
 		}
-		
+
 		return ret;
 	}
 
@@ -145,7 +147,7 @@ public class JeeContainerManagedAuthenticationProvider extends AuthenticationPro
 
 	@Override
 	public AutoLoginInstruction handle(RequestContext req, boolean isLogined, UserContext user) {
-		
+
 		if (isLogined) {
 			if (!validateOnlyLogin) {
 				HttpServletRequest httpReq = (HttpServletRequest) req.getAttribute(WebRequestConstants.SERVLET_REQUEST);
@@ -153,7 +155,10 @@ public class JeeContainerManagedAuthenticationProvider extends AuthenticationPro
 				if (up == null) {
 					return AutoLoginInstruction.LOGOUT;
 				}
-				if (!up.getName().equals(user.getAccount().getCredential().getId())) {
+				if (!up.getName()
+						.equals(user.getAccount()
+								.getCredential()
+								.getId())) {
 					return new AutoLoginInstruction(new JeeContainerManagedCredential(up.getName()));
 				}
 			}
@@ -164,8 +169,8 @@ public class JeeContainerManagedAuthenticationProvider extends AuthenticationPro
 				return new AutoLoginInstruction(new JeeContainerManagedCredential(up.getName()));
 			}
 		}
-		
+
 		return AutoLoginInstruction.THROUGH;
 	}
-	
+
 }

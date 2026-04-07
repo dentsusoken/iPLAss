@@ -43,12 +43,12 @@ public class WebResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	@Override
-    public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(writer);
-    }
+	public PrintWriter getWriter() throws IOException {
+		return new PrintWriter(writer);
+	}
 
 	@Override
-    public String toString() {
-        return writer.toString();
-    }
+	public String toString() {
+		return writer.toString();
+	}
 }

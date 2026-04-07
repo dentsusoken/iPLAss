@@ -129,7 +129,8 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			delButton.setDisabled(true);
 		}
 
-		if (record.getValidationList() != null && record.getValidationList().size() > 0) {
+		if (record.getValidationList() != null && record.getValidationList()
+				.size() > 0) {
 			List<ValidationListGridRecord> valRecordList = new ArrayList<>();
 
 			for (ValidationDefinition vd : record.getValidationList()) {
@@ -304,7 +305,8 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			setValidationRecordDisplayInfo(validator);
 
 			//先頭に追加
-			validationGrid.getRecordList().addAt(validator, 0);
+			validationGrid.getRecordList()
+					.addAt(validator, 0);
 			validationGrid.refreshFields();
 
 		} else {

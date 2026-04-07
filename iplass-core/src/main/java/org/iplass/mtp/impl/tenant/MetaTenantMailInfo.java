@@ -74,7 +74,6 @@ public class MetaTenantMailInfo extends MetaTenantConfig<TenantMailInfo> {
 		this.sendMailEnable = sendMailEnable;
 	}
 
-
 	/**
 	 * From アドレスを取得します。
 	 *
@@ -190,7 +189,8 @@ public class MetaTenantMailInfo extends MetaTenantConfig<TenantMailInfo> {
 		private String defaultMailFromName;
 
 		public MetaTenantMailInfoRuntime() {
-			TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+			TenantContextService tcService = ServiceRegistry.getRegistry()
+					.getService(TenantContextService.class);
 			defaultMailFrom = tcService.getDefaultMailFrom();
 			defaultMailFromName = tcService.getDefaultMailFromName();
 		}

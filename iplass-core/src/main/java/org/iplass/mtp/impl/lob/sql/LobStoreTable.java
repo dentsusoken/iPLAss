@@ -32,8 +32,8 @@ public interface LobStoreTable {
 	public static final String LOB_SIZE = "LOB_SIZE";
 
 	public static final String[] COLS = {
-		TENANT_ID,LOB_DATA_ID,CRE_DATE,B_DATA,REF_COUNT,LOB_SIZE
+			TENANT_ID, LOB_DATA_ID, CRE_DATE, B_DATA, REF_COUNT, LOB_SIZE
 	};
 
-	public static final String[] LOB_ID_COL = {"LOB_ID"};
+	public static final String[] LOB_ID_COL = { "LOB_ID" };
 }

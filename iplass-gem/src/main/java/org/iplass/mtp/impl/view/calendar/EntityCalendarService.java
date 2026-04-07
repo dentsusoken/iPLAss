@@ -44,9 +44,11 @@ public class EntityCalendarService extends AbstractTypedMetaDataService<MetaCale
 		public TypeMap() {
 			super(getFixedPath(), MetaCalendar.class, EntityCalendar.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<EntityCalendar> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(EntityCalendarManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(EntityCalendarManager.class);
 		}
 
 		@Override

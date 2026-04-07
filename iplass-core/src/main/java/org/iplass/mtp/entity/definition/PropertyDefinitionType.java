@@ -36,7 +36,7 @@ import org.iplass.mtp.entity.SelectValue;
  *
  */
 public enum PropertyDefinitionType {
-	
+
 	AUTONUMBER,
 	BINARY,
 	BOOLEAN,
@@ -51,7 +51,7 @@ public enum PropertyDefinitionType {
 	SELECT,
 	STRING,
 	TIME;
-	
+
 	public Class<?> getJavaType() {
 		switch (this) {
 		case AUTONUMBER:

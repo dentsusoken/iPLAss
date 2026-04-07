@@ -35,7 +35,7 @@ import org.iplass.mtp.util.StringUtil;
 
 public class CsvFileDownloadSearchViewWriter extends EntityFileDownloadSearchViewWriter {
 
-	private static final String CR = "\n";	// 改行コード。CSV出力なので、SJIS(MS932)を想定
+	private static final String CR = "\n"; // 改行コード。CSV出力なので、SJIS(MS932)を想定
 	private static final String DOUBLE_QUOT = "\"";
 	private static final int BOM = '\ufeff';
 

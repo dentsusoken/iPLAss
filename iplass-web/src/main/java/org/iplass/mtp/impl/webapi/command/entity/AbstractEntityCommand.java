@@ -33,11 +33,13 @@ import org.iplass.mtp.web.WebRequestConstants;
 
 public abstract class AbstractEntityCommand implements Command, Constants {
 
-	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-	EntityWebApiService entityWebApiService = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
-	
+	EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
+	EntityWebApiService entityWebApiService = ServiceRegistry.getRegistry()
+			.getService(EntityWebApiService.class);
+
 	protected abstract String executeImpl(RequestContext request, String[] subPath);
-	
+
 	@Override
 	public String execute(RequestContext request) {
 		String subPath = (String) request.getAttribute(WebRequestConstants.SUB_PATH);
@@ -48,15 +50,15 @@ public abstract class AbstractEntityCommand implements Command, Constants {
 		if (subPath != null) {
 			splitSubPath = subPath.split("/");
 		}
-		
+
 		return executeImpl(request, splitSubPath);
 	}
-	
+
 	protected void checkPermission(String defName, Predicate<EntityWebApiHandler> predicate) {
 		EntityWebApiHandler def = entityWebApiService.getRuntimeByName(defName);
 		if (def == null || !predicate.test(def)) {
 			throw new IllegalArgumentException("Operation not permitted. EntityWebApiDefinition: " + defName);
 		}
 	}
-	
+
 }

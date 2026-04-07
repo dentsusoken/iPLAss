@@ -32,7 +32,6 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 
-
 /**
  * Window関数のORDER BY句を表す。
  * 
@@ -56,11 +55,11 @@ public class WindowOrderBy implements ASTNode {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (sortSpecList != null) {
-				for (WindowSortSpec s: sortSpecList) {
+				for (WindowSortSpec s : sortSpecList) {
 					s.accept(visitor);
 				}
 			}
@@ -77,11 +76,11 @@ public class WindowOrderBy implements ASTNode {
 		sortSpecList.add(sortSpec);
 		return this;
 	}
-	
+
 	public WindowOrderBy add(Object value, SortType type) {
 		return add(value, type, null);
 	}
-	
+
 	public WindowOrderBy add(Object value, SortType type, NullOrderingSpec nullOrderingSpec) {
 		if (value == null) {
 			throw new NullPointerException("value is null");
@@ -97,10 +96,10 @@ public class WindowOrderBy implements ASTNode {
 		} else {
 			throw new QueryException("value is ValueExpression or String type required.");
 		}
-		
+
 		return add(new WindowSortSpec(v, type, nullOrderingSpec));
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

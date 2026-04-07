@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * 
  * @author K.Higuchi
  */
-@JsonDeserialize(using=EntityDeserializer.class)
-@JsonSerialize(using=EntitySerializer.class)
+@JsonDeserialize(using = EntityDeserializer.class)
+@JsonSerialize(using = EntitySerializer.class)
 public interface MixinEntity {
 }

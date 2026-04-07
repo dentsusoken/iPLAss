@@ -85,32 +85,34 @@ public class HintComment implements ASTNode {
 	private static final long serialVersionUID = -3352104778089451781L;
 
 	private List<Hint> hintList;
-	
+
 	public HintComment() {
 	}
 
 	public HintComment(List<Hint> hintList) {
 		this.hintList = hintList;
 	}
-	
+
 	public HintComment(Hint... hint) {
 		if (hint != null) {
 			hintList = new ArrayList<>(hint.length);
-			for (Hint h: hint) {
+			for (Hint h : hint) {
 				hintList.add(h);
 			}
 		}
 	}
-	
+
 	public HintComment(String hint) {
 		try {
-			HintComment hintComment = QueryServiceHolder.getInstance().getQueryParser().parse("/*+ " + hint + " */", HintCommentSyntax.class);
+			HintComment hintComment = QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse("/*+ " + hint + " */", HintCommentSyntax.class);
 			this.hintList = hintComment.hintList;
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
 	}
-	
+
 	public List<Hint> getHintList() {
 		return hintList;
 	}
@@ -118,7 +120,7 @@ public class HintComment implements ASTNode {
 	public void setHintList(List<Hint> hintList) {
 		this.hintList = hintList;
 	}
-	
+
 	public HintComment add(Hint hint) {
 		if (hintList == null) {
 			hintList = new ArrayList<>();
@@ -126,7 +128,7 @@ public class HintComment implements ASTNode {
 		hintList.add(hint);
 		return this;
 	}
-	
+
 	public HintComment add(List<Hint> hintList) {
 		if (this.hintList == null) {
 			this.hintList = new ArrayList<>();
@@ -134,7 +136,7 @@ public class HintComment implements ASTNode {
 		this.hintList.addAll(hintList);
 		return this;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -166,8 +168,9 @@ public class HintComment implements ASTNode {
 		StringBuilder sb = new StringBuilder();
 		sb.append("/*+ ");
 		if (hintList != null) {
-			for (Hint h: hintList) {
-				sb.append(h).append(" ");
+			for (Hint h : hintList) {
+				sb.append(h)
+						.append(" ");
 			}
 		}
 		sb.append("*/");
@@ -178,11 +181,11 @@ public class HintComment implements ASTNode {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(HintVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (hintList != null) {
-				for (Hint h: hintList) {
+				for (Hint h : hintList) {
 					h.accept(visitor);
 				}
 			}

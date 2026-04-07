@@ -34,15 +34,15 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-		name=GetAutocompletionValueCommand.WEBAPI_NAME,
-		displayName="自動補完値取得",
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="params", parameterType=AutocompletionParam.class),
-		results={"value"},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/common/GetAutocompletionValueCommand", displayName="自動補完値取得")
+		name = GetAutocompletionValueCommand.WEBAPI_NAME,
+		displayName = "自動補完値取得",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "params", parameterType = AutocompletionParam.class),
+		results = { "value" },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/common/GetAutocompletionValueCommand", displayName = "自動補完値取得")
 public class GetAutocompletionValueCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/common/getAutocompletionValue";
@@ -50,7 +50,8 @@ public class GetAutocompletionValueCommand implements Command, HasDisplayScriptB
 	private EntityViewManager evm;
 
 	public GetAutocompletionValueCommand() {
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -59,7 +60,8 @@ public class GetAutocompletionValueCommand implements Command, HasDisplayScriptB
 
 		Entity entity = getBindingEntity(request);
 		Object val = evm.getAutocompletionValue(param.getDefName(), param.getViewName(), param.getViewType(),
-				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams(), param.getCurrentValue(), entity);
+				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams(), param.getCurrentValue(),
+				entity);
 
 		request.setAttribute("value", val);
 		return null;

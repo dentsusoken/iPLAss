@@ -25,42 +25,41 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-
 import org.iplass.mtp.spi.ObjectBuilder;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
 
 public class NameValue {
 	private static final Logger logger = LoggerFactory.getLogger(NameValue.class);
-	
+
 	private String name;
 	private String value;
 	private String textValue;
-	
+
 	private String className;
 	private NameValue[] arg;
 	private NameValue[] property;
-	
+
 	private boolean isEncrypted;
 	private boolean isFinal;
 	private boolean isAdditional;
 	private boolean isInherit = true;
 	private boolean isIfnone;
-	
+
 	private boolean isNull;
-	
+
 	private String ref;
-	
+
 	private String builder;
 	private String buildScript;
-	
+
 	public NameValue() {
 	}
-	
+
 	public NameValue(String name, String value) {
 		this.name = name;
 		this.value = value;
@@ -70,6 +69,7 @@ public class NameValue {
 	public boolean isIfnone() {
 		return isIfnone;
 	}
+
 	public void setIfnone(boolean isIfnone) {
 		this.isIfnone = isIfnone;
 	}
@@ -82,7 +82,7 @@ public class NameValue {
 	public void setEncrypted(boolean isEncrypted) {
 		this.isEncrypted = isEncrypted;
 	}
-	
+
 	@XmlAttribute
 	public boolean isInherit() {
 		return isInherit;
@@ -105,10 +105,11 @@ public class NameValue {
 	public boolean isFinal() {
 		return isFinal;
 	}
+
 	public void setFinal(boolean isFinal) {
 		this.isFinal = isFinal;
 	}
-	
+
 	@XmlAttribute
 	public boolean isNull() {
 		return isNull;
@@ -118,7 +119,7 @@ public class NameValue {
 		this.isNull = isNull;
 	}
 
-	@XmlAttribute(name="class")
+	@XmlAttribute(name = "class")
 	public String getClassName() {
 		return className;
 	}
@@ -147,29 +148,32 @@ public class NameValue {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@XmlAttribute
 	public String getValue() {
 		return value;
 	}
+
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	@XmlElement(name="value")
+
+	@XmlElement(name = "value")
 	public String getTextValue() {
 		return textValue;
 	}
+
 	public void setTextValue(String textValue) {
 		if (textValue != null) {
 			textValue = textValue.trim();
 		}
 		this.textValue = textValue;
 	}
-	
+
 	@XmlAttribute
 	public String getRef() {
 		return ref;
@@ -178,7 +182,7 @@ public class NameValue {
 	public void setRef(String ref) {
 		this.ref = ref;
 	}
-	
+
 	@XmlAttribute
 	public String getBuilder() {
 		return builder;
@@ -202,7 +206,7 @@ public class NameValue {
 		}
 		return textValue;
 	}
-	
+
 	public NameValue merge(NameValue superNameValue) {
 		NameValue merged = new NameValue();
 		merged.name = name;
@@ -210,7 +214,7 @@ public class NameValue {
 		merged.isFinal = isFinal;
 		merged.isEncrypted = isEncrypted;
 		merged.isIfnone = isIfnone;
-		
+
 		if (ref != null) {
 			//ref定義を優先
 			merged.ref = ref;
@@ -220,7 +224,7 @@ public class NameValue {
 			} else {
 				merged.className = superNameValue.className;
 			}
-			
+
 			if (textValue != null) {
 				merged.textValue = textValue;
 			} else {
@@ -231,7 +235,7 @@ public class NameValue {
 			} else {
 				merged.value = superNameValue.value;
 			}
-			
+
 			merged.property = mergeNameValueArray(name, property, superNameValue.property);
 
 			if (arg != null) {
@@ -239,30 +243,32 @@ public class NameValue {
 			} else {
 				merged.arg = superNameValue.arg;
 			}
-			
+
 			if (builder != null) {
 				merged.builder = builder;
 			} else {
 				merged.builder = superNameValue.builder;
 			}
-			
+
 			if (buildScript != null) {
 				merged.buildScript = buildScript;
 			} else {
 				merged.buildScript = superNameValue.buildScript;
 			}
 		}
-		
+
 		return merged;
 	}
-	
+
 	public ObjectBuilder<?> builder() {
 		if (builder != null && buildScript != null) {
-			throw new ServiceConfigrationException("specify either builder or buildScript on property/bean element. name:" + name + ", builder:" + builder + ", buildScript:" + concat(buildScript));
+			throw new ServiceConfigrationException("specify either builder or buildScript on property/bean element. name:" + name + ", builder:"
+					+ builder + ", buildScript:" + concat(buildScript));
 		}
 		if (builder != null) {
 			try {
-				return (ObjectBuilder<?>) Class.forName(builder).newInstance();
+				return (ObjectBuilder<?>) Class.forName(builder)
+						.newInstance();
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				throw new ServiceConfigrationException(e);
 			}
@@ -270,10 +276,10 @@ public class NameValue {
 		if (buildScript != null) {
 			return new GroovyScriptObjectBuilder<>(buildScript);
 		}
-		
+
 		return null;
 	}
-	
+
 	private String concat(String str) {
 		if (str == null) {
 			return null;
@@ -284,31 +290,31 @@ public class NameValue {
 			return str.substring(0, 256) + "...";
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	static NameValue[] mergeNameValueArray(String targetName, NameValue[] myPropArray, NameValue[] superPropArray) {
 		HashSet<String> noInheritPropList = new HashSet<String>();
 		HashSet<String> finalPropList = new HashSet<String>();
 		HashSet<String> superConfigPropList = new HashSet<String>();
 		if (myPropArray != null) {
-			
+
 			//親の設定を継承しないプロパティ名を取得
-			for (NameValue p: myPropArray) {
+			for (NameValue p : myPropArray) {
 				if (!p.isInherit()) {
 					noInheritPropList.add(p.getName());
 				}
 			}
-			
+
 			HashMap<String, Object> newProps = new HashMap<String, Object>();
-			
+
 			//継承元のプロパティを取得
 			if (superPropArray != null) {
-				for (NameValue p: superPropArray) {
+				for (NameValue p : superPropArray) {
 					superConfigPropList.add(p.getName());
 					if (p.isFinal()) {
 						finalPropList.add(p.getName());
 					}
-					
+
 					//継承しない設定されていない、もしくはオーバーライド禁止の場合
 					if (!noInheritPropList.contains(p.getName()) || p.isFinal()) {
 						Object np = newProps.get(p.getName());
@@ -327,10 +333,10 @@ public class NameValue {
 					}
 				}
 			}
-			
+
 			//自身のプロパティを取得し、オーバーライド
 			HashSet<String> resetOverridePropList = new HashSet<String>();
-			for (NameValue p: myPropArray) {
+			for (NameValue p : myPropArray) {
 				Object sp = newProps.get(p.getName());
 				if (finalPropList.contains(p.getName())) {
 					//オーバーライドが許可されていないプロパティ
@@ -373,7 +379,7 @@ public class NameValue {
 					} else {
 						if (!p.isIfnone() || !superConfigPropList.contains(p.getName())) {
 							//override
-							
+
 							if (!resetOverridePropList.contains(p.getName())) {
 								if (logger.isTraceEnabled()) {
 									logger.trace(targetName + "." + p.getName() + " is override.");
@@ -402,13 +408,13 @@ public class NameValue {
 					}
 				}
 			}
-			
+
 			//配列に変換
 			ArrayList<NameValue> list = new ArrayList<NameValue>();
-			for (Map.Entry<String, Object> e: newProps.entrySet()) {
+			for (Map.Entry<String, Object> e : newProps.entrySet()) {
 				Object v = e.getValue();
 				if (v instanceof ArrayList) {
-					for (NameValue vv: (ArrayList<NameValue>) v) {
+					for (NameValue vv : (ArrayList<NameValue>) v) {
 						list.add(vv);
 					}
 				} else {
@@ -420,8 +426,7 @@ public class NameValue {
 			//自身にプロパティ定義されてないので、継承元をそのまま利用
 			return superPropArray;
 		}
-		
+
 	}
 
-	
 }

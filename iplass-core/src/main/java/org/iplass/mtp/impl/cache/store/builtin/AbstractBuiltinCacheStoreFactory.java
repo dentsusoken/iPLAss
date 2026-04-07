@@ -32,5 +32,5 @@ public abstract class AbstractBuiltinCacheStoreFactory extends CacheStoreFactory
 	public void setConcurrencyLevelOfCacheHandler(int concurrencyLevelOfCacheHandler) {
 		this.concurrencyLevelOfCacheHandler = concurrencyLevelOfCacheHandler;
 	}
-	
+
 }

@@ -32,7 +32,7 @@ public class OIDCCredential implements Credential {
 	public static final String FACTOR_REDIRECT_URI = "redirectUri";
 	public static final String FACTOR_ISS = "iss";
 	public static final String FACTOR_STATE = "state";
-	
+
 	private String id;
 	private String openIdConnectDefinitionName;
 	private String code;
@@ -40,16 +40,16 @@ public class OIDCCredential implements Credential {
 	private String redirectUri;
 	private String iss;
 	private OIDCState state;
-	
+
 	private Map<String, Object> additionalAuthenticationFactor;
-	
+
 	public OIDCCredential() {
 	}
 
 	public OIDCCredential(String id) {
 		this.id = id;
 	}
-	
+
 	public OIDCCredential(String openIdConnectDefinitionName, String code, String stateToken, String redirectUri, String iss, OIDCState state) {
 		this.openIdConnectDefinitionName = openIdConnectDefinitionName;
 		this.code = code;
@@ -58,16 +58,15 @@ public class OIDCCredential implements Credential {
 		this.iss = iss;
 		this.state = state;
 	}
-	
+
 	@Override
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
-
 
 	public String getOpenIdConnectDefinitionName() {
 		return openIdConnectDefinitionName;

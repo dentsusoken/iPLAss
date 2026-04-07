@@ -41,7 +41,6 @@ public class MetaLocalizedBinary implements MetaData {
 		this.binaryValue = binaryValue;
 	}
 
-
 	@Override
 	public MetaLocalizedBinary copy() {
 		return ObjectUtil.deepCopy(this);

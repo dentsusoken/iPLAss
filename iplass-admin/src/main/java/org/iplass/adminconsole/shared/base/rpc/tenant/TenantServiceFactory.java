@@ -39,7 +39,7 @@ public abstract class TenantServiceFactory extends AbstractAdminServiceFactory {
 
 		TenantServiceAsync service = GWT.create(TenantService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		TenantServiceFactory.service = service;
 

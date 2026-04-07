@@ -102,21 +102,25 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 		return Transaction.required(t -> {
 			List<PartitionInfo> partitionList = new ArrayList<>();
 
-			Stream.of(getTableList()).filter(table -> isPartitionTargetTable(table)).forEach(tableName -> {
-				if (isStorageSpaceTable(tableName)) {
-					getStorageSpacePostfix(true).stream().filter(postfix -> isExistsTable(toStorageSpaceTableName(tableName, postfix), true)).forEach(postfix -> {
-						if (isPartitionedTable(toStorageSpaceTableName(tableName, postfix))) {
-							partitionList.add(getTablePartitionInfo(tableName, postfix));
+			Stream.of(getTableList())
+					.filter(table -> isPartitionTargetTable(table))
+					.forEach(tableName -> {
+						if (isStorageSpaceTable(tableName)) {
+							getStorageSpacePostfix(true).stream()
+									.filter(postfix -> isExistsTable(toStorageSpaceTableName(tableName, postfix), true))
+									.forEach(postfix -> {
+										if (isPartitionedTable(toStorageSpaceTableName(tableName, postfix))) {
+											partitionList.add(getTablePartitionInfo(tableName, postfix));
+										}
+									});
+						} else {
+							if (isExistsTable(tableName, false)) {
+								if (isPartitionedTable(tableName)) {
+									partitionList.add(getTablePartitionInfo(tableName, null));
+								}
+							}
 						}
 					});
-				} else {
-					if (isExistsTable(tableName, false)) {
-						if (isPartitionedTable(tableName)) {
-							partitionList.add(getTablePartitionInfo(tableName, null));
-						}
-					}
-				}
-			});
 
 			return partitionList;
 		});
@@ -138,7 +142,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 
 				PreparedStatement ps = getPreparedStatement(SQL_SELECT_PARTITION_TABLE);
 				ps.setString(1, tableName + "\\_[0-9]+");
-				ps.setString(2, adapter.getConnection().getSchema());
+				ps.setString(2, adapter.getConnection()
+						.getSchema());
 				ps.setString(3, tableName + "\\_%");
 
 				int maxTenantId = -1;
@@ -185,11 +190,13 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 		});
 	}
 
-	private void createTablePartition(final PartitionCreateParameter param, final PartitionInfo partitionInfo, final List<TenantInfo> storeTenantList, final LogHandler logHandler) {
+	private void createTablePartition(final PartitionCreateParameter param, final PartitionInfo partitionInfo, final List<TenantInfo> storeTenantList,
+			final LogHandler logHandler) {
 		if (partitionInfo.getMaxTenantId() >= param.getTenantId()) {
 			// 既にPartitionは存在しているのでなにもしない
 			// もし実際には存在しない場合でも途中に作ることはしない
-			logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "skipPartitionMsg", partitionInfo.getMaxTenantId(), partitionInfo.getTableName()));
+			logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "skipPartitionMsg", partitionInfo.getMaxTenantId(),
+					partitionInfo.getTableName()));
 			return;
 		}
 
@@ -205,10 +212,12 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 		// 存在するテナントについては、テナントID分だけ作成(削除でDropされている分などは作成しない)
 		// またこの処理によりカスタムStorageSpaceなどが途中で作成された場合もテナント分作成される
 		if (maxPartitionId < lastTenantId) {
-			storeTenantList.stream().filter(tenant -> tenant.getId() > maxPartitionId).forEach(tenant -> {
-				addTenantIdList.add(tenant.getId());
-				logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "createExistTenantPartitionMsg", tenant.getId()));
-			});
+			storeTenantList.stream()
+					.filter(tenant -> tenant.getId() > maxPartitionId)
+					.forEach(tenant -> {
+						addTenantIdList.add(tenant.getId());
+						logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "createExistTenantPartitionMsg", tenant.getId()));
+					});
 		}
 
 		// 最終のテナントIDから指定されたID分は1つずつ作成する
@@ -218,7 +227,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 				if (maxPartitionId >= tenantId) {
 					// 削除時にパーティションを削除せずに残っている場合など、途中には作れないのでスキップ
 					// PostgreSQLではテナントIDの採番をシーケンスで行うためパーティションの最大テナントIDが最終テナントIDを追い越すことはないためあり得ない
-					logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "skipPartitionMsg", partitionInfo.getMaxTenantId(), partitionInfo.getTableName()));
+					logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "skipPartitionMsg", partitionInfo.getMaxTenantId(),
+							partitionInfo.getTableName()));
 					continue;
 				}
 				addTenantIdList.add(tenantId);
@@ -230,7 +240,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 		});
 	}
 
-	private void executeTableCreatePartition(final PartitionCreateParameter param, final PartitionInfo partitionInfo, final int tenantId, final LogHandler logHandler) {
+	private void executeTableCreatePartition(final PartitionCreateParameter param, final PartitionInfo partitionInfo, final int tenantId,
+			final LogHandler logHandler) {
 		List<String> sqlList = new ArrayList<>();
 
 		String tableName = partitionInfo.getTableName();
@@ -238,15 +249,17 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 		int tmpSubPartitionSize = param.getSubPartitionSize();
 		if (tenantId < param.getTenantId() && StringUtil.isNotBlank(partitionInfo.getPostfix())) {
 			// 既存テナントの場合のサブパーティション数は対象テナントの標準テーブルと同じとする
-			tmpSubPartitionSize = getSubPartitionSize(tableName.substring(0, tableName.length() - partitionInfo.getPostfix().length()), tenantId);
+			tmpSubPartitionSize = getSubPartitionSize(tableName.substring(0, tableName.length() - partitionInfo.getPostfix()
+					.length()), tenantId);
 		}
 		final int subPartitionSize = tmpSubPartitionSize;
 
 		if (isSubPartitionTargetTable(tableName) && subPartitionSize > 0) {
 			sqlList.add(toSqlCreatePartitionTableWithSubPartition(tableName, tenantId));
-			IntStream.rangeClosed(0, subPartitionSize - 1).forEach(subNo -> {
-				sqlList.add(toSqlCreateSubPartitionTable(tableName, tenantId, subPartitionSize, subNo));
-			});
+			IntStream.rangeClosed(0, subPartitionSize - 1)
+					.forEach(subNo -> {
+						sqlList.add(toSqlCreateSubPartitionTable(tableName, tenantId, subPartitionSize, subNo));
+					});
 		} else {
 			sqlList.add(toSqlCreatePartitionTable(tableName, tenantId));
 		}
@@ -286,18 +299,22 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 	}
 
 	private void doDropPartition(PartitionDeleteParameter param, LogHandler logHandler) {
-		Stream.of(getTableList()).filter(table -> isPartitionTargetTable(table)).forEach(tableName -> {
-			if (isStorageSpaceTable(tableName)) {
-				// StorageSpaceの場合、Postfix分Loop
-				getStorageSpacePostfix(true).stream().filter(postfix -> isPartitionedTable(toStorageSpaceTableName(tableName, postfix))).forEach(postfix -> {
-					executeTableDropPartition(param, toStorageSpaceTableName(tableName, postfix), logHandler);
+		Stream.of(getTableList())
+				.filter(table -> isPartitionTargetTable(table))
+				.forEach(tableName -> {
+					if (isStorageSpaceTable(tableName)) {
+						// StorageSpaceの場合、Postfix分Loop
+						getStorageSpacePostfix(true).stream()
+								.filter(postfix -> isPartitionedTable(toStorageSpaceTableName(tableName, postfix)))
+								.forEach(postfix -> {
+									executeTableDropPartition(param, toStorageSpaceTableName(tableName, postfix), logHandler);
+								});
+					} else {
+						if (isPartitionedTable(tableName)) {
+							executeTableDropPartition(param, tableName, logHandler);
+						}
+					}
 				});
-			} else {
-				if (isPartitionedTable(tableName)) {
-					executeTableDropPartition(param, tableName, logHandler);
-				}
-			}
-		});
 	}
 
 	private void executeTableDropPartition(final PartitionDeleteParameter param, final String tableName, final LogHandler logHandler) {
@@ -322,7 +339,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 					}
 					stmt.executeBatch();
 
-					logHandler.info(getPartitionResourceMessage(param.getLoggerLanguage(), "droppedPartitionMsg", tableName + "_" + param.getTenantId()));
+					logHandler
+							.info(getPartitionResourceMessage(param.getLoggerLanguage(), "droppedPartitionMsg", tableName + "_" + param.getTenantId()));
 
 					return null;
 				}
@@ -385,7 +403,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 			@Override
 			public Boolean logic() throws SQLException {
 				PreparedStatement ps = getPreparedStatement(sql);
-				ps.setString(1, adapter.getConnection().getSchema());
+				ps.setString(1, adapter.getConnection()
+						.getSchema());
 				ps.setString(2, tableName);
 
 				int count = 0;
@@ -408,7 +427,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 					return rs.next() ? Integer.valueOf(rs.getInt(1)) : Integer.valueOf(0);
 				}
 			}
-		}.execute(adapter, true).intValue();
+		}.execute(adapter, true)
+				.intValue();
 	}
 
 	private boolean isPartitionedTable(String tableName) {
@@ -421,7 +441,8 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 					return Boolean.valueOf(rs.next());
 				}
 			}
-		}.execute(adapter, true).booleanValue();
+		}.execute(adapter, true)
+				.booleanValue();
 	}
 
 	private int getSubPartitionSize(String tableName, int tenantId) {
@@ -429,14 +450,16 @@ public class PostgreSQLTenantRdbManager extends DefaultTenantRdbManager {
 			@Override
 			public Integer logic() throws SQLException {
 				PreparedStatement ps = getPreparedStatement(SQL_COUNT_SUB_PARTITION);
-				ps.setString(1, adapter.getConnection().getSchema());
+				ps.setString(1, adapter.getConnection()
+						.getSchema());
 				ps.setString(2, tableName + "\\_" + tenantId + "\\_%");
 				try (ResultSet rs = ps.executeQuery()) {
 					rs.next();
 					return Integer.valueOf(rs.getInt(1));
 				}
 			}
-		}.execute(adapter, true).intValue();
+		}.execute(adapter, true)
+				.intValue();
 	}
 
 	private String getPartitionResourceMessage(String lang, String suffix, Object... args) {

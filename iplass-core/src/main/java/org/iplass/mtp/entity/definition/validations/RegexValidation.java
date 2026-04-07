@@ -33,12 +33,12 @@ import org.iplass.mtp.entity.definition.ValidationDefinition;
  */
 public class RegexValidation extends ValidationDefinition {
 	private static final long serialVersionUID = 2263904604181287841L;
-	
+
 	private String pattern;
-	
+
 	public RegexValidation() {
 	}
-	
+
 	public RegexValidation(String pattern, String errorMessage) {
 		this(pattern, errorMessage, null);
 	}
@@ -49,7 +49,7 @@ public class RegexValidation extends ValidationDefinition {
 		setErrorMessage(errorMessage);
 		setErrorCode(errorCode);
 	}
-	
+
 	public String getPattern() {
 		return pattern;
 	}

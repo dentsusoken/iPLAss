@@ -26,7 +26,7 @@ import org.apache.commons.codec.binary.Hex;
 
 public class MessageDigestChecksum implements Checksum {
 	private MessageDigest md;
-	
+
 	public MessageDigestChecksum(MessageDigest md) {
 		this.md = md;
 	}
@@ -45,7 +45,6 @@ public class MessageDigestChecksum implements Checksum {
 	public String getValue() {
 		return Hex.encodeHexString(md.digest());
 	}
-	
 
 	@Override
 	public void reset() {

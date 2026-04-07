@@ -101,7 +101,6 @@ public class ActionPermissionEditPane extends PermissionEditPane {
 
 		permissionConditionForm.setItems(areaAllowConditionField);
 
-
 		//配置
 		addMember(permissionTargetForm);
 		addMember(permissionConditionForm);
@@ -117,7 +116,7 @@ public class ActionPermissionEditPane extends PermissionEditPane {
 			editEntity.setValue("role", roleEntity);
 			editEntity.setDefinitionName("mtp.auth.ActionPermission");
 		} else {
-			editEntity = (GenericEntity)permissionEntity;
+			editEntity = (GenericEntity) permissionEntity;
 		}
 		createFieldData();
 	}

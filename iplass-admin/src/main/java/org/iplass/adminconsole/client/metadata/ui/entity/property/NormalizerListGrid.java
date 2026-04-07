@@ -49,7 +49,7 @@ public class NormalizerListGrid extends ListGrid {
 
 		setOverflow(Overflow.VISIBLE);
 		setBodyOverflow(Overflow.VISIBLE);
-		setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+		setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
 		ListGridField typeField = new ListGridField(NormalizerListGridRecord.TYPE_NAME, "Type");
 		typeField.setWidth(150);

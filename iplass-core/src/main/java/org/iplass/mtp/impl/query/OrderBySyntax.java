@@ -29,27 +29,27 @@ import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
 
 public class OrderBySyntax implements Syntax<OrderBy>, QueryConstants {
-	
+
 	private SortSpecSyntax sortSpec;
 
 	public OrderBy parse(ParseContext str) throws ParseException {
-		
+
 		//ORDER
 		if (!str.equalsNextToken(ORDER, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("ORDER BY expected.", this, str));
 		}
 		str.consumeChars(ORDER.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//BY
 		if (!str.equalsNextToken(BY, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("BY expected.", this, str));
 		}
 		str.consumeChars(BY.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		OrderBy orderBy = new OrderBy();
-		
+
 		//SortSpec
 		boolean isFirst = true;
 		while (true) {
@@ -65,10 +65,9 @@ public class OrderBySyntax implements Syntax<OrderBy>, QueryConstants {
 			SortSpec sortSpecNode = sortSpec.parse(str);
 			orderBy.add(sortSpecNode);
 		}
-		
+
 		return orderBy;
 	}
-
 
 	public void init(SyntaxContext context) {
 		sortSpec = context.getSyntax(SortSpecSyntax.class);

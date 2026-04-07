@@ -38,11 +38,11 @@ import org.iplass.mtp.impl.rdb.adapter.function.AggregateFunctionAdapter;
  *
  */
 public class ListaggFunctionAdapter extends AggregateFunctionAdapter<Listagg> {
-	
+
 	public ListaggFunctionAdapter() {
 		super("LISTAGG", String.class);
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Listagg function, RdbAdapter rdb) {
 		context.append("LISTAGG(");
@@ -59,32 +59,36 @@ public class ListaggFunctionAdapter extends AggregateFunctionAdapter<Listagg> {
 			context.append("'");
 		}
 		context.append(")");
-		
+
 		toWithinGroupSQL(context, function.getWithinGroup());
 	}
-	
+
 	protected void toWithinGroupSQL(FunctionContext context, WithinGroup wg) {
 		if (wg != null) {
 			context.append(" WITHIN GROUP(ORDER BY ");
-			for (int i = 0; i < wg.getSortSpecList().size(); i++) {
+			for (int i = 0; i < wg.getSortSpecList()
+					.size(); i++) {
 				if (i > 0) {
 					context.append(",");
 				}
-				toOrderBySpecSQL(context, wg.getSortSpecList().get(i));
+				toOrderBySpecSQL(context, wg.getSortSpecList()
+						.get(i));
 			}
 			context.append(")");
 		}
 	}
-	
+
 	protected void toOrderBySpecSQL(FunctionContext context, WithinGroupSortSpec ss) {
 		context.appendArgument(ss.getSortKey());
 		if (ss.getType() != null) {
 			context.append(" ");
-			context.append(ss.getType().toString());
+			context.append(ss.getType()
+					.toString());
 		}
 		if (ss.getNullOrderingSpec() != null) {
 			context.append(" NULLS ");
-			context.append(ss.getNullOrderingSpec().toString());
+			context.append(ss.getNullOrderingSpec()
+					.toString());
 		}
 	}
 
@@ -97,7 +101,7 @@ public class ListaggFunctionAdapter extends AggregateFunctionAdapter<Listagg> {
 		if (args.size() != 4) {
 			throw new QueryException("LISTAGG argment mismatch.");
 		}
-		
+
 		context.append("LISTAGG(");
 		if (args.get(0) != null) {
 			context.append(args.get(0));

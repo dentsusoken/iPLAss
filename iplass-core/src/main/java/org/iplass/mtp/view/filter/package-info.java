@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/view/filter",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/view/filter", prefix="def-vfilter")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/view/filter",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/view/filter", prefix = "def-vfilter")
+		}
 )
 package org.iplass.mtp.view.filter;

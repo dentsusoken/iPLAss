@@ -73,10 +73,10 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
-	
+
 	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	private boolean itemDirectionColumn;
-	
+
 	/** 「値なし」を検索条件の選択肢に追加するか */
 	private boolean isNullSearchEnabled;
 
@@ -195,7 +195,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
-	
+
 	/**
 	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
 	 * @return RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
@@ -211,7 +211,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
 	}
-	
+
 	/**
 	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
 	 * @return 「値なし」を検索条件の選択肢に追加するか
@@ -280,7 +280,7 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 					return true;
 				}
 				if (pd instanceof ExpressionProperty) {
-					ExpressionProperty ep = (ExpressionProperty)pd;
+					ExpressionProperty ep = (ExpressionProperty) pd;
 					if (ep.getResultType() == PropertyDefinitionType.BOOLEAN) {
 						return true;
 					}

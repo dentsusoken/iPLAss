@@ -71,5 +71,4 @@ public class EntityGetRecycleBinInvocationImpl extends EntityInvocationImpl<Void
 		return null;
 	}
 
-
 }

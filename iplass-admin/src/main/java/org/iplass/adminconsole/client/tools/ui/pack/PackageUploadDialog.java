@@ -113,10 +113,13 @@ public class PackageUploadDialog extends AbstractWindow {
 		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
-			if (uploader.getLastUploadState().isSuccess()) {
-				finishUpload(uploader.getLastUploadState().getData());
+			if (uploader.getLastUploadState()
+					.isSuccess()) {
+				finishUpload(uploader.getLastUploadState()
+						.getData());
 			} else {
-				errorUpload(uploader.getLastUploadState().getErrorMessage());
+				errorUpload(uploader.getLastUploadState()
+						.getErrorMessage());
 			}
 
 			//Hidden項目の削除
@@ -125,7 +128,7 @@ public class PackageUploadDialog extends AbstractWindow {
 
 		fileComposit.addMember(uploader);
 
-		final TextItem nameField = new TextItem("name","Name");
+		final TextItem nameField = new TextItem("name", "Name");
 		nameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		//nameField.setHint("default upload file name");
 		nameField.setHint(AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_notSpeIsFileName"));
@@ -153,24 +156,25 @@ public class PackageUploadDialog extends AbstractWindow {
 		upload.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (uploader.getFileName() == null || uploader.getFileName().isEmpty()) {
+				if (uploader.getFileName() == null || uploader.getFileName()
+						.isEmpty()) {
 					SC.warn(AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_selectFile"));
 					return;
 				}
 				SC.ask(AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_confirm"),
 						AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_startUploadConf"), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							uploader.add(new Hidden(PackageUploadProperty.TENANT_ID, Integer.toString(TenantInfoHolder.getId())));
-							uploader.add(new Hidden(PackageUploadProperty.UPLOAD_FILE_NAME, SmartGWTUtil.getStringValue(nameField)));
-							uploader.add(new Hidden(PackageUploadProperty.DESCRIPTION, SmartGWTUtil.getStringValue(descriptionField)));
-							uploader.submit();
-						}
-					}
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									uploader.add(new Hidden(PackageUploadProperty.TENANT_ID, Integer.toString(TenantInfoHolder.getId())));
+									uploader.add(new Hidden(PackageUploadProperty.UPLOAD_FILE_NAME, SmartGWTUtil.getStringValue(nameField)));
+									uploader.add(new Hidden(PackageUploadProperty.DESCRIPTION, SmartGWTUtil.getStringValue(descriptionField)));
+									uploader.submit();
+								}
+							}
 
-				});
+						});
 			}
 		});
 		cancel = new IButton("Cancel");
@@ -248,16 +252,16 @@ public class PackageUploadDialog extends AbstractWindow {
 			SC.ask(AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_confirm"),
 					AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_performImportContinue"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						//PackageImportダイアログを表示
-						PackageImportDialog.showFullScreen(result.fileOid, owner);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								//PackageImportダイアログを表示
+								PackageImportDialog.showFullScreen(result.fileOid, owner);
 
-						destroy();
-					}
-				}
-			});
+								destroy();
+							}
+						}
+					});
 
 		}
 	}
@@ -304,11 +308,14 @@ public class PackageUploadDialog extends AbstractWindow {
 		}
 
 		private String getFileUploadStatusMessage(String status) {
-			if (PackageUploadProperty.Status.SUCCESS.name().equals(status)) {
+			if (PackageUploadProperty.Status.SUCCESS.name()
+					.equals(status)) {
 				return AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_uploadSuccessful");
-			} else if (PackageUploadProperty.Status.WARN.name().equals(status)) {
+			} else if (PackageUploadProperty.Status.WARN.name()
+					.equals(status)) {
 				return AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_uploadWarn");
-			} else if (PackageUploadProperty.Status.ERROR.name().equals(status)) {
+			} else if (PackageUploadProperty.Status.ERROR.name()
+					.equals(status)) {
 				return AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_uploadErr");
 			} else {
 				return AdminClientMessageUtil.getString("ui_tools_pack_PackageUploadDialog_notGetUploadResult");

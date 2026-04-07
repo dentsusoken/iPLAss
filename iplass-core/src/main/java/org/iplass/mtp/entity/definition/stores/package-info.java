@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/entity",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/entity", prefix="def-entity")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/entity",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/entity", prefix = "def-entity")
+		}
 )
 package org.iplass.mtp.entity.definition.stores;

@@ -22,6 +22,11 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import java.io.IOException;
 
+import org.iplass.mtp.impl.view.top.TopViewHandler;
+import org.iplass.mtp.impl.web.WebUtil;
+import org.iplass.mtp.view.top.parts.InformationParts;
+import org.iplass.mtp.view.top.parts.TopViewParts;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,16 +34,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.PageContext;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-import org.iplass.mtp.impl.view.top.TopViewHandler;
-import org.iplass.mtp.impl.web.WebUtil;
-import org.iplass.mtp.view.top.parts.InformationParts;
-import org.iplass.mtp.view.top.parts.TopViewParts;
-
 /**
  * アクション系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaInformationParts.class})
+@XmlSeeAlso({ MetaInformationParts.class })
 public abstract class MetaActionParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */

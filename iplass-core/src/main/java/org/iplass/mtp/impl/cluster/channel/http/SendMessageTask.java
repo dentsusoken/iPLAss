@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 public class SendMessageTask implements Callable<Void> {
 	private static Logger logger = LoggerFactory.getLogger(SendMessageTask.class);
 	private static Logger fatalLog = LoggerFactory.getLogger("mtp.fatal.cluster");
-	
+
 	private final Message message;
 	private final HttpMessageChannel channel;
 	private final String url;
-	
+
 	private volatile int retryCount;
-	
+
 	public SendMessageTask(Message message, String url, int retryCount, HttpMessageChannel channel) {
 		this.message = message;
 		this.url = url;
@@ -46,7 +46,7 @@ public class SendMessageTask implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
-		
+
 		int statusCode = -1;
 		Exception exp = null;
 		try {
@@ -54,11 +54,11 @@ public class SendMessageTask implements Callable<Void> {
 		} catch (Exception e) {
 			exp = e;
 		}
-		
+
 		if (statusCode == HttpURLConnection.HTTP_OK) {
 			return null;
 		}
-		
+
 		if (retryCount == 0) {
 			//log fatal
 			if (exp != null) {
@@ -69,7 +69,7 @@ public class SendMessageTask implements Callable<Void> {
 		} else {
 			//log error and retry..
 			retryCount = retryCount - 1;
-			
+
 			if (exp != null) {
 				logger.debug("send message failed.url=" + url + ", remained retry=" + retryCount + ", error=" + exp + ", message=" + message, exp);
 			} else {

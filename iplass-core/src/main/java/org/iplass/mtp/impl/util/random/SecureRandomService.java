@@ -26,19 +26,19 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
 public class SecureRandomService implements Service {
-	
+
 	public static final String DEFAULT_CONFIG_NAME = "default";
-	
+
 	private Map<String, SecureRandomGeneratorConfig> generatorConfigs;
 	private SecureRandomGeneratorConfig defaultGeneratorConfig;
 
 	@Override
 	public void init(Config config) {
 		generatorConfigs = new HashMap<>();
-		for (String n: config.getNames()) {
+		for (String n : config.getNames()) {
 			generatorConfigs.put(n, config.getValue(n, SecureRandomGeneratorConfig.class));
 		}
-		
+
 		defaultGeneratorConfig = generatorConfigs.get(DEFAULT_CONFIG_NAME);
 		if (defaultGeneratorConfig == null) {
 			defaultGeneratorConfig = new SecureRandomGeneratorConfig();
@@ -48,11 +48,11 @@ public class SecureRandomService implements Service {
 	@Override
 	public void destroy() {
 	}
-	
+
 	public SecureRandomGenerator createGenerator() {
 		return defaultGeneratorConfig.createGenerator();
 	}
-	
+
 	public SecureRandomGenerator createGenerator(String name) {
 		SecureRandomGeneratorConfig c = generatorConfigs.get(name);
 		if (c == null) {
@@ -60,6 +60,5 @@ public class SecureRandomService implements Service {
 		}
 		return c.createGenerator();
 	}
-
 
 }

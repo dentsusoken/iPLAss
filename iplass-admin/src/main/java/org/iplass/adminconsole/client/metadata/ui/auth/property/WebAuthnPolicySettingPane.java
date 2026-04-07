@@ -66,11 +66,13 @@ public class WebAuthnPolicySettingPane extends AbstractSettingPane {
 	public void setDefinition(AuthenticationPolicyDefinition definition) {
 		pnlWebAuthnGrid.setDefinition(definition);
 	}
+
 	@Override
 	public AuthenticationPolicyDefinition getEditDefinition(AuthenticationPolicyDefinition definition) {
 		pnlWebAuthnGrid.getEditDefinition(definition);
 		return definition;
 	}
+
 	@Override
 	public boolean validate() {
 		return form.validate();
@@ -93,17 +95,17 @@ public class WebAuthnPolicySettingPane extends AbstractSettingPane {
 			grid.setWidth100();
 			grid.setHeight(1);
 
-			grid.setShowAllColumns(true);								//列を全て表示
-			grid.setShowAllRecords(true);								//レコードを全て表示
-			grid.setCanResizeFields(false);								//列幅変更可能
-			grid.setCanSort(false);										//ソート不可
-			grid.setCanPickFields(false);								//表示フィールドの選択不可
-			grid.setCanGroupBy(false);									//GroupByの選択不可
-			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			grid.setLeaveScrollbarGap(false);							//縦スクロールバー自動表示制御
+			grid.setShowAllColumns(true); //列を全て表示
+			grid.setShowAllRecords(true); //レコードを全て表示
+			grid.setCanResizeFields(false); //列幅変更可能
+			grid.setCanSort(false); //ソート不可
+			grid.setCanPickFields(false); //表示フィールドの選択不可
+			grid.setCanGroupBy(false); //GroupByの選択不可
+			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			grid.setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			grid.setBodyOverflow(Overflow.VISIBLE);
 			grid.setOverflow(Overflow.VISIBLE);
-			grid.setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			grid.setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			grid.setCanEdit(true);
 			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
@@ -147,7 +149,8 @@ public class WebAuthnPolicySettingPane extends AbstractSettingPane {
 
 			if (definition.getWebAuthnDefinition() != null) {
 
-				ListGridRecord[] records = new ListGridRecord[definition.getWebAuthnDefinition().size()];
+				ListGridRecord[] records = new ListGridRecord[definition.getWebAuthnDefinition()
+						.size()];
 
 				int cnt = 0;
 				for (String webAuthnDefinition : definition.getWebAuthnDefinition()) {
@@ -170,7 +173,8 @@ public class WebAuthnPolicySettingPane extends AbstractSettingPane {
 				List<String> webAuthns = new ArrayList<>(records.length);
 				for (ListGridRecord record : records) {
 					String webAuthn = record.getAttribute("webAuthn");
-					if (webAuthn != null && !webAuthn.trim().isEmpty()) {
+					if (webAuthn != null && !webAuthn.trim()
+							.isEmpty()) {
 						webAuthns.add(webAuthn);
 					}
 				}

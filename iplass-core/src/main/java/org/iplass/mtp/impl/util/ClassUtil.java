@@ -81,7 +81,10 @@ public final class ClassUtil {
 
 		} catch (NoSuchMethodException | SecurityException e) {
 			// コンストラクタ存在しない
-			var parameterArrayString = String.join(",", List.of(parameterTypeArray).stream().map(c -> c != null ? c.getName() : "null").toList());
+			var parameterArrayString = String.join(",", List.of(parameterTypeArray)
+					.stream()
+					.map(c -> c != null ? c.getName() : "null")
+					.toList());
 			throw new RuntimeException("Constructor does not exist. class = " + clazz.getName() + ", parameter = " + parameterArrayString, e);
 
 		}

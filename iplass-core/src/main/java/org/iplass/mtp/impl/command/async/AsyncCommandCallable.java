@@ -49,11 +49,12 @@ public class AsyncCommandCallable implements Callable<Void>, ExceptionHandleable
 		this.resultHandler = resultHandler;
 	}
 
-
 	@Override
 	public Void call() throws Exception {
 
-		AsyncCommandRuntime runtime = ServiceRegistry.getRegistry().getService(AsyncCommandService.class).getRuntimeByName(asyncTaskCmdName);
+		AsyncCommandRuntime runtime = ServiceRegistry.getRegistry()
+				.getService(AsyncCommandService.class)
+				.getRuntimeByName(asyncTaskCmdName);
 		if (runtime == null) {
 			throw new CommandRuntimeException("AsyncCommand:" + asyncTaskCmdName + " not found");
 		}
@@ -68,13 +69,11 @@ public class AsyncCommandCallable implements Callable<Void>, ExceptionHandleable
 		return null;
 	}
 
-
 	@Override
 	public String toString() {
 		return "AsyncCommand [name=" + asyncTaskCmdName
 				+ ", result=" + result + "]";
 	}
-
 
 	@Override
 	public void aborted(Throwable cause) {
@@ -83,14 +82,12 @@ public class AsyncCommandCallable implements Callable<Void>, ExceptionHandleable
 		}
 	}
 
-
 	@Override
 	public void timeouted() {
 		if (resultHandler != null) {
 			resultHandler.handle(new TaskTimeoutException("timeout"));
 		}
 	}
-
 
 	@Override
 	public void canceled() {

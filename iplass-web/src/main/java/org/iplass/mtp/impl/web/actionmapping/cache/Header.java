@@ -29,18 +29,18 @@ public class Header implements Serializable {
 		SET,
 		ADD
 	}
-	
+
 	public enum ValType {
 		INT,
 		DATE,
 		STRING
 	}
-	
+
 	private final String name;
 	private final Object value;
 	private final OpeType opeType;
 	private final ValType valType;
-	
+
 	public Header(String name, Object value, OpeType opeType, ValType valType) {
 		this.name = name;
 		this.value = value;
@@ -63,5 +63,5 @@ public class Header implements Serializable {
 	public ValType getValType() {
 		return valType;
 	}
-	
+
 }

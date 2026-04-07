@@ -28,7 +28,6 @@ import org.iplass.mtp.entity.query.ASTTransformer;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.ValueExpressionVisitor;
 
-
 /**
  * 配列項目を表す。
  * 
@@ -39,28 +38,28 @@ public class ArrayValue extends PrimaryValue {
 	private static final long serialVersionUID = -6737911797287905026L;
 
 	private List<ValueExpression> values;
-	
+
 	public ArrayValue() {
 	}
 
 	public ArrayValue(List<ValueExpression> values) {
 		this.values = values;
 	}
-	
+
 	public ArrayValue(ValueExpression... value) {
 		if (value != null) {
 			values = new ArrayList<ValueExpression>();
-			for (ValueExpression v: value) {
+			for (ValueExpression v : value) {
 				values.add(v);
 			}
 		}
 	}
-	
+
 	@Override
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (values != null) {
-				for (ValueExpression v: values) {
+				for (ValueExpression v : values) {
 					v.accept(visitor);
 				}
 			}
@@ -89,7 +88,7 @@ public class ArrayValue extends PrimaryValue {
 			return sb.toString();
 		}
 	}
-	
+
 	public List<ValueExpression> getValues() {
 		return values;
 	}

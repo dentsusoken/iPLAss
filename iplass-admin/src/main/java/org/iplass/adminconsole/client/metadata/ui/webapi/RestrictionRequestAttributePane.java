@@ -59,20 +59,23 @@ public class RestrictionRequestAttributePane extends VLayout {
 		txaAllowRequestContentTypes.setBrowserSpellCheck(false);
 		txaAllowRequestContentTypes.setColSpan(3);
 		txaAllowRequestContentTypes.setStartRow(true);
-		txaAllowRequestContentTypes.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestrictionRequestAttributePane_allowRequestContentTypes")));
+		txaAllowRequestContentTypes.setTooltip(SmartGWTUtil
+				.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestrictionRequestAttributePane_allowRequestContentTypes")));
 
 		txtMaxRequestBodySize = new IntegerItem();
 		txtMaxRequestBodySize.setTitle("Max Request Body Size");
 		txtMaxRequestBodySize.setWidth("100%");
 		txtMaxRequestBodySize.setBrowserSpellCheck(false);
 		txtMaxRequestBodySize.setStartRow(true);
-		txtMaxRequestBodySize.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestrictionRequestAttributePane_maxRequestBodySize")));
+		txtMaxRequestBodySize.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestrictionRequestAttributePane_maxRequestBodySize")));
 
 		txtMaxFileSize = new IntegerItem();
 		txtMaxFileSize.setTitle("Max File Size");
 		txtMaxFileSize.setWidth("100%");
 		txtMaxFileSize.setBrowserSpellCheck(false);
-		txtMaxFileSize.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestrictionRequestAttributePane_maxFileSize")));
+		txtMaxFileSize.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_RestrictionRequestAttributePane_maxFileSize")));
 
 		form.setItems(txaAllowRequestContentTypes, txtMaxRequestBodySize, txtMaxFileSize);
 

@@ -36,8 +36,8 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +48,13 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 
 	private static final String ROOT_ENTITY = EntityHandler.ROOT_ENTITY_ID;
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static EntityToolService entityToolService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static EntityToolService entityToolService = ServiceRegistry.getRegistry()
+			.getService(EntityToolService.class);
 
-	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
 
 	/** 実行モード */
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -240,13 +243,13 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 		logEnvironment();
 
 		switch (execMode) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Wizard");
 			logInfo("");
 
 			// Wizard実行
 			return startWizard();
-		case SILENT :
+		case SILENT:
 			logInfo("■Start Silent");
 			logInfo("");
 
@@ -257,7 +260,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 			return executeTask(null, (param) -> {
 				return proceed();
 			});
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -276,7 +279,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 					logWarn(rs("EntityViewDDLCreator.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
-		} while(!validTenantId);
+		} while (!validTenantId);
 
 		// EntityPath
 		boolean validEntityPath = false;
@@ -286,7 +289,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 				setEntityPath(entityPath);
 				validEntityPath = true;
 			}
-		} while(!validEntityPath);
+		} while (!validEntityPath);
 
 		// OutFilePath
 		String outFile = readConsole(rs("EntityViewDDLCreator.Wizard.outFilePathMsg", this.outFile));
@@ -342,8 +345,11 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 					return isSuccess();
 				}
 
-				EntityDefinition[] eds = defSumList.stream().filter(
-						ds -> !ROOT_ENTITY.equals(ds.getPath())).map(ds -> edm.get(ds.getName())).toArray(EntityDefinition[]::new);
+				EntityDefinition[] eds = defSumList.stream()
+						.filter(
+								ds -> !ROOT_ENTITY.equals(ds.getPath()))
+						.map(ds -> edm.get(ds.getName()))
+						.toArray(EntityDefinition[]::new);
 
 				entityToolService.createViewDDL(outFilePath, eds);
 			}

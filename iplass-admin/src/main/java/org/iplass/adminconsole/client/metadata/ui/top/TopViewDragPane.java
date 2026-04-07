@@ -110,7 +110,8 @@ public class TopViewDragPane extends VLayout {
 		nm.setNode(tree, root);
 
 		grid.setData(tree);
-		grid.getData().openAll();
+		grid.getData()
+				.openAll();
 	}
 
 	private class TopViewItemGrid extends MtpTreeGrid {

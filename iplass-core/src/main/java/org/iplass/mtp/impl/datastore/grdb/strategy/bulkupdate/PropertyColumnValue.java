@@ -39,7 +39,7 @@ public class PropertyColumnValue extends DynamicColumnValue {
 		this.defaultValue = defaultValue;
 		this.rdb = rdb;
 	}
-	
+
 	@Override
 	public void bindExpression(StringBuilder sb) {
 		if (asNative) {
@@ -52,17 +52,16 @@ public class PropertyColumnValue extends DynamicColumnValue {
 	@Override
 	public void valueExpression(Object value, StringBuilder sb) {
 		if (asNative) {
-			type.appendToSqlAsRealType(value == null ? defaultValue: value, sb, rdb);
+			type.appendToSqlAsRealType(value == null ? defaultValue : value, sb, rdb);
 		} else {
-			type.appendToTypedCol(sb, rdb, 
-					() -> type.appendToSqlAsRealType(value == null ? defaultValue: value, sb, rdb));
+			type.appendToTypedCol(sb, rdb,
+					() -> type.appendToSqlAsRealType(value == null ? defaultValue : value, sb, rdb));
 		}
 	}
-	
+
 	@Override
 	public void setParameter(Object value, int index, PreparedStatement ps) throws SQLException {
-		type.setParameter(index, value == null ? defaultValue: value, ps, rdb);
+		type.setParameter(index, value == null ? defaultValue : value, ps, rdb);
 	}
-
 
 }

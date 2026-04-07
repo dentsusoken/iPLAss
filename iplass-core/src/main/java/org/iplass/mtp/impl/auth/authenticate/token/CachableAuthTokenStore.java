@@ -34,17 +34,18 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionStatus;
 
 public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListener<AuthTokenService> {
-	
+
 	private static final String DEFAULT_TOKEN_CACHE_NAMESPACE = "mtp.auth.cachableAuthTokenStore/DEFAULT";
-	
+
 	private String cacheStoreName = DEFAULT_TOKEN_CACHE_NAMESPACE;
 	private AuthTokenStore authTokenStore;
-	
+
 	private CacheController<AuthTokenKey, AuthToken> tokenCache;
-	
+
 	@Override
 	public void inited(AuthTokenService service, Config config) {
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		tokenCache = new CacheController<AuthTokenKey, AuthToken>(cs.getCache(cacheStoreName), false, 0, new LoadingAdapter<AuthTokenKey, AuthToken>() {
 
 			@Override
@@ -108,7 +109,7 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 		List<AuthToken> l = authTokenStore.getByOwner(tenantId, type, userUniqueKey);
 		if (l != null) {
 			List<AuthToken> ret = new ArrayList<>(l.size());
-			for (AuthToken t: l) {
+			for (AuthToken t : l) {
 				ret.add(ObjectUtil.deepCopy(t));
 			}
 			l = ret;
@@ -146,17 +147,17 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 		authTokenStore.delete(tenantId, type, userUniqueKey);
 		if (lists != null && lists.size() > 0) {
 			List<AuthTokenKey> keys = new ArrayList<>();
-			for (AuthToken t: lists) {
+			for (AuthToken t : lists) {
 				AuthTokenKey key = new AuthTokenKey(t.getTenantId(), t.getType(), t.getSeries());
 				tokenCache.notifyDeleteByKey(key);
 				keys.add(key);
 			}
-			
+
 			//念のため
 			Transaction t = Transaction.getCurrent();
 			if (t.getStatus() == TransactionStatus.ACTIVE) {
 				t.afterCommit(() -> {
-					for (AuthTokenKey k: keys) {
+					for (AuthTokenKey k : keys) {
 						tokenCache.notifyInvalidByKey(k);
 					}
 				});
@@ -169,7 +170,7 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 		authTokenStore.deleteBySeries(tenantId, type, series);
 		AuthTokenKey key = new AuthTokenKey(tenantId, type, series);
 		tokenCache.notifyDeleteByKey(key);
-		
+
 		//念のため
 		Transaction t = Transaction.getCurrent();
 		if (t.getStatus() == TransactionStatus.ACTIVE) {

@@ -91,10 +91,13 @@ public class OpenApiSupportImportDialog extends AbstractOpenApiSupportDialog {
 		});
 		uploader.addOnFinishUploadHandler((result) -> {
 			uploader.debugUploader("onFinish");
-			if (uploader.getLastUploadState().isSuccess()) {
-				finishImport(uploader.getLastUploadState().getData());
+			if (uploader.getLastUploadState()
+					.isSuccess()) {
+				finishImport(uploader.getLastUploadState()
+						.getData());
 			} else {
-				errorImport(uploader.getLastUploadState().getErrorMessage());
+				errorImport(uploader.getLastUploadState()
+						.getErrorMessage());
 			}
 
 			//Hidden項目の削除
@@ -122,7 +125,8 @@ public class OpenApiSupportImportDialog extends AbstractOpenApiSupportDialog {
 
 	@Override
 	protected void onClickAction(ClickEvent event, DynamicForm form) {
-		if (uploader.getFileName() == null || uploader.getFileName().isEmpty()) {
+		if (uploader.getFileName() == null || uploader.getFileName()
+				.isEmpty()) {
 			SC.warn(AdminClientMessageUtil.getString("ui_tools_openapisupport_OpenApiSupportImportDialog_selectImportFile"));
 			return;
 		}
@@ -229,13 +233,22 @@ public class OpenApiSupportImportDialog extends AbstractOpenApiSupportDialog {
 			if (value != null) {
 				JSONArray array = value.isArray();
 				for (int i = 0; i < array.size(); i++) {
-					JSONObject child = array.get(i).isObject();
+					JSONObject child = array.get(i)
+							.isObject();
 
 					// キー名は org.iplass.mtp.impl.webapi.openapi.OpenApiImportResult のフィールド名
-					var openApiPath = child.get("openApiPath").isString().stringValue();
-					var webApiDefinitionPath = child.get("webApiDefinitionPath").isString().stringValue();
-					var updateType = child.get("updateType").isString().stringValue();
-					var updateState = child.get("updateState").isString().stringValue();
+					var openApiPath = child.get("openApiPath")
+							.isString()
+							.stringValue();
+					var webApiDefinitionPath = child.get("webApiDefinitionPath")
+							.isString()
+							.stringValue();
+					var updateType = child.get("updateType")
+							.isString()
+							.stringValue();
+					var updateState = child.get("updateState")
+							.isString()
+							.stringValue();
 
 					// 更新が成功（SUCCESS）であるか判定
 					var isSuccess = updateState.equals("SUCCESS");
@@ -248,4 +261,3 @@ public class OpenApiSupportImportDialog extends AbstractOpenApiSupportDialog {
 	}
 
 }
-

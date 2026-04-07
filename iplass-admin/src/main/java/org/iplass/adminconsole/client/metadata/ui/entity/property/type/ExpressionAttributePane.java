@@ -49,7 +49,7 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 
 	/** 結果タイプ */
 	private SelectItem selResultType;
-	
+
 	/** 結果タイプがSelect時のSelectValue */
 	private SelectItem selGlobalSelectValue;
 
@@ -101,7 +101,7 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 	@Override
 	public void applyFrom(String defName, PropertyListGridRecord record, PropertyAttribute typeAttribute) {
 
-		ExpressionAttribute expressionAttribute = (ExpressionAttribute)typeAttribute;
+		ExpressionAttribute expressionAttribute = (ExpressionAttribute) typeAttribute;
 
 		txtExpression.setValue(expressionAttribute.getExpression());
 		if (expressionAttribute.getResultType() != null) {
@@ -126,7 +126,7 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		ExpressionAttribute expressionAttribute = (ExpressionAttribute)record.getTypeAttribute();
+		ExpressionAttribute expressionAttribute = (ExpressionAttribute) record.getTypeAttribute();
 
 		if (txtExpression.getValue() != null) {
 			expressionAttribute.setExpression(SmartGWTUtil.getStringValue(txtExpression));
@@ -179,7 +179,8 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 
 	private void changeExpressionResultType() {
 
-		if (PropertyDefinitionType.SELECT.name().equals(SmartGWTUtil.getStringValue(selResultType))) {
+		if (PropertyDefinitionType.SELECT.name()
+				.equals(SmartGWTUtil.getStringValue(selResultType))) {
 			selGlobalSelectValue.show();
 		} else {
 			selGlobalSelectValue.hide();

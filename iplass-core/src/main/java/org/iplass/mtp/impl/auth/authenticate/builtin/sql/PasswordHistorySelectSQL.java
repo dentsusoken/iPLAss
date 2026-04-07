@@ -29,17 +29,19 @@ import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
 public class PasswordHistorySelectSQL extends QuerySqlHandler {
-	
+
 	public String createSelectSQL() {
 		return "SELECT " +
 				"TENANT_ID,ACCOUNT_ID,PASSWORD,SALT,UP_DATE " +
 				"FROM T_PASS_HI " +
 				"WHERE TENANT_ID = ? AND ACCOUNT_ID = ? ORDER BY UP_DATE DESC";
 	}
+
 	public void setSelectParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String accountId) throws SQLException {
 		ps.setInt(1, tenantId);
 		ps.setString(2, accountId);
 	}
+
 	public Password toPassword(ResultSet rs, RdbAdapter rdb) throws SQLException {
 		return new Password(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5, rdb.rdbCalendar()));
 	}

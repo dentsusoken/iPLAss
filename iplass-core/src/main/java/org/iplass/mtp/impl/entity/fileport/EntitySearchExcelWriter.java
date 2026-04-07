@@ -132,8 +132,9 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 	 */
 	private boolean hasMultiReference() {
 
-		return writer.getProperties().stream()
-				.filter(property ->property instanceof ReferenceProperty)
+		return writer.getProperties()
+				.stream()
+				.filter(property -> property instanceof ReferenceProperty)
 				.anyMatch(property -> property.getMultiplicity() != 1);
 	}
 
@@ -153,15 +154,16 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 			select.add(Entity.OID);
 			select.add(Entity.VERSION);
 		} else {
-			writer.getProperties().forEach(property -> {
-				String propName = property.getName();
-				if (property instanceof ReferenceProperty) {
-					select.add(propName + "." + Entity.OID);
-					select.add(propName + "." + Entity.VERSION);
-				} else {
-					select.add(propName);
-				}
-			});
+			writer.getProperties()
+					.forEach(property -> {
+						String propName = property.getName();
+						if (property instanceof ReferenceProperty) {
+							select.add(propName + "." + Entity.OID);
+							select.add(propName + "." + Entity.VERSION);
+						} else {
+							select.add(propName);
+						}
+					});
 		}
 
 		Query query = new Query()
@@ -188,20 +190,24 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 	 */
 	private int writeData(final EntityDefinition ed, final Query query, final boolean hasMultiReference) {
 
-		final SearchQueryCsvContext context = option.getBeforeSearch().apply(query);
+		final SearchQueryCsvContext context = option.getBeforeSearch()
+				.apply(query);
 		final Query optQuery = context.getQuery();
 
 		//where条件によるdistinctチェック
-		if (!optQuery.getSelect().isDistinct()) {
+		if (!optQuery.getSelect()
+				.isDistinct()) {
 			//distinctが付いていない場合、Where条件に多重度複数のReferenceが含まれているかをチェック
 			if (new MultiReferenceChecker(ed).test(optQuery.getWhere())) {
 				//含まれている場合はdistinct指定
-				optQuery.getSelect().setDistinct(true);
+				optQuery.getSelect()
+						.setDistinct(true);
 				logger.debug("specified distinct for select. because [where conditions] contains multiple reference property. query:" + optQuery);
 
 				//OrderByはクリア
 				if (optQuery.getOrderBy() != null) {
-					logger.debug("query [order by] removed. because [where conditions] contains multiple reference property. removed order by:" + optQuery.getOrderBy());
+					logger.debug("query [order by] removed. because [where conditions] contains multiple reference property. removed order by:"
+							+ optQuery.getOrderBy());
 					optQuery.setOrderBy(null);
 				}
 			}
@@ -211,7 +217,8 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 		if (optQuery.getOrderBy() != null) {
 			if (new MultiReferenceChecker(ed).test(optQuery.getOrderBy())) {
 				//多重度が複数のReferenceは指定不可(複数行出力されるが、distinctできないため)
-				logger.debug("query [order by] removed. because [order by] contains multiple reference property. removed order by:" + optQuery.getOrderBy());
+				logger.debug(
+						"query [order by] removed. because [order by] contains multiple reference property. removed order by:" + optQuery.getOrderBy());
 				optQuery.setOrderBy(null);
 			}
 		}
@@ -260,7 +267,8 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 		}
 
 		em.searchEntity(query, searchOption, entity -> {
-			option.getAfterSearch().accept(query.copy(), entity);
+			option.getAfterSearch()
+					.accept(query.copy(), entity);
 
 			writer.writeEntity(entity);
 
@@ -284,7 +292,8 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 		final LoadOption loadOption = new LoadOption();
 		if (CollectionUtil.isNotEmpty(option.getProperties())) {
 			// プロパティを直接指定している場合は対象のReferenceのみ指定
-			List<String> references = writer.getProperties().stream()
+			List<String> references = writer.getProperties()
+					.stream()
 					.filter(property -> property instanceof ReferenceProperty)
 					.map(property -> property.getName())
 					.collect(Collectors.toList());
@@ -304,7 +313,8 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 				}
 			} else {
 				Entity loadEntity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
-				option.getAfterSearch().accept(query.copy(), loadEntity);
+				option.getAfterSearch()
+						.accept(query.copy(), loadEntity);
 				writer.writeEntity(loadEntity);
 				count[0] = count[0] + 1;
 			}
@@ -337,7 +347,8 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 		List<Entity> loadEntities = em.batchLoad(keys, definitionName, loadOption);
 
 		loadEntities.forEach(entity -> {
-			option.getAfterSearch().accept(query.copy(), entity);
+			option.getAfterSearch()
+					.accept(query.copy(), entity);
 			writer.writeEntity(entity);
 		});
 
@@ -356,10 +367,12 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 		public boolean test(Where where) {
 			hasMultiReference = false;
 			if (where != null && where.getCondition() != null) {
-				where.getCondition().accept(this);
+				where.getCondition()
+						.accept(this);
 			}
 			return hasMultiReference;
 		}
+
 		public boolean test(OrderBy order) {
 			hasMultiReference = false;
 			if (order != null) {
@@ -370,11 +383,14 @@ public class EntitySearchExcelWriter implements AutoCloseable {
 
 		@Override
 		public boolean visit(EntityField entityField) {
-			if (entityField.getPropertyName().contains(".")) {
+			if (entityField.getPropertyName()
+					.contains(".")) {
 				//Referenceの場合
-				PropertyDefinition pd = ed.getProperty(entityField.getPropertyName().substring(0, entityField.getPropertyName().indexOf(".")));
+				PropertyDefinition pd = ed.getProperty(entityField.getPropertyName()
+						.substring(0, entityField.getPropertyName()
+								.indexOf(".")));
 				if (pd != null && pd instanceof ReferenceProperty) {
-					hasMultiReference = ((ReferenceProperty)pd).getMultiplicity() != 1;
+					hasMultiReference = ((ReferenceProperty) pd).getMultiplicity() != 1;
 				}
 			}
 			//既に含まれていれば以降をスキップするためfalseを返す

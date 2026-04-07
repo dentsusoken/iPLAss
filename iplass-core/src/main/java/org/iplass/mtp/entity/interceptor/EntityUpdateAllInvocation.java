@@ -23,8 +23,9 @@ package org.iplass.mtp.entity.interceptor;
 import org.iplass.mtp.entity.UpdateCondition;
 
 public interface EntityUpdateAllInvocation extends EntityInvocation<Integer> {
-	
+
 	public UpdateCondition getUpdateCondition();
+
 	public void setUpdateCondition(UpdateCondition updateCondition);
-	
+
 }

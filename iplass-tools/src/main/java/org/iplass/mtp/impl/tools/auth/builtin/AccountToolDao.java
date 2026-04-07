@@ -50,9 +50,9 @@ public class AccountToolDao {
 		accountControl = rdb.getUpdateSqlCreator(AccountControlSQL.class);
 	}
 
-
 	public int countAccount(final UserSpecificCondition cond, final AuthenticationPolicyDefinition authPolicy) {
-		final Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		final Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 		SqlExecuter<Integer> executer = new SqlExecuter<Integer>() {
 			@Override
 			public Integer logic() throws SQLException {
@@ -73,7 +73,8 @@ public class AccountToolDao {
 
 	public void searchAccount(final UserSpecificCondition cond, final AuthenticationPolicyDefinition authPolicy,
 			final int limit, final int offset, final Predicate<BuiltinAccount> callback) {
-		final Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		final Tenant tenant = ExecuteContext.getCurrentContext()
+				.getCurrentTenant();
 		SqlExecuter<Void> executer = new SqlExecuter<Void>() {
 			@Override
 			public Void logic() throws SQLException {
@@ -104,7 +105,8 @@ public class AccountToolDao {
 		SqlExecuter<BuiltinAccount> executer = new SqlExecuter<BuiltinAccount>() {
 			@Override
 			public BuiltinAccount logic() throws SQLException {
-				Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+				Tenant tenant = ExecuteContext.getCurrentContext()
+						.getCurrentTenant();
 				PreparedStatement ps = getPreparedStatement(accountSelect.createAccountSQL());
 				accountSelect.setAccountParameter(rdb, ps, tenant.getId(), accountId);
 				try (ResultSet rs = ps.executeQuery()) {

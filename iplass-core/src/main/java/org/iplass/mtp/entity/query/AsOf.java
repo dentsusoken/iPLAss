@@ -41,17 +41,17 @@ public class AsOf implements ASTNode {
 		/** 特定の時点（別途AsOfのvalueにて指定）を指し示す。 */
 		SPEC_VALUE
 	}
-	
+
 	private AsOfSpec spec;
 	private ValueExpression value;
-	
+
 	public AsOf() {
 	}
-	
+
 	public AsOf(AsOfSpec spec) {
 		this.spec = spec;
 	}
-	
+
 	public AsOf(ValueExpression value) {
 		this.spec = AsOfSpec.SPEC_VALUE;
 		this.value = value;
@@ -77,8 +77,7 @@ public class AsOf implements ASTNode {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
-	
+
 	public void accept(QueryVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (value != null) {
@@ -86,7 +85,7 @@ public class AsOf implements ASTNode {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

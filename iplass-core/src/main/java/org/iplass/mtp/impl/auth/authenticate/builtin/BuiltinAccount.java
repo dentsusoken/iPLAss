@@ -32,9 +32,8 @@ import java.sql.Timestamp;
  */
 public class BuiltinAccount implements Serializable {
 	private static final long serialVersionUID = -1820557220682685853L;
-	
-	public static final int MAX_LOGIN_ERROR_COUNT = 99;//TODO 固定値でいいか？DB定義上NUMBER(2,0)と定義されている
 
+	public static final int MAX_LOGIN_ERROR_COUNT = 99;//TODO 固定値でいいか？DB定義上NUMBER(2,0)と定義されている
 
 	/** テナントID */
 	private int tenantId;
@@ -70,15 +69,14 @@ public class BuiltinAccount implements Serializable {
 	 */
 	public BuiltinAccount() {
 	}
-	
-	
+
 	public void loginFail() {
 		if (loginErrorCnt < MAX_LOGIN_ERROR_COUNT) {
 			loginErrorCnt++;
 		}
 		loginErrorDate = new Timestamp(System.currentTimeMillis());
 	}
-	
+
 	public void resetLoginErrorCount() {
 		loginErrorCnt = 0;
 		loginErrorDate = null;
@@ -105,36 +103,32 @@ public class BuiltinAccount implements Serializable {
 	 * @return テナントID
 	 */
 	public int getTenantId() {
-	    return tenantId;
+		return tenantId;
 	}
-
 
 	/**
 	 * テナントIDを設定します。
 	 * @param tenantId テナントID
 	 */
 	public void setTenantId(int tenantId) {
-	    this.tenantId = tenantId;
+		this.tenantId = tenantId;
 	}
-
 
 	/**
 	 * アカウントIDを取得します。
 	 * @return アカウントID
 	 */
 	public String getAccountId() {
-	    return accountId;
+		return accountId;
 	}
-
 
 	/**
 	 * アカウントIDを設定します。
 	 * @param accountId アカウントID
 	 */
 	public void setAccountId(String accountId) {
-	    this.accountId = accountId;
+		this.accountId = accountId;
 	}
-
 
 	/**
 	 * パスワードを取得します。
@@ -161,7 +155,7 @@ public class BuiltinAccount implements Serializable {
 	 * @return salt
 	 */
 	public String getSalt() {
-		if(salt == null){
+		if (salt == null) {
 			return "";
 		}
 		return salt;
@@ -181,16 +175,15 @@ public class BuiltinAccount implements Serializable {
 	 * @return oid
 	 */
 	public String getOid() {
-	    return oid;
+		return oid;
 	}
-
 
 	/**
 	 * oidを設定します。
 	 * @param oid oid
 	 */
 	public void setOid(String oid) {
-	    this.oid = oid;
+		this.oid = oid;
 	}
 
 	public Timestamp getLastLoginOn() {
@@ -329,8 +322,9 @@ public class BuiltinAccount implements Serializable {
 				+ ((lastLoginOn == null) ? 0 : lastLoginOn.hashCode());
 		result = prime
 				* result
-				+ ((lastPasswordChange == null) ? 0 : lastPasswordChange
-						.hashCode());
+				+ ((lastPasswordChange == null) ? 0
+						: lastPasswordChange
+								.hashCode());
 		result = prime * result + loginErrorCnt;
 		result = prime * result
 				+ ((loginErrorDate == null) ? 0 : loginErrorDate.hashCode());

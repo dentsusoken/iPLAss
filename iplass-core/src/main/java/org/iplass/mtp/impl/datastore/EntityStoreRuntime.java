@@ -22,6 +22,5 @@ package org.iplass.mtp.impl.datastore;
 
 public abstract class EntityStoreRuntime {
 	public abstract MetaEntityStore getMetaData();
-	
 
 }

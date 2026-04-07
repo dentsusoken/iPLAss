@@ -40,7 +40,8 @@ public class QueryCsvWriteOption extends ParseOption {
 	private Function<Query, Query> beforeSearch = query -> query;
 
 	/** 検索実行後Query処理 */
-	private BiConsumer<Query, Object[]> afterSearch = (query, values) -> {};
+	private BiConsumer<Query, Object[]> afterSearch = (query, values) -> {
+	};
 
 	public String getCharset() {
 		return charset;

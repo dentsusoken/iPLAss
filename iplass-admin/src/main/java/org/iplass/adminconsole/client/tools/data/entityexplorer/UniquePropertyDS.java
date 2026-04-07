@@ -42,12 +42,12 @@ public class UniquePropertyDS extends AbstractAdminDataSource {
 	private static final DataSourceField[] fields;
 
 	static {
-        DataSourceField name = new DataSourceField(
-        		DataSourceConstants.FIELD_NAME,
-        		FieldType.TEXT,
-        		DataSourceConstants.FIELD_NAME_TITLE);
+		DataSourceField name = new DataSourceField(
+				DataSourceConstants.FIELD_NAME,
+				FieldType.TEXT,
+				DataSourceConstants.FIELD_NAME_TITLE);
 
-        fields = new DataSourceField[] {name};
+		fields = new DataSourceField[] { name };
 	}
 
 	private EntityDefinition definition;
@@ -61,15 +61,15 @@ public class UniquePropertyDS extends AbstractAdminDataSource {
 		return new UniquePropertyDS(definition);
 	}
 
-    /**
-     * SelectItemに対してDataSourceを設定します。
-     *
-     * @param item 対象SelectItem
-     */
-    public static void setDataSource(SelectItem item, EntityDefinition definition) {
-    	item.setOptionDataSource(UniquePropertyDS.getInstance(definition));
-    	item.setValueField(DataSourceConstants.FIELD_NAME);
-    }
+	/**
+	 * SelectItemに対してDataSourceを設定します。
+	 *
+	 * @param item 対象SelectItem
+	 */
+	public static void setDataSource(SelectItem item, EntityDefinition definition) {
+		item.setOptionDataSource(UniquePropertyDS.getInstance(definition));
+		item.setValueField(DataSourceConstants.FIELD_NAME);
+	}
 
 	/**
 	 * コンストラクタ
@@ -78,8 +78,8 @@ public class UniquePropertyDS extends AbstractAdminDataSource {
 	private UniquePropertyDS(EntityDefinition definition) {
 		this.definition = definition;
 
-        setFields(fields);
-        setClientOnly(true);
+		setFields(fields);
+		setClientOnly(true);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class UniquePropertyDS extends AbstractAdminDataSource {
 				records.add(record);
 			}
 		}
-		response.setData(records.toArray(new ListGridRecord[]{}));
+		response.setData(records.toArray(new ListGridRecord[] {}));
 		response.setTotalRows(records.size());
 		processResponse(requestId, response);
 	}

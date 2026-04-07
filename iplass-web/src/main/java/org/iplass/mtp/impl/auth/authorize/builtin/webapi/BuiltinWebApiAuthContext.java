@@ -36,7 +36,7 @@ class BuiltinWebApiAuthContext extends BuiltinAuthorizationContext implements We
 
 	private WebApiPermissionEntry[] permissionEntry;
 	private TenantAuthorizeContext tenantAuthContext;
-	
+
 	private boolean hasParameterCondition;
 
 	//複数ロールがある場合、基本はそれぞれのロールの権限をOR（許可と否許可では許可優先）。
@@ -53,7 +53,7 @@ class BuiltinWebApiAuthContext extends BuiltinAuthorizationContext implements We
 		this.permissionEntry = permissionEntry;
 		this.tenantAuthContext = tenantAuthContext;
 		if (permissionEntry != null) {
-			for (WebApiPermissionEntry wpe: permissionEntry) {
+			for (WebApiPermissionEntry wpe : permissionEntry) {
 				if (wpe.hasParam()) {
 					hasParameterCondition = true;
 					break;
@@ -66,7 +66,8 @@ class BuiltinWebApiAuthContext extends BuiltinAuthorizationContext implements We
 		List<WebApiPermissionEntry> target = new LinkedList<WebApiPermissionEntry>();
 		long currentPriority = 0;
 		for (int i = 0; i < permissionEntry.length; i++) {
-			if (userAuthContext.userInRole(permissionEntry[i].getRole(), tenantAuthContext.getTenantContext().getTenantId())) {
+			if (userAuthContext.userInRole(permissionEntry[i].getRole(), tenantAuthContext.getTenantContext()
+					.getTenantId())) {
 				RoleContext role = tenantAuthContext.getRoleContext(permissionEntry[i].getRole());
 				if (currentPriority < role.getPriority()) {
 					//reset priority
@@ -88,11 +89,11 @@ class BuiltinWebApiAuthContext extends BuiltinAuthorizationContext implements We
 		if (userBinding.isGrantAllPermissions()) {
 			return true;
 		}
-		
+
 		WebApiPermission wap = (WebApiPermission) permission;
 
 		List<WebApiPermissionEntry> target = listTarget(user);
-		for (WebApiPermissionEntry pe: target) {
+		for (WebApiPermissionEntry pe : target) {
 			if (pe.isPermit(user, wap.getWebApiName(), wap.getParameter(), tenantAuthContext)) {
 				return true;
 			}

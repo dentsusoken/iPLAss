@@ -74,7 +74,7 @@ public class CommonAttributeParts2 extends PropertyCommonAttributeParts implemen
 	@Override
 	public void applyFrom(String defName, PropertyListGridRecord record, PropertyAttribute typeAttribute) {
 
-		CommonAttribute commonAttribute = (CommonAttribute)typeAttribute;
+		CommonAttribute commonAttribute = (CommonAttribute) typeAttribute;
 
 		chkNotNull.setValue(commonAttribute.isNotNull());
 		chkUpdatable.setValue(commonAttribute.isUpdatable());
@@ -87,7 +87,7 @@ public class CommonAttributeParts2 extends PropertyCommonAttributeParts implemen
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		CommonAttribute commonAttribute = (CommonAttribute)record.getCommonAttribute();
+		CommonAttribute commonAttribute = (CommonAttribute) record.getCommonAttribute();
 
 		commonAttribute.setNotNull(SmartGWTUtil.getBooleanValue(chkNotNull));
 		commonAttribute.setUpdatable(SmartGWTUtil.getBooleanValue(chkUpdatable));

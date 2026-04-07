@@ -27,17 +27,15 @@ import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
-
 public class MetaActionMappingsFactory implements
 		AnnotatableMetaDataFactory<ActionMappings, Object> {
-	
-	
+
 	private MetaActionMappingFactory metaActionMappingfactory;
-	
+
 	public MetaActionMappingsFactory() {
 		metaActionMappingfactory = new MetaActionMappingFactory();
 	}
-	
+
 	@Override
 	public Class<Object> getAnnotatedClass() {
 		return Object.class;
@@ -47,7 +45,7 @@ public class MetaActionMappingsFactory implements
 	public Class<ActionMappings> getAnnotationClass() {
 		return ActionMappings.class;
 	}
-	
+
 	@Override
 	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
@@ -57,6 +55,5 @@ public class MetaActionMappingsFactory implements
 		}
 		return map;
 	}
-
 
 }

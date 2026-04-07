@@ -90,8 +90,10 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	private AuthService service;
 
-	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
-	private AuthTokenService tokenService = ServiceRegistry.getRegistry().getService(AuthTokenService.class);
+	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry()
+			.getService(AuthenticationPolicyService.class);
+	private AuthTokenService tokenService = ServiceRegistry.getRegistry()
+			.getService(AuthTokenService.class);
 
 	public AuthenticationProvider getAuthenticationProvider() {
 		return authenticationProvider;
@@ -113,6 +115,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 	public AuthTokenClientStore getClientStore() {
 		return clientStore;
 	}
+
 	public void setClientStore(AuthTokenClientStore clientStore) {
 		this.clientStore = clientStore;
 	}
@@ -131,7 +134,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 			trustedAuthValidator.inited(service, this);
 		}
 		tokenHandler = (RememberMeTokenHandler) tokenService.getHandler(authTokenType);
-		
+
 		if (autoLoginHandler != null) {
 			autoLoginHandler.inited(service, this);
 		}
@@ -147,19 +150,26 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 	public void cleanupData() {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 
-		long now = ec.getCurrentTimestamp().getTime();
+		long now = ec.getCurrentTimestamp()
+				.getTime();
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("creanup timeup token of tenant:" + ec.getClientTenantId());
 		}
 
 		List<String> names = authPolicyService.nameList();
-		for (String name: names) {
+		for (String name : names) {
 			AuthenticationPolicyRuntime apr = authPolicyService.getRuntimeByName(name);
-			if (apr.getMetaData().getRememberMePolicy() != null) {
-				if (apr.getMetaData().getRememberMePolicy().getLifetimeMinutes() > 0) {
-					long timeoutMillis = TimeUnit.MINUTES.toMillis(apr.getMetaData().getRememberMePolicy().getLifetimeMinutes());
-					tokenHandler.authTokenStore().deleteByDate(ec.getClientTenantId(), authTokenType, new Timestamp(now - timeoutMillis));
+			if (apr.getMetaData()
+					.getRememberMePolicy() != null) {
+				if (apr.getMetaData()
+						.getRememberMePolicy()
+						.getLifetimeMinutes() > 0) {
+					long timeoutMillis = TimeUnit.MINUTES.toMillis(apr.getMetaData()
+							.getRememberMePolicy()
+							.getLifetimeMinutes());
+					tokenHandler.authTokenStore()
+							.deleteByDate(ec.getClientTenantId(), authTokenType, new Timestamp(now - timeoutMillis));
 				}
 			}
 		}
@@ -171,7 +181,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		if (credential instanceof RememberMeTokenCredential) {
 			RememberMeTokenCredential rmtc = (RememberMeTokenCredential) credential;
 			AccountHandle account = null;
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
 			if (rmtc.getToken() != null) {
 				AuthToken crToken = new AuthToken();
 				crToken.decodeToken(rmtc.getToken());
@@ -187,7 +198,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 					//illegal format
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
-				AuthToken rmtoken = tokenHandler.authTokenStore().getBySeries(tenantId, authTokenType, crToken.getSeries());
+				AuthToken rmtoken = tokenHandler.authTokenStore()
+						.getBySeries(tenantId, authTokenType, crToken.getSeries());
 				if (rmtoken == null) {
 					if (deleteTokenOnFailure) {
 						clientStore.clearToken();
@@ -197,7 +209,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				if (!tokenHandler.checkTokenValid(crToken.getToken(), rmtoken)) {
 					//There is a possibility that token was stolen.
 					if (deleteTokenOnFailure) {
-						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getOwnerId());
+						tokenHandler.authTokenStore()
+								.delete(tenantId, authTokenType, rmtoken.getOwnerId());
 						clientStore.clearToken();
 					}
 					throw new RememberMeTokenStolenException(resourceString("impl.auth.authenticate.rememberme.tokenStolen"));
@@ -206,7 +219,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				MetaRememberMePolicy pol = rememberMePolicy(rmtoken.getPolicyName());
 				if (pol == null) {
 					if (deleteTokenOnFailure) {
-						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getOwnerId());
+						tokenHandler.authTokenStore()
+								.delete(tenantId, authTokenType, rmtoken.getOwnerId());
 						clientStore.clearToken();
 					}
 //					return null;
@@ -226,7 +240,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 				//for sync db and cookie, require new transaction
 				Transaction.requiresNew(t -> {
-					tokenHandler.authTokenStore().update(newToken, rmtoken);
+					tokenHandler.authTokenStore()
+							.update(newToken, rmtoken);
 					t.afterCommit(() -> {
 						clientStore.setToken(newToken.encodeToken(), newMaxAgeSeconds);
 					});
@@ -243,7 +258,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 			if (account != null) {
 				Boolean remMeFlag = (Boolean) credential.getAuthenticationFactor(RememberMeConstants.FACTOR_REMEMBER_ME_FLAG);
 				if (remMeFlag != null && remMeFlag.booleanValue()) {
-					account.getAttributeMap().put(REMMEFLAG, true);
+					account.getAttributeMap()
+							.put(REMMEFLAG, true);
 				}
 			}
 			return account;
@@ -252,12 +268,14 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public void afterLoginSuccess(AccountHandle account) {
-		Boolean remMeFlag = (Boolean) account.getAttributeMap().get(REMMEFLAG);
+		Boolean remMeFlag = (Boolean) account.getAttributeMap()
+				.get(REMMEFLAG);
 		if (remMeFlag != null && remMeFlag.booleanValue()) {
 			String policyName = policyName(account);
 			MetaRememberMePolicy rememberMePolicy = rememberMePolicy(policyName);
 			if (rememberMePolicy != null && rememberMePolicy.getLifetimeMinutes() > 0) {
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 
 				//for sync db and cookie, require new transaction
 				Transaction.requiresNew(t -> {
@@ -267,14 +285,16 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 						if (req != null) {
 							AuthToken seriesToken = new AuthToken(clientStore.getToken());
 							if (seriesToken != null) {
-								tokenHandler.authTokenStore().deleteBySeries(tenantId, authTokenType, seriesToken.getSeries());
+								tokenHandler.authTokenStore()
+										.deleteBySeries(tenantId, authTokenType, seriesToken.getSeries());
 							}
 						}
 					}
 
 					//create RememberMeToken
 					AuthToken newToken = tokenHandler.newAuthToken(account.getUnmodifiableUniqueKey(), policyName, null);
-					tokenHandler.authTokenStore().create(newToken);
+					tokenHandler.authTokenStore()
+							.create(newToken);
 					t.afterCommit(() -> {
 						clientStore.setToken(newToken.encodeToken(), maxAgeSeconds(newToken, rememberMePolicy.getLifetimeMinutes()));
 					});
@@ -284,14 +304,15 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				clientStore.clearToken();
 			}
 		}
-		
+
 		authenticationProvider.afterLoginSuccess(account);
-		
+
 	}
 
 	private int maxAgeSeconds(AuthToken token, long lifetimeMinutes) {
 		if (lifetimeMinutes > 0) {
-			return (int) ((token.getStartDate().getTime() + TimeUnit.MINUTES.toMillis(lifetimeMinutes) - System.currentTimeMillis()) / 1000);
+			return (int) ((token.getStartDate()
+					.getTime() + TimeUnit.MINUTES.toMillis(lifetimeMinutes) - System.currentTimeMillis()) / 1000);
 		} else {
 			return Integer.MAX_VALUE;
 		}
@@ -303,7 +324,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 	}
 
 	private String policyName(AccountHandle account) {
-		return (String) account.getAttributeMap().get(User.ACCOUNT_POLICY);
+		return (String) account.getAttributeMap()
+				.get(User.ACCOUNT_POLICY);
 	}
 
 	private MetaRememberMePolicy rememberMePolicy(String policyName) {
@@ -311,16 +333,19 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		if (pol == null) {
 			return null;
 		}
-		return pol.getMetaData().getRememberMePolicy();
+		return pol.getMetaData()
+				.getRememberMePolicy();
 	}
 
 	@Override
 	public void logout(final AccountHandle user) {
 		Transaction.requiresNew(t -> {
 			clientStore.clearToken();
-			tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getUnmodifiableUniqueKey());
+			tokenHandler.authTokenStore()
+					.delete(ExecuteContext.getCurrentContext()
+							.getClientTenantId(), authTokenType, user.getUnmodifiableUniqueKey());
 		});
-		
+
 		authenticationProvider.logout(user);
 	}
 
@@ -350,6 +375,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 			return providerName;
 		}
 	}
+
 	public void setProviderName(String providerName) {
 		this.providerName = providerName;
 	}
@@ -457,7 +483,11 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				am().remove(user);
 			}
 			UserEntityResolver uer = getUserEntityResolver();
-			tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getValue(uer.getUnmodifiableUniqueKeyProperty()).toString());
+			tokenHandler.authTokenStore()
+					.delete(ExecuteContext.getCurrentContext()
+							.getClientTenantId(), authTokenType,
+							user.getValue(uer.getUnmodifiableUniqueKeyProperty())
+									.toString());
 		}
 
 		@Override
@@ -514,23 +544,25 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		if (deleteTokenOnFailure && e instanceof RememberMeTokenStolenException) {
 			return e;
 		}
-		
+
 		if (ali.getCredential() instanceof RememberMeTokenCredential) {
 			return null;
 		}
 
 		if (authenticationProvider.getAutoLoginHandler() != null) {
-			return authenticationProvider.getAutoLoginHandler().handleException(ali, e, req, isLogined, user);
+			return authenticationProvider.getAutoLoginHandler()
+					.handleException(ali, e, req, isLogined, user);
 		} else {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void handleSuccess(AutoLoginInstruction ali, RequestContext req, UserContext user) {
 		if (!(ali.getCredential() instanceof RememberMeTokenCredential)) {
 			if (authenticationProvider.getAutoLoginHandler() != null) {
-				authenticationProvider.getAutoLoginHandler().handleSuccess(ali, req, user);
+				authenticationProvider.getAutoLoginHandler()
+						.handleSuccess(ali, req, user);
 			}
 		}
 	}
@@ -538,9 +570,11 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 	@Override
 	public AutoLoginInstruction handle(RequestContext req, boolean isLogined, UserContext user) {
 		if (!isLogined) {
-			Tenant t = ExecuteContext.getCurrentContext().getCurrentTenant();
-			if (t != null && t.getTenantConfig(TenantAuthInfo.class) != null 
-					&& t.getTenantConfig(TenantAuthInfo.class).isUseRememberMe()) {
+			Tenant t = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
+			if (t != null && t.getTenantConfig(TenantAuthInfo.class) != null
+					&& t.getTenantConfig(TenantAuthInfo.class)
+							.isUseRememberMe()) {
 				AuthToken token = new AuthToken(clientStore.getToken());
 				if (authTokenType.equals(token.getType()) && token.getSeries() != null) {
 					return new AutoLoginInstruction(new RememberMeTokenCredential(token.encodeToken()));
@@ -549,7 +583,8 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		}
 
 		if (authenticationProvider.getAutoLoginHandler() != null) {
-			return authenticationProvider.getAutoLoginHandler().handle(req, isLogined, user);
+			return authenticationProvider.getAutoLoginHandler()
+					.handle(req, isLogined, user);
 		} else {
 			return AutoLoginInstruction.THROUGH;
 		}
@@ -562,6 +597,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		} else {
 			startDate = previousToken.getStartDate();
 		}
-		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getOwnerId(), previousToken.getSeries(), tokenHandler.newTokenString(null), previousToken.getPolicyName(), startDate, previousToken.getDetails());
+		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getOwnerId(), previousToken.getSeries(),
+				tokenHandler.newTokenString(null), previousToken.getPolicyName(), startDate, previousToken.getDetails());
 	}
 }

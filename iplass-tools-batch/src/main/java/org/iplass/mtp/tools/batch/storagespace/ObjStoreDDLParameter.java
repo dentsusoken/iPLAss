@@ -14,13 +14,11 @@ public class ObjStoreDDLParameter {
 	/** <p>Partitionを利用するか</p> */
 	private boolean usePartition = true;
 
-
 	/** <p>Compressionを利用するか</p> */
 	private boolean useCompression = false;
 
 	/** <p>圧縮形式(zlib/lz4/none)</p> */
 	private String compressedFormat = "";
-
 
 	/**
 	 * <p>作成対象のstorageSpaceName</p>
@@ -39,7 +37,6 @@ public class ObjStoreDDLParameter {
 	 * <p>未指定の場合は標準出力に出力します。</p>
 	 */
 	private String outputPath = "./../ddl";
-
 
 	//Templateディレクトリ(内部用)
 	private File templateRootDir;
@@ -70,7 +67,6 @@ public class ObjStoreDDLParameter {
 	public void setUseCompression(boolean useCompression) {
 		this.useCompression = useCompression;
 	}
-
 
 	public String getCompressedFormat() {
 		return compressedFormat;

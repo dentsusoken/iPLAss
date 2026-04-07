@@ -38,11 +38,17 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjRefTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjRefTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
 		if (version != null) {
-			sb.append(" AND " + ObjRefTable.OBJ_VER + "=").append(version);
+			sb.append(" AND " + ObjRefTable.OBJ_VER + "=")
+					.append(version);
 		} else {
 			sb.append(" AND " + ObjRefTable.OBJ_VER + "=0");
 		}
@@ -55,12 +61,19 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
-		sb.append("' AND " + ObjRefTable.REF_DEF_ID + "='").append(rdb.sanitize(refDefId));
-		sb.append("' AND " + ObjRefTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
+		sb.append("' AND " + ObjRefTable.REF_DEF_ID + "='")
+				.append(rdb.sanitize(refDefId));
+		sb.append("' AND " + ObjRefTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
 		if (version != null) {
-			sb.append(" AND " + ObjRefTable.OBJ_VER + "=").append(version);
+			sb.append(" AND " + ObjRefTable.OBJ_VER + "=")
+					.append(version);
 		} else {
 			sb.append(" AND " + ObjRefTable.OBJ_VER + "=0");
 		}
@@ -72,17 +85,36 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId()));
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()));
 		if (rdb.isSupportRowValueConstructor()) {
 			sb.append("' AND (" + ObjRefTable.OBJ_ID + "," + ObjRefTable.OBJ_VER + ") IN("
-					+ "SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdb.getTemplaryTablePrefix() + ObjStoreTable.TABLE_NAME_TMP + ")");
+					+ "SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdb.getTemplaryTablePrefix()
+					+ ObjStoreTable.TABLE_NAME_TMP + ")");
 		} else {
 			String objRefTable = ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF();
 			sb.append("' AND EXISTS (");
-			sb.append("SELECT 1 FROM ").append(rdb.getTemplaryTablePrefix()).append(ObjStoreTable.TABLE_NAME_TMP ).append(" TMP");
-			sb.append(" WHERE ").append("TMP.").append(ObjStoreTable.OBJ_ID ).append("=").append(objRefTable).append(".").append(ObjStoreTable.OBJ_ID);
-			sb.append(" AND ").append("TMP.").append(ObjStoreTable.OBJ_VER ).append("=").append(objRefTable).append(".").append(ObjStoreTable.OBJ_VER);
+			sb.append("SELECT 1 FROM ")
+					.append(rdb.getTemplaryTablePrefix())
+					.append(ObjStoreTable.TABLE_NAME_TMP)
+					.append(" TMP");
+			sb.append(" WHERE ")
+					.append("TMP.")
+					.append(ObjStoreTable.OBJ_ID)
+					.append("=")
+					.append(objRefTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_ID);
+			sb.append(" AND ")
+					.append("TMP.")
+					.append(ObjStoreTable.OBJ_VER)
+					.append("=")
+					.append(objRefTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_VER);
 			sb.append(")");
 		}
 		return sb.toString();
@@ -137,8 +169,11 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(MetaGRdbEntityStore.makeObjRefTableName(tableNamePostfix));
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(defId)).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(defId))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -148,8 +183,11 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(MetaGRdbEntityStore.makeObjRefTableName(tableNamePostfix));
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.TARGET_OBJ_DEF_ID + "='").append(rdb.sanitize(targetDefId)).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.TARGET_OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(targetDefId))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -159,8 +197,12 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF());
-		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(" WHERE " + ObjRefTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjRefTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
 
 		//利用されているReferencePropertyを除外する
 		if (!usedRefPropertyIds.isEmpty()) {
@@ -172,7 +214,9 @@ public class ReferenceDeleteSql extends UpdateSqlHandler {
 				} else {
 					sb.append(",");
 				}
-				sb.append("'").append(rdb.sanitize(refProperty)).append("'");
+				sb.append("'")
+						.append(rdb.sanitize(refProperty))
+						.append("'");
 			}
 			sb.append(")");
 		}

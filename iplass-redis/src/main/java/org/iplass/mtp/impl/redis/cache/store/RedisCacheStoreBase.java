@@ -61,7 +61,8 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 
 	public RedisCacheStoreBase(RedisCacheStoreFactory factory, String namespace,
 			TimeToLiveCalculator timeToLiveCalculator, RedisCacheStorePoolConfig redisCacheStorePoolConfig) {
-		this.pubSubConnection = factory.getClient().connectPubSub();
+		this.pubSubConnection = factory.getClient()
+				.connectPubSub();
 		this.factory = factory;
 		this.namespace = namespace;
 		this.timeToLiveCalculator = timeToLiveCalculator;
@@ -74,19 +75,21 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 			redisCacheStorePoolConfig.apply(poolConfig);
 		}
 
-		this.pool = ConnectionPoolSupport.createGenericObjectPool(() -> factory.getClient().connect(codec), poolConfig);
+		this.pool = ConnectionPoolSupport.createGenericObjectPool(() -> factory.getClient()
+				.connect(codec), poolConfig);
 
 		this.listeners = new CopyOnWriteArrayList<CacheEventListener>();
 	}
-	
+
 	protected long getTtlSeconds(CacheEntry entry) {
-		if (entry.getTimeToLive().longValue() < 0) {
+		if (entry.getTimeToLive()
+				.longValue() < 0) {
 			return 0L;
 		} else {
 			return TimeUnit.MILLISECONDS.toSeconds(entry.getTimeToLive());
 		}
 	}
-	
+
 	protected void setTtl(CacheEntry entry) {
 		timeToLiveCalculator.set(entry);
 	}
@@ -140,7 +143,8 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 	@Override
 	public void destroy() {
 		pool.close();
-		factory.getClient().shutdown();
+		factory.getClient()
+				.shutdown();
 	}
 
 	protected void notifyRemoved(CacheEntry entry) {

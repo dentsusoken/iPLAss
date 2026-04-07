@@ -26,23 +26,23 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.command.annotation.webapi.WebApiTokenCheck;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 /**
  * データアンロックコマンド
  * @author lis3wg
  */
 @WebApi(
-	name=UnlockCommand.WEBAPI_NAME,
-	accepts=RequestType.REST_JSON,
-	methods=MethodType.POST,
-	restJson=@RestJson(parameterName="param"),
-	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
-	results={Constants.LOCK_RESULT},
-	checkXRequestedWithHeader=true
+		name = UnlockCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		tokenCheck = @WebApiTokenCheck(consume = false, useFixedToken = true),
+		results = { Constants.LOCK_RESULT },
+		checkXRequestedWithHeader = true
 )
-@CommandClass(name="gem/generic/detail/UnlockCommand", displayName="データアンロック")
+@CommandClass(name = "gem/generic/detail/UnlockCommand", displayName = "データアンロック")
 public final class UnlockCommand extends DetailCommandBase {
 
 	public static final String WEBAPI_NAME = "gem/generic/detail/unlock";

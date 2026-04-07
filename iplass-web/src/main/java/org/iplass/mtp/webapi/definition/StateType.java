@@ -31,7 +31,7 @@ public enum StateType {
 	 * （ただし、当該WebAPI呼び出し前にStatefulなセッションが確立されている場合は、セッション情報の参照、保存は可能です。）
 	 */
 	STATELESS,
-	
+
 	/**
 	 * StatefulなWebAPIを示す値です。Statefullの場合、セッション情報は保存されます。
 	 */

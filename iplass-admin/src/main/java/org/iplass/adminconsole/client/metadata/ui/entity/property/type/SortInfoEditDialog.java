@@ -124,8 +124,10 @@ public class SortInfoEditDialog extends MtpDialog {
 
 				for (PropertyDefinition pd : ed.getPropertyList()) {
 					//TODO DataSource化(一覧はNameで、選択時はDisplayNameになっている)
-					if (pd.getDisplayName() != null && !pd.getDisplayName().isEmpty()) {
-						if (pd.getDisplayName().equals(pd.getName())) {
+					if (pd.getDisplayName() != null && !pd.getDisplayName()
+							.isEmpty()) {
+						if (pd.getDisplayName()
+								.equals(pd.getName())) {
 							propertyMap.put(pd.getName(), pd.getName());
 						} else {
 							propertyMap.put(pd.getName(),
@@ -161,8 +163,9 @@ public class SortInfoEditDialog extends MtpDialog {
 				if (record == other) {
 					continue;
 				}
-				SortInfoListGridRecord sRecord = (SortInfoListGridRecord)other;
-				if (sRecord.getPropertyName().equals(propertyName)) {
+				SortInfoListGridRecord sRecord = (SortInfoListGridRecord) other;
+				if (sRecord.getPropertyName()
+						.equals(propertyName)) {
 					SC.say(rs("ui_metadata_entity_PropertyListGrid_propertyAlreadySelect"));
 					return;
 				}

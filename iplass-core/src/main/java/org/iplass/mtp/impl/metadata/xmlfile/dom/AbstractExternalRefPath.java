@@ -28,12 +28,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public abstract class AbstractExternalRefPath implements ExternalRefPath {
-	private static final int FILE_SEQ_DIGIT_DEFAULT = 3; 
+	private static final int FILE_SEQ_DIGIT_DEFAULT = 3;
 
 	private int fileSequenceDigit = FILE_SEQ_DIGIT_DEFAULT;
 
 	private String fileExt = null;
-	
+
 	public void setFileExt(String fileExt) {
 		this.fileExt = fileExt;
 	}
@@ -61,14 +61,15 @@ public abstract class AbstractExternalRefPath implements ExternalRefPath {
 	@Override
 	public String getFileExtention(Node node) {
 		String ret = null;
-		if(fileExt != null) {
+		if (fileExt != null) {
 			ret = fileExt;
-			if(!ret.startsWith(".")) {
+			if (!ret.startsWith(".")) {
 				ret = "." + ret;
 			}
 		} else {
 			ExternalRefPathAttribute pathAttr = getClass().getAnnotation(ExternalRefPathAttribute.class);
-			ret = pathAttr.fileExtension().getExt(); 
+			ret = pathAttr.fileExtension()
+					.getExt();
 		}
 		return ret;
 	}
@@ -76,15 +77,16 @@ public abstract class AbstractExternalRefPath implements ExternalRefPath {
 	@Override
 	public String getTemplateType(Node node) {
 		ExternalRefPathAttribute pathAttr = getClass().getAnnotation(ExternalRefPathAttribute.class);
-		return pathAttr.templateType().getType();
+		return pathAttr.templateType()
+				.getType();
 	}
-	
+
 	@Override
 	public boolean isBase64Tag(Node node) {
 		ExternalRefPathAttribute pathAttr = getClass().getAnnotation(ExternalRefPathAttribute.class);
 		return pathAttr.base64Tag();
 	}
-	
+
 	@Override
 	public String getLocaleName(Node node) {
 		return null;
@@ -92,7 +94,8 @@ public abstract class AbstractExternalRefPath implements ExternalRefPath {
 
 	@Override
 	public String getSequenceNumber(int num) {
-		if (getClass().getAnnotation(ExternalRefPathAttribute.class).useFileSequence()) {
+		if (getClass().getAnnotation(ExternalRefPathAttribute.class)
+				.useFileSequence()) {
 			String seqFormat = "%1$0" + fileSequenceDigit + "d";
 			num++;
 			return String.format(seqFormat, num);
@@ -100,7 +103,7 @@ public abstract class AbstractExternalRefPath implements ExternalRefPath {
 			return "";
 		}
 	}
-	
+
 	/**
 	 * 指定した名前の子ノードの値を取得.
 	 */
@@ -109,26 +112,30 @@ public abstract class AbstractExternalRefPath implements ExternalRefPath {
 		String value = null;
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node childNode = nl.item(i);
-			if (childNode != null && childNode.getNodeName().equals(childNodeName)) {
-				value = childNode.getFirstChild().getNodeValue();
+			if (childNode != null && childNode.getNodeName()
+					.equals(childNodeName)) {
+				value = childNode.getFirstChild()
+						.getNodeValue();
 				break;
 			}
 		}
 		return value;
 	}
-	
+
 	private void traceNode(Node node, int idx, List<Node> result) {
 		Node child = node.getFirstChild();
 		idx++;
 
 		String tagName = getPathList().get(idx);
 		while (child != null) {
-			if (child.getNodeName().equals(tagName)) {
+			if (child.getNodeName()
+					.equals(tagName)) {
 				if (!getPathLastElement().equals(tagName)) {
 					traceNode(child, idx, result);
 				}
 
-				if (child.getNodeName().equals(getPathLastElement())) {
+				if (child.getNodeName()
+						.equals(getPathLastElement())) {
 					result.add(child);
 				}
 			}
@@ -144,15 +151,16 @@ public abstract class AbstractExternalRefPath implements ExternalRefPath {
 	private String getPathLastElement() {
 		return getPath().replaceFirst(".*/", "");
 	}
-	
+
 	private String getPath() {
-		ExternalRefPathAttribute pathAttr = this.getClass().getAnnotation(ExternalRefPathAttribute.class);
+		ExternalRefPathAttribute pathAttr = this.getClass()
+				.getAnnotation(ExternalRefPathAttribute.class);
 		String path = pathAttr.path();
-		if(path.startsWith("/")) {
+		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
-		if(path.endsWith("/")) {
-			path = path.substring(0, path.length()-1);
+		if (path.endsWith("/")) {
+			path = path.substring(0, path.length() - 1);
 		}
 		return path;
 	}

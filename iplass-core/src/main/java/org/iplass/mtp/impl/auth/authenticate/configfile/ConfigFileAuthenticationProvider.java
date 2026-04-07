@@ -34,7 +34,7 @@ public class ConfigFileAuthenticationProvider extends AuthenticationProviderBase
 
 	private List<AccountConfig> accounts;
 	private List<Integer> tenantIds;
-	
+
 	public List<AccountConfig> getAccounts() {
 		return accounts;
 	}
@@ -58,9 +58,9 @@ public class ConfigFileAuthenticationProvider extends AuthenticationProviderBase
 			uer.inited(service, this);
 			setUserEntityResolver(uer);
 		}
-		
+
 		super.inited(service, config);
-		
+
 	}
 
 	@Override
@@ -68,11 +68,12 @@ public class ConfigFileAuthenticationProvider extends AuthenticationProviderBase
 		if (!(credential instanceof IdPasswordCredential)) {
 			return null;
 		}
-		
+
 		if (tenantIds != null && tenantIds.size() > 0) {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getClientTenantId();
 			boolean ok = false;
-			for (Integer tid: tenantIds) {
+			for (Integer tid : tenantIds) {
 				if (tid.intValue() == tenantId) {
 					ok = true;
 					break;
@@ -82,17 +83,19 @@ public class ConfigFileAuthenticationProvider extends AuthenticationProviderBase
 				return null;
 			}
 		}
-		
+
 		IdPasswordCredential idPass = (IdPasswordCredential) credential;
 		if (accounts != null) {
-			for (AccountConfig ac: accounts) {
-				if (ac.getId().equals(idPass.getId())
-						&& ac.getPassword().equals(idPass.getPassword())) {
+			for (AccountConfig ac : accounts) {
+				if (ac.getId()
+						.equals(idPass.getId())
+						&& ac.getPassword()
+								.equals(idPass.getPassword())) {
 					return new ConfigFileAccountHandle(ac);
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -114,7 +117,7 @@ public class ConfigFileAuthenticationProvider extends AuthenticationProviderBase
 	protected Class<? extends AccountHandle> getAccountHandleClassForTrust() {
 		return ConfigFileAccountHandle.class;
 	}
-	
+
 	@Override
 	public boolean isSelectableOnAuthPolicy() {
 		return false;

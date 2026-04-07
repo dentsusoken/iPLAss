@@ -37,7 +37,6 @@ import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 
-
 /**
  * PreparedQueryでバインド可能な関数を定義
  *
@@ -82,7 +81,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 		setVariable("systime", ConvertUtil.formatDate(date, Literal.TIME_FROMAT, true));
 
 		if (additionalBinding != null) {
-			for (Map.Entry<String, Object> e: additionalBinding.entrySet()) {
+			for (Map.Entry<String, Object> e : additionalBinding.entrySet()) {
 				setVariable(e.getKey(), e.getValue());
 			}
 		}
@@ -91,6 +90,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 	public String toDateString(java.util.Date date) {
 		return ConvertUtil.formatDate(date, Literal.DATE_FROMAT, false);
 	}
+
 	public String toLocalDateString(java.util.Date date) {
 		return ConvertUtil.formatDate(date, Literal.DATE_FROMAT, true);
 	}
@@ -102,10 +102,10 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 	public String toTimeString(java.util.Date date) {
 		return ConvertUtil.formatDate(date, Literal.TIME_FROMAT, false);
 	}
+
 	public String toLocalTimeString(java.util.Date date) {
 		return ConvertUtil.formatDate(date, Literal.TIME_FROMAT, true);
 	}
-
 
 	private java.util.Date calcCal(java.util.Date date, int field, int amount) {
 
@@ -137,7 +137,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 			forDateCalc.add(field, amount);
 			return Time.valueOf(new Time(date.getTime()).toString());
 		}
-		
+
 		//java.util.Date
 		if (forDateCalcLocal == null) {
 //			forDateCalc = new GregorianCalendar();
@@ -239,7 +239,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 			}
 			StringBuilder sb = new StringBuilder();
 			boolean isFirst = true;
-			for (Object v: l) {
+			for (Object v : l) {
 				if (isFirst) {
 					isFirst = false;
 				} else {
@@ -261,7 +261,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 			}
 			StringBuilder sb = new StringBuilder();
 			boolean isFirst = true;
-			for (Object v: l) {
+			for (Object v : l) {
 				if (isFirst) {
 					isFirst = false;
 				} else {
@@ -286,7 +286,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 	private void strRowValueListExp(Collection<?> vals, StringBuilder sb) {
 		sb.append('(');
 		boolean isFirst = true;
-		for (Object v: vals) {
+		for (Object v : vals) {
 			if (isFirst) {
 				isFirst = false;
 			} else {
@@ -296,11 +296,11 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 		}
 		sb.append(')');
 	}
-	
+
 	private void strRowValueListExp(Object[] vals, StringBuilder sb) {
 		sb.append('(');
 		boolean isFirst = true;
-		for (Object v: vals) {
+		for (Object v : vals) {
 			if (isFirst) {
 				isFirst = false;
 			} else {
@@ -310,7 +310,7 @@ public class PreparedQueryBinding extends GroovyTemplateBinding {
 		}
 		sb.append(')');
 	}
-	
+
 	private void strExp(Object val, StringBuilder sb) {
 		if (val == null) {
 			sb.append("null");

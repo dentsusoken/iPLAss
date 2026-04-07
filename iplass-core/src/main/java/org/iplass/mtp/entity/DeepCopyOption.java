@@ -50,5 +50,4 @@ public class DeepCopyOption {
 		this.shallowCopyLobData = shallowCopyLobData;
 	}
 
-	
 }

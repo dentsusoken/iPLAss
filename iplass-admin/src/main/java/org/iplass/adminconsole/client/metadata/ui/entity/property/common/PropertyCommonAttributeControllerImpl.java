@@ -36,7 +36,7 @@ public class PropertyCommonAttributeControllerImpl implements PropertyCommonAttr
 		partsList.add(new CommonAttributeParts1());
 
 		notNullHandler = new CommonAttributeParts2();
-		partsList.add((PropertyCommonAttributeParts)notNullHandler);
+		partsList.add((PropertyCommonAttributeParts) notNullHandler);
 
 		partsList.add(new CommonAttributeParts3());
 	}

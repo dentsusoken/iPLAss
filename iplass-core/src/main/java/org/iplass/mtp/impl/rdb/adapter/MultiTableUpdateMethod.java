@@ -20,5 +20,5 @@
 package org.iplass.mtp.impl.rdb.adapter;
 
 public enum MultiTableUpdateMethod {
-	DIRECT_JOIN,INLINE_VIEW,NO_SUPPORT
+	DIRECT_JOIN, INLINE_VIEW, NO_SUPPORT
 }

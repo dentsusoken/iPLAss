@@ -31,9 +31,9 @@ import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
  *
  */
 public interface TrustedAuthValidator {
-	
+
 	public void inited(AuthService service, AuthenticationProvider provider);
-	
+
 	public TrustedAuthValidateResult checkTrusted(UserContext userContext);
 
 }

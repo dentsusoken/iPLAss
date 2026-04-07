@@ -118,23 +118,23 @@ public class EntityEditPane extends MetaDataMainEditPane {
 			@Override
 			public void onClick(ClickEvent event) {
 				SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_cancelConfirm"),
-						AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_cancelConfirmComment")
-						, new BooleanCallback() {
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							initializeData();
-							commonSection.refreshSharedConfig();
-						}
-					}
-				});
+						AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_cancelConfirmComment"), new BooleanCallback() {
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									initializeData();
+									commonSection.refreshSharedConfig();
+								}
+							}
+						});
 			}
 		});
 
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -237,10 +237,14 @@ public class EntityEditPane extends MetaDataMainEditPane {
 
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (EntityDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
-		this.curShared = entry.getDefinitionInfo().isShared();
-		this.curSharedOverwrite = entry.getDefinitionInfo().isSharedOverwrite();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
+		this.curShared = entry.getDefinitionInfo()
+				.isShared();
+		this.curSharedOverwrite = entry.getDefinitionInfo()
+				.isSharedOverwrite();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
@@ -274,17 +278,17 @@ public class EntityEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
 
-						EntityDefinition definition = curDefinition;
-						definition = getEditDefinition(definition);
-						Map<String, String> renamePropertyMap = getRenamePropertyMap();
-						updateEntity(definition, renamePropertyMap, true);
-					}
-				}
-			});
+								EntityDefinition definition = curDefinition;
+								definition = getEditDefinition(definition);
+								Map<String, String> renamePropertyMap = getRenamePropertyMap();
+								updateEntity(definition, renamePropertyMap, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -377,8 +381,9 @@ public class EntityEditPane extends MetaDataMainEditPane {
 					}
 
 					@Override
-					protected String failureMessage(Throwable caught){
-						return AdminClientMessageUtil.getString("ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg") + caught.getMessage();
+					protected String failureMessage(Throwable caught) {
+						return AdminClientMessageUtil.getString("ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg")
+								+ caught.getMessage();
 					}
 
 				});
@@ -442,7 +447,8 @@ public class EntityEditPane extends MetaDataMainEditPane {
 
 		SmartGWTUtil.hideProgress();
 
-		SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_completion"), AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_saveCompleted"));
+		SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_completion"),
+				AdminClientMessageUtil.getString("ui_metadata_entity_EntityEditPane_saveCompleted"));
 
 		//再表示
 		initializeData();

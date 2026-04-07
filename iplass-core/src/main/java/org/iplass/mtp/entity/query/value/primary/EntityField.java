@@ -38,10 +38,10 @@ public class EntityField extends PrimaryValue {
 
 	private String propertyName;
 	private int arrayIndex = ARRAY_INDEX_UNSPECIFIED;
-	
+
 	public EntityField() {
 	}
-	
+
 	public EntityField(String propertyName) {
 		this.propertyName = propertyName;
 		checkValidPropertyName();
@@ -52,7 +52,7 @@ public class EntityField extends PrimaryValue {
 		checkValidPropertyName();
 		this.arrayIndex = arrayIndex;
 	}
-	
+
 	private void checkValidPropertyName() {
 		//簡易チェック
 		if (propertyName != null && propertyName.length() > 0) {
@@ -111,7 +111,6 @@ public class EntityField extends PrimaryValue {
 		return transformer.visit(this);
 	}
 
-	
 	public int unnestCount() {
 		if (propertyName != null) {
 			for (int i = 0; i < propertyName.length(); i++) {

@@ -44,19 +44,19 @@ public abstract class AbstractAdminDataSource extends DataSource {
 		response.setAttribute("clientContext", request.getAttributeAsObject("clientContext"));
 		response.setStatus(0);
 		switch (request.getOperationType()) {
-			case FETCH:
-				executeFetch(requestId, request, response);
-				break;
-			case ADD:
-				executeAdd(requestId, request, response);
-				break;
-			case UPDATE:
-				executeUpdate(requestId, request, response);
-				break;
-			case REMOVE:
-				executeRemove(requestId, request, response);
-				break;
-			default:
+		case FETCH:
+			executeFetch(requestId, request, response);
+			break;
+		case ADD:
+			executeAdd(requestId, request, response);
+			break;
+		case UPDATE:
+			executeUpdate(requestId, request, response);
+			break;
+		case REMOVE:
+			executeRemove(requestId, request, response);
+			break;
+		default:
 		}
 		return request.getData();
 	}

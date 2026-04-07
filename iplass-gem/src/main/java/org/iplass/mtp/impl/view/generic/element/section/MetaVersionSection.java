@@ -45,7 +45,7 @@ public class MetaVersionSection extends MetaSection {
 	 * @return リンクを表示するか
 	 */
 	public boolean isShowLink() {
-	    return showLink;
+		return showLink;
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class MetaVersionSection extends MetaSection {
 	 * @param showLink リンクを表示するか
 	 */
 	public void setShowLink(boolean showLink) {
-	    this.showLink = showLink;
+		this.showLink = showLink;
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class MetaVersionSection extends MetaSection {
 		super.fillTo(section, definitionId);
 
 		section.setShowLink(showLink);
-		
+
 		return section;
 	}
 

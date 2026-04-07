@@ -26,24 +26,27 @@ public class InlineContent {
 
 	private String contentId;
 	private DataHandler dataHandler;
-	
+
 	public InlineContent() {
 	}
-	
+
 	public InlineContent(String contentId, DataHandler dataHandler) {
 		this.contentId = contentId;
 		this.dataHandler = dataHandler;
 	}
-	
+
 	public DataHandler getDataHandler() {
 		return dataHandler;
 	}
+
 	public void setDataHandler(DataHandler dataHandler) {
 		this.dataHandler = dataHandler;
 	}
+
 	public String getContentId() {
 		return contentId;
 	}
+
 	public void setContentId(String contentId) {
 		this.contentId = contentId;
 	}

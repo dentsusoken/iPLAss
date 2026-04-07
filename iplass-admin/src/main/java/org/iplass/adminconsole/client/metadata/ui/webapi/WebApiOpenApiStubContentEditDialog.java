@@ -151,15 +151,15 @@ public class WebApiOpenApiStubContentEditDialog extends MtpDialog {
 				AdminClientMessageUtil.getString("ui_metadata_webapi_WebApiOpenApiStubContentEditDialog_contentField_editorHint", contentType),
 				new ScriptEditorDialogHandler() {
 
-			@Override
-			public void onSave(String text) {
-				contentField.setValue(text);
-			}
+					@Override
+					public void onSave(String text) {
+						contentField.setValue(text);
+					}
 
-			@Override
-			public void onCancel() {
-			}
-		});
+					@Override
+					public void onCancel() {
+					}
+				});
 	}
 
 	/**

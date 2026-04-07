@@ -42,7 +42,7 @@ import groovy.lang.Binding;
  *
  */
 public class GroovyTemplateBinding extends Binding {
-	
+
 	public GroovyTemplateBinding(Writer out) {
 		setVariable("out", out);
 		ManagerLocator sl = ManagerLocator.getInstance();
@@ -54,7 +54,7 @@ public class GroovyTemplateBinding extends Binding {
 	public GroovyTemplateBinding(Writer out, Map<String, Object> bindings) {
 		this(out);
 		if (bindings != null) {
-			for (Map.Entry<String, Object> e: bindings.entrySet()) {
+			for (Map.Entry<String, Object> e : bindings.entrySet()) {
 				setVariable(e.getKey(), e.getValue());
 			}
 		}

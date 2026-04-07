@@ -22,10 +22,10 @@ package org.iplass.mtp.impl.view.treeview;
 
 import java.io.Serializable;
 
+import org.iplass.mtp.view.treeview.TreeViewGridColModelMapping;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-
-import org.iplass.mtp.view.treeview.TreeViewGridColModelMapping;
 
 /**
  * ツリービューグリッドのColModel
@@ -48,7 +48,7 @@ public class MetaTreeViewGridColModelMapping implements Serializable {
 	 * @return 名前
 	 */
 	public String getName() {
-	    return name;
+		return name;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class MetaTreeViewGridColModelMapping implements Serializable {
 	 * @param name 名前
 	 */
 	public void setName(String name) {
-	    this.name = name;
+		this.name = name;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class MetaTreeViewGridColModelMapping implements Serializable {
 	 * @return マッピング対象の名前
 	 */
 	public String getMappingName() {
-	    return mappingName;
+		return mappingName;
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class MetaTreeViewGridColModelMapping implements Serializable {
 	 * @param mappingName マッピング対象の名前
 	 */
 	public void setMappingName(String mappingName) {
-	    this.mappingName = mappingName;
+		this.mappingName = mappingName;
 	}
 
 	public void applyConfig(TreeViewGridColModelMapping mapping) {

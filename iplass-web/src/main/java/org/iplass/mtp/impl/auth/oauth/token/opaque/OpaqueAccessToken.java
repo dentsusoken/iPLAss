@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
 public class OpaqueAccessToken extends AccessToken {
-	
+
 	private String series;
 	private String tokenEncoded;
 	private long expires;
@@ -39,30 +39,34 @@ public class OpaqueAccessToken extends AccessToken {
 	private List<String> grantedScopes;
 	private String clientId;
 	private long creationTime;
-	
+
 	private RefreshToken refreshToken;
-	
-	public OpaqueAccessToken(OAuthClientRuntime client, AccessTokenMement mement, String series, String tokenEncoded, long creationTime, OpaqueRefreshToken refreshToken) {
+
+	public OpaqueAccessToken(OAuthClientRuntime client, AccessTokenMement mement, String series, String tokenEncoded, long creationTime,
+			OpaqueRefreshToken refreshToken) {
 		this.series = series;
 		this.tokenEncoded = tokenEncoded;
 		this.expires = mement.getExpires();
 		expiresIn = (this.expires - System.currentTimeMillis()) / 1000;
 		this.user = mement.getUser();
 		this.refreshToken = refreshToken;
-		this.clientId = client.getMetaData().getName();
+		this.clientId = client.getMetaData()
+				.getName();
 		this.creationTime = creationTime;
-		
+
 		//check scopes is valid
 		grantedScopes = new ArrayList<>();
 		OAuthAuthorizationRuntime server = client.getAuthorizationServer();
-		List<String> scopesByClientType = server.getClientPolicy(client.getMetaData().getClientType()).scopeList();
-		for (String s: mement.getGrantedScopes()) {
+		List<String> scopesByClientType = server.getClientPolicy(client.getMetaData()
+				.getClientType())
+				.scopeList();
+		for (String s : mement.getGrantedScopes()) {
 			if (scopesByClientType.contains(s)) {
 				grantedScopes.add(s);
 			}
 		}
 	}
-	
+
 	public String getSeries() {
 		return series;
 	}
@@ -71,7 +75,7 @@ public class OpaqueAccessToken extends AccessToken {
 	public List<String> getGrantedScopes() {
 		return grantedScopes;
 	}
-	
+
 	@Override
 	public String getTokenEncoded() {
 		return tokenEncoded;
@@ -86,7 +90,7 @@ public class OpaqueAccessToken extends AccessToken {
 	public User getUser() {
 		return user;
 	}
-	
+
 	@Override
 	public RefreshToken getRefreshToken() {
 		return refreshToken;

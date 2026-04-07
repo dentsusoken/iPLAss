@@ -39,16 +39,16 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * @deprecated use {@link GetReferenceComboSettingCommand}
  */
 @WebApi(
-		name=GetEditorCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={"editor"},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/refcombo/GetEditorCommand", displayName="プロパティエディタ取得")
+		name = GetEditorCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { "editor" },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/refcombo/GetEditorCommand", displayName = "プロパティエディタ取得")
 @Deprecated
-public final class GetEditorCommand implements Command, HasDisplayScriptBindings{
+public final class GetEditorCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String CMD_NAME = "gem/generic/refcombo/GetEditorCommand";
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/getEditor";
@@ -56,7 +56,8 @@ public final class GetEditorCommand implements Command, HasDisplayScriptBindings
 	private EntityViewManager evm = null;
 
 	public GetEditorCommand() {
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public final class GetEditorCommand implements Command, HasDisplayScriptBindings
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
-			rpe = (ReferencePropertyEditor)editor;
+			rpe = (ReferencePropertyEditor) editor;
 		}
 		if (rpe == null) {
 			return "NOT_DEFINED_EDITOR";

@@ -48,7 +48,8 @@ public class ElementItemDS extends AbstractAdminDataSource {
 			dsList = new HashMap<String, ElementItemDS>();
 		}
 
-		if (viewType == null) throw new IllegalArgumentException("viewType is null.");
+		if (viewType == null)
+			throw new IllegalArgumentException("viewType is null.");
 
 		if (dsList.containsKey(viewType.name())) {
 			return dsList.get(viewType.name());

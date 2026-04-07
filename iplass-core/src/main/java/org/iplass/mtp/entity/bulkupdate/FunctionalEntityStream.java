@@ -59,14 +59,14 @@ import java.util.function.Supplier;
  *
  */
 public class FunctionalEntityStream implements BulkUpdatable {
-	
+
 	private String definitionName;
 	private List<String> updateProperties;
 	private boolean enableAuditPropertySpecification;
 	private Supplier<BulkUpdateEntity> onNext;
 	private Runnable onClose;
 	private Consumer<BulkUpdateEntity> onUpdated;
-	
+
 	/**
 	 * BulkUpdateEntityを取得するロジックを記述。
 	 * 処理対象のBulkUpdateEntityが既にない場合はnullを返却するように実装。
@@ -78,7 +78,7 @@ public class FunctionalEntityStream implements BulkUpdatable {
 		this.onNext = onNext;
 		return this;
 	}
-	
+
 	/**
 	 * Entityの定義名を指定
 	 * 
@@ -89,7 +89,7 @@ public class FunctionalEntityStream implements BulkUpdatable {
 		this.definitionName = definitionName;
 		return this;
 	}
-	
+
 	/**
 	 * 更新時の更新対象プロパティを指定
 	 * 
@@ -101,7 +101,7 @@ public class FunctionalEntityStream implements BulkUpdatable {
 			if (updateProperties == null) {
 				updateProperties = new ArrayList<>();
 			}
-			for (String pn: propName) {
+			for (String pn : propName) {
 				if (!updateProperties.contains(pn)) {
 					updateProperties.add(pn);
 				}
@@ -133,7 +133,7 @@ public class FunctionalEntityStream implements BulkUpdatable {
 		this.onClose = onClose;
 		return this;
 	}
-	
+
 	/**
 	 * 更新処理成功後のコールバック処理を記述可能。
 	 * 
@@ -144,17 +144,15 @@ public class FunctionalEntityStream implements BulkUpdatable {
 		this.onUpdated = onUpdated;
 		return this;
 	}
-	
-	
 
 	@Override
 	public Iterator<BulkUpdateEntity> iterator() {
 		if (onNext == null) {
 			throw new IllegalStateException("onNext function not specified");
 		}
-		
+
 		return new Iterator<BulkUpdateEntity>() {
-			
+
 			private boolean peeked = false;
 			private BulkUpdateEntity next;
 
@@ -167,7 +165,7 @@ public class FunctionalEntityStream implements BulkUpdatable {
 					return true;
 				}
 			}
-			
+
 			private void peek() {
 				if (!peeked) {
 					next = onNext.get();
@@ -218,7 +216,5 @@ public class FunctionalEntityStream implements BulkUpdatable {
 	public List<String> getUpdateProperties() {
 		return updateProperties;
 	}
-	
-	
 
 }

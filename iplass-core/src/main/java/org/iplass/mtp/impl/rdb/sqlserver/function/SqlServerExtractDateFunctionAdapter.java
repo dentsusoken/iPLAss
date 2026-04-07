@@ -40,10 +40,12 @@ public class SqlServerExtractDateFunctionAdapter implements FunctionAdapter<Func
 		context.append("DATEPART(");
 		context.append(field);
 		context.append(" , ");
-		if (function.getArguments() == null || function.getArguments().size() != 1) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 1) {
 			throw new QueryException(function.getName() + " must have only one arguments.");
 		}
-		context.appendArgument(function.getArguments().get(0));
+		context.appendArgument(function.getArguments()
+				.get(0));
 		context.append(")");
 	}
 

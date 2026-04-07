@@ -54,12 +54,12 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 
 	private static final Logger fatalLog = LoggerFactory.getLogger("mtp.fatal.mail");
 	private static Logger logger = LoggerFactory.getLogger(MetaMailAccountNotificationListener.class);
-	
-	public static final String TENANT_BINDING_NAME ="tenant";
-	public static final String USER_BINDING_NAME ="user";
-	public static final String NEW_PASSWORD_BINDING_NAME ="newPassword";
+
+	public static final String TENANT_BINDING_NAME = "tenant";
+	public static final String USER_BINDING_NAME = "user";
+	public static final String NEW_PASSWORD_BINDING_NAME = "newPassword";
 	public static final String UPDATED_PROPERTY_NAMES = "updatedPropertyNames";
-	
+
 	private String createUserMailTemplate;
 	private String credentialResetMailTemplate;
 	private String createUserWithSpecifiedPasswordMailTemplate;
@@ -70,68 +70,87 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 	private String removeUserMailTemplate;
 	private String loginSuccessUserMailTemplate;
 	private List<String> propertiesForUpdateNotification;
-	
+
 	public String getLoginSuccessUserMailTemplate() {
 		return loginSuccessUserMailTemplate;
 	}
+
 	public void setLoginSuccessUserMailTemplate(String loginSuccessUserMailTemplate) {
 		this.loginSuccessUserMailTemplate = loginSuccessUserMailTemplate;
 	}
+
 	public String getCreateUserWithSpecifiedPasswordMailTemplate() {
 		return createUserWithSpecifiedPasswordMailTemplate;
 	}
+
 	public void setCreateUserWithSpecifiedPasswordMailTemplate(
 			String createUserWithSpecifiedPasswordMailTemplate) {
 		this.createUserWithSpecifiedPasswordMailTemplate = createUserWithSpecifiedPasswordMailTemplate;
 	}
+
 	public String getCredentialResetWithSpecifiedPasswordMailTemplate() {
 		return credentialResetWithSpecifiedPasswordMailTemplate;
 	}
+
 	public void setCredentialResetWithSpecifiedPasswordMailTemplate(
 			String credentialResetWithSpecifiedPasswordMailTemplate) {
 		this.credentialResetWithSpecifiedPasswordMailTemplate = credentialResetWithSpecifiedPasswordMailTemplate;
 	}
+
 	public String getCredentialUpdatedMailTemplate() {
 		return credentialUpdatedMailTemplate;
 	}
+
 	public void setCredentialUpdatedMailTemplate(
 			String credentialUpdatedMailTemplate) {
 		this.credentialUpdatedMailTemplate = credentialUpdatedMailTemplate;
 	}
+
 	public String getPropertyUpdatedMailTemplate() {
 		return propertyUpdatedMailTemplate;
 	}
+
 	public void setPropertyUpdatedMailTemplate(String propertyUpdatedMailTemplate) {
 		this.propertyUpdatedMailTemplate = propertyUpdatedMailTemplate;
 	}
+
 	public String getRemoveUserMailTemplate() {
 		return removeUserMailTemplate;
 	}
+
 	public void setRemoveUserMailTemplate(String removeUserMailTemplate) {
 		this.removeUserMailTemplate = removeUserMailTemplate;
 	}
+
 	public List<String> getPropertiesForUpdateNotification() {
 		return propertiesForUpdateNotification;
 	}
+
 	public void setPropertiesForUpdateNotification(
 			List<String> propertiesForUpdateNotification) {
 		this.propertiesForUpdateNotification = propertiesForUpdateNotification;
 	}
+
 	public String getCreateUserMailTemplate() {
 		return createUserMailTemplate;
 	}
+
 	public void setCreateUserMailTemplate(String createUserMailTemplate) {
 		this.createUserMailTemplate = createUserMailTemplate;
 	}
+
 	public String getCredentialResetMailTemplate() {
 		return credentialResetMailTemplate;
 	}
+
 	public void setCredentialResetMailTemplate(String credentialResetMailTemplate) {
 		this.credentialResetMailTemplate = credentialResetMailTemplate;
 	}
+
 	public String getLockedoutMailTemplate() {
 		return lockedoutMailTemplate;
 	}
+
 	public void setLockedoutMailTemplate(String lockedoutMailTemplate) {
 		this.lockedoutMailTemplate = lockedoutMailTemplate;
 	}
@@ -140,11 +159,13 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 	public AccountNotificationListener createInstance(String policyName, int i) {
 		return new Listener();
 	}
-	
+
 	private class Listener implements AccountNotificationListener {
 
-		private MailManager mm = ManagerLocator.getInstance().getManager(MailManager.class);
-		private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		private MailManager mm = ManagerLocator.getInstance()
+				.getManager(MailManager.class);
+		private EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 
 		@Override
 		public void created(PasswordNotification notification) {
@@ -182,34 +203,36 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 				sendMail(notification.getUserOid(), null, null, lockedoutMailTemplate);
 			}
 		}
-		
+
 		private void sendMail(final String userOid, final String newPassword, final List<String> updatedPropertyNames, final String mailTemplateName) {
-			final Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+			final Tenant tenant = ExecuteContext.getCurrentContext()
+					.getCurrentTenant();
 			final User user = AuthContext.doPrivileged(() -> {
-						return (User) em.load(userOid, User.DEFINITION_NAME, new LoadOption(false, false));
-					});
+				return (User) em.load(userOid, User.DEFINITION_NAME, new LoadOption(false, false));
+			});
 
 			Transaction t = Transaction.getCurrent();
 			if (t.getStatus() == TransactionStatus.ACTIVE) {
 				t.addTransactionListener(new TransactionListener() {
-						@Override
-						public void afterRollback(Transaction t) {
-							if (user != null) {
-								logger.debug("Don't send mail cause transaciton rolledback:user=" + user.getAccountId());
-							}
+					@Override
+					public void afterRollback(Transaction t) {
+						if (user != null) {
+							logger.debug("Don't send mail cause transaciton rolledback:user=" + user.getAccountId());
 						}
+					}
 
-						@Override
-						public void afterCommit(Transaction t) {
-							sendMailInternal(tenant, user, newPassword, updatedPropertyNames, mailTemplateName);
-						}
-					});
+					@Override
+					public void afterCommit(Transaction t) {
+						sendMailInternal(tenant, user, newPassword, updatedPropertyNames, mailTemplateName);
+					}
+				});
 			} else {
 				sendMailInternal(tenant, user, newPassword, updatedPropertyNames, mailTemplateName);
 			}
 		}
 
-		private void sendMailInternal(final Tenant tenant, final User user, final String newPassword, final List<String> updatedPropertyNames, final String mailTemplateName) {
+		private void sendMailInternal(final Tenant tenant, final User user, final String newPassword, final List<String> updatedPropertyNames,
+				final String mailTemplateName) {
 			try {
 				//バインド変数設定
 				Map<String, Object> bindings = new HashMap<String, Object>();
@@ -217,10 +240,10 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 				bindings.put(USER_BINDING_NAME, user);
 				bindings.put(NEW_PASSWORD_BINDING_NAME, newPassword);
 				bindings.put(UPDATED_PROPERTY_NAMES, updatedPropertyNames);
-	
+
 				Mail mail = mm.createMail(mailTemplateName, bindings);
 				mail.addRecipientTo(user.getMail());
-			
+
 				mm.sendMail(mail);
 			} catch (RuntimeException e) {
 				fatalLog.error("cannot send mail:"
@@ -253,8 +276,8 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 
 		private boolean contains(List<String> propertiesForUpdateNotification,
 				List<String> updatedPropertyNames) {
-			for (String p: propertiesForUpdateNotification) {
-				for (String u: updatedPropertyNames) {
+			for (String p : propertiesForUpdateNotification) {
+				for (String u : updatedPropertyNames) {
 					if (p.equals(u)) {
 						return true;
 					}
@@ -273,8 +296,10 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 		@Override
 		public void loginSuccess(LoginNotification notification) {
 			if (loginSuccessUserMailTemplate != null) {
-				Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-				UserContext uc = AuthContextHolder.getAuthContext().getUserContext();
+				Tenant tenant = ExecuteContext.getCurrentContext()
+						.getCurrentTenant();
+				UserContext uc = AuthContextHolder.getAuthContext()
+						.getUserContext();
 				User user = uc.getUser();
 				sendMailInternal(tenant, user, null, null, loginSuccessUserMailTemplate);
 			}
@@ -303,7 +328,7 @@ public class MetaMailAccountNotificationListener extends MetaAccountNotification
 		}
 		return def;
 	}
-	
+
 	@Override
 	public void applyConfig(AccountNotificationListenerDefinition def) {
 		MailAccountNotificationListenerDefinition mdef = (MailAccountNotificationListenerDefinition) def;

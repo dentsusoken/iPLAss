@@ -27,7 +27,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinitionManager;
 
-public class StaticResourceDefinitionManagerImpl extends AbstractTypedDefinitionManager<StaticResourceDefinition> implements StaticResourceDefinitionManager {
+public class StaticResourceDefinitionManagerImpl extends AbstractTypedDefinitionManager<StaticResourceDefinition>
+		implements StaticResourceDefinitionManager {
 
 	private StaticResourceService service;
 
@@ -35,7 +36,8 @@ public class StaticResourceDefinitionManagerImpl extends AbstractTypedDefinition
 	 * コンストラクタ
 	 */
 	public StaticResourceDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(StaticResourceService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(StaticResourceService.class);
 	}
 
 	@Override

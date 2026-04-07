@@ -77,6 +77,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
  */
 public final class SmartGWTUtil {
 	public static final String ENTITY = "ENTITY";
+
 	/**
 	 *
 	 */
@@ -102,7 +103,8 @@ public final class SmartGWTUtil {
 		StringBuffer sb = new StringBuffer();
 		if (values != null) {
 			for (String value : values) {
-				sb.append(value).append(sepalator);
+				sb.append(value)
+						.append(sepalator);
 			}
 		}
 		if (sb.length() > 0) {
@@ -122,7 +124,8 @@ public final class SmartGWTUtil {
 		StringBuffer sb = new StringBuffer();
 		if (values != null) {
 			for (String value : values) {
-				sb.append(value).append(sepalator);
+				sb.append(value)
+						.append(sepalator);
 			}
 		}
 		if (sb.length() > 0) {
@@ -156,8 +159,10 @@ public final class SmartGWTUtil {
 
 		String[] valueArray = value.split(sepalator);
 		//空値の除外
-		List<String> valueList = Arrays.asList(valueArray).stream()
-				.filter( o -> o != null && !o.trim().isEmpty())
+		List<String> valueList = Arrays.asList(valueArray)
+				.stream()
+				.filter(o -> o != null && !o.trim()
+						.isEmpty())
 				.collect(Collectors.toList());
 		if (valueList.isEmpty()) {
 			return null;
@@ -189,7 +194,7 @@ public final class SmartGWTUtil {
 		if (valueList == null) {
 			return null;
 		}
-		return valueList.toArray(new String[]{});
+		return valueList.toArray(new String[] {});
 	}
 
 	/**
@@ -215,9 +220,13 @@ public final class SmartGWTUtil {
 	 */
 	public static String getStringValue(FormItem item, boolean emptyToNull) {
 		if (emptyToNull) {
-			return (item.getValue() != null && !item.getValue().toString().isEmpty() ? item.getValue().toString() : null);
+			return (item.getValue() != null && !item.getValue()
+					.toString()
+					.isEmpty() ? item.getValue()
+							.toString() : null);
 		} else {
-			return (item.getValue() != null ? item.getValue().toString() : null);
+			return (item.getValue() != null ? item.getValue()
+					.toString() : null);
 		}
 	}
 
@@ -402,8 +411,10 @@ public final class SmartGWTUtil {
 			return "";
 		}
 		return "<div style=\"white-space:nowrap;\">"
-			+ hover.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>").replaceAll("\r", "<br/>")
-			+ "</div>";
+				+ hover.replaceAll("\r\n", "<br/>")
+						.replaceAll("\n", "<br/>")
+						.replaceAll("\r", "<br/>")
+				+ "</div>";
 	}
 
 	/**
@@ -476,7 +487,7 @@ public final class SmartGWTUtil {
 			//このままだと編集できるかできないかわからないのでStyleを設定
 			//通常、文字が灰色になり見にくくなるのでmtpadmin.cssでカスタマイズ
 			item.setTextBoxStyle("textItemDisabled");
-			item.setCanFocus(false);	//これを設定しないとFocusを得たときに別のStyleに変わってしまうので
+			item.setCanFocus(false); //これを設定しないとFocusを得たときに別のStyleに変わってしまうので
 		} else {
 			item.setCanEdit(true);
 			item.setTextBoxStyle("textItem");
@@ -570,7 +581,7 @@ public final class SmartGWTUtil {
 
 	/**
 	 * Save時のProgress画面を表示します。
-ｓ	 */
+	ｓ	 */
 	public static void showSaveProgress() {
 		ProgressDialog.showProgress("Save...");
 	}
@@ -584,6 +595,7 @@ public final class SmartGWTUtil {
 
 	/** Page全体からのMargin */
 	private static final int MARGIN = 20;
+
 	/**
 	 * アニメーションを利用して画面を開きます。
 	 * 画面を開く処理は、FullScreenCallbackのexecuteメソッドで実装してください。
@@ -630,17 +642,18 @@ public final class SmartGWTUtil {
 
 		animateOutline.animateRect(rect.getLeft(), rect.getTop(),
 				rect.getWidth(), rect.getHeight(), new AnimationCallback() {
-			@Override
-			public void execute(boolean earlyFinish) {
-				animateOutline.hide();
+					@Override
+					public void execute(boolean earlyFinish) {
+						animateOutline.hide();
 
-				//通知
-				callback.afterAnimate();
-			}
-		}, 500);
+						//通知
+						callback.afterAnimate();
+					}
+				}, 500);
 	}
 
 	private static LinkedHashMap<String, String> localeMap = null;
+
 	public static LinkedHashMap<String, String> getDefaultLocaleMap() {
 		if (localeMap != null) {
 			return localeMap;
@@ -653,6 +666,7 @@ public final class SmartGWTUtil {
 	}
 
 	private static LinkedHashMap<String, String> timeZoneMap = null;
+
 	public static LinkedHashMap<String, String> getDefaultTimeZoneMap() {
 		if (timeZoneMap != null) {
 			return timeZoneMap;
@@ -667,7 +681,8 @@ public final class SmartGWTUtil {
 		return timeZoneMap;
 	}
 
-	public static Date getDateTimeValue(Date dateValue, Date timeValue, boolean showSecond, String defaultTimeStr, String fixedSec, String fixedMilSec) {
+	public static Date getDateTimeValue(Date dateValue, Date timeValue, boolean showSecond, String defaultTimeStr, String fixedSec,
+			String fixedMilSec) {
 
 		if (dateValue == null) {
 			return null;
@@ -802,10 +817,12 @@ public final class SmartGWTUtil {
 		}
 		if (locale == null || locale.equalsIgnoreCase("ja_JP")) {
 			//現状HH:MM:SSを表示するFormatがないのでHH:MMまで
-			return DateTimeFormat.getFormat("yyyy/MM/dd HH:mm").format(date);
+			return DateTimeFormat.getFormat("yyyy/MM/dd HH:mm")
+					.format(date);
 		} else {
 			//現状HH:MM:SSを表示するFormatがないのでHH:MMまで
-			return DateTimeFormat.getFormat("MM/dd/yyyy HH:mm").format(date);
+			return DateTimeFormat.getFormat("MM/dd/yyyy HH:mm")
+					.format(date);
 		}
 	}
 
@@ -832,7 +849,6 @@ public final class SmartGWTUtil {
 		return timeField;
 	}
 
-
 	public static DateTimeFormat createInputDateFormat() {
 		return getInputLocale(TenantInfoHolder.getInputLocale());
 	}
@@ -855,7 +871,8 @@ public final class SmartGWTUtil {
 		if (timestamp == null) {
 			return "";
 		}
-		return TenantInfoHolder.getOutputDateTimeSecFormat().format(timestamp, TenantInfoHolder.getTenantTimeZone());
+		return TenantInfoHolder.getOutputDateTimeSecFormat()
+				.format(timestamp, TenantInfoHolder.getTenantTimeZone());
 	}
 
 	/**
@@ -868,7 +885,8 @@ public final class SmartGWTUtil {
 		if (date == null) {
 			return "";
 		}
-		return TenantInfoHolder.getOutputDateFormat().format(date, TenantInfoHolder.getServerTimeZone());
+		return TenantInfoHolder.getOutputDateFormat()
+				.format(date, TenantInfoHolder.getServerTimeZone());
 	}
 
 	/**
@@ -881,7 +899,8 @@ public final class SmartGWTUtil {
 		if (time == null) {
 			return "";
 		}
-		return TenantInfoHolder.getOutputTimeSecFormat().format(time, TenantInfoHolder.getServerTimeZone());
+		return TenantInfoHolder.getOutputTimeSecFormat()
+				.format(time, TenantInfoHolder.getServerTimeZone());
 	}
 
 	/**
@@ -959,7 +978,7 @@ public final class SmartGWTUtil {
 
 		//Button用のForm
 		DynamicForm buttonForm = new DynamicForm();
-		buttonForm.setNumCols(2);	//間延びしないように最後に１つ余分に作成
+		buttonForm.setNumCols(2); //間延びしないように最後に１つ余分に作成
 		buttonForm.setColWidths(100, "*");
 
 		buttonItem.setStartRow(false);

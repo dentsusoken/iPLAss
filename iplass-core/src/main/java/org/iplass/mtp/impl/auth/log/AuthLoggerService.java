@@ -29,18 +29,19 @@ public class AuthLoggerService implements Service {
 
 	private AuthLogger[] loggers;
 	private AuthLogger defaultLogger;
-	
+
 	public AuthLogger[] getLoggers() {
 		return loggers;
 	}
-	
+
 	public AuthLogger getAuthLogger(String name) {
 		if (name == null) {
 			return defaultLogger;
 		}
 		if (loggers != null) {
-			for (AuthLogger al: loggers) {
-				if (al.getLoggerName().equals(name)) {
+			for (AuthLogger al : loggers) {
+				if (al.getLoggerName()
+						.equals(name)) {
 					return al;
 				}
 			}
@@ -55,7 +56,7 @@ public class AuthLoggerService implements Service {
 			loggers = loggerList.toArray(new AuthLogger[loggerList.size()]);
 		}
 		if (loggers != null) {
-			for (AuthLogger al: loggers) {
+			for (AuthLogger al : loggers) {
 				if ("default".equals(al.getLoggerName())) {
 					defaultLogger = al;
 					break;

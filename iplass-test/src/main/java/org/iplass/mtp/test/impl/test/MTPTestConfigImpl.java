@@ -147,20 +147,31 @@ public class MTPTestConfigImpl implements MTPTestConfig {
 		return new StringBuilder()
 				.append("{")
 				.append("\"configValue\": {")
-				.append(stringValue("configFileName", getConfigFileName())).append(", ")
-				.append(stringValue("tenantName", getTenantName())).append(", ")
-				.append(stringValue("userId", getUserId())).append(", ")
-				.append(stringValue("isRollbackTransaction", isRollbackTransaction())).append(", ")
-				.append(stringValue("isNoAuth", isNoAuth())).append(", ")
+				.append(stringValue("configFileName", getConfigFileName()))
+				.append(", ")
+				.append(stringValue("tenantName", getTenantName()))
+				.append(", ")
+				.append(stringValue("userId", getUserId()))
+				.append(", ")
+				.append(stringValue("isRollbackTransaction", isRollbackTransaction()))
+				.append(", ")
+				.append(stringValue("isNoAuth", isNoAuth()))
+				.append(", ")
 				.append(stringValue("isGroovy", isGroovy()))
 				.append("},")
 				.append("\"layerValue\": {")
-				.append(stringValue("layer", layer.toString())).append(", ")
-				.append(stringValue("configFileName", configFileName)).append(", ")
-				.append(stringValue("tenantName", tenantName)).append(", ")
-				.append(stringValue("userId", userId)).append(", ")
-				.append(stringValue("isRollbackTransaction", isRollbackTransaction)).append(", ")
-				.append(stringValue("isNoAuth", isNoAuth)).append(", ")
+				.append(stringValue("layer", layer.toString()))
+				.append(", ")
+				.append(stringValue("configFileName", configFileName))
+				.append(", ")
+				.append(stringValue("tenantName", tenantName))
+				.append(", ")
+				.append(stringValue("userId", userId))
+				.append(", ")
+				.append(stringValue("isRollbackTransaction", isRollbackTransaction))
+				.append(", ")
+				.append(stringValue("isNoAuth", isNoAuth))
+				.append(", ")
 				.append(stringValue("isGroovy", isGroovy))
 				.append("}")
 				.append("}")
@@ -179,11 +190,14 @@ public class MTPTestConfigImpl implements MTPTestConfig {
 	 * @return 連結文字列
 	 */
 	private <T> String stringValue(String key, T value) {
-		StringBuilder s = new StringBuilder("\"").append(key).append("\": ");
+		StringBuilder s = new StringBuilder("\"").append(key)
+				.append("\": ");
 		if (null == value) {
 			s.append(value);
 		} else if (value instanceof String) {
-			s.append("\"").append(value).append("\"");
+			s.append("\"")
+					.append(value)
+					.append("\"");
 		} else {
 			s.append(value);
 		}

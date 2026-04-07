@@ -26,7 +26,6 @@ import org.iplass.mtp.impl.parser.ParseException;
 import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
 
-
 /**
  * 検索条件を表す抽象クラス。
  * 
@@ -38,12 +37,14 @@ public abstract class Condition implements ASTNode {
 
 	public static Condition newCondition(String condition) {
 		try {
-			return QueryServiceHolder.getInstance().getQueryParser().parse(condition, OrSyntax.class);
+			return QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(condition, OrSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
 	}
-	
+
 	public abstract void accept(ConditionVisitor visitor);
-	
+
 }

@@ -23,10 +23,10 @@ package org.iplass.mtp.view.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entityのフィルタ定義
@@ -98,7 +98,8 @@ public class EntityFilter implements Definition {
 	 * @return フィルタ設定
 	 */
 	public List<EntityFilterItem> getItems() {
-		if (items == null) items = new ArrayList<EntityFilterItem>();
+		if (items == null)
+			items = new ArrayList<EntityFilterItem>();
 		return items;
 	}
 
@@ -125,7 +126,8 @@ public class EntityFilter implements Definition {
 	 */
 	public EntityFilterItem getItem(String name) {
 		for (EntityFilterItem item : getItems()) {
-			if (name.equals(item.getName())) return item;
+			if (name.equals(item.getName()))
+				return item;
 		}
 		return null;
 	}

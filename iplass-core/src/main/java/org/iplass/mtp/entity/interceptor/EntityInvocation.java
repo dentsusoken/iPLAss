@@ -24,7 +24,6 @@ import java.util.Iterator;
 
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
-
 /**
  * Entity操作の呼び出しを表すインタフェース。
  * proceed()呼び出しで、後続処理（次のInterceptor呼び出しor実際のEntity操作）を呼び出す。
@@ -35,17 +34,16 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
  * @see EntityInterceptor
  */
 public interface EntityInvocation<R> {
-	
+
 	EntityDefinition getEntityDefinition();
-	
+
 	/**
 	 * 後続処理呼び出し。
 	 * 
 	 * @return 後続処理からのリターン値。
 	 */
 	public R proceed();
-	
-	
+
 	/**
 	 * 一連のInterceptの間、保持したいオブジェクトをセット可能。
 	 * 
@@ -53,7 +51,7 @@ public interface EntityInvocation<R> {
 	 * @param value
 	 */
 	public void setAttribute(String name, Object value);
-	
+
 	/**
 	 * 一連のInterceptの間にsetAttribute()したオブジェクトを取得可能。
 	 * 
@@ -61,14 +59,14 @@ public interface EntityInvocation<R> {
 	 * @return
 	 */
 	public Object getAttribute(String name);
-	
+
 	/**
 	 * 一連のInterceptの間にsetAttribute()された属性名の取得。
 	 * 
 	 * @return
 	 */
 	public Iterator<String> getAttributeNames();
-	
+
 	/**
 	 * Entity操作の種類を判別可能。
 	 * 
@@ -76,6 +74,4 @@ public interface EntityInvocation<R> {
 	 */
 	public InvocationType getType();
 
-
-	
 }

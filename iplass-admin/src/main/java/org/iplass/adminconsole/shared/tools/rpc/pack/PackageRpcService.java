@@ -52,7 +52,8 @@ public interface PackageRpcService extends XsrfProtectedService {
 
 	public MetaDataImportResultInfo importPackageMetaData(final int tenantId, final String packOid, final Tenant importTenant);
 
-	public EntityDataImportResultInfo importPackageEntityData(final int tenantId, final String packOid, final String path, final PackageImportCondition condition);
+	public EntityDataImportResultInfo importPackageEntityData(final int tenantId, final String packOid, final String path,
+			final PackageImportCondition condition);
 
 	public MetaDataCheckResultInfo checkPackageMetaData(final int tenantId, final String packOid);
 

@@ -27,7 +27,7 @@ package org.iplass.mtp.impl.core;
  */
 public interface TenantResource {
 	public void init(TenantContext tenantContext);
-	
+
 	//TODO destory -> destroy
 	public void destory();
 }

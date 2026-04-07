@@ -94,7 +94,8 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -154,13 +155,14 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (UtilityClassDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		utilityClassAttrPane.setDefinition(curDefinition);
 	}
-
 
 	/**
 	 * 更新処理
@@ -225,7 +227,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 			setMargin(5);
 			setMembersMargin(10);
 
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
+			setOverflow(Overflow.AUTO); //Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			//入力部分
 			form = new DynamicForm();
@@ -233,7 +235,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 			form.setHeight100();
 //			form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
 //			form.setColWidths(100, "*", 100, "*", "*");
-			form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+			form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 			form.setColWidths(50, "*", "*");
 
 			ButtonItem editScript = new ButtonItem("editScript", "Edit");
@@ -241,7 +243,8 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 			editScript.setStartRow(false);
 			editScript.setColSpan(3);
 			editScript.setAlign(Alignment.RIGHT);
-			editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_displayDialogEditScript")));
+			editScript.setPrompt(SmartGWTUtil
+					.getHoverString(AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_displayDialogEditScript")));
 			editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -258,6 +261,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 								public void onSave(String text) {
 									scriptField.setValue(text);
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -339,17 +343,17 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						UtilityClassDefinition definition = curDefinition;
-						definition = commonSection.getEditDefinition(definition);
-						definition = utilityClassAttrPane.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								UtilityClassDefinition definition = curDefinition;
+								definition = commonSection.getEditDefinition(definition);
+								definition = utilityClassAttrPane.getEditDefinition(definition);
 
-						updateUtilityClass(definition, true);
-					}
-				}
-			});
+								updateUtilityClass(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -362,16 +366,15 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_utilityclass_UtilityClassEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

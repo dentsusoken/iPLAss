@@ -32,7 +32,7 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 	private Timestamp startDate;
 	private boolean expired;
 	private Timestamp expiryDate;
-	
+
 	@Override
 	public String getType() {
 		return type;
@@ -42,7 +42,7 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 	public String getKey() {
 		return key;
 	}
-	
+
 	@Override
 	public Timestamp getStartDate() {
 		return startDate;
@@ -57,14 +57,15 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 		} else {
 			sb.append("Expires: ");
 			if (expiryDate != null) {
-				sb.append(DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true).format(expiryDate));
+				sb.append(DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true)
+						.format(expiryDate));
 			} else {
 				sb.append("Never");
 			}
 		}
 		return sb.toString();
 	}
-	
+
 	public boolean isExpired() {
 		return expired;
 	}
@@ -88,7 +89,7 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}

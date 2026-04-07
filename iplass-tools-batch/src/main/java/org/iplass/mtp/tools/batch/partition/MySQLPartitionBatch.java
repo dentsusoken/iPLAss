@@ -40,12 +40,15 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 	private static Logger logger = LoggerFactory.getLogger(MySQLPartitionBatch.class);
 
 	/** 実行モード */
-	public enum MySQLPartitionBatchExecMode {GUI, CREATE};
+	public enum MySQLPartitionBatchExecMode {
+		GUI, CREATE
+	};
 
 	//実行モード
 	private MySQLPartitionBatchExecMode execMode = MySQLPartitionBatchExecMode.GUI;
 
-	private TenantToolService toolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
+	private TenantToolService toolService = ServiceRegistry.getRegistry()
+			.getService(TenantToolService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -97,22 +100,22 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 		logEnvironment();
 
 		switch (getExecMode()) {
-		case GUI :
+		case GUI:
 			logInfo("■Start App");
 			logInfo("");
 
 			//Guiの場合はConsole出力を外す
 			switchLog(false, true);
 
-			MySQLPartitionManagerApp.main(new String[]{getLanguage()});
+			MySQLPartitionManagerApp.main(new String[] { getLanguage() });
 			return true;
-		case CREATE :
+		case CREATE:
 			logInfo("■Start Create Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return startCreateWizard();
-		default :
+		default:
 			logError("unsupport execute mode : " + getExecMode());
 			return false;
 		}

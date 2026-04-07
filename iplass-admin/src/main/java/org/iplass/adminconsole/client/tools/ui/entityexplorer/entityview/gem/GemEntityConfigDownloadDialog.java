@@ -61,7 +61,7 @@ public class GemEntityConfigDownloadDialog extends AbstractWindow {
 		String title = "Export Entity Definition : ";
 		if (defName != null) {
 			title += defName;
-		} else if (defNames != null && defNames.length > 0){
+		} else if (defNames != null && defNames.length > 0) {
 			title += defNames.length + " Entities";
 		} else {
 		}
@@ -107,18 +107,20 @@ public class GemEntityConfigDownloadDialog extends AbstractWindow {
 				//POST化
 				PostDownloadFrame frame = new PostDownloadFrame();
 				frame.setAction(GWT.getModuleBaseURL() + "service/entityconfigdownload")
-					.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-					.addParameter("definitionName", defName)
-					.addParameter("definitionNames", defNamesString(defNames))
-					.addParameter("fileType", FILETYPE.valueOf(SmartGWTUtil.getStringValue(fileTypeField)).name())
-					.addParameter("csvOutputTarget", TARGET.VIEW.name())
-					.addParameter("csvEncode", ENCODE.valueOf(SmartGWTUtil.getStringValue(csvEncodeField)).getValue())
-					.addParameter("xmlEntity", "false")
-					.addParameter("xmlEntityView", "true")
-					.addParameter("xmlEntityFilter", "false")
-					.addParameter("xmlEntityMenuItem", "false")
-					.addParameter("xmlEntityWebAPI", "false")
-					.execute();
+						.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+						.addParameter("definitionName", defName)
+						.addParameter("definitionNames", defNamesString(defNames))
+						.addParameter("fileType", FILETYPE.valueOf(SmartGWTUtil.getStringValue(fileTypeField))
+								.name())
+						.addParameter("csvOutputTarget", TARGET.VIEW.name())
+						.addParameter("csvEncode", ENCODE.valueOf(SmartGWTUtil.getStringValue(csvEncodeField))
+								.getValue())
+						.addParameter("xmlEntity", "false")
+						.addParameter("xmlEntityView", "true")
+						.addParameter("xmlEntityFilter", "false")
+						.addParameter("xmlEntityMenuItem", "false")
+						.addParameter("xmlEntityWebAPI", "false")
+						.execute();
 
 				destroy();
 			}

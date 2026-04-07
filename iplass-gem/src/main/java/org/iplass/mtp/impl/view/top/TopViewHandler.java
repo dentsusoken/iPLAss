@@ -27,16 +27,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
+import org.iplass.mtp.impl.view.top.parts.HasNestPartsHandler;
+import org.iplass.mtp.impl.view.top.parts.MetaTopViewParts;
+import org.iplass.mtp.impl.view.top.parts.TopViewPartsHandler;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.PageContext;
-
-import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
-import org.iplass.mtp.impl.view.top.parts.HasNestPartsHandler;
-import org.iplass.mtp.impl.view.top.parts.MetaTopViewParts;
-import org.iplass.mtp.impl.view.top.parts.TopViewPartsHandler;
 
 /**
  * TOP画面ランタイム
@@ -98,7 +98,7 @@ public class TopViewHandler extends BaseMetaDataRuntime {
 		if (handler instanceof HasNestPartsHandler) {
 			List<TopViewPartsHandler> handlers = new ArrayList<>();
 			handlers.add(handler);
-			handlers.addAll(((HasNestPartsHandler)handler).getNestParts());
+			handlers.addAll(((HasNestPartsHandler) handler).getNestParts());
 			return handlers;
 		} else {
 			return Arrays.asList(handler);

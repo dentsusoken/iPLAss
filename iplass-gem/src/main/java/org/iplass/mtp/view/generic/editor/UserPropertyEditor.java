@@ -20,10 +20,6 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -32,13 +28,17 @@ import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+
 /**
  *
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/UserPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
+		@Jsp(path = "/jsp/gem/generic/editor/UserPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM)
 })
 public class UserPropertyEditor extends CustomPropertyEditor implements LabelablePropertyEditor {
 
@@ -47,47 +47,49 @@ public class UserPropertyEditor extends CustomPropertyEditor implements Labelabl
 
 	/** 表示タイプ */
 	public enum UserDisplayType {
-		@XmlEnumValue("Label")LABEL,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("Label")
+		LABEL,
+		@XmlEnumValue("Hidden")
+		HIDDEN
 	}
 
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_editor_UserPropertyEditor_displayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=UserDisplayType.class,
-			required=true,
-			displayOrder=100,
-			description="画面に表示する方法を選択します。",
-			descriptionKey="generic_editor_UserPropertyEditor_displayTypeDescriptionKey"
+			displayName = "表示タイプ",
+			displayNameKey = "generic_editor_UserPropertyEditor_displayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = UserDisplayType.class,
+			required = true,
+			displayOrder = 100,
+			description = "画面に表示する方法を選択します。",
+			descriptionKey = "generic_editor_UserPropertyEditor_displayTypeDescriptionKey"
 	)
 	private UserDisplayType displayType;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値を登録する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値を登録する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean insertWithLabelValue = true;
 
 	/** Label形式の場合の更新制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値で更新する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値で更新する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean updateWithLabelValue = false;
 

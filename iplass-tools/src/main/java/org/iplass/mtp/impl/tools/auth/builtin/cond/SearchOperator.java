@@ -26,6 +26,7 @@ public enum SearchOperator {
 	LESSEQUAL("<=");
 
 	private String displayName;
+
 	private SearchOperator(String displayName) {
 		this.displayName = displayName;
 	}

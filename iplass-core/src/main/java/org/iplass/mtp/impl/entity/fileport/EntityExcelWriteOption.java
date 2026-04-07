@@ -75,8 +75,7 @@ public class EntityExcelWriteOption extends ParseOption {
 	private Function<PropertyDefinition, String> columnName = property -> property.getName();
 
 	/** 多重度複数プロパティの列名の出力文字列を返す関数 */
-	private BiFunction<PropertyDefinition, Integer, String> multipleColumnName
-			= (property, index) -> property.getName() + "[" + index + "]";
+	private BiFunction<PropertyDefinition, Integer, String> multipleColumnName = (property, index) -> property.getName() + "[" + index + "]";
 
 	/** SelectPropertyのソートをするかを返す関数 */
 	private Function<SelectProperty, Boolean> sortSelectValue = property -> false;
@@ -85,7 +84,8 @@ public class EntityExcelWriteOption extends ParseOption {
 	private Function<Query, SearchQueryCsvContext> beforeSearch = query -> new SearchQueryCsvContext(query);
 
 	/** 検索実行後Query処理 */
-	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {};
+	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {
+	};
 
 	/**
 	 * 全バージョンデータを出力するかを返します。

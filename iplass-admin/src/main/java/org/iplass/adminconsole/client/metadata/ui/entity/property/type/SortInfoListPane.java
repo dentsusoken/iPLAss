@@ -66,7 +66,7 @@ public class SortInfoListPane extends VLayout {
 		gridSort.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				startSortInfoEdit(false, (SortInfoListGridRecord)event.getRecord());
+				startSortInfoEdit(false, (SortInfoListGridRecord) event.getRecord());
 			}
 		});
 
@@ -190,7 +190,7 @@ public class SortInfoListPane extends VLayout {
 
 			setOverflow(Overflow.VISIBLE);
 			setBodyOverflow(Overflow.VISIBLE);
-			setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+			setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
 			ListGridField sortNameField = new ListGridField("propertyName", "Property Name");
 			ListGridField sortTypeField = new ListGridField("sortType", "Order");

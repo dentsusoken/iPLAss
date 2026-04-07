@@ -23,10 +23,6 @@ package org.iplass.mtp.view.generic.element.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
@@ -38,13 +34,17 @@ import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 /**
  * プロパティをレイアウトする情報の基底クラス
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({PropertyItem.class, PropertyColumn.class})
-@FieldOrder(manual=true)
+@XmlSeeAlso({ PropertyItem.class, PropertyColumn.class })
+@FieldOrder(manual = true)
 public abstract class PropertyBase extends Element implements PropertyElement {
 
 	/** シリアルバージョンUID */
@@ -55,82 +55,76 @@ public abstract class PropertyBase extends Element implements PropertyElement {
 
 	/** 画面表示時のラベル */
 	@MetaFieldInfo(
-			displayName="表示ラベル",
-			displayNameKey="generic_element_property_PropertyBase_displayLabelDisplaNameKey",
-			description="画面に表示するラベルを設定します。",
-			descriptionKey="generic_element_property_PropertyBase_displayLabelDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "表示ラベル",
+			displayNameKey = "generic_element_property_PropertyBase_displayLabelDisplaNameKey",
+			description = "画面に表示するラベルを設定します。",
+			descriptionKey = "generic_element_property_PropertyBase_displayLabelDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedDisplayLabelList",
-			displayOrder=300
+			displayOrder = 300
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	@MultiLang(itemNameGetter = "getPropertyName")
 	private String displayLabel;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_property_PropertyBase_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
+			displayName = "多言語設定",
+			displayNameKey = "generic_element_property_PropertyBase_localizedDisplayLabelListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 310
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 
 	/** クラス名 */
 	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_property_PropertyBase_styleDisplaNameKey",
-			displayOrder=320,
-			description="スタイルシートのクラス名を指定します。" +
+			displayName = "クラス名",
+			displayNameKey = "generic_element_property_PropertyBase_styleDisplaNameKey",
+			displayOrder = 320,
+			description = "スタイルシートのクラス名を指定します。" +
 					"複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_property_PropertyBase_styleDescriptionKey"
+			descriptionKey = "generic_element_property_PropertyBase_styleDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private String style;
 
-
-
-
 	/** プロパティエディタ */
 	@MetaFieldInfo(
-			displayName="プロパティエディタ",
-			displayNameKey="generic_element_property_PropertyBase_editorDisplaNameKey",
-			required=true,
-			inputType=InputType.REFERENCE,
-			referenceClass=PropertyEditor.class,
-			displayOrder=1000,
-			description="プロパティの型にあわせたプロパティエディタが" +
+			displayName = "プロパティエディタ",
+			displayNameKey = "generic_element_property_PropertyBase_editorDisplaNameKey",
+			required = true,
+			inputType = InputType.REFERENCE,
+			referenceClass = PropertyEditor.class,
+			displayOrder = 1000,
+			description = "プロパティの型にあわせたプロパティエディタが" +
 					"デフォルトで選択されているので変更しないで下さい。",
-			descriptionKey="generic_element_property_PropertyBase_editorDescriptionKey"
+			descriptionKey = "generic_element_property_PropertyBase_editorDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	@MultiLang(itemNameGetter = "getPropertyName", isMultiLangValue = false)
 	private PropertyEditor editor;
 
-
-
-
 	/** 自動補完設定 */
 	@MetaFieldInfo(
-			displayName="自動補完設定",
-			displayNameKey="generic_element_property_PropertyBase_autocompletionSettingDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=AutocompletionSetting.class,
-			displayOrder=2000,
-			description="自動補完設定を設定します。",
-			descriptionKey="generic_element_property_PropertyBase_autocompletionSettingDescriptionKey"
+			displayName = "自動補完設定",
+			displayNameKey = "generic_element_property_PropertyBase_autocompletionSettingDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			referenceClass = AutocompletionSetting.class,
+			displayOrder = 2000,
+			description = "自動補完設定を設定します。",
+			descriptionKey = "generic_element_property_PropertyBase_autocompletionSettingDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION, FieldReferenceType.BULK}
+			referenceTypes = { FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION, FieldReferenceType.BULK }
 	)
 	private AutocompletionSetting autocompletionSetting;
 

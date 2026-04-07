@@ -62,7 +62,10 @@ public enum CacheCriteriaType {
 	public static CacheCriteriaType valueOf(CacheCriteriaDefinition definition) {
 		for (CacheCriteriaType type : values()) {
 			//if (definition.getClass().isAssignableFrom(type.definitionClass)) {
-			if (definition.getClass().getName().equals(type.definitionClass().getName())) {
+			if (definition.getClass()
+					.getName()
+					.equals(type.definitionClass()
+							.getName())) {
 				return type;
 			}
 		}
@@ -73,22 +76,28 @@ public enum CacheCriteriaType {
 //		return type.definitionClass().newInstance();
 //	}
 	public static CacheCriteriaDefinition typeOfDefinition(CacheCriteriaType type) {
-		if (type.definitionClass().equals(JavaClassCacheCriteriaDefinition.class)) {
+		if (type.definitionClass()
+				.equals(JavaClassCacheCriteriaDefinition.class)) {
 			return new JavaClassCacheCriteriaDefinition();
-		} else if (type.definitionClass().equals(ParameterMatchCacheCriteriaDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ParameterMatchCacheCriteriaDefinition.class)) {
 			return new ParameterMatchCacheCriteriaDefinition();
-		} else if (type.definitionClass().equals(ScriptingCacheCriteriaDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ScriptingCacheCriteriaDefinition.class)) {
 			return new ScriptingCacheCriteriaDefinition();
 		}
 		return null;
 	}
 
 	public static CacheCriteriaTypeEditPane typeOfEditPane(CacheCriteriaType type) {
-		if (type.definitionClass().equals(JavaClassCacheCriteriaDefinition.class)) {
+		if (type.definitionClass()
+				.equals(JavaClassCacheCriteriaDefinition.class)) {
 			return new JavaClassCacheCriteriaEditPane();
-		} else if (type.definitionClass().equals(ParameterMatchCacheCriteriaDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ParameterMatchCacheCriteriaDefinition.class)) {
 			return new ParameterMatchCacheCriteriaGridEditPane();
-		} else if (type.definitionClass().equals(ScriptingCacheCriteriaDefinition.class)) {
+		} else if (type.definitionClass()
+				.equals(ScriptingCacheCriteriaDefinition.class)) {
 			return new ScriptingCacheCriteriaEditPane();
 		}
 		return null;

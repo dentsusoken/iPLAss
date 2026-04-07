@@ -32,7 +32,8 @@ public class ScriptingSectionControl extends ItemControl implements SectionContr
 	public ScriptingSectionControl(String defName, FieldReferenceType triggerType, ScriptingSection section) {
 		super(defName, triggerType);
 
-		if (section.getTitle() != null && !section.getTitle().isEmpty()) {
+		if (section.getTitle() != null && !section.getTitle()
+				.isEmpty()) {
 			setTitle(section.getTitle());
 		} else {
 			setTitle("Script Section");
@@ -48,7 +49,8 @@ public class ScriptingSectionControl extends ItemControl implements SectionContr
 			public void execute(MetaFieldUpdateEvent event) {
 				ScriptingSection section = (ScriptingSection) event.getValue();
 
-				if (section.getTitle() != null && !section.getTitle().isEmpty()) {
+				if (section.getTitle() != null && !section.getTitle()
+						.isEmpty()) {
 					setTitle(section.getTitle());
 				} else {
 					setTitle("Script Section");
@@ -57,7 +59,8 @@ public class ScriptingSectionControl extends ItemControl implements SectionContr
 			}
 		});
 
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 	}
 

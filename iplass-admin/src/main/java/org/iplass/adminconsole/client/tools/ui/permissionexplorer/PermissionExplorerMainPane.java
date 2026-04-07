@@ -26,9 +26,9 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.plugin.ContentClosedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentSelectedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentStateChangeHandler;
-import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleMainPane;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleListPane.RoleDataChangeEvent;
 import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleListPane.RoleDataChangeHandler;
+import org.iplass.adminconsole.client.tools.ui.permissionexplorer.role.RoleMainPane;
 import org.iplass.mtp.entity.Entity;
 
 import com.google.gwt.core.shared.GWT;
@@ -166,10 +166,13 @@ public class PermissionExplorerMainPane extends VLayout implements ContentStateC
 			for (Entity current : roleList) {
 				boolean isMatch = false;
 				for (Entity update : newRoleList) {
-					if (current.getOid().equals(update.getOid())) {
+					if (current.getOid()
+							.equals(update.getOid())) {
 						isMatch = true;
-						if (!current.getName().equals(update.getName())
-								|| !current.getValue("code").equals(update.getValue("code"))) {
+						if (!current.getName()
+								.equals(update.getName())
+								|| !current.getValue("code")
+										.equals(update.getValue("code"))) {
 							isChange = true;
 						}
 						break;

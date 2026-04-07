@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 
-
 /**
  * <p>汎用データ変更イベントです。</p>
  * 
@@ -45,10 +44,10 @@ public class MenuItemDataChangedEvent extends DataChangedEvent {
 		UPDATE,
 		DELETE
 	}
-	
+
 	/** イベントタイプ */
 	private Type type;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -56,7 +55,7 @@ public class MenuItemDataChangedEvent extends DataChangedEvent {
 		super();
 		setType(type);
 	}
-	
+
 	/**
 	 * コンストラクタ
 	 * 
@@ -66,7 +65,7 @@ public class MenuItemDataChangedEvent extends DataChangedEvent {
 		super(valueMap);
 		setType(type);
 	}
-	
+
 	/**
 	 * イベントのタイプを設定します。
 	 * 
@@ -75,7 +74,7 @@ public class MenuItemDataChangedEvent extends DataChangedEvent {
 	public void setType(Type type) {
 		this.type = type;
 	}
-	
+
 	/**
 	 * イベントのタイプを返します。
 	 * 

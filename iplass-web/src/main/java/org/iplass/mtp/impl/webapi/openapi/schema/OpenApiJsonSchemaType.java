@@ -62,11 +62,21 @@ public enum OpenApiJsonSchemaType {
 	 */
 	public static OpenApiJsonSchemaType fromContentType(String contentType, OpenApiJsonSchemaType defaultValue) {
 		var mediaType = MediaType.valueOf(contentType);
-		if (mediaType.getType().equals("application") && (mediaType.getSubtype().equals("json") || mediaType.getSubtype().endsWith("+json"))) {
+		if (mediaType.getType()
+				.equals("application")
+				&& (mediaType.getSubtype()
+						.equals("json")
+						|| mediaType.getSubtype()
+								.endsWith("+json"))) {
 			// application/json もしくは、 application/*+json の場合
 			return OpenApiJsonSchemaType.JSON;
 
-		} else if (mediaType.getType().equals("application") && (mediaType.getSubtype().equals("xml") || mediaType.getSubtype().endsWith("+xml"))) {
+		} else if (mediaType.getType()
+				.equals("application")
+				&& (mediaType.getSubtype()
+						.equals("xml")
+						|| mediaType.getSubtype()
+								.endsWith("+xml"))) {
 			// application/xml もしくは、 application/*+xml の場合
 			return OpenApiJsonSchemaType.XML;
 

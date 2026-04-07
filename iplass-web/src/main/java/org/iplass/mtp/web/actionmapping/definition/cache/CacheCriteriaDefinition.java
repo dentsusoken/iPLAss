@@ -23,9 +23,8 @@ package org.iplass.mtp.web.actionmapping.definition.cache;
 import java.io.Serializable;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * サーバ側でコンテンツのキャッシュを行う場合の定義です。
@@ -35,12 +34,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso (value = {
-		JavaClassCacheCriteriaDefinition.class,
-		ParameterMatchCacheCriteriaDefinition.class,
-		ScriptingCacheCriteriaDefinition.class
-})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = {
+				JavaClassCacheCriteriaDefinition.class,
+				ParameterMatchCacheCriteriaDefinition.class,
+				ScriptingCacheCriteriaDefinition.class
+		})
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class CacheCriteriaDefinition implements Serializable {
 
 	private static final long serialVersionUID = -7269996485444294477L;

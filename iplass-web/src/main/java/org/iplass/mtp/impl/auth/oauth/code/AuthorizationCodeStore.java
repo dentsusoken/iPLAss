@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.auth.oauth.code;
 
 public interface AuthorizationCodeStore {
 	public AuthorizationCode newAuthorizationCode(AuthorizationRequest authReq);
+
 	public AuthorizationCode getAndRemoveAuthorizationCode(String codeValue);
 
 }

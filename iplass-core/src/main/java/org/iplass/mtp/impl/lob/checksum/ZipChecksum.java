@@ -21,9 +21,9 @@
 package org.iplass.mtp.impl.lob.checksum;
 
 public class ZipChecksum implements Checksum {
-	
+
 	private java.util.zip.Checksum cksm;
-	
+
 	public ZipChecksum(java.util.zip.Checksum cksm) {
 		this.cksm = cksm;
 	}

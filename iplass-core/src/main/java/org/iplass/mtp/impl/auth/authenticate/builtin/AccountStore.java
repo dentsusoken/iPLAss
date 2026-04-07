@@ -27,7 +27,7 @@ import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.spi.Config;
 
 public interface AccountStore {
-	
+
 	public void inited(AuthenticationProvider provider, Config config);
 
 	public void updateAccountLoginStatus(BuiltinAccount account);
@@ -43,17 +43,17 @@ public interface AccountStore {
 	public BuiltinAccount getAccount(int tenantId, String accountId);
 
 	public BuiltinAccount getAccountFromOid(int tenantId, String oid);
-	
+
 	public void addPasswordHistory(Password hi);
-	
+
 	public List<Password> getPasswordHistory(int tenantId, String accountId);
-	
+
 	public void deletePasswordHistory(int tenantId, String accountId);
-	
+
 	public void deletePasswordHistory(int tenantId, String accountId, Timestamp dateBefore);
-	
+
 	public void updatePasswordHistoryAccountId(int tenantId, String oldAccountId, String newAccountId);
 
 	public void resetLoginErrorCnt(BuiltinAccount account);
-	
+
 }

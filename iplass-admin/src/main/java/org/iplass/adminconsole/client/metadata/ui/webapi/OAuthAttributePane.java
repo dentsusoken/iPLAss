@@ -55,7 +55,8 @@ public class OAuthAttributePane extends VLayout {
 		form.setGroupTitle("OAuth");
 
 		supportBearerTokenField = new CheckboxItem("supportBearerTokenField", "Support Bearer Token");
-		supportBearerTokenField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_OAuthAttributePane_supportBearerToken")));
+		supportBearerTokenField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_OAuthAttributePane_supportBearerToken")));
 
 		oauthScopesField = new TextAreaItem();
 		oauthScopesField.setTitle("Scopes");

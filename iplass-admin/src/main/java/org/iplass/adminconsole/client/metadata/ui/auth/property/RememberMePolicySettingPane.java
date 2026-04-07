@@ -30,7 +30,7 @@ import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 
-public class RememberMePolicySettingPane  extends AbstractSettingPane {
+public class RememberMePolicySettingPane extends AbstractSettingPane {
 
 	private CheckboxItem chkUsePolicy;
 

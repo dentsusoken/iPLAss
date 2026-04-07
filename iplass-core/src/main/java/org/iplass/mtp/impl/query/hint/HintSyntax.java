@@ -43,11 +43,11 @@ import org.iplass.mtp.impl.parser.SyntaxContext;
 import org.iplass.mtp.impl.query.QueryConstants;
 
 public class HintSyntax implements Syntax<Hint>, QueryConstants {
-	private static char[] RIGHT_PAREN_DELS = {')'};
-	
+	private static char[] RIGHT_PAREN_DELS = { ')' };
+
 	public void init(SyntaxContext context) {
 	}
-	
+
 	private List<String> parseList(ParseContext str) throws ParseException {
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (str.peekChar() != LEFT_PAREN_CHAR) {
@@ -55,9 +55,9 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 		} else {
 			str.consumeChars(1);
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		List<String> list = new ArrayList<>();
 		boolean isFirst = true;
 		while (!str.startsWith(RIGHT_PAREN) && !str.isEnd()) {
@@ -88,7 +88,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 		if (token == null) {
 			throw new ParseException(new EvalError("hint clause expected.", this, str));
 		}
-		
+
 		token = token.toUpperCase();
 		switch (token) {
 		case HINT_INDEX:
@@ -128,7 +128,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			if (str.popChar() != RIGHT_PAREN_CHAR) {
 				throw new ParseException(new EvalError(") expected.", this, str));
 			}
-			
+
 			return nh;
 		case HINT_BIND:
 			BindHint bh = new BindHint();
@@ -146,7 +146,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			}
 			str.consumeChars(1);
 			str.consumeChars(ParseContext.WHITE_SPACES);
-			
+
 			if (str.equalsNextToken(HINT_CACHE_TRANSACTION_LOCAL, ParseContext.TOKEN_DELIMITERS)) {
 				//transaction local指定
 				ch.setScope(CacheScope.TRANSACTION);
@@ -179,7 +179,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 				//global指定
 				setTtl(str, ch);
 			}
-			
+
 			if (str.peekChar() != RIGHT_PAREN_CHAR) {
 				throw new ParseException(new EvalError(") expected.", this, str));
 			}
@@ -196,7 +196,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			String sizeStr = str.nextToken(RIGHT_PAREN_DELS);
 			try {
 				fsh.setSize(Integer.parseInt(sizeStr.trim()));
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				throw new ParseException(new EvalError("invalid size value.", this, str));
 			}
 			str.consumeChars(1);
@@ -212,7 +212,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			String secStr = str.nextToken(RIGHT_PAREN_DELS);
 			try {
 				th.setSeconds(Integer.parseInt(secStr.trim()));
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				throw new ParseException(new EvalError("invalid seconds value.", this, str));
 			}
 			str.consumeChars(1);
@@ -228,7 +228,8 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			return roh;
 		default:
 			str.setCurrentIndex(currentIndex);
-			throw new ParseException(new EvalError("hint clause(INDEX/NO_INDEX/NATIVE/BIND/CACHE/FETCH_SIZE/TIMEOUT/SUPPRESS_WARNINGS/READ_ONLY) expected.", this, str));
+			throw new ParseException(
+					new EvalError("hint clause(INDEX/NO_INDEX/NATIVE/BIND/CACHE/FETCH_SIZE/TIMEOUT/SUPPRESS_WARNINGS/READ_ONLY) expected.", this, str));
 		}
 	}
 
@@ -237,7 +238,7 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 		if (ttlStr != null) {
 			try {
 				ch.setTTL(Integer.parseInt(ttlStr.trim()));
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				throw new ParseException(new EvalError("invalid TTL(or TRANSACTION/KEEP/RELOAD scope) value on cache hint.", this, str));
 			}
 		}

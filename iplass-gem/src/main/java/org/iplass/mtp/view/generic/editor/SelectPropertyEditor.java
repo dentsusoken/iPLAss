@@ -23,11 +23,6 @@ package org.iplass.mtp.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
@@ -37,14 +32,19 @@ import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
+
 /**
  * 選択型プロパティエディタ
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
-	@Jsp(path="/jsp/gem/generic/editor/SelectPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
-	@Jsp(path="/jsp/gem/aggregation/unit/editor/SelectPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
+		@Jsp(path = "/jsp/gem/generic/editor/SelectPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/SelectPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
 public class SelectPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
@@ -52,123 +52,128 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	private static final long serialVersionUID = -7350313249348123012L;
 
 	/** 表示タイプ */
-	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum SelectDisplayType {
-		@XmlEnumValue("Radio")RADIO,
-		@XmlEnumValue("Checkbox")CHECKBOX,
-		@XmlEnumValue("Select")SELECT,
-		@XmlEnumValue("Label")LABEL,
-		@XmlEnumValue("Hidden")HIDDEN
+		@XmlEnumValue("Radio")
+		RADIO,
+		@XmlEnumValue("Checkbox")
+		CHECKBOX,
+		@XmlEnumValue("Select")
+		SELECT,
+		@XmlEnumValue("Label")
+		LABEL,
+		@XmlEnumValue("Hidden")
+		HIDDEN
 	}
 
 	/** 表示タイプ */
 	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_editor_SelectPropertyEditor_displayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=SelectDisplayType.class,
-			required=true,
-			displayOrder=100,
-			description="画面に表示する方法を選択します。",
-			descriptionKey="generic_editor_SelectPropertyEditor_displayTypeDescriptionKey"
+			displayName = "表示タイプ",
+			displayNameKey = "generic_editor_SelectPropertyEditor_displayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = SelectDisplayType.class,
+			required = true,
+			displayOrder = 100,
+			description = "画面に表示する方法を選択します。",
+			descriptionKey = "generic_editor_SelectPropertyEditor_displayTypeDescriptionKey"
 	)
 	private SelectDisplayType displayType;
 
 	/** セレクトボックスの値 */
 	@MetaFieldInfo(
-			displayName="選択値",
-			displayNameKey="generic_editor_SelectPropertyEditor_valuesDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			multiple=true,
-			displayOrder=110,
-			referenceClass=EditorValue.class
+			displayName = "選択値",
+			displayNameKey = "generic_editor_SelectPropertyEditor_valuesDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			multiple = true,
+			displayOrder = 110,
+			referenceClass = EditorValue.class
 	)
 	@MultiLang(isMultiLangValue = false)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes = { FieldReferenceType.ALL }
 	)
 	private List<EditorValue> values;
 
 	/** 初期値 */
 	@MetaFieldInfo(
-			displayName="初期値",
-			displayNameKey="generic_editor_SelectPropertyEditor_defaultValueDisplaNameKey",
-			displayOrder=120,
-			description="新規作成時の初期値を設定します。",
-			descriptionKey="generic_editor_SelectPropertyEditor_defaultValueDescriptionKey"
+			displayName = "初期値",
+			displayNameKey = "generic_editor_SelectPropertyEditor_defaultValueDisplaNameKey",
+			displayOrder = 120,
+			description = "新規作成時の初期値を設定します。",
+			descriptionKey = "generic_editor_SelectPropertyEditor_defaultValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private String defaultValue;
 
 	/** CSV出力時に選択肢順でソート */
 	@MetaFieldInfo(
-			displayName="CSV出力時に選択肢順でソート",
-			displayNameKey="generic_editor_SelectPropertyEditor_sortCsvOutputValueKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=130,
-			description="CSV出力時に選択肢順でソートするかをしていします。",
-			descriptionKey="generic_editor_SelectPropertyEditor_sortCsvOutputValueDescriptionKey"
+			displayName = "CSV出力時に選択肢順でソート",
+			displayNameKey = "generic_editor_SelectPropertyEditor_sortCsvOutputValueKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 130,
+			description = "CSV出力時に選択肢順でソートするかをしていします。",
+			descriptionKey = "generic_editor_SelectPropertyEditor_sortCsvOutputValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT}
+			referenceTypes = { FieldReferenceType.SEARCHRESULT }
 	)
 	private boolean sortCsvOutputValue;
 
 	/** Label形式の場合の登録制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値を登録する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=200,
-			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値を登録する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 200,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean insertWithLabelValue = true;
 
 	/** Label形式の場合の更新制御 */
 	@MetaFieldInfo(
-			displayName="Label形式の場合に表示値で更新する",
-			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
-			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
-			inputType=InputType.CHECKBOX,
-			displayOrder=210,
-			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+			displayName = "Label形式の場合に表示値で更新する",
+			displayNameKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description = "表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 210,
+			descriptionKey = "generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.DETAIL }
 	)
 	private boolean updateWithLabelValue = false;
-	
+
 	/** RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	@MetaFieldInfo(
-			displayName="RADIO、CHECKBOX形式の場合にアイテムを縦に並べる",
-			displayNameKey="generic_editor_SelectPropertyEditor_itemDirectionColumnDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=220,
-			description="RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。",
-			descriptionKey="generic_editor_SelectPropertyEditor_itemDirectionColumnDescriptionKey"
+			displayName = "RADIO、CHECKBOX形式の場合にアイテムを縦に並べる",
+			displayNameKey = "generic_editor_SelectPropertyEditor_itemDirectionColumnDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 220,
+			description = "RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを設定します。",
+			descriptionKey = "generic_editor_SelectPropertyEditor_itemDirectionColumnDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL }
 	)
 	private boolean itemDirectionColumn;
-	
+
 	/** 「値なし」を検索条件の選択肢に追加するか */
 	@MetaFieldInfo(
-			displayName="「値なし」を検索条件の選択肢に追加するか",
-			displayNameKey="generic_editor_SelectPropertyEditor_isNullSearchEnabledDisplayNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=230,
-			description="「値なし」を検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
-			descriptionKey="generic_editor_SelectPropertyEditor_isNullSearchEnabledDescriptionKey"
+			displayName = "「値なし」を検索条件の選択肢に追加するか",
+			displayNameKey = "generic_editor_SelectPropertyEditor_isNullSearchEnabledDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 230,
+			description = "「値なし」を検索条件の選択肢に追加するかを指定します。値なしが選択された場合、IS NULLを検索条件として指定します。",
+			descriptionKey = "generic_editor_SelectPropertyEditor_isNullSearchEnabledDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes = { FieldReferenceType.SEARCHCONDITION }
 	)
 	private boolean isNullSearchEnabled;
 
@@ -201,7 +206,8 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	 * @return セレクトボックスの値
 	 */
 	public List<EditorValue> getValues() {
-		if (this.values == null) this.values = new ArrayList<>();
+		if (this.values == null)
+			this.values = new ArrayList<>();
 		return values;
 	}
 
@@ -224,7 +230,8 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	public EditorValue getValue(String value) {
 		if (value != null) {
 			for (EditorValue eValue : getValues()) {
-				if (eValue.getValue().equals(value)) {
+				if (eValue.getValue()
+						.equals(value)) {
 					return eValue;
 				}
 			}
@@ -292,7 +299,7 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
-	
+
 	/**
 	 * RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
 	 * @return RADIO、CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
@@ -308,7 +315,7 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor implements Lab
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
 	}
-	
+
 	/**
 	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
 	 * @return 「値なし」を検索条件の選択肢に追加するか

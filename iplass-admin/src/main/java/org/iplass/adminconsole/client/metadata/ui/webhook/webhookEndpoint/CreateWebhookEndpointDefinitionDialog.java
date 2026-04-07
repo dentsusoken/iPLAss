@@ -24,8 +24,8 @@ import org.iplass.adminconsole.client.metadata.ui.common.Callable;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 
-public class CreateWebhookEndpointDefinitionDialog extends MetaDataCreateDialog{
-	
+public class CreateWebhookEndpointDefinitionDialog extends MetaDataCreateDialog {
+
 	public CreateWebhookEndpointDefinitionDialog(String definitionClassName, String nodeDisplayName, String folderPath,
 			boolean isCopyMode) {
 		super(definitionClassName, nodeDisplayName, folderPath, isCopyMode);
@@ -33,7 +33,7 @@ public class CreateWebhookEndpointDefinitionDialog extends MetaDataCreateDialog{
 
 	@Override
 	protected void saveAction(final SaveInfo saveInfo, final boolean isCopyMode) {
-		
+
 		checkExist(saveInfo.getName(), new Callable<Void>() {
 			@Override
 			public Void call() {
@@ -42,21 +42,20 @@ public class CreateWebhookEndpointDefinitionDialog extends MetaDataCreateDialog{
 			}
 		});
 	}
-	
-	
+
 	private void createWebhookEndpointDefinition(SaveInfo saveInfo, boolean isCopyMode) {
 		if (isCopyMode) {
-			service.copyDefinition(TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(), saveInfo.getName(), saveInfo.getDisplayName(), saveInfo.getDescription(), new SaveResultCallback());
+			service.copyDefinition(TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(), saveInfo.getName(), saveInfo.getDisplayName(),
+					saveInfo.getDescription(), new SaveResultCallback());
 		} else {
 			WebhookEndpointDefinition definition = new WebhookEndpointDefinition();
-			
+
 			definition.setName(saveInfo.getName());
 			definition.setDisplayName(saveInfo.getDisplayName());
 			definition.setDescription(saveInfo.getDescription());
-			
+
 			service.createDefinition(TenantInfoHolder.getId(), definition, new SaveResultCallback());
 		}
 	}
-
 
 }

@@ -76,7 +76,8 @@ import org.slf4j.LoggerFactory;
 public class ELFunctions {
 	private static Logger logger = LoggerFactory.getLogger(ELFunctions.class);
 
-	private static PreferenceService ps = ServiceRegistry.getRegistry().getService(PreferenceService.class);
+	private static PreferenceService ps = ServiceRegistry.getRegistry()
+			.getService(PreferenceService.class);
 
 	/**
 	 * <p>
@@ -163,7 +164,8 @@ public class ELFunctions {
 			return TemplateUtil.getMessageString(categoryName, messageId, (Object[]) params);
 		}
 		if (params instanceof Collection<?>) {
-			return TemplateUtil.getMessageString(categoryName, messageId, (Object[]) ((Collection<?>) params).toArray(new Object[((Collection<?>) params).size()]));
+			return TemplateUtil.getMessageString(categoryName, messageId,
+					(Object[]) ((Collection<?>) params).toArray(new Object[((Collection<?>) params).size()]));
 		}
 		return TemplateUtil.getMessageString(categoryName, messageId, params);
 	}
@@ -299,7 +301,8 @@ public class ELFunctions {
 		if (pr instanceof PreferenceSetRuntime) {
 			return pr.getMap();
 		} else {
-			return pr.getMetaData().getValue();
+			return pr.getMetaData()
+					.getValue();
 		}
 	}
 
@@ -333,7 +336,8 @@ public class ELFunctions {
 				return fmt.format((Date) value);
 			}
 			if (value instanceof Number) {
-				DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(ExecuteContext.getCurrentContext().getLocale());
+				DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(ExecuteContext.getCurrentContext()
+						.getLocale());
 				DecimalFormat fmt = new DecimalFormat(pattern, dfs);
 				return fmt.format(value);
 			}
@@ -404,7 +408,7 @@ public class ELFunctions {
 			return TemplateUtil.getResourceString(ResourceBundleUtil.getResourceBundle(baseName), key);
 		}
 		if (params instanceof Object[]) {
-			return TemplateUtil.getResourceString(ResourceBundleUtil.getResourceBundle(baseName), key, (Object[])params);
+			return TemplateUtil.getResourceString(ResourceBundleUtil.getResourceBundle(baseName), key, (Object[]) params);
 		}
 		if (params instanceof Collection<?>) {
 			return TemplateUtil.getResourceString(ResourceBundleUtil.getResourceBundle(baseName), key,

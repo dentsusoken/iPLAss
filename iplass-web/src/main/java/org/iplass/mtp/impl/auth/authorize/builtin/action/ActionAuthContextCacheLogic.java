@@ -36,15 +36,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class ActionAuthContextCacheLogic extends AuthorizationContextCacheLogic {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ActionAuthContextCacheLogic.class);
-	
+
 	public static final String ACTION_PERMISSION_DEF_NAME = "mtp.auth.ActionPermission";
 	public static final String ACTION_PATH = "targetAction";
 	public static final String ACTION_CONDITION = "conditionExpression";
 	public static final String ACTION_ROLE = "role";
-	
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 
 	ActionAuthContextCacheLogic(TenantAuthorizeContext authorizeContext) {
 		super(authorizeContext);
@@ -52,7 +53,7 @@ class ActionAuthContextCacheLogic extends AuthorizationContextCacheLogic {
 
 	@Override
 	protected BuiltinAuthorizationContext loadImpl(final String key) {
-		
+
 		return AuthContext.doPrivileged(() -> {
 			Query q = new Query()
 					.select(Entity.OID, ACTION_CONDITION, ACTION_ROLE + "." + RoleCacheLogic.ROLE_CODE)

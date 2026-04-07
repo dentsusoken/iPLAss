@@ -27,8 +27,10 @@ public class AsyncTaskCleaner extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(AsyncTaskCleaner.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static RdbQueueService rdbQueueService = ServiceRegistry.getRegistry().getService(RdbQueueService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static RdbQueueService rdbQueueService = ServiceRegistry.getRegistry()
+			.getService(RdbQueueService.class);
 
 	private int tenantId;
 
@@ -55,7 +57,7 @@ public class AsyncTaskCleaner extends MtpSilentBatch {
 				//全テナントを対象
 				List<TenantInfo> tenants = getValidTenantInfoList();
 				if (tenants != null) {
-					for (TenantInfo t: tenants) {
+					for (TenantInfo t : tenants) {
 						(new AsyncTaskCleaner(t.getId())).clean();
 					}
 				}
@@ -95,8 +97,7 @@ public class AsyncTaskCleaner extends MtpSilentBatch {
 				Transaction.required(t -> {
 
 					/*
-					 * QueueConfigのresultRemainingTime設定及びStatus.RETURNED(タスク実行完了し、
-					 * 結果が取得されるのを待っている。)のままのタスクの履歴への移動
+					 * QueueConfigのresultRemainingTime設定及びStatus.RETURNED(タスク実行完了し、 結果が取得されるのを待っている。)のままのタスクの履歴への移動
 					 */
 					rdbQueueService.moveNoGetResultTaskToHistory();
 
@@ -126,13 +127,12 @@ public class AsyncTaskCleaner extends MtpSilentBatch {
 		logInfo("");
 	}
 
-
 	/**
 	 * tenantIdを取得します。
 	 * @return tenantId
 	 */
 	public int getTenantId() {
-	    return tenantId;
+		return tenantId;
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class AsyncTaskCleaner extends MtpSilentBatch {
 	 * @param tenantId tenantId
 	 */
 	public void setTenantId(int tenantId) {
-	    this.tenantId = tenantId;
+		this.tenantId = tenantId;
 	}
 
 	@Override

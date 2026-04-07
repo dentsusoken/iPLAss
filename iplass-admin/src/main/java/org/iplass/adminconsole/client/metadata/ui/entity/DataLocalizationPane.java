@@ -178,7 +178,6 @@ public class DataLocalizationPane extends VLayout {
 		return newStrategy;
 	}
 
-
 	private void typeChanged(DataLocalizationStrategyType type) {
 		DataLocalizationStrategy newStrategy = null;
 		if (type != null) {
@@ -209,13 +208,13 @@ public class DataLocalizationPane extends VLayout {
 		}
 
 		public void setEnableLangMap(Map<String, String> enableLangMap) {
-			grid.setData(new ListGridRecord[]{});
+			grid.setData(new ListGridRecord[] {});
 			if (enableLangMap != null) {
 				List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 				for (Entry<String, String> enableLang : enableLangMap.entrySet()) {
 					records.add(createRecord(enableLang));
 				}
-				grid.setData(records.toArray(new ListGridRecord[]{}));
+				grid.setData(records.toArray(new ListGridRecord[] {}));
 			}
 		}
 
@@ -270,22 +269,21 @@ public class DataLocalizationPane extends VLayout {
 			return record;
 		}
 
-
 		private class EnableLangGrid extends ListGrid {
 
 			public EnableLangGrid() {
 				setWidth100();
 				setHeight(1);
 
-				setShowAllColumns(true);							//列を全て表示
-				setShowAllRecords(true);							//レコードを全て表示
+				setShowAllColumns(true); //列を全て表示
+				setShowAllRecords(true); //レコードを全て表示
 				//setCanResizeFields(true);							//列幅変更可能
-				setCanSort(false);									//ソート不可
-				setCanPickFields(false);							//表示フィールドの選択不可
-				setCanGroupBy(false);								//GroupByの選択不可
+				setCanSort(false); //ソート不可
+				setCanPickFields(false); //表示フィールドの選択不可
+				setCanGroupBy(false); //GroupByの選択不可
 				setCanAutoFitFields(false);
-				setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-				setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+				setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+				setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 				setBodyOverflow(Overflow.VISIBLE);
 				setOverflow(Overflow.VISIBLE);
 
@@ -333,7 +331,7 @@ public class DataLocalizationPane extends VLayout {
 			languagePropertyNameField.clearValue();
 
 			if (strategy != null && strategy instanceof EachInstanceDataLocalizationStrategy) {
-				EachInstanceDataLocalizationStrategy instanceStrategy = (EachInstanceDataLocalizationStrategy)strategy;
+				EachInstanceDataLocalizationStrategy instanceStrategy = (EachInstanceDataLocalizationStrategy) strategy;
 				languagePropertyNameField.setValue(instanceStrategy.getLanguagePropertyName());
 				//表示
 				show();
@@ -346,7 +344,7 @@ public class DataLocalizationPane extends VLayout {
 		public void getEditDataLocalizationStrategy(DataLocalizationStrategy strategy) {
 
 			if (strategy != null && strategy instanceof EachInstanceDataLocalizationStrategy) {
-				EachInstanceDataLocalizationStrategy instanceStrategy = (EachInstanceDataLocalizationStrategy)strategy;
+				EachInstanceDataLocalizationStrategy instanceStrategy = (EachInstanceDataLocalizationStrategy) strategy;
 
 				instanceStrategy.setLanguagePropertyName(SmartGWTUtil.getStringValue(languagePropertyNameField));
 			}
@@ -360,7 +358,6 @@ public class DataLocalizationPane extends VLayout {
 			form.clearErrors(true);
 		}
 	}
-
 
 	private class EachPropertyStrategyPane extends VLayout {
 

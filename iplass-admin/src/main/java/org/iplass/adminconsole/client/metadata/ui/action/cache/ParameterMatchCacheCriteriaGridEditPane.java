@@ -65,7 +65,7 @@ public class ParameterMatchCacheCriteriaGridEditPane extends CacheCriteriaTypeEd
 		grid = new ParameterMatchGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editResult((ListGridRecord)event.getRecord());
+				editResult((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -95,7 +95,7 @@ public class ParameterMatchCacheCriteriaGridEditPane extends CacheCriteriaTypeEd
 
 	@Override
 	public void setDefinition(CacheCriteriaDefinition definition) {
-		ParameterMatchCacheCriteriaDefinition def = (ParameterMatchCacheCriteriaDefinition)definition;
+		ParameterMatchCacheCriteriaDefinition def = (ParameterMatchCacheCriteriaDefinition) definition;
 		if (def != null) {
 			setParamNames(def.getMatchingParameterName());
 		}
@@ -107,7 +107,7 @@ public class ParameterMatchCacheCriteriaGridEditPane extends CacheCriteriaTypeEd
 			for (String name : names) {
 				records.add(createRecord(name, null));
 			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
+			grid.setData(records.toArray(new ListGridRecord[] {}));
 		}
 	}
 
@@ -139,7 +139,7 @@ public class ParameterMatchCacheCriteriaGridEditPane extends CacheCriteriaTypeEd
 			paramNames.add(name);
 		}
 
-		ParameterMatchCacheCriteriaDefinition def = (ParameterMatchCacheCriteriaDefinition)definition;
+		ParameterMatchCacheCriteriaDefinition def = (ParameterMatchCacheCriteriaDefinition) definition;
 		def.setMatchingParameterName(paramNames);
 
 		return definition;
@@ -192,14 +192,14 @@ public class ParameterMatchCacheCriteriaGridEditPane extends CacheCriteriaTypeEd
 			setWidth("50%");
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 

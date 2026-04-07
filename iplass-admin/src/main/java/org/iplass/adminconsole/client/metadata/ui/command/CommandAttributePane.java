@@ -69,7 +69,7 @@ public class CommandAttributePane extends HLayout {
 		//入力部分
 		form = new DynamicForm();
 		form.setWidth100();
-		form.setNumCols(9);	//間延びしないように最後に１つ余分に作成
+		form.setNumCols(9); //間延びしないように最後に１つ余分に作成
 		form.setColWidths(50, "*", "*", "*", "*", "*", "*", "*", "*");
 
 		typeField = new SelectItem("type", "Type");
@@ -78,11 +78,13 @@ public class CommandAttributePane extends HLayout {
 
 		readOnlyField = new CheckboxItem();
 		readOnlyField.setTitle("read only proccess.");
-		readOnlyField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_readOnlyTooltip")));
+		readOnlyField
+				.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_readOnlyTooltip")));
 
 		newInstancePerRequestField = new CheckboxItem();
 		newInstancePerRequestField.setTitle("instantiated for each request.");
-		newInstancePerRequestField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_newInstanceTooltip")));
+		newInstancePerRequestField.setTooltip(
+				SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_CommandAttributePane_newInstanceTooltip")));
 
 		form.setFields(typeField, readOnlyField, newInstancePerRequestField);
 

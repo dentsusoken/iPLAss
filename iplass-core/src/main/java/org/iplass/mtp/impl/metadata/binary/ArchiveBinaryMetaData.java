@@ -40,29 +40,30 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 	//zip or jar enabled
-	
+
 	private static class Entry {
 		long size;
 		SimpleBinaryMetaData binData;
 	}
-	
+
 	private String name;
 	private long size;
 	private Path tempPath;
 
-	protected BinaryMetaDataService service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
-	
+	protected BinaryMetaDataService service = ServiceRegistry.getRegistry()
+			.getService(BinaryMetaDataService.class);
+
 	private final ConcurrentHashMap<String, Entry> entryCache;
-	
+
 	public ArchiveBinaryMetaData() {
 		entryCache = new ConcurrentHashMap<>();
 	}
-	
+
 	public ArchiveBinaryMetaData(String name) {
 		this.name = name;
 		entryCache = new ConcurrentHashMap<>();
 	}
-	
+
 	public ArchiveBinaryMetaData(String name, Path source) {
 		this.name = name;
 		entryCache = new ConcurrentHashMap<>();
@@ -73,7 +74,7 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't copy ArchiveBinaryMetaData's source/tempFile:" + source + "/" + tempPath, e);
 		}
 	}
-	
+
 	public ArchiveBinaryMetaData(ArchiveBinaryDefinition def) {
 		this.name = def.getName();
 		entryCache = new ConcurrentHashMap<>();
@@ -85,7 +86,7 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't copy ArchiveBinaryMetaData's definition/tempFile:" + def.getName() + "/" + tempPath, e);
 		}
 	}
-	
+
 	@Override
 	public BinaryDefinition currentConfig() {
 		return new RefArchiveBinaryDefinition(this);
@@ -99,11 +100,11 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 	public Path getTempPath() {
 		return tempPath;
 	}
-	
+
 	public boolean hasEntry(String path) {
 		return entryCache.containsKey(path);
 	}
-	
+
 	public InputStream getEntryAsStream(String path) {
 		Entry entry = entryCache.get(path);
 		if (entry == null) {
@@ -118,7 +119,7 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 		}
 		return entry.binData.getInputStream();
 	}
-	
+
 	public long getEntrySize(String path) {
 		Entry entry = entryCache.get(path);
 		if (entry == null) {
@@ -126,7 +127,7 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 		}
 		return entry.size;
 	}
-	
+
 	private void loadZipEntry(String path) {
 		entryCache.compute(path, (k, v) -> {
 			if (v.binData == null) {
@@ -159,14 +160,14 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 		if (tempPath == null) {
 			return null;
 		}
-		
+
 		try {
 			return Files.newInputStream(tempPath);
 		} catch (IOException e) {
 			throw new MetaDataIllegalStateException("can't open/read ArchiveBinaryMetaData's tempFile:" + tempPath, e);
 		}
 	}
-	
+
 	@Override
 	public OutputStream getOutputStream() {
 		try {
@@ -175,7 +176,7 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 			throw new MetaDataIllegalStateException("can't open/write ArchiveBinaryMetaData's tempFile:" + tempPath, e);
 		}
 	}
-	
+
 	private Path initTempFile() throws IOException {
 		if (tempPath != null) {
 			Files.deleteIfExists(tempPath);
@@ -184,21 +185,22 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 		tempPath = Files.createTempFile(tempDir, "abmd_", ".tmp");
 		return tempPath;
 	}
-	
+
 	private void readZipEntry() throws IOException {
 		entryCache.clear();
 		try (ZipFile zip = new ZipFile(tempPath.toFile())) {
-				zip.stream().forEach(e -> {
-					String name = e.getName();
-					Entry entry = new Entry();
-					entry.size = e.getSize();
-					entryCache.put(name, entry);
-				});
-			};
+			zip.stream()
+					.forEach(e -> {
+						String name = e.getName();
+						Entry entry = new Entry();
+						entry.size = e.getSize();
+						entryCache.put(name, entry);
+					});
+		} ;
 	}
-	
+
 	private class ZipMetaDataOutputStream extends FilterOutputStream {
-		
+
 		private ZipMetaDataOutputStream() throws IOException {
 			super(Files.newOutputStream(initTempFile()));
 		}
@@ -208,7 +210,7 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 			size++;
 			out.write(b);
 		}
-		
+
 		@Override
 		public void write(byte[] b) throws IOException {
 			write(b, 0, b.length);
@@ -267,7 +269,8 @@ public class ArchiveBinaryMetaData implements BinaryMetaData, Externalizable {
 	@Override
 	public void readExternal(ObjectInput in) throws IOException,
 			ClassNotFoundException {
-		service = ServiceRegistry.getRegistry().getService(BinaryMetaDataService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(BinaryMetaDataService.class);
 		name = in.readUTF();
 		size = in.readLong();
 		try (OutputStream os = Files.newOutputStream(initTempFile())) {

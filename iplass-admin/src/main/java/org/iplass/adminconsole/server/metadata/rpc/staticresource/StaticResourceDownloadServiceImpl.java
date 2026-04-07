@@ -24,9 +24,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
@@ -38,6 +35,9 @@ import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType
 import org.iplass.mtp.web.staticresource.definition.LocalizedStaticResourceDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
 import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinitionManager;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class StaticResourceDownloadServiceImpl extends AdminDownloadService {
 
@@ -55,7 +55,8 @@ public class StaticResourceDownloadServiceImpl extends AdminDownloadService {
 			contentDispositionType = ContentDispositionType.valueOf(strContentDispositionType);
 		}
 
-		StaticResourceDefinitionManager dm = ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
+		StaticResourceDefinitionManager dm = ManagerLocator.getInstance()
+				.getManager(StaticResourceDefinitionManager.class);
 		StaticResourceDefinition definition = dm.get(defName);
 
 		try {
@@ -64,11 +65,15 @@ public class StaticResourceDownloadServiceImpl extends AdminDownloadService {
 					resp.setContentType(definition.getContentType());
 				}
 				if (lang == null) {
-					String fileName = definition.getResource().getName();
+					String fileName = definition.getResource()
+							.getName();
 					if (StringUtil.isEmpty(fileName)) {
 						//ファイル名が未指定の場合は、定義名(階層化されている場合は最後)
-						if (definition.getName().contains("/")) {
-							fileName = definition.getName().substring(definition.getName().lastIndexOf("/") + 1);
+						if (definition.getName()
+								.contains("/")) {
+							fileName = definition.getName()
+									.substring(definition.getName()
+											.lastIndexOf("/") + 1);
 						} else {
 							fileName = definition.getName();
 						}
@@ -77,22 +82,29 @@ public class StaticResourceDownloadServiceImpl extends AdminDownloadService {
 					fileName = FilenameUtils.getName(fileName);
 					WebUtil.setContentDispositionHeader(req, resp, contentDispositionType, fileName);
 
-					try (BufferedInputStream bis = new BufferedInputStream(definition.getResource().getInputStream())) {
+					try (BufferedInputStream bis = new BufferedInputStream(definition.getResource()
+							.getInputStream())) {
 						int n = bis.read();
 						while (n != -1) {
-							resp.getOutputStream().write(n);
+							resp.getOutputStream()
+									.write(n);
 							n = bis.read();
 						}
 					}
 				} else {
 					List<LocalizedStaticResourceDefinition> localeDefList = definition.getLocalizedResourceList();
 					for (LocalizedStaticResourceDefinition localeDef : localeDefList) {
-						if (localeDef.getLocaleName().equals(lang)) {
-							String fileName = localeDef.getResource().getName();
+						if (localeDef.getLocaleName()
+								.equals(lang)) {
+							String fileName = localeDef.getResource()
+									.getName();
 							if (StringUtil.isEmpty(fileName)) {
 								//ファイル名が未指定の場合は、定義名(階層化されている場合は最後)
-								if (definition.getName().contains("/")) {
-									fileName = definition.getName().substring(definition.getName().lastIndexOf("/") + 1);
+								if (definition.getName()
+										.contains("/")) {
+									fileName = definition.getName()
+											.substring(definition.getName()
+													.lastIndexOf("/") + 1);
 								} else {
 									fileName = definition.getName();
 								}
@@ -101,10 +113,12 @@ public class StaticResourceDownloadServiceImpl extends AdminDownloadService {
 							fileName = FilenameUtils.getName(fileName);
 							WebUtil.setContentDispositionHeader(req, resp, contentDispositionType, fileName);
 
-							try (BufferedInputStream bis = new BufferedInputStream(localeDef.getResource().getInputStream())) {
+							try (BufferedInputStream bis = new BufferedInputStream(localeDef.getResource()
+									.getInputStream())) {
 								int n = bis.read();
 								while (n != -1) {
-									resp.getOutputStream().write(n);
+									resp.getOutputStream()
+											.write(n);
 									n = bis.read();
 								}
 							}

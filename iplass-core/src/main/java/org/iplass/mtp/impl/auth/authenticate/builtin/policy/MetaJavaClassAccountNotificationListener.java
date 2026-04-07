@@ -26,14 +26,15 @@ import org.iplass.mtp.auth.policy.definition.listeners.JavaClassAccountNotificat
 
 public class MetaJavaClassAccountNotificationListener extends MetaAccountNotificationListener {
 	private static final long serialVersionUID = 8239520834373772775L;
-	
+
 	private String className;
 //	private String initScript;
-	
+
 	@Override
 	public AccountNotificationListener createInstance(String policyName, int i) {
 		try {
-			return (AccountNotificationListener) Class.forName(className).newInstance();
+			return (AccountNotificationListener) Class.forName(className)
+					.newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			throw new IllegalStateException(className + " cant instanceate.", e);
 		}
@@ -42,6 +43,7 @@ public class MetaJavaClassAccountNotificationListener extends MetaAccountNotific
 	public String getClassName() {
 		return className;
 	}
+
 	public void setClassName(String className) {
 		this.className = className;
 	}

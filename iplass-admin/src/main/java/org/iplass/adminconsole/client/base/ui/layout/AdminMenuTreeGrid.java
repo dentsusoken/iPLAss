@@ -98,7 +98,7 @@ public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentSt
 				if (record == null) {
 					return;
 				}
-				AdminMenuTreeNode node = (AdminMenuTreeNode)Tree.nodeForRecord(record);
+				AdminMenuTreeNode node = (AdminMenuTreeNode) Tree.nodeForRecord(record);
 				fireOnDoubleClick(node);
 			}
 		});
@@ -107,7 +107,7 @@ public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentSt
 
 			@Override
 			public void onNodeContextClick(NodeContextClickEvent event) {
-				AdminMenuTreeNode node = (AdminMenuTreeNode)event.getNode();
+				AdminMenuTreeNode node = (AdminMenuTreeNode) event.getNode();
 				fireOnNodeContextClick(node);
 			}
 		});
@@ -116,7 +116,7 @@ public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentSt
 
 			@Override
 			public void onFolderOpened(FolderOpenedEvent event) {
-				AdminMenuTreeNode node = (AdminMenuTreeNode)event.getNode();
+				AdminMenuTreeNode node = (AdminMenuTreeNode) event.getNode();
 				fireOnFolderOpened(node);
 			}
 		});
@@ -275,7 +275,7 @@ public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentSt
 	 * @param event Closeイベント
 	 */
 	@Override
-	public void onContentClosed(ContentClosedEvent event){
+	public void onContentClosed(ContentClosedEvent event) {
 		for (AdminPlugin plugin : plugins) {
 			plugin.onContentClosed(event);
 		}
@@ -287,7 +287,7 @@ public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentSt
 	 * @param event Selectイベント
 	 */
 	@Override
-	public void onContentSelected(ContentSelectedEvent event){
+	public void onContentSelected(ContentSelectedEvent event) {
 		for (AdminPlugin plugin : plugins) {
 			plugin.onContentSelected(event);
 		}

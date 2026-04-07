@@ -24,16 +24,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import jakarta.activation.DataSource;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.EntityManager;
 
+import jakarta.activation.DataSource;
+
 public class BinaryReferenceDataSource implements DataSource {
-	
+
 	private BinaryReference bin;
-	
+
 	public BinaryReferenceDataSource(BinaryReference bin) {
 		this.bin = bin;
 	}
@@ -49,7 +49,9 @@ public class BinaryReferenceDataSource implements DataSource {
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return ManagerLocator.getInstance().getManager(EntityManager.class).getInputStream(bin);
+		return ManagerLocator.getInstance()
+				.getManager(EntityManager.class)
+				.getInputStream(bin);
 	}
 
 	@Override

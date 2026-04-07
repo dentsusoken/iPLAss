@@ -21,15 +21,15 @@
 package org.iplass.mtp.web.template.report.definition;
 
 public enum OutputFileType {
-	PDF("PDF(Jasper)", new String[]{"jasper", "jrxml"}),
-	XLS("XLS(Jasper)", new String[]{"jasper", "jrxml"}),
-	XLSX("XLSX(Jasper)", new String[]{"jasper", "jrxml"}),
-	XLS_POI("XLS(POI)", new String[]{"xls"}),
-	XLSX_POI("XLSX(POI)", new String[]{"xlsx"}),
-	XLSX_SXSSF_POI("XLSX(POI Streaming)", new String[]{"xlsx"}),
-	XLS_JXLS("XLS(JXLS)", new String[]{"jxls", "xls"}),
-	XLSX_JXLS("XLSX(JXLS)", new String[]{"jxls", "xlsx"}),
-	XLSX_SXSSF_JXLS("XLSX(JXLS Streaming)", new String[]{"jxls", "xlsx"});
+	PDF("PDF(Jasper)", new String[] { "jasper", "jrxml" }),
+	XLS("XLS(Jasper)", new String[] { "jasper", "jrxml" }),
+	XLSX("XLSX(Jasper)", new String[] { "jasper", "jrxml" }),
+	XLS_POI("XLS(POI)", new String[] { "xls" }),
+	XLSX_POI("XLSX(POI)", new String[] { "xlsx" }),
+	XLSX_SXSSF_POI("XLSX(POI Streaming)", new String[] { "xlsx" }),
+	XLS_JXLS("XLS(JXLS)", new String[] { "jxls", "xls" }),
+	XLSX_JXLS("XLSX(JXLS)", new String[] { "jxls", "xlsx" }),
+	XLSX_SXSSF_JXLS("XLSX(JXLS Streaming)", new String[] { "jxls", "xlsx" });
 
 	private String displayName;
 	private String[] canExtensions;
@@ -49,7 +49,8 @@ public enum OutputFileType {
 
 	public static OutputFileType convertOutputFileType(String valueAsString) {
 		for (OutputFileType type : OutputFileType.values()) {
-			if(type.name().equals(valueAsString)){
+			if (type.name()
+					.equals(valueAsString)) {
 				return type;
 			}
 		}

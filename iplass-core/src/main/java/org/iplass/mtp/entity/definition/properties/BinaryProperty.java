@@ -35,7 +35,7 @@ public class BinaryProperty extends PropertyDefinition {
 
 	public BinaryProperty() {
 	}
-	
+
 	public BinaryProperty(String name) {
 		setName(name);
 	}
@@ -44,7 +44,7 @@ public class BinaryProperty extends PropertyDefinition {
 	public Class<?> getJavaType() {
 		return BinaryReference.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.BINARY;

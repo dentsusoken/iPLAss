@@ -37,11 +37,11 @@ public class VarPop extends Aggregate {
 
 	public VarPop() {
 	}
-	
+
 	public VarPop(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public VarPop(ValueExpression value) {
 		setValue(value);
 	}

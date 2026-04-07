@@ -97,9 +97,9 @@ public class Literal extends PrimaryValue {
 
 	/** EQL上のDateTime型の文字列表現時のフォーマット。タイムゾーン指定ありの場合（SimpleDateFormat形式） */
 	public static final String DATE_TIME_WITH_TZ_FROMAT = "yyyy-MM-dd HH:mm:ss.SSSXXX";
-	
+
 	public static final String NO_BIND_HINT = "/*+no_bind*/";
-	
+
 	private Object value;
 	private boolean bindable = true;
 
@@ -116,13 +116,14 @@ public class Literal extends PrimaryValue {
 		this.bindable = bindable;
 		checkValidLiteral();
 	}
-	
+
 	private void checkValidLiteral() {
 		if (value instanceof ASTNode) {
-			throw new QueryException(value + " [type:" + value.getClass().getName() + "] is not valid Literal.");
+			throw new QueryException(value + " [type:" + value.getClass()
+					.getName() + "] is not valid Literal.");
 		}
 	}
-	
+
 	public Object getValue() {
 		return value;
 	}
@@ -131,7 +132,7 @@ public class Literal extends PrimaryValue {
 		this.value = value;
 		checkValidLiteral();
 	}
-	
+
 	public boolean isBindable() {
 		return bindable;
 	}
@@ -139,7 +140,6 @@ public class Literal extends PrimaryValue {
 	public void setBindable(boolean bindable) {
 		this.bindable = bindable;
 	}
-
 
 	public void accept(ValueExpressionVisitor visitor) {
 		visitor.visit(this);

@@ -4,7 +4,6 @@
 
 package org.iplass.mtp.tools.batch.metadata;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,13 +23,12 @@ import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Export MetaDataXML Name List Batch
@@ -42,8 +40,10 @@ public class MetaDataNameListExport extends MtpCuiBase {
 	//実行モード
 	private ExecMode execMode = ExecMode.WIZARD;
 
-	private MetaDataPortingService metaService = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
-	private PackageService packageService = ServiceRegistry.getRegistry().getService(PackageService.class);
+	private MetaDataPortingService metaService = ServiceRegistry.getRegistry()
+			.getService(MetaDataPortingService.class);
+	private PackageService packageService = ServiceRegistry.getRegistry()
+			.getService(PackageService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -90,19 +90,19 @@ public class MetaDataNameListExport extends MtpCuiBase {
 		logEnvironment();
 
 		switch (getExecMode()) {
-		case WIZARD :
+		case WIZARD:
 			logInfo("■Start Export Wizard");
 			logInfo("");
 
 			//Wizardの実行
 			return startExportWizard();
-		case SILENT :
+		case SILENT:
 			//TODO Silent版
 			logInfo("■Start Export Silent");
 			logInfo("");
 
 			return false;
-		default :
+		default:
 			logError("unsupport execute mode : " + getExecMode());
 			return false;
 		}
@@ -138,7 +138,8 @@ public class MetaDataNameListExport extends MtpCuiBase {
 			//テナントはダミー(テナントに依存しないので)
 			TenantContext tc = new TenantContext(0, "dummy", "/", true);
 			return ExecuteContext.executeAs(tc, () -> {
-				ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+				ExecuteContext.getCurrentContext()
+						.setLanguage(getLanguage());
 
 				InputStream metaXML = null;
 				MetaDataNameListCsvWriter wrappedWriter = null;
@@ -156,11 +157,15 @@ public class MetaDataNameListExport extends MtpCuiBase {
 					XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(metaXML);
 
 					//ソート
-					List<MetaDataEntry> entries = new ArrayList<>(entryInfo.getPathEntryMap().values());
+					List<MetaDataEntry> entries = new ArrayList<>(entryInfo.getPathEntryMap()
+							.values());
 					Collections.sort(entries, new Comparator<MetaDataEntry>() {
 						@Override
 						public int compare(MetaDataEntry o1, MetaDataEntry o2) {
-							return o1.getPath().toLowerCase().compareTo(o2.getPath().toLowerCase());
+							return o1.getPath()
+									.toLowerCase()
+									.compareTo(o2.getPath()
+											.toLowerCase());
 						}
 					});
 
@@ -182,14 +187,14 @@ public class MetaDataNameListExport extends MtpCuiBase {
 							metaXML.close();
 						}
 					} catch (IOException e) {
-			            throw new RuntimeException(e);
+						throw new RuntimeException(e);
 					} finally {
 						try {
 							if (wrappedWriter != null) {
 								wrappedWriter.close();
 							}
 						} catch (IOException e) {
-				            throw new RuntimeException(e);
+							throw new RuntimeException(e);
 						}
 					}
 				}
@@ -236,7 +241,7 @@ public class MetaDataNameListExport extends MtpCuiBase {
 				logWarn(rs("ExportMetaDataNameList.Wizard.requiredMetaDataFilePathMsg"));
 			}
 
-		} while(validFile == false);
+		} while (validFile == false);
 
 		//出力先ディレクトリ
 		boolean validExportDir = false;
@@ -258,7 +263,7 @@ public class MetaDataNameListExport extends MtpCuiBase {
 				param.setExportDir(exportDir);
 				validExportDir = true;
 			}
-		} while(validExportDir == false);
+		} while (validExportDir == false);
 
 		//出力ファイル名
 		String exportFileName = readConsole(rs("ExportMetaDataNameList.Wizard.inputFileNameMsg") + "(" + param.getExportFileName() + ")");
@@ -277,8 +282,8 @@ public class MetaDataNameListExport extends MtpCuiBase {
 
 	private String getFileExtension(File file) {
 		String fileName = file.getName();
-		if(fileName.lastIndexOf(".") > 0) {
-			return fileName.substring(fileName.lastIndexOf(".")+1);
+		if (fileName.lastIndexOf(".") > 0) {
+			return fileName.substring(fileName.lastIndexOf(".") + 1);
 		} else {
 			return "";
 		}

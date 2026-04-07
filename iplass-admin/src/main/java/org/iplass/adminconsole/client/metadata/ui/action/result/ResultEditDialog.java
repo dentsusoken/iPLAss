@@ -92,7 +92,10 @@ public class ResultEditDialog extends MtpDialog {
 
 			@Override
 			protected boolean condition(Object value) {
-				boolean requireValidate = (statusField.getValueAsString() == null || statusField.getValueAsString().isEmpty()) && (exceptionClassNameField.getValueAsString() == null || exceptionClassNameField.getValueAsString().isEmpty());
+				boolean requireValidate = (statusField.getValueAsString() == null || statusField.getValueAsString()
+						.isEmpty()) && (exceptionClassNameField.getValueAsString() == null
+								|| exceptionClassNameField.getValueAsString()
+										.isEmpty());
 				return !requireValidate;
 			}
 		};
@@ -123,7 +126,7 @@ public class ResultEditDialog extends MtpDialog {
 		});
 
 		final DynamicForm form = new MtpForm();
-		form.setAutoHeight();	//下に追加するためAutoHeight
+		form.setAutoHeight(); //下に追加するためAutoHeight
 		form.setItems(statusField, new SpacerItem(), new SpacerItem(), statusHintField, exceptionClassNameField, typeField);
 
 		container.addMember(form);
@@ -160,7 +163,8 @@ public class ResultEditDialog extends MtpDialog {
 
 		statusField.setValue(definition.getCommandResultStatus());
 		exceptionClassNameField.setValue(definition.getExceptionClassName());
-		typeField.setValue(ResultType.valueOf(definition).name());
+		typeField.setValue(ResultType.valueOf(definition)
+				.name());
 
 		if (typeEditPane != null) {
 			if (container.contains(typeEditPane)) {

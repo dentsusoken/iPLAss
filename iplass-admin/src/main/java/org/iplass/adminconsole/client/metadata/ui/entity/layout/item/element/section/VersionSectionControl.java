@@ -36,7 +36,8 @@ public class VersionSectionControl extends ItemControl implements SectionControl
 		setHeight(22);
 		setBorder("1px solid navy");
 
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 	}
 

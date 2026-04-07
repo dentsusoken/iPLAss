@@ -28,19 +28,21 @@ package org.iplass.mtp.transaction;
  *
  */
 public interface TransactionListener {
-	
+
 	/**
 	 * トランザクションがcommitされた場合、通知されます。
 	 * 
 	 * @param t
 	 */
-	public default void afterCommit(Transaction t) {};
-	
+	public default void afterCommit(Transaction t) {
+	};
+
 	/**
 	 * トランザクションがrollbackされた場合、通知されます。
 	 * 
 	 * @param t
 	 */
-	public default void afterRollback(Transaction t) {};
+	public default void afterRollback(Transaction t) {
+	};
 
 }

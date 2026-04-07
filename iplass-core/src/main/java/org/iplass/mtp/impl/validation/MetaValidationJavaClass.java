@@ -116,7 +116,8 @@ public class MetaValidationJavaClass extends MetaValidation {
 			super(MetaValidationJavaClass.this, entity, property);
 
 			try {
-				validator = (PropertyValidator) Class.forName(className).newInstance();
+				validator = (PropertyValidator) Class.forName(className)
+						.newInstance();
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				throw new IllegalStateException("can not instantiate " + className, e);
 			}

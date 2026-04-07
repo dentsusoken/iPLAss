@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.SubQuerySyntax;
 
 public class ScalarSubQuerySyntax implements Syntax<ScalarSubQuery>, QueryConstants {
-	
+
 	private SubQuerySyntax subQuery;
 
 	public void init(SyntaxContext context) {
@@ -41,11 +41,14 @@ public class ScalarSubQuerySyntax implements Syntax<ScalarSubQuery>, QueryConsta
 	public ScalarSubQuery parse(ParseContext str) throws ParseException {
 		int index = str.getCurrentIndex();
 		SubQuery sq = subQuery.parse(str);
-		if (sq.getQuery().getSelect().getSelectValues().size() != 1) {
+		if (sq.getQuery()
+				.getSelect()
+				.getSelectValues()
+				.size() != 1) {
 			str.setCurrentIndex(index);
 			throw new ParseException(new EvalError("scalar sub query must return a single value.", this, str));
 		}
-		
+
 		return new ScalarSubQuery(sq);
 	}
 

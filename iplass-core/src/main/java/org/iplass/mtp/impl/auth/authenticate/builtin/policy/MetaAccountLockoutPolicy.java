@@ -26,14 +26,14 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 
 public class MetaAccountLockoutPolicy implements MetaData {
 	private static final long serialVersionUID = 2820093765295977330L;
-	
+
 	/** アカウントロックアウトするまでの失敗回数。0はロックアウトしない */
 	private int lockoutFailureCount = 10;
 	/** ロックアウトしている期間（分）。0は無制限 */
 	private int lockoutDuration;
 	/** 失敗回数を記憶しておく期間（分） 。0は無制限*/
 	private int lockoutFailureExpirationInterval;
-	
+
 	public int getLockoutFailureCount() {
 		return lockoutFailureCount;
 	}

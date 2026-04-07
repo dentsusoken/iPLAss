@@ -32,13 +32,13 @@ import org.iplass.mtp.impl.webapi.command.stub.StubResponseCommand;
  * WebAPI メタデータリファレンス
  */
 @MetaDataSeeAlso({
-	DefinitionCommand.class,
-	GetEntityCommand.class,
-	CreateEntityCommand.class,
-	UpdateEntityCommand.class,
-	DeleteEntityCommand.class,
-	BinaryCommand.class,
-	StubResponseCommand.class,
+		DefinitionCommand.class,
+		GetEntityCommand.class,
+		CreateEntityCommand.class,
+		UpdateEntityCommand.class,
+		DeleteEntityCommand.class,
+		BinaryCommand.class,
+		StubResponseCommand.class,
 })
 public class MetaDataRefs {
 }

@@ -64,13 +64,17 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 
 		var content = initResponseContent(operation.getOperation());
 
-		var openApiService = ServiceRegistry.getRegistry().getService(OpenApiService.class);
+		var openApiService = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
 		// メタデータ設定値ベースで設定する
 		var definition = context.getWebApiDefinition();
 		var responseResults = mergeResponseResults(definition);
 		var isNotEmptyResponseResults = !responseResults.isEmpty();
 		var isNotContensStatusKey = responseResults.stream()
-				.filter(r -> r.getName().equals("status")).findFirst().isEmpty();
+				.filter(r -> r.getName()
+						.equals("status"))
+				.findFirst()
+				.isEmpty();
 
 		for (var key : content.keySet()) {
 			var schema = new ObjectSchema();
@@ -83,12 +87,15 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 					if (null != result.getDataType()) {
 						// dataType の設定あり
 						Class<?> dataTypeClass = ClassUtil.forName(result.getDataType());
-						if (openApiService.getStandardClassSchemaResolver().canResolve(dataTypeClass)) {
-							var resultSchema = openApiService.getStandardClassSchemaResolver().resolve(dataTypeClass, jsonSchemaType);
+						if (openApiService.getStandardClassSchemaResolver()
+								.canResolve(dataTypeClass)) {
+							var resultSchema = openApiService.getStandardClassSchemaResolver()
+									.resolve(dataTypeClass, jsonSchemaType);
 							schema.addProperty(result.getName(), resultSchema);
 						} else {
-							var ref = openApiService.getReusableSchemaFactory().addReusableSchema(dataTypeClass, context.getOpenApi(),
-									jsonSchemaType);
+							var ref = openApiService.getReusableSchemaFactory()
+									.addReusableSchema(dataTypeClass, context.getOpenApi(),
+											jsonSchemaType);
 							schema.addProperty(result.getName(), new ObjectSchema().$ref(ref));
 						}
 					} else {
@@ -126,8 +133,10 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
 		// results, responseResults を初期化する
-		context.getWebApiDefinition().setResults(new String[0]);
-		context.getWebApiDefinition().setResponseResults(new WebApiResultAttribute[0]);
+		context.getWebApiDefinition()
+				.setResults(new String[0]);
+		context.getWebApiDefinition()
+				.setResponseResults(new WebApiResultAttribute[0]);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -139,14 +148,20 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 		}
 
 		var nameResultMap = new HashMap<String, WebApiResultAttribute>();
-		for (var result : context.getWebApiDefinition().getResponseResults()) {
+		for (var result : context.getWebApiDefinition()
+				.getResponseResults()) {
 			nameResultMap.put(result.getName(), result);
 		}
 
 		for (var mediaType : content.values()) {
 			// メディアタイプに設定されている最上位スキーマのプロパティのキーをWebApiに反映する
-			if (null != mediaType.getSchema() && null != mediaType.getSchema().getProperties() && !mediaType.getSchema().getProperties().isEmpty()) {
-				for (var prop : mediaType.getSchema().getProperties().keySet()) {
+			if (null != mediaType.getSchema() && null != mediaType.getSchema()
+					.getProperties() && !mediaType.getSchema()
+							.getProperties()
+							.isEmpty()) {
+				for (var prop : mediaType.getSchema()
+						.getProperties()
+						.keySet()) {
 					var name = (String) prop;
 					if (nameResultMap.containsKey(name)) {
 						// 既存のプロパティはスキップする
@@ -161,8 +176,14 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 		}
 
 		// 新しい値を設定
-		context.getWebApiDefinition().setResults(nameResultMap.keySet().stream().toArray(String[]::new));
-		context.getWebApiDefinition().setResponseResults(nameResultMap.values().stream().toArray(WebApiResultAttribute[]::new));
+		context.getWebApiDefinition()
+				.setResults(nameResultMap.keySet()
+						.stream()
+						.toArray(String[]::new));
+		context.getWebApiDefinition()
+				.setResponseResults(nameResultMap.values()
+						.stream()
+						.toArray(WebApiResultAttribute[]::new));
 
 		return CheckNext.CONTINUE;
 	}
@@ -193,7 +214,11 @@ public class WebApiResponseResultsOpenApiOperationConverter extends AbstractWebA
 		if (ArrayUtil.isNotEmpty(def.getResults())) {
 			// results が設定されている場合は、WebApiResultAttribute に変換して追加する
 			for (var resultName : def.getResults()) {
-				if (responseResults.stream().filter(r -> r.getName().equals(resultName)).findFirst().isEmpty()) {
+				if (responseResults.stream()
+						.filter(r -> r.getName()
+								.equals(resultName))
+						.findFirst()
+						.isEmpty()) {
 					// 同一キーの値が存在しない場合は、responseResults に追加する
 					var result = new WebApiResultAttribute();
 					result.setName(resultName);

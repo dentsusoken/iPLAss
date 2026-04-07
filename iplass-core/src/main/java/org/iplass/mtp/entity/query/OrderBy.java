@@ -28,7 +28,6 @@ import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 
-
 /**
  * ORDER BY句を表す。
  * 
@@ -52,11 +51,11 @@ public class OrderBy implements ASTNode {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public void accept(QueryVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (sortSpecList != null) {
-				for (SortSpec s: sortSpecList) {
+				for (SortSpec s : sortSpecList) {
 					s.accept(visitor);
 				}
 			}
@@ -73,11 +72,11 @@ public class OrderBy implements ASTNode {
 		sortSpecList.add(sortSpec);
 		return this;
 	}
-	
+
 	public OrderBy add(Object value, SortType type) {
 		return add(value, type, null);
 	}
-	
+
 	public OrderBy add(Object value, SortType type, NullOrderingSpec nullOrderingSpec) {
 		if (value == null) {
 			throw new NullPointerException("value is null");
@@ -93,10 +92,10 @@ public class OrderBy implements ASTNode {
 		} else {
 			throw new QueryException("value is ValueExpression or String type required.");
 		}
-		
+
 		return add(new SortSpec(v, type, nullOrderingSpec));
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

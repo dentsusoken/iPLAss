@@ -29,7 +29,7 @@ package org.iplass.mtp.web.actionmapping.permission;
  *
  */
 public interface ActionParameter {
-	
+
 	/**
 	 * 当該のnameで指定されるパラメータ値を返却するよう実装する。
 	 * 

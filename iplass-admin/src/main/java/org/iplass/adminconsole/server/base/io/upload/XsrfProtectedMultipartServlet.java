@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.client.rpc.XsrfToken;
 import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
-
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,7 +75,6 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedService
 	private MultipartRequestParameterParser parameterParser;
 	/** デフォルト文字コード */
 	private Charset defaultCharset = StandardCharsets.UTF_8;
-
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -170,7 +168,8 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedService
 
 		} finally {
 			// パースパラメータの破棄
-			requestParameterList.stream().forEach(p -> p.dispose());
+			requestParameterList.stream()
+					.forEach(p -> p.dispose());
 		}
 	}
 
@@ -245,8 +244,9 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedService
 	 */
 	private XsrfToken getXsrfToken(List<MultipartRequestParameter> requestParameterList) {
 		Optional<MultipartRequestParameter> tokenItem = requestParameterList.stream()
-				.filter(item -> XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY.equals(item.getFieldName())).findFirst();
-		return tokenItem.isPresent() ? new XsrfToken(tokenItem.get().getString(getDefaultCharset())) : null;
+				.filter(item -> XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY.equals(item.getFieldName()))
+				.findFirst();
+		return tokenItem.isPresent() ? new XsrfToken(tokenItem.get()
+				.getString(getDefaultCharset())) : null;
 	}
 }
-

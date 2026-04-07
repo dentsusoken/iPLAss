@@ -34,7 +34,6 @@ import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager;
 import org.iplass.mtp.web.interceptor.RequestInterceptor;
 
-
 public class ActionMappingService extends AbstractTypedMetaDataService<MetaActionMapping, ActionMappingRuntime> implements Service {
 
 	//TODO マッピングしているCommandの更新・削除イベントを監視し、関連するActionMappingのキャッシュをクリア
@@ -49,9 +48,11 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 		public TypeMap() {
 			super(getFixedPath(), MetaActionMapping.class, ActionMappingDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<ActionMappingDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(ActionMappingDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(ActionMappingDefinitionManager.class);
 		}
 	}
 
@@ -81,7 +82,7 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 		if (context.exists(ACTION_MAPPING_META_PATH, name)) {
 			return context.getMetaDataHandler(ActionMappingRuntime.class, ACTION_MAPPING_META_PATH + name);
 		}
-		
+
 		String path = name;
 		int index = -1;
 		while ((index = path.lastIndexOf("/")) >= 0) {
@@ -89,7 +90,8 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 			if (context.exists(ACTION_MAPPING_META_PATH, path)) {
 				ActionMappingRuntime ac = context.getMetaDataHandler(ActionMappingRuntime.class, ACTION_MAPPING_META_PATH + path);
 				//パスのパラメータマッピング定義があるActionMappingのみ、階層の一部一致で当該ActionMappingが呼び出されたと判断
-				if (ac != null && ac.getParamMapRuntimes() != null && ac.getParamMapRuntimes().size() > 0) {
+				if (ac != null && ac.getParamMapRuntimes() != null && ac.getParamMapRuntimes()
+						.size() > 0) {
 					return ac;
 				}
 			}
@@ -104,7 +106,7 @@ public class ActionMappingService extends AbstractTypedMetaDataService<MetaActio
 				&& welcomeActionNameList != null
 				&& (name.length() == 0 || name.endsWith("/"))) {
 			MetaDataContext context = MetaDataContext.getContext();
-			for (String wa: welcomeActionNameList) {
+			for (String wa : welcomeActionNameList) {
 				String waPath = name + wa;
 				if (context.exists(ACTION_MAPPING_META_PATH, waPath)) {
 					actionMapping = context.getMetaDataHandler(ActionMappingRuntime.class, ACTION_MAPPING_META_PATH + waPath);

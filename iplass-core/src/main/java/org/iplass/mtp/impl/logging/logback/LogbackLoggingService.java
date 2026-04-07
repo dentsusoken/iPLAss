@@ -27,7 +27,7 @@ import org.iplass.mtp.spi.Config;
 import ch.qos.logback.classic.Level;
 
 public class LogbackLoggingService extends LoggingService {
-	
+
 	@Override
 	public void init(Config config) {
 		super.init(config);
@@ -43,7 +43,7 @@ public class LogbackLoggingService extends LoggingService {
 		if (logCondition.getLevel() != null) {
 			return Level.toLevel(logCondition.getLevel());
 		}
-		
+
 		return false;
 	}
 

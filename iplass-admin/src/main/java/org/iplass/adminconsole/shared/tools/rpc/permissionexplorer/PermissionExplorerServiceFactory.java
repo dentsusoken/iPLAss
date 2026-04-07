@@ -39,7 +39,7 @@ public abstract class PermissionExplorerServiceFactory extends AbstractAdminServ
 
 		PermissionExplorerServiceAsync service = GWT.create(PermissionExplorerService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		PermissionExplorerServiceFactory.service = service;
 

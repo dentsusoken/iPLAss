@@ -33,9 +33,15 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
  */
 public class OAuthClientDefinition implements Definition {
 	private static final long serialVersionUID = 6685839204331734267L;
-	
+
 	private String name;
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private String description;
@@ -45,13 +51,13 @@ public class OAuthClientDefinition implements Definition {
 	private List<String> redirectUris;
 	private String sectorIdentifierUri;//subjectのID生成用に
 	private List<GrantType> grantTypes;
-	
+
 	private String clientUri;
 	private String logoUri;
 	private List<String> contacts;
 	private String tosUri;
 	private String policyUri;
-	
+
 	@Override
 	public String getName() {
 		return name;

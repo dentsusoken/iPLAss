@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class HttpHeaderMdcValueResolver implements MdcValueResolver {
 
 	private String headerName;
-	
+
 	public HttpHeaderMdcValueResolver() {
 	}
 

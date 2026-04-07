@@ -37,7 +37,7 @@ public class Greater extends ComparisonPredicate {
 
 	public Greater() {
 	}
-	
+
 	public Greater(String propertyName, Object valueLiteral) {
 		super(propertyName, valueLiteral);
 	}
@@ -63,10 +63,9 @@ public class Greater extends ComparisonPredicate {
 	protected String getOpString() {
 		return ">";
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
 
-	
-	
 }

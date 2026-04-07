@@ -140,7 +140,7 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 //		});
 		fields.add(messageField);
 
-		return fields.toArray(new TreeGridField[]{});
+		return fields.toArray(new TreeGridField[] {});
 	}
 
 	public void applyStatusResult(List<ImportMetaDataStatus> resultStatus,
@@ -220,7 +220,7 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 				MetaDataImportTreeDS.this.result = result;
 
 				TreeNode root = createMetaDataTreeNode(result.getRootNode());
-				response.setData(new Record[]{root});
+				response.setData(new Record[] { root });
 				processResponse(requestId, response);
 			}
 
@@ -233,9 +233,9 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 			Map criteriaMap = criteria.getValues();
 			Set criteriaSet = criteriaMap.entrySet();
 			for (Iterator criteriaIte = criteriaSet.iterator(); criteriaIte.hasNext();) {
-				Map.Entry entry = (Map.Entry)criteriaIte.next();
+				Map.Entry entry = (Map.Entry) criteriaIte.next();
 				if (CRITERIA_FILE_OID.equals(entry.getKey())) {
-					fileOid = (String)entry.getValue();
+					fileOid = (String) entry.getValue();
 					break;
 				}
 			}
@@ -249,13 +249,13 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 		TreeNode root = new TreeNode("root");
 		root.setAttribute(FIELD_NAME.PATH.name(), metaRoot.getPath());
 		root.setAttribute(FIELD_NAME.ITEM_ID.name(), "");
-		root.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaRoot.getName());	//フォルダの場合はNameをセット
+		root.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaRoot.getName()); //フォルダの場合はNameをセット
 		root.setAttribute(FIELD_NAME.ACTION_NAME.name(), "");
 		root.setAttribute(FIELD_NAME.IS_ERROR.name(), metaRoot.isError());
 		root.setAttribute(FIELD_NAME.IS_WARN.name(), Boolean.FALSE);
 		root.setAttribute(FIELD_NAME.IS_INFO.name(), Boolean.FALSE);
 		root.setAttribute(FIELD_NAME.MESSAGE.name(), metaRoot.getErrorMessage());
-		root.setChildren(createContextPathTreeNodeList(metaRoot.getChildren()).toArray(new TreeNode[]{}));
+		root.setChildren(createContextPathTreeNodeList(metaRoot.getChildren()).toArray(new TreeNode[] {}));
 		root.setIsFolder(true);
 		return root;
 	}
@@ -277,7 +277,7 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 		TreeNode node = new TreeNode(metaNode.getPath());
 		node.setAttribute(FIELD_NAME.PATH.name(), metaNode.getPath());
 		node.setAttribute(FIELD_NAME.ITEM_ID.name(), "");
-		node.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaNode.getName());	//フォルダの場合はNameをセット
+		node.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaNode.getName()); //フォルダの場合はNameをセット
 		node.setAttribute(FIELD_NAME.ACTION_NAME.name(), "");
 		node.setAttribute(FIELD_NAME.IS_ERROR.name(), metaNode.isError());
 		node.setAttribute(FIELD_NAME.IS_WARN.name(), Boolean.FALSE);
@@ -289,7 +289,7 @@ public class MetaDataImportTreeDS extends AbstractAdminDataSource {
 		children.addAll(createContextPathTreeNodeList(metaNode.getChildren()));
 		children.addAll(createMetaDataEntryTreeNodeList(metaNode.getItems()));
 		if (!children.isEmpty()) {
-			node.setChildren(children.toArray(new TreeNode[]{}));
+			node.setChildren(children.toArray(new TreeNode[] {}));
 			return node;
 		} else {
 			return null;

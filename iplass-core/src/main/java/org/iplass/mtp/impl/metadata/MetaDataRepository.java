@@ -32,7 +32,6 @@ import org.iplass.mtp.spi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class MetaDataRepository implements Service {
 
 	private static Logger logger = LoggerFactory.getLogger(MetaDataRepository.class);
@@ -57,11 +56,12 @@ public class MetaDataRepository implements Service {
 
 		if (sharedStore != null && withShared) {
 			for (int i = 0; i < sharedStore.size(); i++) {
-				ent = sharedStore.get(i).loadById(tenantId, id);
+				ent = sharedStore.get(i)
+						.loadById(tenantId, id);
 				if (ent != null && ent.isSharable()) {
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -80,11 +80,12 @@ public class MetaDataRepository implements Service {
 
 		if (sharedStore != null && withShared) {
 			for (int i = 0; i < sharedStore.size(); i++) {
-				ent = sharedStore.get(i).loadById(tenantId, id, version);
+				ent = sharedStore.get(i)
+						.loadById(tenantId, id, version);
 				if (ent != null && ent.isSharable()) {
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -121,13 +122,14 @@ public class MetaDataRepository implements Service {
 		//indexが0の方が優先、local定義が一番優先
 		if (sharedStore != null && withShared) {
 			for (int i = sharedStore.size() - 1; i > -1; i--) {
-				List<MetaDataEntryInfo> list = sharedStore.get(i).definitionList(tenantId, prefixPath, withInvalid);
+				List<MetaDataEntryInfo> list = sharedStore.get(i)
+						.definitionList(tenantId, prefixPath, withInvalid);
 				for (MetaDataEntryInfo definition : list) {
 					if (definition.isSharable()) {
-						if(definition.isOverwritable()){
+						if (definition.isOverwritable()) {
 							//TODO RepositoryTypeの制御はMetaDataContext側にまとめる形にする
 							definition.setRepositryType(RepositoryType.TENANT_LOCAL);
-						}else{
+						} else {
 							definition.setRepositryType(RepositoryType.SHARED);
 						}
 						map.put(getKeyFn.apply(definition), definition);
@@ -176,14 +178,15 @@ public class MetaDataRepository implements Service {
 
 		if (sharedStore != null && withShared) {
 			for (int i = 0; i < sharedStore.size(); i++) {
-				ent = sharedStore.get(i).load(tenantId, path);
+				ent = sharedStore.get(i)
+						.load(tenantId, path);
 				if (ent != null && ent.isSharable()) {
 					if (ent.getMetaData() == null) {
 						throw new SystemException(tenantId + "'s " + path + " MetaData is Incompatible or not defined.");
 					}
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -203,14 +206,15 @@ public class MetaDataRepository implements Service {
 
 		if (sharedStore != null && withShared) {
 			for (int i = 0; i < sharedStore.size(); i++) {
-				ent = sharedStore.get(i).load(tenantId, path, version);
+				ent = sharedStore.get(i)
+						.load(tenantId, path, version);
 				if (ent != null && ent.isSharable()) {
 					if (ent.getMetaData() == null) {
 						throw new SystemException(tenantId + "'s " + path + " MetaData is Incompatible or not defined.");
 					}
-					if(ent.isOverwritable()){
+					if (ent.isOverwritable()) {
 						ent.setRepositryType(RepositoryType.TENANT_LOCAL);
-					}else{
+					} else {
 						ent.setRepositryType(RepositoryType.SHARED);
 					}
 					return ent;
@@ -242,7 +246,6 @@ public class MetaDataRepository implements Service {
 		tenantLocalStore.updateConfigById(tenantId, id, config);
 		logger.info("update MetaData config of id:" + id);
 	}
-
 
 	public List<Integer> getTenantIdsOf(String metaDataId) {
 		return tenantLocalStore.getTenantIdsOf(metaDataId);

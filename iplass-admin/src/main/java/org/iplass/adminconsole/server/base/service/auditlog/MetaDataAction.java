@@ -22,9 +22,7 @@ package org.iplass.adminconsole.server.base.service.auditlog;
 
 public enum MetaDataAction {
 
-	CREATE("store metadata")
-	,UPDATE("update metadata")
-	,DELETE("remove metadata")
+	CREATE("store metadata"), UPDATE("update metadata"), DELETE("remove metadata")
 //	,REFERENCE("reference metadata")
 	;
 

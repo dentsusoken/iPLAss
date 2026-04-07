@@ -105,23 +105,26 @@ public class WebApiPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), WebApiDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_failedToDeleteWebApi") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_deleteWebApiComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), WebApiDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_failedToDeleteWebApi") + caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_failedToDeleteWebApi") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_deleteWebApiComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIPluginManager_failedToDeleteWebApi")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -131,6 +134,6 @@ public class WebApiPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{WebApiEditPane.class};
+		return new Class[] { WebApiEditPane.class };
 	}
 }

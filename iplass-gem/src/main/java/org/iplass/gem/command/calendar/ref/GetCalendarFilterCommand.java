@@ -51,8 +51,8 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.web.template.TemplateUtil;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,17 +61,17 @@ import org.slf4j.LoggerFactory;
  * @author lis7zi
  */
 @WebApi(
-		name=GetCalendarFilterCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results="calendarFilterData",
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/calendar/ref/GetCalendarFilterCommand", displayName="カレンダーフィルター取得")
+		name = GetCalendarFilterCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = "calendarFilterData",
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/calendar/ref/GetCalendarFilterCommand", displayName = "カレンダーフィルター取得")
 public final class GetCalendarFilterCommand implements Command {
 
-	public  static final String WEBAPI_NAME = "gem/calendar/ref/getCalendarFilter";
+	public static final String WEBAPI_NAME = "gem/calendar/ref/getCalendarFilter";
 
 	private static Logger logger = LoggerFactory.getLogger(GetCalendarFilterCommand.class);
 
@@ -91,10 +91,14 @@ public final class GetCalendarFilterCommand implements Command {
 	 * コンストラクタ
 	 */
 	public GetCalendarFilterCommand() {
-		ecm = ManagerLocator.getInstance().getManager(EntityCalendarManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		efm = ManagerLocator.getInstance().getManager(EntityFilterManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		ecm = ManagerLocator.getInstance()
+				.getManager(EntityCalendarManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		efm = ManagerLocator.getInstance()
+				.getManager(EntityFilterManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -104,7 +108,7 @@ public final class GetCalendarFilterCommand implements Command {
 		EntityCalendar ec = ecm.get(calendarName);
 		List<CalendarFilterData> calendarFilterDataList = new ArrayList<>();
 
-		if(ec != null) {
+		if (ec != null) {
 			for (EntityCalendarItem item : ec.getItems()) {
 				String defName = item.getDefinitionName();
 
@@ -128,8 +132,11 @@ public final class GetCalendarFilterCommand implements Command {
 
 				// フィルター項目となるPopertyItemの一覧を作成する
 				List<CalendarFilterPropertyItem> piList = new ArrayList<>();
-				List<PropertyItem> properties = view.getCondSection().getElements().stream()
-						.filter(e -> e instanceof PropertyItem).map(e -> (PropertyItem) e)
+				List<PropertyItem> properties = view.getCondSection()
+						.getElements()
+						.stream()
+						.filter(e -> e instanceof PropertyItem)
+						.map(e -> (PropertyItem) e)
 						.collect(Collectors.toList());
 
 				for (PropertyItem pi : properties) {
@@ -140,18 +147,21 @@ public final class GetCalendarFilterCommand implements Command {
 					PropertyEditor pe = pi.getEditor();
 					if (pe instanceof ReferencePropertyEditor) {
 						ReferencePropertyEditor rpe = (ReferencePropertyEditor) pe;
-						if (!rpe.getNestProperties().isEmpty()) {
+						if (!rpe.getNestProperties()
+								.isEmpty()) {
 							getNestPropertyItem(pi, rpe, ed, piList);
 						} else {
 							PropertyDefinition pd = ed.getProperty(pi.getPropertyName());
 							CalendarFilterPropertyItem cpi = new CalendarFilterPropertyItem();
 							cpi.setPropertyName(pi.getPropertyName());
-							cpi.setDisplayName(TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
+							cpi.setDisplayName(TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(),
+									pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
 							cpi.setPropertyEditor(pi.getEditor(), pd);
-							cpi.setPropertyType(pd.getType().toString());
+							cpi.setPropertyType(pd.getType()
+									.toString());
 							piList.add(cpi);
 						}
-					} else if (pe instanceof BinaryPropertyEditor){
+					} else if (pe instanceof BinaryPropertyEditor) {
 						// バイナリーは除外
 						continue;
 					} else {
@@ -159,9 +169,11 @@ public final class GetCalendarFilterCommand implements Command {
 						PropertyDefinition pd = ed.getProperty(pi.getPropertyName());
 						CalendarFilterPropertyItem cpi = new CalendarFilterPropertyItem();
 						cpi.setPropertyName(pi.getPropertyName());
-						cpi.setDisplayName(TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
+						cpi.setDisplayName(TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(),
+								pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
 						cpi.setPropertyEditor(pi.getEditor(), pd);
-						cpi.setPropertyType(pd.getType().toString());
+						cpi.setPropertyType(pd.getType()
+								.toString());
 						piList.add(cpi);
 					}
 				}
@@ -186,9 +198,11 @@ public final class GetCalendarFilterCommand implements Command {
 			CalendarFilterPropertyItem cpi = new CalendarFilterPropertyItem();
 			PropertyDefinition pd = ed.getProperty(pi.getPropertyName());
 			cpi.setPropertyName(pi.getPropertyName());
-			cpi.setDisplayName(TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
+			cpi.setDisplayName(TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(), pd.getDisplayName(),
+					pd.getLocalizedDisplayNameList()));
 			cpi.setPropertyEditor(pi.getEditor(), pd);
-			cpi.setPropertyType(pd.getType().toString());
+			cpi.setPropertyType(pd.getType()
+					.toString());
 			piList.add(cpi);
 		}
 
@@ -199,29 +213,36 @@ public final class GetCalendarFilterCommand implements Command {
 			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {
-				getLastPropertyItem(npName, np, (ReferencePropertyEditor) np.getEditor(), edm.get(((ReferenceProperty) pd).getObjectDefinitionName()), piList);
+					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties()
+							.isEmpty()) {
+				getLastPropertyItem(npName, np, (ReferencePropertyEditor) np.getEditor(), edm.get(((ReferenceProperty) pd).getObjectDefinitionName()),
+						piList);
 			} else {
 				CalendarFilterPropertyItem cpi = new CalendarFilterPropertyItem();
 				cpi.setPropertyName(npName);
-				cpi.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
+				cpi.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList(), pd.getDisplayName(),
+						pd.getLocalizedDisplayNameList()));
 				cpi.setPropertyEditor(np.getEditor(), pd);
-				cpi.setPropertyType(pd.getType().toString());
+				cpi.setPropertyType(pd.getType()
+						.toString());
 				piList.add(cpi);
 			}
 		}
 	}
 
-	private void getLastPropertyItem(String npName, NestProperty nestProperty, ReferencePropertyEditor rpe, EntityDefinition ed, List<CalendarFilterPropertyItem> piList) {
+	private void getLastPropertyItem(String npName, NestProperty nestProperty, ReferencePropertyEditor rpe, EntityDefinition ed,
+			List<CalendarFilterPropertyItem> piList) {
 
 		// プロパティと一緒にネスト項目を条件設定の場合は自分自身を追加
 		if (rpe.isUseNestConditionWithProperty()) {
 			CalendarFilterPropertyItem cpi = new CalendarFilterPropertyItem();
 			PropertyDefinition pd = ed.getProperty(nestProperty.getPropertyName());
 			cpi.setPropertyName(npName);
-			cpi.setDisplayName(TemplateUtil.getMultilingualString(nestProperty.getDisplayLabel(), nestProperty.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
+			cpi.setDisplayName(TemplateUtil.getMultilingualString(nestProperty.getDisplayLabel(), nestProperty.getLocalizedDisplayLabelList(),
+					pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
 			cpi.setPropertyEditor(nestProperty.getEditor(), pd);
-			cpi.setPropertyType(pd.getType().toString());
+			cpi.setPropertyType(pd.getType()
+					.toString());
 			piList.add(cpi);
 		}
 
@@ -232,14 +253,18 @@ public final class GetCalendarFilterCommand implements Command {
 			PropertyDefinition pd = ed.getProperty(np.getPropertyName());
 			if (pd instanceof ReferenceProperty
 					&& np.getEditor() instanceof ReferencePropertyEditor
-					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties().isEmpty()) {
-				getLastPropertyItem(npName, np, (ReferencePropertyEditor) np.getEditor(), edm.get(((ReferenceProperty) pd).getObjectDefinitionName()), piList);
+					&& !((ReferencePropertyEditor) np.getEditor()).getNestProperties()
+							.isEmpty()) {
+				getLastPropertyItem(npName, np, (ReferencePropertyEditor) np.getEditor(), edm.get(((ReferenceProperty) pd).getObjectDefinitionName()),
+						piList);
 			} else {
 				CalendarFilterPropertyItem cpi = new CalendarFilterPropertyItem();
 				cpi.setPropertyName(npName);
-				cpi.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList()));
+				cpi.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList(), pd.getDisplayName(),
+						pd.getLocalizedDisplayNameList()));
 				cpi.setPropertyEditor(np.getEditor(), pd);
-				cpi.setPropertyType(pd.getType().toString());
+				cpi.setPropertyType(pd.getType()
+						.toString());
 				piList.add(cpi);
 			}
 		}

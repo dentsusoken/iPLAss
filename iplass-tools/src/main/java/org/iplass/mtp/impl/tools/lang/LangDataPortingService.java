@@ -77,7 +77,8 @@ public class LangDataPortingService implements Service {
 		String replacedPath = definitionService.getPath(path);
 		logger.debug("path(" + path + ") to (" + replacedPath + ")");
 
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(replacedPath);
+		MetaDataEntry entry = MetaDataContext.getContext()
+				.getMetaDataEntry(replacedPath);
 		if (entry == null) {
 			logger.warn("metadata " + replacedPath + " is not found.");
 			return null;
@@ -87,7 +88,8 @@ public class LangDataPortingService implements Service {
 		MetaData meta = entry.getMetaData();
 		if (meta instanceof RootMetaData && meta instanceof DefinableMetaData<?>) {
 			info = currentConfig((RootMetaData) meta);
-			if (info.getDefinition() == null) return null;
+			if (info.getDefinition() == null)
+				return null;
 		}
 
 		return info;

@@ -39,11 +39,11 @@ public class MetaPoiReportType extends MetaReportType {
 	private String passwordAttributeName;
 
 	public MetaPoiReportOutputLogic getReportOutputLogic() {
-	    return reportOutputLogic;
+		return reportOutputLogic;
 	}
 
 	public void setReportOutputLogic(MetaPoiReportOutputLogic reportOutputLogic) {
-	    this.reportOutputLogic = reportOutputLogic;
+		this.reportOutputLogic = reportOutputLogic;
 	}
 
 	public String getPasswordAttributeName() {
@@ -87,21 +87,21 @@ public class MetaPoiReportType extends MetaReportType {
 
 		return definition;
 	}
-	
+
 	@Override
 	public ReportTypeRuntime createRuntime() {
 		return new PoiReportTypeRuntime();
 	}
-	
+
 	public class PoiReportTypeRuntime extends ReportTypeRuntime {
 		private PoiReportOutputLogicRuntime outputLogicRuntime;
-		
+
 		public PoiReportTypeRuntime() {
 			if (reportOutputLogic != null) {
 				outputLogicRuntime = reportOutputLogic.createRuntime(getMetaData());
 			}
 		}
-		
+
 		@Override
 		public MetaPoiReportType getMetaData() {
 			return MetaPoiReportType.this;
@@ -109,8 +109,8 @@ public class MetaPoiReportType extends MetaReportType {
 
 		@Override
 		public void setParam(ReportingOutputModel createOutputModel) {
-			PoiReportingOutputModel model = (PoiReportingOutputModel)createOutputModel;
-			if(reportOutputLogic != null){
+			PoiReportingOutputModel model = (PoiReportingOutputModel) createOutputModel;
+			if (reportOutputLogic != null) {
 				model.setLogicRuntime(outputLogicRuntime);
 			}
 			model.setPasswordAttributeName(passwordAttributeName);

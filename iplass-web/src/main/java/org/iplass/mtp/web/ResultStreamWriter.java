@@ -32,7 +32,7 @@ import java.io.OutputStream;
  *
  */
 public interface ResultStreamWriter {
-	
+
 	/**
 	 * 出力処理を記述。
 	 * 

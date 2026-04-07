@@ -89,10 +89,10 @@ public class MetaUnicodeNormalizer extends MetaNormalizer {
 	public NormalizerRuntime createRuntime(MetaEntity entity, MetaProperty property) {
 		return new UnicodeNormalizerRuntime(property);
 	}
-	
+
 	public class UnicodeNormalizerRuntime extends NormalizerRuntime {
 		private Normalizer.Form formEnum;
-		
+
 		UnicodeNormalizerRuntime(MetaProperty property) {
 			if (form == null) {
 				throw new NullPointerException(property.getName() + "'s UnicodeNormalizer form must specified");
@@ -105,10 +105,10 @@ public class MetaUnicodeNormalizer extends MetaNormalizer {
 			if (value == null) {
 				return null;
 			}
-			
+
 			return Normalizer.normalize(value.toString(), formEnum);
 		}
-		
+
 	}
 
 }

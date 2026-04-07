@@ -30,29 +30,31 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public abstract class Jwks {
-	
+
 	static final String JWK_PARAM_KID = "kid";
 	static final String JWKS_PARAM_KEYS = "keys";
-	
+
 	protected OpenIdConnectService service;
-	
+
 	Jwks(OpenIdConnectService service) {
 		this.service = service;
 	}
-	
+
 	public abstract Map<String, Object> get(String kid);
-	
+
 	public abstract List<String> kidList();
-	
+
 	@SuppressWarnings("unchecked")
 	protected Map<String, Map<String, Object>> toJwksMap(String content) {
 		try {
-			Map<String, Object> parsed = service.getObjectMapper().readValue(content, new TypeReference<Map<String, Object>>() {});
-			
+			Map<String, Object> parsed = service.getObjectMapper()
+					.readValue(content, new TypeReference<Map<String, Object>>() {
+					});
+
 			Map<String, Map<String, Object>> ret = new HashMap<>();
 			List<Map<String, Object>> jwkList = (List<Map<String, Object>>) parsed.get(JWKS_PARAM_KEYS);
 			if (jwkList != null) {
-				for (Map<String, Object> jwk: jwkList) {
+				for (Map<String, Object> jwk : jwkList) {
 					ret.put((String) jwk.get(JWK_PARAM_KID), jwk);
 				}
 			}
@@ -61,5 +63,5 @@ public abstract class Jwks {
 			throw new IllegalStateException("can't parse JWKS contents", e);
 		}
 	}
-	
+
 }

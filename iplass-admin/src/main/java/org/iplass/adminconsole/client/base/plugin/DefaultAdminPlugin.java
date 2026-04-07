@@ -26,7 +26,6 @@ import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.tree.Tree;
 
-
 public abstract class DefaultAdminPlugin implements AdminPlugin {
 
 	/** Owner  */
@@ -81,7 +80,8 @@ public abstract class DefaultAdminPlugin implements AdminPlugin {
 	 * @param event {@link ContentClosedEvent}
 	 */
 	@Override
-	public void onContentClosed(ContentClosedEvent event){};
+	public void onContentClosed(ContentClosedEvent event) {
+	};
 
 	/**
 	 * <p>Workspace上のコンテンツがSelectされた際に呼び出されます。</p>
@@ -94,6 +94,7 @@ public abstract class DefaultAdminPlugin implements AdminPlugin {
 	 * @param event {@link ContentSelectedEvent}
 	 */
 	@Override
-	public void onContentSelected(ContentSelectedEvent event){};
+	public void onContentSelected(ContentSelectedEvent event) {
+	};
 
 }

@@ -54,7 +54,6 @@ import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-
 /**
  * 検索条件セクション用のウィンドウ
  * @author lis3wg
@@ -85,7 +84,8 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 		section.setDispFlag(true);
 		section.setColNum(1);
 		section.setConditionDispCount(5);
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 
 		layout = new DropLayout(section.getColNum());
@@ -98,7 +98,8 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 				//カラム数が変更されていたら再構築
 				SearchConditionSection section = (SearchConditionSection) event.getValue();
 
-				if (section.getColNum() == layout.getColNum()) return;
+				if (section.getColNum() == layout.getColNum())
+					return;
 
 				DropLayout old = layout;
 				layout = new DropLayout(section.getColNum());
@@ -178,13 +179,15 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 					} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 						String name = record.getAttribute("name");
-						if (VirtualPropertyItem.class.getName().equals(name)) {
+						if (VirtualPropertyItem.class.getName()
+								.equals(name)) {
 							final VirtualPropertyDialog dialog = new VirtualPropertyDialog();
 							dialog.addOKClickHandler(new ClickHandler() {
 
 								@Override
 								public void onClick(ClickEvent event) {
-									if (!dialog.validate()) return;
+									if (!dialog.validate())
+										return;
 
 									final String name = dialog.getPropertyName();
 									if (ed.getProperty(name) != null) {
@@ -200,7 +203,8 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 									editor.setDisplayType(StringDisplayType.TEXT);
 									property.setEditor(editor);
 
-									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHCONDITION, ed, property);
+									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHCONDITION, ed,
+											property);
 									col.addMember(newProperty, dropPosition);
 									dialog.destroy();
 								}
@@ -231,9 +235,11 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 	 */
 	public void restore(SearchConditionSection section) {
 		//列数追加前のデータは0になってるため、補正する
-		if (section.getColNum() == 0) section.setColNum(1);
+		if (section.getColNum() == 0)
+			section.setColNum(1);
 
-		setClassName(section.getClass().getName());
+		setClassName(section.getClass()
+				.getName());
 		setValueObject(section);
 
 		clear();
@@ -284,7 +290,8 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 		if (section.getElements() == null) {
 			section.setElements(new ArrayList<Element>());
 		} else {
-			section.getElements().clear();
+			section.getElements()
+					.clear();
 		}
 		section.setElements(getData());
 		return section;

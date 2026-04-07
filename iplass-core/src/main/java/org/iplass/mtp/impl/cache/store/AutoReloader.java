@@ -37,10 +37,10 @@ import org.slf4j.LoggerFactory;
  * @author K.Higuchi
  */
 class AutoReloader implements Runnable {
-	
+
 	public static final String AUTO_RELOADER_USER_NAME = "CacheReloader";
 	private static Logger logger = LoggerFactory.getLogger(AutoReloader.class);
-	
+
 	private int tenantId;
 	private String namespace;
 	private WeakReference<CacheEntry> entryRef;
@@ -55,7 +55,7 @@ class AutoReloader implements Runnable {
 		this.timeToLive = timeToLive;
 		this.reloadFunction = reloadFunction;
 	}
-	
+
 	@Override
 	public void run() {
 		CacheEntry entry = entryRef.get();
@@ -63,33 +63,37 @@ class AutoReloader implements Runnable {
 			logger.debug("cache entry is already garbage collected, so skip reloading. namespace:{}", namespace);
 			return;
 		}
-		
-		CacheStore store = ServiceRegistry.getRegistry().getService(CacheService.class).getCache(namespace, false);
+
+		CacheStore store = ServiceRegistry.getRegistry()
+				.getService(CacheService.class)
+				.getCache(namespace, false);
 		if (store == null) {
 			logger.debug("cache store is null, so skip reloading. namespace:{}", namespace);
 			return;
 		}
-		
+
 		CacheEntry currentEntry = store.get(entry.getKey());
 		if (currentEntry != entry) {
 			logger.debug("cache entry is already updated by another thread, so skip reloading. namespace:{}, key:{}", namespace, entry.getKey());
 			return;
 		}
-		
+
 		CacheEntry[] reloaded = new CacheEntry[1];
 		Long[] ttl = new Long[1];
 		CacheEntry newEntry = null;
 		try {
 			newEntry = store.compute(entry.getKey(), (k, e) -> {
 				if (e == entry) {
-					return ExecuteContext.executeAs(ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId),
+					return ExecuteContext.executeAs(ServiceRegistry.getRegistry()
+							.getService(TenantContextService.class)
+							.getTenantContext(tenantId),
 							() -> {
 								ExecuteContext ec = ExecuteContext.getCurrentContext();
 								try {
 									ec.setClientId(AUTO_RELOADER_USER_NAME);
 									ec.mdcPut(AuthService.MDC_USER, AUTO_RELOADER_USER_NAME);
-									
-									logger.debug("reloading cache entry:{} in namespace:{} ",k, namespace);
+
+									logger.debug("reloading cache entry:{} in namespace:{} ", k, namespace);
 									reloaded[0] = reloadFunction.apply(k, e);
 									if (reloaded[0] != null) {
 										ttl[0] = reloaded[0].getTimeToLive();
@@ -109,16 +113,19 @@ class AutoReloader implements Runnable {
 					return e;
 				}
 			});
-			
+
 		} catch (RuntimeException e) {
-			logger.error("failed to reload cache entry: " + entry.getKey() + " in namespace: " + namespace + ", so cannot update CacheEntry. Attempt to reload after next TTL.", e);
-			CacheService cacheService = ServiceRegistry.getRegistry().getService(CacheService.class);
+			logger.error("failed to reload cache entry: " + entry.getKey() + " in namespace: " + namespace
+					+ ", so cannot update CacheEntry. Attempt to reload after next TTL.", e);
+			CacheService cacheService = ServiceRegistry.getRegistry()
+					.getService(CacheService.class);
 			cacheService.schedule(ttl[0], new AutoReloader(tenantId, namespace, newEntry, timeToLive, reloadFunction));
 		}
-		
+
 		if (newEntry != null && newEntry == reloaded[0]) {
 			//自身がputした場合のみリロードをスケジュールする
-			CacheService cacheService = ServiceRegistry.getRegistry().getService(CacheService.class);
+			CacheService cacheService = ServiceRegistry.getRegistry()
+					.getService(CacheService.class);
 			cacheService.schedule(ttl[0], new AutoReloader(tenantId, namespace, newEntry, ttl[0], reloadFunction));
 		} else {
 			logger.debug("mybe another thread has updated the cache entry: {} in namespace: {}, so skip rescheduling", entry.getKey(), namespace);

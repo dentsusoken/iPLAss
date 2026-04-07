@@ -36,7 +36,6 @@ import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefini
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class SelectValuePlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -106,23 +105,27 @@ public class SelectValuePlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), SelectValueDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_failedToDeleteSelectValue") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_deleteSelectValueComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), SelectValueDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_failedToDeleteSelectValue")
+								+ caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_failedToDeleteSelectValue") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_deleteSelectValueComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_selectvalue_SelectValuePluginManager_failedToDeleteSelectValue")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -132,6 +135,6 @@ public class SelectValuePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{SelectValueEditPane.class};
+		return new Class[] { SelectValueEditPane.class };
 	}
 }

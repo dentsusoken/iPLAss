@@ -70,7 +70,7 @@ public class SearchQueryContext {
 	 * @return クエリ
 	 */
 	public Query getQuery() {
-	    return query;
+		return query;
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class SearchQueryContext {
 	 * @param query クエリ
 	 */
 	public void setQuery(Query query) {
-	    this.query = query;
+		this.query = query;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class SearchQueryContext {
 	 * @return 特権実行を行うか
 	 */
 	public boolean isDoPrivileged() {
-	    return doPrivileged;
+		return doPrivileged;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class SearchQueryContext {
 	 * @param doPrivileged 特権実行を行うか
 	 */
 	public void setDoPrivileged(boolean doPrivileged) {
-	    this.doPrivileged = doPrivileged;
+		this.doPrivileged = doPrivileged;
 	}
 
 	/**

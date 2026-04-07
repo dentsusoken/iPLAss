@@ -56,10 +56,10 @@ import org.iplass.mtp.entity.query.value.window.WindowAggregate;
  */
 class OptimizeCountQueryChecker extends QueryVisitorSupport {
 	boolean possible = true;
-	
+
 	@Override
 	public boolean visit(Select select) {
-		if (select .isDistinct()) {
+		if (select.isDistinct()) {
 			possible = false;
 			return false;
 		} else {

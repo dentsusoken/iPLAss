@@ -37,11 +37,11 @@ public class Equals extends ComparisonPredicate {
 
 	public Equals() {
 	}
-	
+
 	public Equals(String propertyName, Object literalValue) {
 		super(propertyName, literalValue);
 	}
-	
+
 	public Equals(ValueExpression property, ValueExpression value) {
 		super(property, value);
 	}
@@ -63,9 +63,9 @@ public class Equals extends ComparisonPredicate {
 	protected String getOpString() {
 		return "=";
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-
 
 }

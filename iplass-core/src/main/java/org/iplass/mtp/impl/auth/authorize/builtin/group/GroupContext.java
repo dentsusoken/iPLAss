@@ -32,7 +32,7 @@ public class GroupContext implements Comparable<GroupContext> {
 	private String parentGroupCode;
 	private String[] childGroupCodes;
 	private TenantAuthorizeContext authContext;
-	
+
 	public GroupContext(String oid, String groupCode, String parentGroupCode, String[] childGroupCodes, TenantAuthorizeContext authContext) {
 		this.oid = oid;
 		this.groupCode = groupCode;
@@ -40,47 +40,47 @@ public class GroupContext implements Comparable<GroupContext> {
 		this.childGroupCodes = childGroupCodes;
 		this.authContext = authContext;
 	}
-	
+
 	public String getOid() {
 		return oid;
 	}
-	
+
 	public String getGroupCode() {
 		return groupCode;
 	}
-	
+
 	public String getParentGroupCode() {
 		return parentGroupCode;
 	}
-	
+
 	public boolean isRoot() {
 		return parentGroupCode == null;
 	}
-	
+
 	public List<GroupContext> getAllNestedChildGroup() {
 		List<GroupContext> groups = new ArrayList<GroupContext>();
 		addGroupCascadeChild(groups);
 		return groups;
 	}
-	
+
 	private void addGroupCascadeChild(List<GroupContext> groups) {
 		groups.add(this);
 		if (childGroupCodes != null) {
-			for (String cgc: childGroupCodes) {
+			for (String cgc : childGroupCodes) {
 				GroupContext child = authContext.getGroupContext(cgc);
-				if(child != null) {
+				if (child != null) {
 					child.addGroupCascadeChild(groups);
 				}
 			}
 		}
 	}
-	
+
 	public List<GroupContext> getGroupPath() {
 		LinkedList<GroupContext> path = new LinkedList<GroupContext>();
 		addPath(path);
 		return path;
 	}
-	
+
 	private void addPath(LinkedList<GroupContext> path) {
 		if (parentGroupCode != null) {
 			GroupContext parent = authContext.getGroupContext(parentGroupCode);
@@ -95,5 +95,5 @@ public class GroupContext implements Comparable<GroupContext> {
 	public int compareTo(GroupContext o) {
 		return oid.compareTo(o.oid);
 	}
-	
+
 }

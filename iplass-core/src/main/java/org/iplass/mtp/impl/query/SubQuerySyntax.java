@@ -27,12 +27,10 @@ import org.iplass.mtp.impl.parser.ParseContext;
 import org.iplass.mtp.impl.parser.ParseException;
 import org.iplass.mtp.impl.parser.Syntax;
 import org.iplass.mtp.impl.parser.SyntaxContext;
-import org.iplass.mtp.impl.query.QueryConstants;
-import org.iplass.mtp.impl.query.QuerySyntax;
 import org.iplass.mtp.impl.query.condition.expr.OrSyntax;
 
 public class SubQuerySyntax implements Syntax<SubQuery>, QueryConstants {
-	
+
 	private QuerySyntax query;
 	private OrSyntax or;
 
@@ -47,28 +45,28 @@ public class SubQuerySyntax implements Syntax<SubQuery>, QueryConstants {
 		}
 		str.consumeChars(1);
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		Query q = query.parse(str);
-		
+
 		SubQuery sq = new SubQuery(q);
-		
+
 		if (str.equalsNextToken(ON, ParseContext.TOKEN_DELIMITERS)) {
 			str.consumeChars(ON.length());
 			if (!str.consumeChars(ParseContext.WHITE_SPACES)) {
 				throw new ParseException(new EvalError("space expected.", this, str));
 			}
-			
+
 			Condition on = or.parse(str);
 			sq.setOn(on);
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.startsWith(RIGHT_PAREN)) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(1);
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		return sq;
 	}
 

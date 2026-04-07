@@ -257,7 +257,8 @@ public abstract class GenericCommandContext {
 	 */
 	public Date getDateValue(String name) {
 		try {
-			return request.getParamAsDate(name, TemplateUtil.getLocaleFormat().getServerDateFormat());
+			return request.getParamAsDate(name, TemplateUtil.getLocaleFormat()
+					.getServerDateFormat());
 		} catch (ApplicationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);
@@ -299,7 +300,8 @@ public abstract class GenericCommandContext {
 	 */
 	public Timestamp getTimestampValue(String name) {
 		try {
-			return request.getParamAsTimestamp(name, TemplateUtil.getLocaleFormat().getServerDateTimeFormat());
+			return request.getParamAsTimestamp(name, TemplateUtil.getLocaleFormat()
+					.getServerDateTimeFormat());
 		} catch (ApplicationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);
@@ -404,7 +406,8 @@ public abstract class GenericCommandContext {
 	 */
 	public Date[] getDateValues(String name) {
 		try {
-			return request.getParamsAsDate(name, TemplateUtil.getLocaleFormat().getServerDateFormat());
+			return request.getParamsAsDate(name, TemplateUtil.getLocaleFormat()
+					.getServerDateFormat());
 		} catch (ApplicationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);
@@ -446,7 +449,8 @@ public abstract class GenericCommandContext {
 	 */
 	public Timestamp[] getTimestampValues(String name) {
 		try {
-			return request.getParamsAsTimestamp(name, TemplateUtil.getLocaleFormat().getServerDateTimeFormat());
+			return request.getParamsAsTimestamp(name, TemplateUtil.getLocaleFormat()
+					.getServerDateTimeFormat());
 		} catch (ApplicationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);

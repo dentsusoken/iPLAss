@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
@@ -37,6 +35,7 @@ import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.TemplateResultDefinition;
 
+import jakarta.servlet.ServletException;
 
 public class TemplateResult extends Result {
 	private static final long serialVersionUID = 8382753736577498165L;
@@ -152,8 +151,11 @@ public class TemplateResult extends Result {
 	public void applyConfig(ResultDefinition definition) {
 		fillFrom(definition);
 		TemplateResultDefinition def = (TemplateResultDefinition) definition;
-		TemplateService ts = ServiceRegistry.getRegistry().getService(TemplateService.class);
-		templateId = ts.getRuntimeByName(def.getTemplateName()).getMetaData().getId();
+		TemplateService ts = ServiceRegistry.getRegistry()
+				.getService(TemplateService.class);
+		templateId = ts.getRuntimeByName(def.getTemplateName())
+				.getMetaData()
+				.getId();
 		resolveByName = false;
 		templateName = null;
 
@@ -162,10 +164,13 @@ public class TemplateResult extends Result {
 		fileNameAttributeName = def.getFileNameAttributeName();
 
 		//name -> id 変換
-		if (def.getLayoutActionName() != null && !def.getLayoutActionName().isEmpty()) {
-			ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		if (def.getLayoutActionName() != null && !def.getLayoutActionName()
+				.isEmpty()) {
+			ActionMappingService service = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime runtime = service.getRuntimeByName(def.getLayoutActionName());
-			layoutId = runtime.getMetaData().getId();
+			layoutId = runtime.getMetaData()
+					.getId();
 			layoutName = null;
 			layoutResolveByName = false;
 		}
@@ -176,7 +181,8 @@ public class TemplateResult extends Result {
 	public ResultDefinition currentConfig() {
 		TemplateResultDefinition definition = new TemplateResultDefinition();
 		fillTo(definition);
-		TemplateService ts = ServiceRegistry.getRegistry().getService(TemplateService.class);
+		TemplateService ts = ServiceRegistry.getRegistry()
+				.getService(TemplateService.class);
 		TemplateRuntime t;
 		if (resolveByName) {
 			t = ts.getRuntimeByName(templateName);
@@ -197,17 +203,21 @@ public class TemplateResult extends Result {
 
 		if (StringUtil.isNotEmpty(layoutId)) {
 			//id -> name 変換
-			ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+			ActionMappingService service = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime runtime = service.getRuntimeById(layoutId);
 			if (runtime != null) {
-				definition.setLayoutActionName(runtime.getMetaData().getName());
+				definition.setLayoutActionName(runtime.getMetaData()
+						.getName());
 			}
 		} else if (StringUtil.isNotEmpty(layoutName)) {
 			//存在チェック
-			ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+			ActionMappingService service = ServiceRegistry.getRegistry()
+					.getService(ActionMappingService.class);
 			ActionMappingRuntime runtime = service.getRuntimeByName(layoutName);
 			if (runtime != null) {
-				definition.setLayoutActionName(runtime.getMetaData().getName());
+				definition.setLayoutActionName(runtime.getMetaData()
+						.getName());
 			}
 		}
 
@@ -222,7 +232,8 @@ public class TemplateResult extends Result {
 		}
 
 		private TemplateRuntime getTemplate() {
-			TemplateService ts = ServiceRegistry.getRegistry().getService(TemplateService.class);
+			TemplateService ts = ServiceRegistry.getRegistry()
+					.getService(TemplateService.class);
 
 			TemplateRuntime tr = null;;
 			if (resolveByName) {
@@ -252,11 +263,13 @@ public class TemplateResult extends Result {
 			if (useContentDisposition) {
 				String fileName = null;
 				if (StringUtil.isNotEmpty(fileNameAttributeName)) {
-					fileName = (String)requestStack.getRequestContext().getAttribute(fileNameAttributeName);
+					fileName = (String) requestStack.getRequestContext()
+							.getAttribute(fileNameAttributeName);
 				}
 				if (fileName == null) {
 					//名前が未指定の場合は、テンプレート名(階層化されている場合は最後)
-					fileName = getLastTemplateName(tr.getMetaData().getName());
+					fileName = getLastTemplateName(tr.getMetaData()
+							.getName());
 				}
 				WebUtil.setContentDispositionHeader(requestStack, getContentDispositionType(), fileName);
 			}
@@ -275,7 +288,8 @@ public class TemplateResult extends Result {
 			if (tr == null) {
 				return null;
 			}
-			return tr.getMetaData().getName();
+			return tr.getMetaData()
+					.getName();
 		}
 
 		@Override

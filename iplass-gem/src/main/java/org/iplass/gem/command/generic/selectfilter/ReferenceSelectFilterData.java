@@ -29,50 +29,50 @@ import org.iplass.mtp.entity.Entity;
 public class ReferenceSelectFilterData {
 
 	/** 総件数 */
-    private int totalCount;
+	private int totalCount;
 
 	/** 選択肢の値 */
-    private List<Entity> optionValues;
+	private List<Entity> optionValues;
 
-    /**
-     * 総件数を返します。
-     * @return 総件数
-     */
-    public int getTotalCount() {
-        return totalCount;
-    }
+	/**
+	 * 総件数を返します。
+	 * @return 総件数
+	 */
+	public int getTotalCount() {
+		return totalCount;
+	}
 
-    /**
-     * 総件数を設定します。
-     * @param totalCount 総件数
-     */
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
+	/**
+	 * 総件数を設定します。
+	 * @param totalCount 総件数
+	 */
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
 
-    /**
-     * 選択肢を返します。
-     * @return 選択肢のリスト
-     */
-    public List<Entity> getOptionValues() {
-        return optionValues;
-    }
+	/**
+	 * 選択肢を返します。
+	 * @return 選択肢のリスト
+	 */
+	public List<Entity> getOptionValues() {
+		return optionValues;
+	}
 
-    /**
-     * 選択肢を設定します。
-     * @param optionValues 選択肢のリスト
-     */
-    public void setOptionValues(List<Entity> optionValues) {
-        this.optionValues = optionValues;
-    }
+	/**
+	 * 選択肢を設定します。
+	 * @param optionValues 選択肢のリスト
+	 */
+	public void setOptionValues(List<Entity> optionValues) {
+		this.optionValues = optionValues;
+	}
 
-    /**
-     * コンストラクタ
-     * @param totalCount 総件数
-     * @param optionValues 選択肢のリスト
-     */
+	/**
+	 * コンストラクタ
+	 * @param totalCount 総件数
+	 * @param optionValues 選択肢のリスト
+	 */
 	public ReferenceSelectFilterData(int totalCount, List<Entity> optionValues) {
-        this.totalCount = totalCount;
-        this.optionValues = optionValues;
-    }
+		this.totalCount = totalCount;
+		this.optionValues = optionValues;
+	}
 }

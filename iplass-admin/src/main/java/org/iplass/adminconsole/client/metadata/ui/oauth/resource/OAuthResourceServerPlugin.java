@@ -36,7 +36,6 @@ import org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -108,25 +107,29 @@ public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + caught.getMessage());
-			}
-			@Override
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_deleteComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete")
+								+ caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + result.getMessage());
-				}
-			}
-		});
+					@Override
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_deleteComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -136,6 +139,6 @@ public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{OAuthResourceServerEditPane.class};
+		return new Class[] { OAuthResourceServerEditPane.class };
 	}
 }

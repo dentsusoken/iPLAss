@@ -38,7 +38,6 @@ public class DeleteInterrupterHandler {
 	/** 検索画面Context */
 	private DeleteCommandContext context;
 
-
 	public DeleteInterrupterHandler(RequestContext request, DeleteCommandContext context, BulkOperationInterrupter interrupter) {
 		this.request = request;
 		this.context = context;
@@ -55,7 +54,6 @@ public class DeleteInterrupterHandler {
 		BulkOperationContext ret = interrupter.beforeOperation(entities, request, context.getEntityDefinition(), view, BulkOperationType.DELETE);
 		return ret;
 	}
-
 
 	/**
 	 * 一括更新した後の処理を行います。

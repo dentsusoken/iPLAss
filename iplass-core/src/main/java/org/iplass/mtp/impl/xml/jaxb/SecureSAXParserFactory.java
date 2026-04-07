@@ -56,14 +56,14 @@ public final class SecureSAXParserFactory extends SAXParserFactory {
 	private static Logger logger = LoggerFactory.getLogger(SecureSAXParserFactory.class);
 
 	private static final EntityResolver EMPTY_ENTITY_RESOLVER = new EntityResolver() {
-	    public InputSource resolveEntity(String publicId, String systemId) {
-	        return new InputSource(new ByteArrayInputStream(new byte[0]));
-	    }
+		public InputSource resolveEntity(String publicId, String systemId) {
+			return new InputSource(new ByteArrayInputStream(new byte[0]));
+		}
 	};
 
-    private final SAXParserFactory spf;
+	private final SAXParserFactory spf;
 
-    public SecureSAXParserFactory(SAXParserFactory spf) {
+	public SecureSAXParserFactory(SAXParserFactory spf) {
 		this.spf = spf;
 		try {
 			spf.setFeature("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);

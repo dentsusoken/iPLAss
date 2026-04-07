@@ -42,7 +42,7 @@ public class MetaScriptingAccountNotificationListener extends MetaAccountNotific
 
 	public static final String NOTIFICATION_BINDING_NAME = "notification";
 
-	private static final String SCRIPT_PREFIX ="MetaScriptingAccountNotificationListener_script";
+	private static final String SCRIPT_PREFIX = "MetaScriptingAccountNotificationListener_script";
 
 	private String script;
 	private List<NotificationType> listenNotification;
@@ -50,19 +50,23 @@ public class MetaScriptingAccountNotificationListener extends MetaAccountNotific
 	public String getScript() {
 		return script;
 	}
+
 	public void setScript(String script) {
 		this.script = script;
 	}
+
 	public List<NotificationType> getListenNotification() {
 		return listenNotification;
 	}
+
 	public void setListenNotification(List<NotificationType> listenNotification) {
 		this.listenNotification = listenNotification;
 	}
 
 	@Override
 	public AccountNotificationListener createInstance(String policyName, int i) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		ScriptEngine scriptEngine = tc.getScriptEngine();
 
 		if (script != null) {
@@ -87,6 +91,7 @@ public class MetaScriptingAccountNotificationListener extends MetaAccountNotific
 		}
 		return def;
 	}
+
 	@Override
 	public void applyConfig(AccountNotificationListenerDefinition def) {
 		ScriptingAccountNotificationListenerDefinition sdef = (ScriptingAccountNotificationListenerDefinition) def;
@@ -97,7 +102,6 @@ public class MetaScriptingAccountNotificationListener extends MetaAccountNotific
 			listenNotification = null;
 		}
 	}
-
 
 	private class TypedListener implements AccountNotificationListener {
 		private boolean created;
@@ -116,7 +120,7 @@ public class MetaScriptingAccountNotificationListener extends MetaAccountNotific
 			this.delegate = compiledScript.createInstanceAs(AccountNotificationListener.class, null);
 
 			if (listenNotification != null) {
-				for (NotificationType t: listenNotification) {
+				for (NotificationType t : listenNotification) {
 					switch (t) {
 					case CREATED:
 						created = true;
@@ -224,7 +228,7 @@ public class MetaScriptingAccountNotificationListener extends MetaAccountNotific
 			this.scriptEngine = scriptEngine;
 
 			if (listenNotification != null) {
-				for (NotificationType t: listenNotification) {
+				for (NotificationType t : listenNotification) {
 					switch (t) {
 					case CREATED:
 						created = true;

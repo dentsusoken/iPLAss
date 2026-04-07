@@ -137,7 +137,9 @@ public class WebApiPathParameterDecomposer {
 			var path = new StringBuilder(defaultPath);
 			var pathItem = new PathItem();
 			for (var param : conditionParams) {
-				path.append("/{").append(param.name).append("}");
+				path.append("/{")
+						.append(param.name)
+						.append("}");
 				pathItem.addParametersItem(param.parameter);
 			}
 
@@ -145,7 +147,8 @@ public class WebApiPathParameterDecomposer {
 			// 返却パスを追加
 			resultPath.add(resolvedPath);
 
-			if (openApi.getPaths() == null || !openApi.getPaths().containsKey(resolvedPath)) {
+			if (openApi.getPaths() == null || !openApi.getPaths()
+					.containsKey(resolvedPath)) {
 				// パスがすでに存在しない場合に PathItem を追加する
 				// パスが存在するケースとして、WebAPI の末尾にメソッド名が付与されているパターン（例： scim/v2/DELETE, scim/v2/POST など）がある。
 				openApi.path(resolvedPath, pathItem);
@@ -179,7 +182,9 @@ public class WebApiPathParameterDecomposer {
 
 	private static Pattern createMethodPathPattern() {
 		// GET|POST|... を作成する
-		String methodPattern = String.join("|", Stream.of(MethodType.values()).map(m -> m.name()).toArray(String[]::new));
+		String methodPattern = String.join("|", Stream.of(MethodType.values())
+				.map(m -> m.name())
+				.toArray(String[]::new));
 		return Pattern.compile("^(.*)/(" + methodPattern + ")$");
 	}
 
@@ -214,7 +219,8 @@ public class WebApiPathParameterDecomposer {
 		 * @return 条件リスト
 		 */
 		public List<String> getConditionList() {
-			return paramList.stream().map(p -> p.condition)
+			return paramList.stream()
+					.map(p -> p.condition)
 					.distinct()
 					.toList();
 		}
@@ -293,7 +299,8 @@ public class WebApiPathParameterDecomposer {
 			this.name = def.getName();
 			this.condition = def.getCondition();
 
-			this.parameter = new PathParameter().name(def.getName()).schema(new StringSchema());
+			this.parameter = new PathParameter().name(def.getName())
+					.schema(new StringSchema());
 		}
 	}
 }

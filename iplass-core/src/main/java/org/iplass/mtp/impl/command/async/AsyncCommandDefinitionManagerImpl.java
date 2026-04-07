@@ -29,7 +29,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class AsyncCommandDefinitionManagerImpl extends AbstractTypedDefinitionManager<AsyncCommandDefinition> implements AsyncCommandDefinitionManager {
 
-	private AsyncCommandService service = ServiceRegistry.getRegistry().getService(AsyncCommandService.class);
+	private AsyncCommandService service = ServiceRegistry.getRegistry()
+			.getService(AsyncCommandService.class);
 
 	@Override
 	public Class<AsyncCommandDefinition> getDefinitionType() {

@@ -45,50 +45,60 @@ public class AccountMaintenanceSelectSQL extends QuerySqlHandler {
 	private static final String ACCOUNT_COUNT_SQL = "SELECT COUNT(ACCOUNT_ID) FROM T_ACCOUNT ";
 
 	private static final String ACCOUNT_SEARCH_SQL = "SELECT " +
-													"TENANT_ID, ACCOUNT_ID, POL_NAME, OID, LAST_LOGIN_ON, LOGIN_ERR_CNT, LOGIN_ERR_DATE, LAST_PASSWORD_CHANGE, CRE_USER, CRE_DATE, UP_USER, UP_DATE " +
-													"FROM T_ACCOUNT ";
+			"TENANT_ID, ACCOUNT_ID, POL_NAME, OID, LAST_LOGIN_ON, LOGIN_ERR_CNT, LOGIN_ERR_DATE, LAST_PASSWORD_CHANGE, CRE_USER, CRE_DATE, UP_USER, UP_DATE "
+			+
+			"FROM T_ACCOUNT ";
 
 	private static final String ACCOUNT_ORDERBY_SQL = " ORDER BY ACCOUNT_ID ASC";
 
 	public String createAccountCountSQL(RdbAdapter rdb, Tenant tenant, UserSpecificCondition cond, AuthenticationPolicyDefinition authPolicy) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(ACCOUNT_COUNT_SQL).append(createAccountSearchWhereSQL(rdb, tenant, cond, authPolicy));
+		sb.append(ACCOUNT_COUNT_SQL)
+				.append(createAccountSearchWhereSQL(rdb, tenant, cond, authPolicy));
 		return sb.toString();
 	}
 
-	public void setAccountCountParameter(RdbAdapter rdb, PreparedStatement ps, Tenant tenant, UserSpecificCondition cond, AuthenticationPolicyDefinition authPolicy) throws SQLException {
+	public void setAccountCountParameter(RdbAdapter rdb, PreparedStatement ps, Tenant tenant, UserSpecificCondition cond,
+			AuthenticationPolicyDefinition authPolicy) throws SQLException {
 		setAccountSearchParameter(rdb, ps, tenant, cond, authPolicy);
 	}
 
 	public int getAccountCountResultData(ResultSet rs) throws SQLException {
-		if(rs.next()) {
+		if (rs.next()) {
 			return rs.getInt(1);
 		}
 		return 0;
 	}
 
-
 	public String createAccountSearchSQL(RdbAdapter rdb, Tenant tenant, UserSpecificCondition cond, AuthenticationPolicyDefinition authPolicy) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(ACCOUNT_SEARCH_SQL).append(createAccountSearchWhereSQL(rdb, tenant, cond, authPolicy)).append(ACCOUNT_ORDERBY_SQL);
+		sb.append(ACCOUNT_SEARCH_SQL)
+				.append(createAccountSearchWhereSQL(rdb, tenant, cond, authPolicy))
+				.append(ACCOUNT_ORDERBY_SQL);
 		return sb.toString();
 	}
 
-	public void setAccountSearchParameter(RdbAdapter rdb, PreparedStatement ps, Tenant tenant, UserSpecificCondition cond, AuthenticationPolicyDefinition authPolicy) throws SQLException {
+	public void setAccountSearchParameter(RdbAdapter rdb, PreparedStatement ps, Tenant tenant, UserSpecificCondition cond,
+			AuthenticationPolicyDefinition authPolicy) throws SQLException {
 		int index = 1;
 		ps.setInt(index++, tenant.getId());
 
 		if (SpecificType.LOCKED == cond.getType()) {
-			int lockCount = authPolicy.getAccountLockoutPolicy().getLockoutFailureCount();
-			int duration = authPolicy.getAccountLockoutPolicy().getLockoutDuration();
-			int faulureInterval = authPolicy.getAccountLockoutPolicy().getLockoutFailureExpirationInterval();
+			int lockCount = authPolicy.getAccountLockoutPolicy()
+					.getLockoutFailureCount();
+			int duration = authPolicy.getAccountLockoutPolicy()
+					.getLockoutDuration();
+			int faulureInterval = authPolicy.getAccountLockoutPolicy()
+					.getLockoutFailureExpirationInterval();
 			ps.setString(index++, authPolicy.getName());
 			ps.setInt(index++, lockCount);
 			if (duration != 0) {
-				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), duration * -1).getTime()), rdb.rdbCalendar());
+				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), duration * -1)
+						.getTime()), rdb.rdbCalendar());
 			}
 			if (faulureInterval != 0) {
-				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), faulureInterval * -1).getTime()), rdb.rdbCalendar());
+				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), faulureInterval * -1)
+						.getTime()), rdb.rdbCalendar());
 			}
 		} else if (SpecificType.EXPIRED_PASSWORD == cond.getType()) {
 			ps.setString(index++, authPolicy.getName());
@@ -104,7 +114,7 @@ public class AccountMaintenanceSelectSQL extends QuerySqlHandler {
 	}
 
 	public void getAccountSearchResultData(RdbAdapter rdb, ResultSet rs, Predicate<BuiltinAccount> callback) throws SQLException {
-		while(rs.next()) {
+		while (rs.next()) {
 			BuiltinAccount account = getAccount(rs, rdb);
 			if (!callback.test(account)) {
 				break;
@@ -117,8 +127,10 @@ public class AccountMaintenanceSelectSQL extends QuerySqlHandler {
 		sb.append("WHERE TENANT_ID = ? ");
 
 		if (SpecificType.LOCKED == cond.getType()) {
-			int duration = authPolicy.getAccountLockoutPolicy().getLockoutDuration();
-			int faulureInterval = authPolicy.getAccountLockoutPolicy().getLockoutFailureExpirationInterval();
+			int duration = authPolicy.getAccountLockoutPolicy()
+					.getLockoutDuration();
+			int faulureInterval = authPolicy.getAccountLockoutPolicy()
+					.getLockoutFailureExpirationInterval();
 			sb.append(" AND POL_NAME = ? ");
 			sb.append(" AND LOGIN_ERR_CNT >= ? ");
 			if (duration != 0) {
@@ -129,7 +141,8 @@ public class AccountMaintenanceSelectSQL extends QuerySqlHandler {
 			}
 		} else if (SpecificType.EXPIRED_PASSWORD == cond.getType()) {
 
-			int maxAge = authPolicy.getPasswordPolicy().getMaximumPasswordAge();
+			int maxAge = authPolicy.getPasswordPolicy()
+					.getMaximumPasswordAge();
 			int condDays = maxAge - cond.getPasswordRemainDays();
 			sb.append(" AND POL_NAME = ? ");
 			sb.append(" AND LAST_PASSWORD_CHANGE IS NOT NULL ");

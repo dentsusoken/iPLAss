@@ -108,12 +108,16 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 		Task newTask = null;
 		AuthContextHolder ach = AuthContextHolder.getAuthContext();
 		if (ach.isSecuredAction() && inheritAuthContext) {
-			newTask = new Task(new CallableInput<>(task, ach.getUserContext(), ach.isPrivileged(), MDC.get(ExecuteContext.MDC_TRACE_ID)), option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
+			newTask = new Task(new CallableInput<>(task, ach.getUserContext(), ach.isPrivileged(), MDC.get(ExecuteContext.MDC_TRACE_ID)),
+					option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
 		} else {
-			newTask = new Task(new CallableInput<>(task, null, false, MDC.get(ExecuteContext.MDC_TRACE_ID)), option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
+			newTask = new Task(new CallableInput<>(task, null, false, MDC.get(ExecuteContext.MDC_TRACE_ID)), option.getGroupingKey(),
+					option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
 		}
 		WorkerWakeUpCaller callback = null;
-		if (q.getConfig().getWorker().isWakeupOnSubmit()) {
+		if (q.getConfig()
+				.getWorker()
+				.isWakeupOnSubmit()) {
 			callback = new WorkerWakeUpCaller();
 		}
 		q.submit(newTask, option.getStartMode(), callback);
@@ -127,7 +131,8 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 			throw new AsyncTaskRuntimeException("queue:" + queueName + " not defined.");
 		}
 		Task task = new Task();
-		task.setTenantId(ExecuteContext.getCurrentContext().getClientTenantId());
+		task.setTenantId(ExecuteContext.getCurrentContext()
+				.getClientTenantId());
 		task.setTaskId(taskId);
 		task.setStatus(TaskStatus.UNKNOWN);
 		return new RdbAsyncTaskFuture<>(task, q, defaultGetResultTimeoutMillis, initialGetResultIntervalMillis);
@@ -142,15 +147,19 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 
 		private WorkerWakeUpCaller() {
 		}
+
 		@Override
 		public void setContext(Task task, Queue queue) {
 			this.task = task;
 			this.queue = queue;
 		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public void afterCommit(Transaction t) {
-			if (queue.getConfig().getWorker().getActualWorkerSize() > 0) {
+			if (queue.getConfig()
+					.getWorker()
+					.getActualWorkerSize() > 0) {
 				//複数回起動しないように
 				int workerId = queue.resolveActualWorkerId(task.getVirtualWorkerId());
 				List<Integer> widList = (List<Integer>) t.getAttribute(WID_LIST);
@@ -164,9 +173,15 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 						//ランダムで選択、LocalWorker優先
 						widList.add(workerId);
 
-						workerId = rand.nextInt(queue.getConfig().getWorker().getActualWorkerSize());
-						for (int i = 0; i < queue.getConfig().getWorker().getActualWorkerSize(); i++) {
-							int cwid = (workerId + i) % queue.getConfig().getWorker().getActualWorkerSize();
+						workerId = rand.nextInt(queue.getConfig()
+								.getWorker()
+								.getActualWorkerSize());
+						for (int i = 0; i < queue.getConfig()
+								.getWorker()
+								.getActualWorkerSize(); i++) {
+							int cwid = (workerId + i) % queue.getConfig()
+									.getWorker()
+									.getActualWorkerSize();
 							Worker cw = queue.getWorker(cwid);
 							if (cw instanceof LocalWorker) {
 								w = cw;
@@ -185,6 +200,7 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 				}
 			}
 		}
+
 		@Override
 		public void afterRollback(Transaction t) {
 		}
@@ -209,20 +225,25 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 			try {
 				Task reload = q.peek(task.getTaskId(), true, true);
 				if (q.taskAbort(reload, mayInterruptIfRunning, null, true, true)) {
-					if (reload != null && reload.getCallable().getActual() instanceof ExceptionHandleable) {
+					if (reload != null && reload.getCallable()
+							.getActual() instanceof ExceptionHandleable) {
 						AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(task.getTaskId(), q.getName());
 						String prevTraceId = MDC.get(ExecuteContext.MDC_TRACE_ID);
 						ExecuteContext ec = ExecuteContext.getCurrentContext();
 						try {
 							ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
-							
-							if (reload.getCallable().getTraceId() != null) {
-								ec.mdcPut(ExecuteContext.MDC_TRACE_ID, reload.getCallable().getTraceId());
+
+							if (reload.getCallable()
+									.getTraceId() != null) {
+								ec.mdcPut(ExecuteContext.MDC_TRACE_ID, reload.getCallable()
+										.getTraceId());
 							}
-							
-							((ExceptionHandleable) reload.getCallable().getActual()).canceled();
+
+							((ExceptionHandleable) reload.getCallable()
+									.getActual()).canceled();
 						} catch (Throwable e) {
-							fatalLogger.warn("ExceptionHandleable's canceled() call failed.(queue:" + q.getConfig().getName() + ", task:" + reload.getTaskId() + ",tenantId:" + reload.getTenantId() + ")", e);
+							fatalLogger.warn("ExceptionHandleable's canceled() call failed.(queue:" + q.getConfig()
+									.getName() + ", task:" + reload.getTaskId() + ",tenantId:" + reload.getTenantId() + ")", e);
 							//cancelの場合は、ステータスは更新する
 							Transaction tran = Transaction.getCurrent();
 							if (tran != null && tran.getStatus() == TransactionStatus.ACTIVE && tran.isRollbackOnly()) {
@@ -307,7 +328,7 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 						remainTime -= interval;
 						interval = interval * 2;
 					}
-				};
+				} ;
 				if (getTask == null) {
 					throw new TimeoutException("RdbAsyncTask.get operation timeout.queueName:" + q.getName() + ", taskId:" + task.getTaskId());
 				}

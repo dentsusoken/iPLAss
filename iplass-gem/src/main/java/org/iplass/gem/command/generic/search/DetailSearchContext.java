@@ -89,9 +89,11 @@ public class DetailSearchContext extends SearchContextBase {
 		if (Constants.EXPRESSION.equals(expr)) {
 			a.addExpression(getFilterExpressionCondition());
 		} else if (Constants.AND.equals(expr)) {
-			if (!conditions.isEmpty()) a.addExpression(new And(conditions));
+			if (!conditions.isEmpty())
+				a.addExpression(new And(conditions));
 		} else if (Constants.OR.equals(expr)) {
-			if (!conditions.isEmpty()) a.addExpression(new Or(conditions));
+			if (!conditions.isEmpty())
+				a.addExpression(new Or(conditions));
 		} else if (Constants.NOT.equals(expr)) {
 			if (!conditions.isEmpty()) {
 				And and = new And();
@@ -104,7 +106,8 @@ public class DetailSearchContext extends SearchContextBase {
 		}
 
 		Where w = new Where();
-		if (a.getChildExpressions() != null && !a.getChildExpressions().isEmpty()) {
+		if (a.getChildExpressions() != null && !a.getChildExpressions()
+				.isEmpty()) {
 			w.setCondition(a);
 		}
 
@@ -129,12 +132,14 @@ public class DetailSearchContext extends SearchContextBase {
 				SearchConditionDetail detail = details.get(i);
 				if (detail != null) {
 					PropertyItem property = null;
-					if (detail.getPropertyName().indexOf(".") == -1) {
+					if (detail.getPropertyName()
+							.indexOf(".") == -1) {
 						property = getLayoutProperty(detail.getPropertyName());
 					} else {
 						property = getLayoutProperty(detail.getPropertyName());//直接参照のプロパティをD&Dかも
 						if (property == null) {//取れなければネスト項目かも
-							String[] tmp = detail.getPropertyName().split("\\.");
+							String[] tmp = detail.getPropertyName()
+									.split("\\.");
 							property = getLayoutProperty(tmp[0]);
 						}
 					}
@@ -163,7 +168,6 @@ public class DetailSearchContext extends SearchContextBase {
 			}
 		}
 
-
 		if (isValid) {
 			try {
 				//条件式のチェック
@@ -189,7 +193,8 @@ public class DetailSearchContext extends SearchContextBase {
 		for (Entry<String, String> entry : propMap.entrySet()) {
 			SearchConditionDetail detail = null;
 			for (SearchConditionDetail _detail : details) {
-				if (_detail != null && entry.getKey().equals(_detail.getPropertyName())) {
+				if (_detail != null && entry.getKey()
+						.equals(_detail.getPropertyName())) {
 					detail = _detail;
 					break;
 				}
@@ -197,7 +202,8 @@ public class DetailSearchContext extends SearchContextBase {
 
 			//条件がなければエラー
 			if (detail == null) {
-				getRequest().setAttribute(Constants.MESSAGE, resourceString("command.generic.search.DetailSearchContext.pleaseInput", entry.getValue()));
+				getRequest().setAttribute(Constants.MESSAGE,
+						resourceString("command.generic.search.DetailSearchContext.pleaseInput", entry.getValue()));
 				return false;
 			}
 		}
@@ -223,14 +229,16 @@ public class DetailSearchContext extends SearchContextBase {
 			PropertyDefinition pd = getPropertyDefinition(propName);
 
 			//非表示なので対象外
-			if (!isDisplayProperty(pd)) continue;
+			if (!isDisplayProperty(pd))
+				continue;
 
 			if (pd instanceof ReferenceProperty && property.getEditor() instanceof ReferencePropertyEditor) {
 				//参照の場合はネストのチェック
 				String defName = ((ReferenceProperty) pd).getObjectDefinitionName();
 				String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(),
 						pd.getDisplayName(), pd.getLocalizedDisplayNameList());
-				getRequiredNestPropertyMap(map, propName, displayLabel, defName, (ReferencePropertyEditor) property.getEditor(), property.isRequiredDetail());
+				getRequiredNestPropertyMap(map, propName, displayLabel, defName, (ReferencePropertyEditor) property.getEditor(),
+						property.isRequiredDetail());
 			} else {
 				//その他は必須ならマップに保持
 				if (property.isRequiredDetail()) {
@@ -252,18 +260,22 @@ public class DetailSearchContext extends SearchContextBase {
 	 * @param editor
 	 * @param required
 	 */
-	private void getRequiredNestPropertyMap(HashMap<String, String> map, String propName, String displayLabel, String defName, ReferencePropertyEditor editor, boolean required) {
+	private void getRequiredNestPropertyMap(HashMap<String, String> map, String propName, String displayLabel, String defName,
+			ReferencePropertyEditor editor, boolean required) {
 
 		boolean showNest = false;
 		if (editor.getDisplayType() == ReferenceDisplayType.SELECT
 				|| editor.getDisplayType() == ReferenceDisplayType.CHECKBOX
 				|| editor.getDisplayType() == ReferenceDisplayType.REFCOMBO
 				|| (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog())) {
-			if (required) map.put(propName, displayLabel);
+			if (required)
+				map.put(propName, displayLabel);
 		} else {
-			if (editor.getNestProperties().isEmpty()) {
+			if (editor.getNestProperties()
+					.isEmpty()) {
 				//ネストがなければ名前
-				if (required) map.put(propName, displayLabel);
+				if (required)
+					map.put(propName, displayLabel);
 			} else {
 				showNest = true;
 				if (editor.isUseNestConditionWithProperty() && required) {
@@ -274,7 +286,9 @@ public class DetailSearchContext extends SearchContextBase {
 		}
 
 		if (showNest || editor.isUseNestConditionWithProperty()) {
-			EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(defName);
+			EntityDefinition ed = ManagerLocator.getInstance()
+					.getManager(EntityDefinitionManager.class)
+					.get(defName);
 
 			for (NestProperty np : editor.getNestProperties()) {
 				String npName = propName + "." + np.getPropertyName();
@@ -284,7 +298,8 @@ public class DetailSearchContext extends SearchContextBase {
 					String refDefName = ((ReferenceProperty) pd).getObjectDefinitionName();
 					String refDisplayLabel = TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList(),
 							pd.getDisplayName(), pd.getLocalizedDisplayNameList());
-					getRequiredNestPropertyMap(map, npName, refDisplayLabel, refDefName, (ReferencePropertyEditor) np.getEditor(), np.isRequiredDetail());
+					getRequiredNestPropertyMap(map, npName, refDisplayLabel, refDefName, (ReferencePropertyEditor) np.getEditor(),
+							np.isRequiredDetail());
 				} else {
 					//その他は必須ならマップに保持
 					if (np.isRequiredDetail()) {
@@ -305,7 +320,8 @@ public class DetailSearchContext extends SearchContextBase {
 	private boolean isDisplayProperty(PropertyDefinition property) {
 		if (property instanceof LongTextProperty) {
 			//ロングテキストを表示するかは設定次第
-			PropertyService service = ServiceRegistry.getRegistry().getService(PropertyService.class);
+			PropertyService service = ServiceRegistry.getRegistry()
+					.getService(PropertyService.class);
 			return service.isRemainInlineText();
 		}
 		return true;
@@ -316,7 +332,7 @@ public class DetailSearchContext extends SearchContextBase {
 		if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
 			String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION_DETAIL);
 			return "1".equals(allVer);
-		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()){
+		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()) {
 			String referenceVer = getRequest().getParam(Constants.SEARCH_SAVED_VERSION_DETAIL);
 			return "1".equals(referenceVer);
 		}
@@ -336,7 +352,8 @@ public class DetailSearchContext extends SearchContextBase {
 		for (PropertySearchCondition condition : searchConditions.values()) {
 			if (condition != null) {
 				List<Condition> _cond = condition.convertDetailCondition();//複数になることはないはず
-				if (!_cond.isEmpty()) ret.add(_cond.get(0));//addAllでもいいけど条件式の場合の順序も考えて
+				if (!_cond.isEmpty())
+					ret.add(_cond.get(0));//addAllでもいいけど条件式の場合の順序も考えて
 			}
 		}
 		return ret;
@@ -358,7 +375,8 @@ public class DetailSearchContext extends SearchContextBase {
 				Condition c = null;
 				if (cond != null) {
 					List<Condition> _cond = cond.convertDetailCondition();
-					if (!_cond.isEmpty()) c = _cond.get(0);
+					if (!_cond.isEmpty())
+						c = _cond.get(0);
 				}
 				return c;
 			}
@@ -373,7 +391,7 @@ public class DetailSearchContext extends SearchContextBase {
 		if (details == null) {
 			details = new ArrayList<SearchConditionDetail>();
 			int count = getCondtionCount();
-			
+
 			for (int i = 0; i < count; i++) {
 				SearchConditionDetail detail = getDetailCondition(i);
 				details.add(detail);
@@ -387,12 +405,13 @@ public class DetailSearchContext extends SearchContextBase {
 	 */
 	private int getCondtionCount() {
 		Integer count = getRequest().getParamAsInt(Constants.DETAIL_COND_COUNT);
-		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-		
+		GemConfigService service = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
+
 		if (count > service.getMaxOfDetailSearchItems()) {
 			count = service.getMaxOfDetailSearchItems();
 		}
-		
+
 		return count == null ? 0 : count;
 	}
 
@@ -403,14 +422,17 @@ public class DetailSearchContext extends SearchContextBase {
 	 */
 	private SearchConditionDetail getDetailCondition(int index) {
 		String propName = getRequest().getParam(Constants.DETAIL_COND_PROP_NM + index);
-		if (StringUtil.isBlank(propName)) return null;
+		if (StringUtil.isBlank(propName))
+			return null;
 
 		String predicate = getRequest().getParam(Constants.DETAIL_COND_PREDICATE + index);
-		if (StringUtil.isBlank(predicate)) return null;
+		if (StringUtil.isBlank(predicate))
+			return null;
 
 		String value = getRequest().getParam(Constants.DETAIL_COND_VALUE + index);
 		if (StringUtil.isBlank(value)) {
-			if (!Constants.NOTNULL.equals(predicate) && !Constants.NULL.equals(predicate)) return null;
+			if (!Constants.NOTNULL.equals(predicate) && !Constants.NULL.equals(predicate))
+				return null;
 		}
 
 		SearchConditionDetail detail = new SearchConditionDetail();
@@ -445,13 +467,16 @@ public class DetailSearchContext extends SearchContextBase {
 	 */
 	private PropertySearchCondition detail2Condition(SearchConditionDetail detail) {
 		PropertySearchCondition condition = null;
-		int firstDotIndex = detail.getPropertyName().indexOf('.');
+		int firstDotIndex = detail.getPropertyName()
+				.indexOf('.');
 		if (firstDotIndex == -1) {
 			PropertyDefinition pd = getPropertyDefinition(detail.getPropertyName());
-			if (pd == null) throw new ApplicationException();//定義が取れない場合不正な項目扱い
+			if (pd == null)
+				throw new ApplicationException();//定義が取れない場合不正な項目扱い
 
 			PropertyItem property = getLayoutProperty(pd.getName());
-			if (property == null) throw new ApplicationException();//定義が取れない場合不正な項目扱い
+			if (property == null)
+				throw new ApplicationException();//定義が取れない場合不正な項目扱い
 
 			condition = PropertySearchCondition.newInstance(pd, property.getEditor(), detail);
 		} else {
@@ -459,24 +484,29 @@ public class DetailSearchContext extends SearchContextBase {
 			if (property != null) {
 				//ツリーから直接D&Dした参照のプロパティ
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(detail.getPropertyName(), getEntityDefinition());
-				if (pd == null) throw new ApplicationException();//定義が取れない場合不正な項目扱い
+				if (pd == null)
+					throw new ApplicationException();//定義が取れない場合不正な項目扱い
 
 				condition = PropertySearchCondition.newInstance(pd, property.getEditor(), detail);
 			} else {
 				//ネストプロパティ
-				String parent = detail.getPropertyName().substring(0, firstDotIndex);
+				String parent = detail.getPropertyName()
+						.substring(0, firstDotIndex);
 
 				PropertyDefinition pd = getEntityDefinition().getProperty(parent);
-				if (pd == null) throw new ApplicationException();//定義が取れない場合不正な項目扱い
+				if (pd == null)
+					throw new ApplicationException();//定義が取れない場合不正な項目扱い
 
 				property = getLayoutProperty(parent);
-				if (property == null) throw new ApplicationException();//定義が取れない場合不正な項目扱い
+				if (property == null)
+					throw new ApplicationException();//定義が取れない場合不正な項目扱い
 
 				if (pd instanceof ReferenceProperty && property.getEditor() instanceof ReferencePropertyEditor) {
 					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 					PropertyDefinition _pd = getPropertyDefinition(detail.getPropertyName());
 					if (_pd != null) {
-						ReferencePropertySearchCondition _condition = (ReferencePropertySearchCondition) PropertySearchCondition.newInstance(pd, editor, detail);
+						ReferencePropertySearchCondition _condition = (ReferencePropertySearchCondition) PropertySearchCondition.newInstance(pd, editor,
+								detail);
 						_condition.setNestProperty(_pd);
 						condition = _condition;
 					} else {

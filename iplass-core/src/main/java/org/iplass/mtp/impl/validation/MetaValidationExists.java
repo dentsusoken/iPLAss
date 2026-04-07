@@ -132,7 +132,8 @@ public class MetaValidationExists extends MetaValidation {
 									strValue.append("." + (entity.getVersion() != null ? entity.getVersion() : "0"));
 								}
 							}
-							msg = valuePattern.matcher(msg).replaceAll(strValue.toString());
+							msg = valuePattern.matcher(msg)
+									.replaceAll(strValue.toString());
 						}
 					}
 				}
@@ -150,10 +151,13 @@ public class MetaValidationExists extends MetaValidation {
 				EntityHandler refEntity = ectx.getHandlerById(rp.getReferenceEntityMetaDataId());
 				if (refEntity != null) {
 					//VersionControlTypeを保持
-					VersionControlType versionType = refEntity.getMetaData().getVersionControlType();
+					VersionControlType versionType = refEntity.getMetaData()
+							.getVersionControlType();
 					context.setAttribute(VERSION_TYPE_CONTEXT, versionType);
 
-					Query query = new Query().select(Entity.OID).from(refEntity.getMetaData().getName());
+					Query query = new Query().select(Entity.OID)
+							.from(refEntity.getMetaData()
+									.getName());
 					Condition condition = null;
 					if (versionType == VersionControlType.VERSIONED) {
 						condition = new And().eq(Entity.OID, entity.getOid())

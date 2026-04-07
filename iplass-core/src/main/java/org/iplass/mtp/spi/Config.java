@@ -173,7 +173,7 @@ public interface Config {
 	 * @param listener
 	 */
 	public <T extends Service> void addServiceInitListener(ServiceInitListener<T> listener);
-	
+
 	/**
 	 * 明示的にServiceInitListenerを削除します。
 	 * 
@@ -203,5 +203,5 @@ public interface Config {
 	 */
 	@Deprecated
 	public List<?> getBeans(String name);
-	
+
 }

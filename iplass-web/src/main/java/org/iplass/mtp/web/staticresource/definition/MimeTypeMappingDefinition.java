@@ -26,7 +26,7 @@ public class MimeTypeMappingDefinition implements Serializable {
 
 	private String extension;
 	private String mimeType;
-	
+
 	public String getExtension() {
 		return extension;
 	}

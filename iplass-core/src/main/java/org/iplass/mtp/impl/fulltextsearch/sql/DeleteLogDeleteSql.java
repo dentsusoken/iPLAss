@@ -26,11 +26,11 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class DeleteLogDeleteSql extends UpdateSqlHandler {
 
 	public String toSqlForCleanup(int tenantId, EntityHandler eh, RdbAdapter rdb) {
-		return deleteByDefId(tenantId, eh.getMetaData().getId(), rdb);
+		return deleteByDefId(tenantId, eh.getMetaData()
+				.getId(), rdb);
 	}
 
 	public String deleteByDefId(int tenantId, String defId, RdbAdapter rdb) {
@@ -40,7 +40,8 @@ public class DeleteLogDeleteSql extends UpdateSqlHandler {
 				.append(" WHERE " + DeleteLogTable.TENANT_ID + "=")
 				.append(tenantId)
 				.append(" AND " + DeleteLogTable.OBJ_DEF_ID + "='")
-				.append(rdb.sanitize(defId)).append("'")
+				.append(rdb.sanitize(defId))
+				.append("'")
 				.toString();
 	}
 
@@ -60,7 +61,8 @@ public class DeleteLogDeleteSql extends UpdateSqlHandler {
 				.append(" WHERE " + DeleteLogTable.TENANT_ID + "=")
 				.append(tenantId)
 				.append(" AND " + DeleteLogTable.OBJ_DEF_ID + "='")
-				.append(rdb.sanitize(defId)).append("'")
+				.append(rdb.sanitize(defId))
+				.append("'")
 				.append(" AND " + DeleteLogTable.CRE_DATE + "<")
 				.append(rdb.toTimeStampExpression(maxCreateDate))
 				.toString();

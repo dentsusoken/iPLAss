@@ -107,7 +107,7 @@ public class BulkDropLayout extends EntityViewItemDropLayout {
 						@Override
 						public void onCreated(ItemControl window) {
 							if (window instanceof DefaultSectionControl) {
-								DefaultSectionControl dsChild = (DefaultSectionControl)window;
+								DefaultSectionControl dsChild = (DefaultSectionControl) window;
 								dsChild.setEntityDefinition(ed);
 								dsChild.restoreMember();
 							}
@@ -122,7 +122,8 @@ public class BulkDropLayout extends EntityViewItemDropLayout {
 				} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
-					if (VirtualPropertyItem.class.getName().equals(name)) {
+					if (VirtualPropertyItem.class.getName()
+							.equals(name)) {
 						final VirtualPropertyDialog dialog = new VirtualPropertyDialog();
 						dialog.addOKClickHandler(new ClickHandler() {
 
@@ -130,7 +131,8 @@ public class BulkDropLayout extends EntityViewItemDropLayout {
 							public void onClick(ClickEvent event) {
 								//OK押下時はウィンドウ追加
 
-								if (!dialog.validate()) return;
+								if (!dialog.validate())
+									return;
 
 								final String name = dialog.getPropertyName();
 								if (ed.getProperty(name) != null) {

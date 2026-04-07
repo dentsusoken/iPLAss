@@ -45,21 +45,21 @@ public class NativeHint extends Hint {
 	//生SQLに対するヒント
 	private String table;
 	private String hintExpression;
-	
+
 	public NativeHint() {
 	}
-	
+
 	public NativeHint(String hintExpression) {
 		this.hintExpression = hintExpression;
 		checkValidHint();
 	}
-	
+
 	public NativeHint(String table, String hintExpression) {
 		this.table = table;
 		this.hintExpression = hintExpression;
 		checkValidHint();
 	}
-	
+
 	public String getTable() {
 		return table;
 	}
@@ -76,7 +76,7 @@ public class NativeHint extends Hint {
 		this.hintExpression = hintExpression;
 		checkValidHint();
 	}
-	
+
 	private void checkValidHint() {
 		if (hintExpression != null) {
 			if (hintExpression.contains(";")
@@ -87,7 +87,7 @@ public class NativeHint extends Hint {
 			}
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

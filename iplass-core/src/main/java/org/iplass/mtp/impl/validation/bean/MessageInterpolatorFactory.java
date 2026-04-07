@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.validation.bean;
 import jakarta.validation.MessageInterpolator;
 
 public interface MessageInterpolatorFactory {
-	
+
 	public MessageInterpolator newMessageInterpolator(int tenantId);
 
 }

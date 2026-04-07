@@ -41,7 +41,7 @@ public class MetaAlwaysConsentType extends MetaConsentType {
 	public AlwaysConsentTypeRuntime createRuntime(String metaId, ClientType ct) {
 		return new AlwaysConsentTypeRuntime();
 	}
-	
+
 	public class AlwaysConsentTypeRuntime extends ConsentTypeRuntime {
 
 		@Override

@@ -35,7 +35,7 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
 public class NormalizerService implements Service {
-	
+
 	private Map<Class<? extends NormalizerDefinition>, Class<? extends MetaNormalizer>> map;
 
 	@Override
@@ -56,7 +56,8 @@ public class NormalizerService implements Service {
 
 	public MetaNormalizer createNormalizerMetaData(NormalizerDefinition n) {
 		try {
-			MetaNormalizer meta = map.get(n.getClass()).newInstance();
+			MetaNormalizer meta = map.get(n.getClass())
+					.newInstance();
 			meta.applyConfig(n);
 			return meta;
 		} catch (InstantiationException | IllegalAccessException e) {

@@ -25,24 +25,29 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.web.RequestPath;
 
 public interface RequestInvocation {
-	
+
 	public void proceedRequest();
+
 	public void proceedResult();
-	
+
 	public void redirectAction(String actionName, RequestContext requestContext);
-	
+
 	public RequestContext getRequest();
+
 	public Command getCommand();
+
 	public String getStatus();
+
 	public Throwable getException();
-	
+
 	public void getStatus(String status);
+
 	public void setException(Throwable exception);
-	
+
 	public boolean isInclude();
-	
+
 	public String getActionName();
-	
+
 	public RequestPath getRequestPath();
 
 }

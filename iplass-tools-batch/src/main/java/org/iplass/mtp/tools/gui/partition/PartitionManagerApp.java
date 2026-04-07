@@ -75,7 +75,7 @@ public class PartitionManagerApp extends MtpJFrameBase {
 		JPanel mainPane = new JPanel();
 		mainPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		mainPane.setLayout(new BorderLayout(0, 0));
-		mainPane.setPreferredSize(new Dimension(500, 600));	//テーブルの列幅と調整
+		mainPane.setPreferredSize(new Dimension(500, 600)); //テーブルの列幅と調整
 		getContentPane().add(mainPane, BorderLayout.CENTER);
 
 		mainPane.add(createHeaderPane(), BorderLayout.NORTH);
@@ -123,14 +123,13 @@ public class PartitionManagerApp extends MtpJFrameBase {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TenantManagerApp.main(new String[]{});
+				TenantManagerApp.main(new String[] {});
 
 				//自身を消す
 				dispose();
 			}
 		});
 		headerMainPane.add(btnTenantList);
-
 
 		JPanel headerSubPane = new JPanel();
 		headerSubPane.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -147,7 +146,7 @@ public class PartitionManagerApp extends MtpJFrameBase {
 		JLabel lblCount = new JLabel("Count");
 		lblCount.setHorizontalAlignment(JTextField.RIGHT);
 		txtCount = new JTextField();
-		txtCount.setPreferredSize(new Dimension(30,25));
+		txtCount.setPreferredSize(new Dimension(30, 25));
 		txtCount.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 		txtCount.setHorizontalAlignment(JTextField.RIGHT);
 		txtCount.setEditable(false);
@@ -213,12 +212,12 @@ public class PartitionManagerApp extends MtpJFrameBase {
 			} catch (ExecutionException e) {
 				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
-            } catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
-    		btnRefresh.setText("Refresh List");
-    		btnRefresh.setEnabled(true);
+			btnRefresh.setText("Refresh List");
+			btnRefresh.setEnabled(true);
 		}
 	}
 

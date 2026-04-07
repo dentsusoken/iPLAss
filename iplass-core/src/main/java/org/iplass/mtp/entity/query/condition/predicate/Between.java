@@ -40,12 +40,10 @@ public class Between extends Predicate {
 	private ValueExpression from;
 	private ValueExpression to;
 	private ValueExpression property;
-	
+
 	public Between() {
 	}
-	
-	
-	
+
 	public Between(String propertyName, Object fromLiteral, Object toLiteral) {
 		setPropertyName(propertyName);
 		if (fromLiteral instanceof ValueExpression) {
@@ -59,38 +57,38 @@ public class Between extends Predicate {
 			this.to = new Literal(toLiteral);
 		}
 	}
-	
+
 	public Between(String propertyName, ValueExpression from, ValueExpression to) {
 		setPropertyName(propertyName);
 		this.from = from;
 		this.to = to;
 	}
-	
+
 	public Between(ValueExpression property, ValueExpression from, ValueExpression to) {
 		setProperty(property);
 		this.from = from;
 		this.to = to;
 	}
-	
+
 	public String getPropertyName() {
 		if (property == null) {
 			return null;
 		}
 		return property.toString();
 	}
-	
+
 	public void setPropertyName(String propertyName) {
 		property = new EntityField(propertyName);
 	}
-	
+
 	public void setProperty(ValueExpression property) {
 		this.property = property;
 	}
-	
+
 	public ValueExpression getProperty() {
 		return property;
 	}
-	
+
 	public ValueExpression getFrom() {
 		return from;
 	}
@@ -126,15 +124,17 @@ public class Between extends Predicate {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getPropertyName()).append(" between ").append(from).append(" and ").append(to);
+		sb.append(getPropertyName())
+				.append(" between ")
+				.append(from)
+				.append(" and ")
+				.append(to);
 		return sb.toString();
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-
-
 
 	@Override
 	public int hashCode() {
@@ -146,8 +146,6 @@ public class Between extends Predicate {
 		result = prime * result + ((to == null) ? 0 : to.hashCode());
 		return result;
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -175,6 +173,5 @@ public class Between extends Predicate {
 			return false;
 		return true;
 	}
-
 
 }

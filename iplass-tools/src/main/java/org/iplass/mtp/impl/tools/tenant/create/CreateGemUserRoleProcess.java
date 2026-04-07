@@ -34,7 +34,8 @@ public class CreateGemUserRoleProcess extends AbstractCreateRoleProcess {
 	@Override
 	public boolean execute(TenantCreateParameter param, LogHandler logHandler) {
 
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 
 		//ロール
 		Entity role = insertGroupRole("GemUser", em);
@@ -64,21 +65,24 @@ public class CreateGemUserRoleProcess extends AbstractCreateRoleProcess {
 
 	private void insertEntityPermission(Entity role, EntityManager em) {
 
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 
 		//mtp.auth.*
 		//参照のみ可能
-		edm.definitionSummaryList("mtp.auth.", true).forEach(ed -> {
-			GenericEntity authPermission = createEntityPermission(ed.getName(), role, true, false, false, false);
-			em.insert(authPermission);
-		});
+		edm.definitionSummaryList("mtp.auth.", true)
+				.forEach(ed -> {
+					GenericEntity authPermission = createEntityPermission(ed.getName(), role, true, false, false, false);
+					em.insert(authPermission);
+				});
 
 		//mtp.maintenance.*
 		//権限なし
-		edm.definitionSummaryList("mtp.maintenance.", true).forEach(ed -> {
-			GenericEntity maintenancePermission = createEntityPermission(ed.getName(), role, false, false, false, false);
-			em.insert(maintenancePermission);
-		});
+		edm.definitionSummaryList("mtp.maintenance.", true)
+				.forEach(ed -> {
+					GenericEntity maintenancePermission = createEntityPermission(ed.getName(), role, false, false, false, false);
+					em.insert(maintenancePermission);
+				});
 
 		//mtp.Information
 		//参照のみ

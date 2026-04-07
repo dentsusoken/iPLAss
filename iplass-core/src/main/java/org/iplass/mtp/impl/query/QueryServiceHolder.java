@@ -23,9 +23,10 @@ package org.iplass.mtp.impl.query;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class QueryServiceHolder {
-	
-	private static QueryService instance = ServiceRegistry.getRegistry().getService(QueryService.class);
-	
+
+	private static QueryService instance = ServiceRegistry.getRegistry()
+			.getService(QueryService.class);
+
 	public static QueryService getInstance() {
 		return instance;
 	}

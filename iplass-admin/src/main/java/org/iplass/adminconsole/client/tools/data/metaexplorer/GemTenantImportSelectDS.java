@@ -98,7 +98,8 @@ public class GemTenantImportSelectDS extends GemTenantDS {
 					}
 				}
 
-				response.setData(records.values().toArray(new ListGridRecord[] {}));
+				response.setData(records.values()
+						.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 
 				response.setAttribute("valueObject", result);

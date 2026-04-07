@@ -39,15 +39,16 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
-@WebApi(name="mtp/entity/PUT",
-		accepts={RequestType.REST_JSON, RequestType.REST_XML},
-		methods={MethodType.PUT},
-		restJson=@RestJson(parameterName=UpdateEntityCommand.PARAM_ENTITY, parameterType=Entity.class),
-		restXml=@RestXml(parameterName=UpdateEntityCommand.PARAM_ENTITY),
-		results={UpdateEntityCommand.RESULT_OID, UpdateEntityCommand.RESULT_OID_LIST},
+@WebApi(
+		name = "mtp/entity/PUT",
+		accepts = { RequestType.REST_JSON, RequestType.REST_XML },
+		methods = { MethodType.PUT },
+		restJson = @RestJson(parameterName = UpdateEntityCommand.PARAM_ENTITY, parameterType = Entity.class),
+		restXml = @RestXml(parameterName = UpdateEntityCommand.PARAM_ENTITY),
+		results = { UpdateEntityCommand.RESULT_OID, UpdateEntityCommand.RESULT_OID_LIST },
 		supportBearerToken = true,
-		overwritable=false)
-@CommandClass(name="mtp/entity/UpdateEntityCommand", displayName="Entity Update Web API", overwritable=false)
+		overwritable = false)
+@CommandClass(name = "mtp/entity/UpdateEntityCommand", displayName = "Entity Update Web API", overwritable = false)
 public final class UpdateEntityCommand extends AbstractEntityCommand {
 
 	//entity/[defName]/[oid]
@@ -81,7 +82,7 @@ public final class UpdateEntityCommand extends AbstractEntityCommand {
 		UpdateOption option = null;
 		if (e instanceof GenericEntity) {
 			option = new UpdateOption(false);
-			for (String pn: ((GenericEntity) e).getPropertyNames()) {
+			for (String pn : ((GenericEntity) e).getPropertyNames()) {
 				if (!pn.equals(Entity.OID)
 						&& !pn.equals(Entity.UPDATE_DATE)) {
 					option.add(pn);
@@ -96,7 +97,8 @@ public final class UpdateEntityCommand extends AbstractEntityCommand {
 		}
 		setUpdateOptionWithParam(request, option);
 
-		EntityHandler eh = EntityContext.getCurrentContext().getHandlerByName(defName);
+		EntityHandler eh = EntityContext.getCurrentContext()
+				.getHandlerByName(defName);
 		if (ver != null && eh.isVersioned()) {
 			long version = Long.parseLong(ver);
 			if (version == VERSION_NEW) {
@@ -122,7 +124,8 @@ public final class UpdateEntityCommand extends AbstractEntityCommand {
 	 * @param option UpdateOption
 	 */
 	private void setUpdateOptionWithParam(RequestContext request, UpdateOption option) {
-		EntityWebApiService service = ServiceRegistry.getRegistry().getService(EntityWebApiService.class);
+		EntityWebApiService service = ServiceRegistry.getRegistry()
+				.getService(EntityWebApiService.class);
 
 		if (service.isPermitRolesToSpecifyOptions()) {
 			String withValidation = request.getParam(PARAM_PUT_WITH_VALIDATION);
@@ -174,7 +177,8 @@ public final class UpdateEntityCommand extends AbstractEntityCommand {
 		if (subPath == null || subPath.length < 2 || subPath.length > 3) {
 			throw new IllegalArgumentException("illegal path parameter:" + subPath);
 		}
-		checkPermission(subPath[0], def -> def.getMetaData().isUpdate());
+		checkPermission(subPath[0], def -> def.getMetaData()
+				.isUpdate());
 
 		switch (subPath.length) {
 		case 2:

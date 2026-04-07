@@ -28,13 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PreparedBulkInsertContext implements BulkInsertContext {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PreparedBulkInsertContext.class);
-	
+
 	private List<ColumnValue> columnValue;
 	private PreparedStatement ps;
 	private int currentSize;
-	
+
 	public PreparedBulkInsertContext() {
 	}
 
@@ -49,7 +49,8 @@ public class PreparedBulkInsertContext implements BulkInsertContext {
 			if (i != 0) {
 				sql.append(",");
 			}
-			sql.append(columnValue.get(i).colName());
+			sql.append(columnValue.get(i)
+					.colName());
 		}
 		sql.append(") VALUES(");
 		for (int i = 0; i < columnValue.size(); i++) {
@@ -64,7 +65,7 @@ public class PreparedBulkInsertContext implements BulkInsertContext {
 			} else {
 				throw new IllegalArgumentException();
 			}
-			
+
 		}
 		sql.append(")");
 		ps = con.prepareStatement(sql.toString());

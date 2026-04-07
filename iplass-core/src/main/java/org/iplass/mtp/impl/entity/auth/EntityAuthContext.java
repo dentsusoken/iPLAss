@@ -32,8 +32,11 @@ public interface EntityAuthContext extends AuthorizationContext {
 //	public boolean isPermit(EntityPermission.Action action, AuthContextHolder user);
 //	public boolean isPermit(String propertyName, EntityPropertyPermission.Action action, AuthContextHolder user);
 	public Condition addLimitingCondition(Condition orignal, EntityPermission.Action action, AuthContextHolder user);
+
 	public Query modifyQuery(Query orignal, EntityPermission.Action action, AuthContextHolder user);
+
 	public Query modifyQuery(Query orignal, EntityPermission.Action action, EntityPropertyPermission.Action propAction, AuthContextHolder user);
+
 	public boolean hasLimitCondition(EntityPermission permission, AuthContextHolder user);
 
 }

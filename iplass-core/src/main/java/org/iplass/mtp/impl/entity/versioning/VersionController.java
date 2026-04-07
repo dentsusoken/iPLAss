@@ -31,26 +31,26 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
 public interface VersionController {
-	
+
 	public void normalizeForInsert(Entity entity, InsertOption option, EntityContext entityContext);
-	
+
 	public Entity[] normalizeRefEntity(Entity[] refEntity, ReferencePropertyHandler rph, EntityContext context);
-	
+
 	public void update(Entity entity, UpdateOption option, EntityHandler eh, EntityContext entityContext);
-	
-	public Entity[] getCascadeDeleteTargetForUpdate(Entity[] refEntity, Entity[] beforeRefEntity, ReferencePropertyHandler rph, Entity beforeEntity, EntityHandler eh, EntityContext entityContext);
-	
+
+	public Entity[] getCascadeDeleteTargetForUpdate(Entity[] refEntity, Entity[] beforeRefEntity, ReferencePropertyHandler rph, Entity beforeEntity,
+			EntityHandler eh, EntityContext entityContext);
+
 	public DeleteTarget[] getDeleteTarget(Entity entity, DeleteOption option, EntityHandler eh, EntityContext entityContext);
-	
+
 	public String[] getCascadeDeleteTarget(Entity entity, EntityHandler eh, ReferencePropertyHandler rph, EntityContext entityContext);
 
 	public Condition mainQueryCondition(EntityHandler eh, AsOf asOf, EntityContext context);
-	
+
 	public Condition refEntityQueryCondition(String refPropPath, ReferencePropertyHandler rph, AsOf asOf, EntityContext context);
 
 	//いまのとこ必要なしか？
 //	public int updateAll(EntityHandler eh);
 //	public int deleteAll(EntityHandler eh);
-
 
 }

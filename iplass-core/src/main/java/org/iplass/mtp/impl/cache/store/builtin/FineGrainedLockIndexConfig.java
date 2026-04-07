@@ -26,16 +26,19 @@ public class FineGrainedLockIndexConfig {
 	public int getShardSize() {
 		return shardSize;
 	}
+
 	public void setShardSize(int shardSize) {
 		this.shardSize = shardSize;
 	}
+
 	public boolean isFair() {
 		return fair;
 	}
+
 	public void setFair(boolean fair) {
 		this.fair = fair;
 	}
-	
+
 	public FineGrainedLockIndex build() {
 		return new FineGrainedLockIndex(shardSize, fair);
 	}

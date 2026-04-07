@@ -54,13 +54,13 @@ import org.iplass.mtp.entity.definition.ValidationDefinition;
  */
 public class ScriptingValidation extends ValidationDefinition {
 	private static final long serialVersionUID = -3806173080063387599L;
-	
+
 	private String script;
 	private boolean asArray = false;
 
 	public ScriptingValidation() {
 	}
-	
+
 	public ScriptingValidation(String script, String errorMessage) {
 		this(script, errorMessage, null);
 	}
@@ -70,7 +70,7 @@ public class ScriptingValidation extends ValidationDefinition {
 		setErrorMessage(errorMessage);
 		setErrorCode(errorCode);
 	}
-	
+
 	public boolean isAsArray() {
 		return asArray;
 	}

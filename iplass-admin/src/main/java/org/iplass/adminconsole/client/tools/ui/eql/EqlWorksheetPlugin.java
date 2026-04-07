@@ -29,7 +29,6 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-
 public class EqlWorksheetPlugin extends DefaultAdminPlugin {
 
 	/** ノード表示名 */
@@ -53,19 +52,20 @@ public class EqlWorksheetPlugin extends DefaultAdminPlugin {
 
 	@Override
 	public void onNodeDoubleClick(AdminMenuTreeNode node) {
-		if (NODE_TYPE.equals(node.getType())){
+		if (NODE_TYPE.equals(node.getType())) {
 			addTab(node);
 		}
 	}
 
 	@Override
 	public void onNodeContextClick(final AdminMenuTreeNode node) {
-		if (NODE_TYPE.equals(node.getType())){
+		if (NODE_TYPE.equals(node.getType())) {
 
 			if (contextMenu == null) {
 				contextMenu = new Menu();
 				//contextMenu.setWidth(100);
-				MenuItem execMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetPluginManager_startEqlWorksheet"), NODE_ICON);
+				MenuItem execMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetPluginManager_startEqlWorksheet"),
+						NODE_ICON);
 				execMenuItem.addClickHandler(new ClickHandler() {
 
 					@Override

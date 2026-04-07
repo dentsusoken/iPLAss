@@ -27,8 +27,12 @@ import org.apache.lucene.store.FSDirectory;
 
 interface IndexDir {
 	public String getDefId();
+
 	public FSDirectory getDirectory();
+
 	public SearcherManager getSearcherManager() throws IOException;
+
 	public void refresh() throws IOException;
+
 	public void close() throws IOException;
 }

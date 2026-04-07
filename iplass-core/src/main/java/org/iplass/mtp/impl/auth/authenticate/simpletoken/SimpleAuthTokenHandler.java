@@ -33,9 +33,9 @@ import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.spi.Config;
 
 public class SimpleAuthTokenHandler extends AuthTokenHandler {
-	
+
 	public static final String TYPE_SIMPLE_DEFAULT = "SAT";
-	
+
 	@Override
 	public void inited(AuthTokenService service, Config config) {
 		super.inited(service, config);
@@ -50,16 +50,16 @@ public class SimpleAuthTokenHandler extends AuthTokenHandler {
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
 		info.setStartDate(authToken.getStartDate());
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, Object> details = (Map<String, Object>) authToken.getDetails();
 		if (details != null) {
 			info.setApplication((String) details.get("application"));
 		}
-		
+
 		return info;
 	}
-	
+
 	@Override
 	public Credential toCredential(AuthToken newToken) {
 		return new SimpleAuthTokenCredential(newToken.encodeToken());

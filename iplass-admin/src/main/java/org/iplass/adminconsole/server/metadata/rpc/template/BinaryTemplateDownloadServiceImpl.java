@@ -23,9 +23,6 @@ package org.iplass.adminconsole.server.metadata.rpc.template;
 import java.io.IOException;
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.shared.metadata.dto.template.BinaryTemplateDownloadProperty;
@@ -38,6 +35,8 @@ import org.iplass.mtp.web.template.definition.LocalizedBinaryDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinitionManager;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * BinaryTemplateDownload用Service実装クラス
@@ -58,12 +57,13 @@ public class BinaryTemplateDownloadServiceImpl extends AdminDownloadService {
 			contentDispositionType = ContentDispositionType.valueOf(strContentDispositionType);
 		}
 
-		TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
+		TemplateDefinitionManager tdm = ManagerLocator.getInstance()
+				.getManager(TemplateDefinitionManager.class);
 		TemplateDefinition template = tdm.get(templateName);
 
 		try {
 			if (template != null && template instanceof BinaryTemplateDefinition) {
-				BinaryTemplateDefinition btd = (BinaryTemplateDefinition)template;
+				BinaryTemplateDefinition btd = (BinaryTemplateDefinition) template;
 
 				if (template.getContentType() != null) {
 					resp.setContentType(template.getContentType());
@@ -72,32 +72,41 @@ public class BinaryTemplateDownloadServiceImpl extends AdminDownloadService {
 					String fileName = btd.getFileName();
 					if (StringUtil.isEmpty(fileName)) {
 						//名前が未指定の場合は、テンプレート名(階層化されている場合は最後)
-						if (template.getName().contains("/")) {
-							fileName = template.getName().substring(template.getName().lastIndexOf("/") + 1);
+						if (template.getName()
+								.contains("/")) {
+							fileName = template.getName()
+									.substring(template.getName()
+											.lastIndexOf("/") + 1);
 						} else {
 							fileName = template.getName();
 						}
 					}
 					WebUtil.setContentDispositionHeader(req, resp, contentDispositionType, fileName);
 
-					resp.getOutputStream().write(((BinaryTemplateDefinition)template).getBinary());
+					resp.getOutputStream()
+							.write(((BinaryTemplateDefinition) template).getBinary());
 				} else {
 					List<LocalizedBinaryDefinition> binList = btd.getLocalizedBinaryList();
 
 					for (LocalizedBinaryDefinition locale : binList) {
-						if (locale.getLocaleName().equals(lang)) {
+						if (locale.getLocaleName()
+								.equals(lang)) {
 							String fileName = locale.getFileName();
 							if (StringUtil.isEmpty(fileName)) {
 								//名前が未指定の場合は、テンプレート名(階層化されている場合は最後)
-								if (template.getName().contains("/")) {
-									fileName = template.getName().substring(template.getName().lastIndexOf("/") + 1);
+								if (template.getName()
+										.contains("/")) {
+									fileName = template.getName()
+											.substring(template.getName()
+													.lastIndexOf("/") + 1);
 								} else {
 									fileName = template.getName();
 								}
 							}
 							WebUtil.setContentDispositionHeader(req, resp, contentDispositionType, fileName);
 
-							resp.getOutputStream().write(locale.getBinaryValue());
+							resp.getOutputStream()
+									.write(locale.getBinaryValue());
 							break;
 						}
 					}

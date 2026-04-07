@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
@@ -35,6 +33,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.definition.HtmlTemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
+import jakarta.servlet.ServletException;
 
 public class MetaHtmlTemplate extends MetaTemplate {
 
@@ -101,11 +100,13 @@ public class MetaHtmlTemplate extends MetaTemplate {
 //				}
 //			}
 
-			String lang = ExecuteContext.getCurrentContext().getLanguage();
+			String lang = ExecuteContext.getCurrentContext()
+					.getLanguage();
 			String tempSource = source;
 			if (localizedSourceList != null) {
 				for (MetaLocalizedString mls : localizedSourceList) {
-					if (mls.getLocaleName().equals(lang)) {
+					if (mls.getLocaleName()
+							.equals(lang)) {
 						if (StringUtil.isNotEmpty(mls.getStringValue())) {
 							tempSource = mls.getStringValue();
 						}
@@ -114,9 +115,13 @@ public class MetaHtmlTemplate extends MetaTemplate {
 			}
 
 			if (requestContext.getPageContext() != null) {
-				requestContext.getPageContext().getOut().write(tempSource);
+				requestContext.getPageContext()
+						.getOut()
+						.write(tempSource);
 			} else {
-				requestContext.getResponse().getWriter().write(tempSource);
+				requestContext.getResponse()
+						.getWriter()
+						.write(tempSource);
 			}
 		}
 	}

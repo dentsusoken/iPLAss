@@ -26,8 +26,6 @@ import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.CredentialUpdateException;
 
-
-
 /**
  * アカウント情報の更新を行うためのインタフェース。
  *
@@ -43,24 +41,41 @@ public interface AccountManagementModule {
 	public static final String USER_ACTIVATION_SPECIFY_OR_PUBLISH = "specifyOrPublish";
 
 	public boolean canCreate();
+
 	public boolean canUpdate();
+
 	public boolean canRemove();
+
 	public boolean canRestore();
+
 	public boolean canPurge();
+
 	public boolean canUpdateCredential();
+
 	public boolean canResetCredential();
+
 	public boolean canResetLockoutStatus();
-	
+
 	public void create(User user);
+
 	public void afterCreate(User user);
+
 	public void update(User user, List<String> updateProperties);
+
 	//既存のカスタム実装への影響考慮してdefaultとする
-	public default void afterUpdate(User user, String policyName, List<String> updateProperties) {}
+	public default void afterUpdate(User user, String policyName, List<String> updateProperties) {
+	}
+
 	public void remove(User user);
+
 	public void restore(User user);
+
 	public void purge(User user);
+
 	public void updateCredential(Credential oldCredential, Credential newCredential) throws CredentialUpdateException;
+
 	public void resetCredential(Credential credential) throws CredentialUpdateException;
+
 	public void resetLockoutStatus(String accountId);
 
 }

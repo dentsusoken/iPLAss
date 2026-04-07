@@ -37,14 +37,15 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class AccessTokenAuthenticationProvider extends AuthenticationProviderBase {
-	
+
 	private AccessTokenAccountManagementModule amm = new AccessTokenAccountManagementModule();
-	private OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
-	
+	private OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry()
+			.getService(OAuthAuthorizationService.class);
+	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry()
+			.getService(AuthenticationPolicyService.class);
+
 	private Class<? extends Credential> credentialTypeForTrust;
 	private Class<? extends AccountHandle> accountHandleClassForTrust;
-	
 
 	public void setCredentialTypeForTrust(Class<? extends Credential> credentialTypeForTrust) {
 		this.credentialTypeForTrust = credentialTypeForTrust;
@@ -63,16 +64,16 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 	protected Class<? extends Credential> getCredentialTypeForTrust() {
 		return credentialTypeForTrust;
 	}
-	
+
 	@Override
 	protected Class<? extends AccountHandle> getAccountHandleClassForTrust() {
 		return accountHandleClassForTrust;
 	}
-	
+
 	@Override
 	public void inited(AuthService service, Config config) {
 		super.inited(service, config);
-		
+
 		setUserEntityResolver(new AccessTokenUserEntityResolver(getUserEntityResolver()));
 	}
 
@@ -91,30 +92,33 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 			if (cre.getToken() == null) {
 				throw new IllegalArgumentException("specify token");
 			}
-			
-			AccessToken token = authorizationService.getAccessTokenStore().getAccessToken(cre.getToken());
+
+			AccessToken token = authorizationService.getAccessTokenStore()
+					.getAccessToken(cre.getToken());
 			if (token == null) {
 				return null;
 			}
-			
+
 			if (token.getExpiresIn() <= 0) {
 				return null;
 			}
-			
+
 			UserEntityResolver uer = getUserEntityResolver();
 			User user = token.getUser();
-			String oid = user.getValue(uer.getUnmodifiableUniqueKeyProperty()).toString();
+			String oid = user.getValue(uer.getUnmodifiableUniqueKeyProperty())
+					.toString();
 			AuthenticationPolicyRuntime pol = authPolicyService.getOrDefault(user.getAccountPolicy());
 			if (pol == null) {
 				return null;
 			}
-			
-			return new AccessTokenAccountHandle(oid, token, pol.getMetaData().getName());
+
+			return new AccessTokenAccountHandle(oid, token, pol.getMetaData()
+					.getName());
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public void logout(final AccountHandle user) {
 	}
@@ -183,7 +187,9 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 		@Override
 		public void remove(User user) {
 			UserEntityResolver uer = getUserEntityResolver();
-			authorizationService.getAccessTokenStore().revokeTokenByUserOid(user.getValue(uer.getUnmodifiableUniqueKeyProperty()).toString());
+			authorizationService.getAccessTokenStore()
+					.revokeTokenByUserOid(user.getValue(uer.getUnmodifiableUniqueKeyProperty())
+							.toString());
 		}
 
 		@Override
@@ -216,9 +222,9 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 	}
 
 	public class AccessTokenUserEntityResolver implements UserEntityResolver {
-		
+
 		private UserEntityResolver actual;
-		
+
 		private AccessTokenUserEntityResolver(UserEntityResolver actual) {
 			this.actual = actual;
 		}
@@ -230,17 +236,18 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 		@Override
 		public User searchUser(AccountHandle account) {
 			AccessTokenAccountHandle atah = (AccessTokenAccountHandle) account;
-			return atah.getAccessToken().getUser();
+			return atah.getAccessToken()
+					.getUser();
 		}
 
 		@Override
 		public String getUnmodifiableUniqueKeyProperty() {
 			return actual.getUnmodifiableUniqueKeyProperty();
 		}
-		
+
 		public UserEntityResolver getActual() {
 			return actual;
 		}
-		
+
 	}
 }

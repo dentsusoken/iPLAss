@@ -25,12 +25,12 @@ package org.iplass.mtp.auth.policy.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.policy.AccountNotificationListener;
 import org.iplass.mtp.auth.policy.definition.listeners.JavaClassAccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.listeners.MailAccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificationListenerDefinition;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * {@link AccountNotificationListener}の定義。
@@ -44,9 +44,9 @@ import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificat
  *
  */
 @XmlSeeAlso({
-	JavaClassAccountNotificationListenerDefinition.class,
-	MailAccountNotificationListenerDefinition.class,
-	ScriptingAccountNotificationListenerDefinition.class})
+		JavaClassAccountNotificationListenerDefinition.class,
+		MailAccountNotificationListenerDefinition.class,
+		ScriptingAccountNotificationListenerDefinition.class })
 public class AccountNotificationListenerDefinition implements Serializable {
 	private static final long serialVersionUID = -5481438995099093572L;
 

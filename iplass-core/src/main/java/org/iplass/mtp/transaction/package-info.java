@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/transaction",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/transaction", prefix="transaction")
-	}
+		namespace = "http://mtp.iplass.org/xml/transaction",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/transaction", prefix = "transaction")
+		}
 )
 package org.iplass.mtp.transaction;

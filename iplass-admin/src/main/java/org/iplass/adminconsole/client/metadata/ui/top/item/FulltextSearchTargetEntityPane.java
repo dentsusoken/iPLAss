@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,28 +66,28 @@ public class FulltextSearchTargetEntityPane extends VLayout {
 		grid.setHeight100();
 		grid.setShowAllRecords(true);
 		grid.setCellHeight(22);
-		grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-		grid.setShowRowNumbers(true);		//行番号表示
+		grid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
+		grid.setShowRowNumbers(true); //行番号表示
 
 		addMember(grid);
 
 		service.getCrawlTargetEntityViewMap(TenantInfoHolder.getId(),
-			new AsyncCallback<Map<String, List<String>>>() {
+				new AsyncCallback<Map<String, List<String>>>() {
 
-			public void onFailure(Throwable caught) {
-				SC.say("failed","Failed to get the screen information." + caught.getMessage());
-				GWT.log(caught.toString(), caught);
-			}
+					public void onFailure(Throwable caught) {
+						SC.say("failed", "Failed to get the screen information." + caught.getMessage());
+						GWT.log(caught.toString(), caught);
+					}
 
-			@Override
-			public void onSuccess(Map<String, List<String>> result) {
-				refreshGrid(result, parts);
-			}
+					@Override
+					public void onSuccess(Map<String, List<String>> result) {
+						refreshGrid(result, parts);
+					}
 
-		});
+				});
 	}
 
-	private void refreshGrid(final Map<String,List<String>> viewsMap, FulltextSearchViewParts parts) {
+	private void refreshGrid(final Map<String, List<String>> viewsMap, FulltextSearchViewParts parts) {
 		CrawlEntityDS ds = CrawlEntityDS.getInstance(parts, isInitDrop);
 
 		grid.setDataSource(ds);

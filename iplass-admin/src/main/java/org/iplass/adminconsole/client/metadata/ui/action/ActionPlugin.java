@@ -36,7 +36,6 @@ import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class ActionPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -111,23 +110,26 @@ public class ActionPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), ActionMappingDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_failedToDeleteAction") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_deleteActionComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), ActionMappingDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_failedToDeleteAction") + caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_failedToDeleteAction") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_deleteActionComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_ActionPluginManager_failedToDeleteAction")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -137,7 +139,7 @@ public class ActionPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{ActionEditPane.class};
+		return new Class[] { ActionEditPane.class };
 	}
 
 }

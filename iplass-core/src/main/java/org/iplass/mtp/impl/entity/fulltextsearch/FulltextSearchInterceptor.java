@@ -63,8 +63,11 @@ public class FulltextSearchInterceptor extends EntityInterceptorAdapter implemen
 
 	@Override
 	public void inited(EntityService service, Config config) {
-		rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
-		fss = ServiceRegistry.getRegistry().getService(FulltextSearchService.class);
+		rdb = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class)
+				.getRdbAdapter();
+		fss = ServiceRegistry.getRegistry()
+				.getService(FulltextSearchService.class);
 
 		if (fss.isUseFulltextSearch()) {
 			deleteLogInsertSql = rdb.getUpdateSqlCreator(DeleteLogInsertSql.class);
@@ -86,7 +89,8 @@ public class FulltextSearchInterceptor extends EntityInterceptorAdapter implemen
 
 			// containsが含まれていれば全文検索しIN句に変換
 			Query query = inv.getQuery();
-			String defName = query.getFrom().getEntityName();
+			String defName = query.getFrom()
+					.getEntityName();
 
 			FulltextSearchQueryASTTransformer t = new FulltextSearchQueryASTTransformer(defName);
 			Query tQuery = (Query) query.accept(t);
@@ -126,7 +130,8 @@ public class FulltextSearchInterceptor extends EntityInterceptorAdapter implemen
 
 			// containsが含まれていれば全文検索しIN句に変換
 			Query query = inv.getQuery();
-			String defName = query.getFrom().getEntityName();
+			String defName = query.getFrom()
+					.getEntityName();
 
 			FulltextSearchQueryASTTransformer t = new FulltextSearchQueryASTTransformer(defName);
 			Query tQuery = (Query) query.accept(t);
@@ -152,16 +157,24 @@ public class FulltextSearchInterceptor extends EntityInterceptorAdapter implemen
 
 			//削除前の状態のEntityの情報がほしいので、ロードする。
 			eh = ((EntityDeleteInvocationImpl) invocation).getEntityHandler();
-			entity = new EntityLoadInvocationImpl(invocation.getEntity().getOid(), invocation.getEntity().getVersion(), new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
+			entity = new EntityLoadInvocationImpl(invocation.getEntity()
+					.getOid(),
+					invocation.getEntity()
+							.getVersion(),
+					new LoadOption(true, false), false, eh.getService()
+							.getInterceptors(),
+					eh).proceed();
 
 			invocation.proceed();
 
 			// クロール対象エンティティの場合は削除ログにデータ追加
-			if (eh.getMetaData().isCrawl()) {
+			if (eh.getMetaData()
+					.isCrawl()) {
 
 				ExecuteContext ctx = ExecuteContext.getCurrentContext();
 				int tenantId = ctx.getClientTenantId();
-				String objDefId = eh.getMetaData().getId();
+				String objDefId = eh.getMetaData()
+						.getId();
 				String objId = entity.getOid();
 				Long objVer = entity.getVersion();
 
@@ -192,7 +205,8 @@ public class FulltextSearchInterceptor extends EntityInterceptorAdapter implemen
 		if (fss.isUseFulltextSearch()) {
 			ExecuteContext ctx = ExecuteContext.getCurrentContext();
 			int tenantId = ctx.getClientTenantId();
-			String objDefId = eh.getMetaData().getId();
+			String objDefId = eh.getMetaData()
+					.getId();
 			String objId = entity.getOid();
 			Long objVer = entity.getVersion();
 

@@ -20,12 +20,10 @@
 package org.iplass.mtp.impl.metadata.xmlfile.dom;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,12 +101,13 @@ public class XsiTypeDomHandler implements DomHandler {
 		List<Node> scriptTags = targetPath.getNodeList(doc);
 		String tagetTagName = targetPath.getTagName();
 		for (int i = 0; i < scriptTags.size(); i++) {
-			Node childNode = scriptTags.get(i).getFirstChild();
+			Node childNode = scriptTags.get(i)
+					.getFirstChild();
 			if (childNode != null) {
 				// getNodeValueの戻り値はunescape済み. &amp;ltまでunescapeしてしまうのでそのまま取得.
 				//String unescapedContent = StringUtil.unescapeXml(childNode.getNodeValue());
 				String unescapedContent = childNode.getNodeValue();
-				
+
 				String lastExt = targetPath.getFileExtention(childNode);
 				String fileExtension = getMidExtension(targetPath, childNode) + lastExt;
 
@@ -139,13 +138,15 @@ public class XsiTypeDomHandler implements DomHandler {
 	private void readFromUnescapedExtFile(ExternalRefPath targetPath, Document doc) {
 		List<Node> scriptTags = targetPath.getNodeList(doc);
 		for (int i = 0; i < scriptTags.size(); i++) {
-			Node childNode = scriptTags.get(i).getFirstChild();
+			Node childNode = scriptTags.get(i)
+					.getFirstChild();
 			if (childNode != null) {
 				String val = childNode.getNodeValue();
 				if (val != null) {
 					val = val.trim();
 					if (val.startsWith(TMPL_PREFIX) && val.endsWith(TMPL_SUFFIX)) {
-						val = val.replace(TMPL_PREFIX, "").replace(TMPL_SUFFIX, "");
+						val = val.replace(TMPL_PREFIX, "")
+								.replace(TMPL_SUFFIX, "");
 						File extFile = new File(resolveDir(targetPath, xml.getParentFile()), val);
 
 						String content = null;
@@ -184,8 +185,9 @@ public class XsiTypeDomHandler implements DomHandler {
 	}
 
 	private void writeBase64ContentToFile(String base64, File file) {
-		try(FileOutputStream out = new FileOutputStream(file)) {
-			out.write(Base64.getDecoder().decode(base64));
+		try (FileOutputStream out = new FileOutputStream(file)) {
+			out.write(Base64.getDecoder()
+					.decode(base64));
 			out.close();
 		} catch (IOException e) {
 			throw new MetaDataRuntimeException(e);
@@ -196,7 +198,8 @@ public class XsiTypeDomHandler implements DomHandler {
 		String base64 = null;
 		try {
 			byte[] bytes = Files.readAllBytes(file.toPath());
-			base64 = Base64.getEncoder().encodeToString(bytes);
+			base64 = Base64.getEncoder()
+					.encodeToString(bytes);
 		} catch (IOException e) {
 			throw new MetaDataRuntimeException(e);
 		}
@@ -204,11 +207,15 @@ public class XsiTypeDomHandler implements DomHandler {
 	}
 
 	private String getRefFileName(String refName, String ext, ExternalRefPath path) {
-		if(path.getClass().getAnnotation(ExternalRefPathAttribute.class).useGroovyDir()) {
-			String fileName = xml.getName().substring(0, xml.getName().lastIndexOf(".xml")); 
+		if (path.getClass()
+				.getAnnotation(ExternalRefPathAttribute.class)
+				.useGroovyDir()) {
+			String fileName = xml.getName()
+					.substring(0, xml.getName()
+							.lastIndexOf(".xml"));
 			return fileName + ExternalRefPathAttribute.FileExtention.GROOVY.getExt();
 		} else {
-			return xml.getName() + "." + refName + ext;	
+			return xml.getName() + "." + refName + ext;
 		}
 	}
 
@@ -218,10 +225,15 @@ public class XsiTypeDomHandler implements DomHandler {
 
 	private File resolveDir(ExternalRefPath path, File parentDir) {
 		if (groovySourceRootDir != null
-				&& path.getClass().getAnnotation(ExternalRefPathAttribute.class).useGroovyDir()) {
-			String fRoot = fileRootDir.getAbsolutePath().replace(File.separator, "/");
-			String grvyRoot = groovySourceRootDir.getAbsolutePath().replace(File.separator, "/");
-			String parent = parentDir.getAbsolutePath().replace(File.separator, "/");
+				&& path.getClass()
+						.getAnnotation(ExternalRefPathAttribute.class)
+						.useGroovyDir()) {
+			String fRoot = fileRootDir.getAbsolutePath()
+					.replace(File.separator, "/");
+			String grvyRoot = groovySourceRootDir.getAbsolutePath()
+					.replace(File.separator, "/");
+			String parent = parentDir.getAbsolutePath()
+					.replace(File.separator, "/");
 
 			String scriptPath = parent.replace(fRoot, grvyRoot);
 			String relativeFromRoot = scriptPath.replace(grvyRoot + "/", "");
@@ -229,7 +241,7 @@ public class XsiTypeDomHandler implements DomHandler {
 			// メタデータ種別のフォルダを消す
 			int dirToPackage = 1;
 			for (int i = 0; i < dirToPackage; i++) {
-				relativeDelimited.remove(0);	
+				relativeDelimited.remove(0);
 			}
 			relativeFromRoot = String.join("/", relativeDelimited);
 			scriptPath = grvyRoot + "/" + relativeFromRoot;

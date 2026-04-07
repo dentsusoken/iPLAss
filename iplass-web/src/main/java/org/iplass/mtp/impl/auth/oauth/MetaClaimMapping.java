@@ -35,30 +35,35 @@ public class MetaClaimMapping implements MetaData {
 	private String claimName;
 	private String userPropertyName;
 	private String customValueScript;
-	
+
 	public MetaClaimMapping() {
 	}
-	
+
 	public MetaClaimMapping(String claimName, String userPropertyName) {
 		this.claimName = claimName;
 		this.userPropertyName = userPropertyName;
 	}
-	
+
 	public String getClaimName() {
 		return claimName;
 	}
+
 	public void setClaimName(String claimName) {
 		this.claimName = claimName;
 	}
+
 	public String getUserPropertyName() {
 		return userPropertyName;
 	}
+
 	public void setUserPropertyName(String userPropertyName) {
 		this.userPropertyName = userPropertyName;
 	}
+
 	public String getCustomValueScript() {
 		return customValueScript;
 	}
+
 	public void setCustomValueScript(String customValueScript) {
 		this.customValueScript = customValueScript;
 	}
@@ -67,11 +72,13 @@ public class MetaClaimMapping implements MetaData {
 	public MetaClaimMapping copy() {
 		return ObjectUtil.deepCopy(this);
 	}
+
 	public void applyConfig(ClaimMappingDefinition cmd) {
 		claimName = cmd.getClaimName();
 		userPropertyName = cmd.getUserPropertyName();
 		customValueScript = cmd.getCustomValueScript();
 	}
+
 	public ClaimMappingDefinition currentConfig() {
 		ClaimMappingDefinition def = new ClaimMappingDefinition();
 		def.setClaimName(claimName);
@@ -79,23 +86,24 @@ public class MetaClaimMapping implements MetaData {
 		def.setCustomValueScript(customValueScript);
 		return def;
 	}
-	
+
 	public ClaimMappingRuntime createRuntime(String defName, String scopeName) {
 		return new ClaimMappingRuntime(defName, scopeName);
 	}
-	
+
 	public class ClaimMappingRuntime {
 		private ScriptEngine se;
 		private Script s;
-		
+
 		private ClaimMappingRuntime(String defName, String scopeName) {
 			if (customValueScript != null) {
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				se = tc.getScriptEngine();
 				s = se.createScript(customValueScript, "CustomValueScript_" + defName + "_" + scopeName + "_" + claimName);
 			}
 		}
-		
+
 		public Object value(User user) {
 			if (userPropertyName != null) {
 				return user.getValue(userPropertyName);
@@ -105,7 +113,7 @@ public class MetaClaimMapping implements MetaData {
 				return s.eval(sc);
 			}
 		}
-		
+
 		public String name() {
 			return claimName;
 		}

@@ -41,10 +41,10 @@ public class MetaScriptingCustomTokenIntrospector extends MetaCustomTokenIntrosp
 	private static final String RESOURCE_OWNER_BINDING_NAME = "resourceOwner";
 
 	private String script;
-	
+
 	public MetaScriptingCustomTokenIntrospector() {
 	}
-	
+
 	public MetaScriptingCustomTokenIntrospector(String script) {
 		this.script = script;
 	}
@@ -73,21 +73,23 @@ public class MetaScriptingCustomTokenIntrospector extends MetaCustomTokenIntrosp
 	public CustomTokenIntrospectorRuntime createRuntime(String metaId, int index) {
 		return new ScriptingCustomTokenIntrospectorRuntime(metaId, index);
 	}
-	
+
 	public class ScriptingCustomTokenIntrospectorRuntime extends CustomTokenIntrospectorRuntime {
-		
+
 		private static final String SCRIPT_PREFIX = "ScriptingCustomTokenIntrospector";
 
 		private Script scriptRuntime;
 
 		private ScriptingCustomTokenIntrospectorRuntime(String metaId, int index) {
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
-			scriptRuntime = tc.getScriptEngine().createScript(script, SCRIPT_PREFIX + "_" + metaId + "_" + index);
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
+			scriptRuntime = tc.getScriptEngine()
+					.createScript(script, SCRIPT_PREFIX + "_" + metaId + "_" + index);
 		}
 
 		@Override
 		public boolean handle(Map<String, Object> response, RequestContext request, AccessToken token) {
-			
+
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
 			TenantContext tc = ex.getTenantContext();
 			ScriptEngine scriptEngine = tc.getScriptEngine();
@@ -95,7 +97,7 @@ public class MetaScriptingCustomTokenIntrospector extends MetaCustomTokenIntrosp
 			sc.setAttribute(REQUEST_BINDING_NAME, new RequestContextBinding(request));
 			sc.setAttribute(RESPONSE_BINDING_NAME, response);
 			sc.setAttribute(RESOURCE_OWNER_BINDING_NAME, token.getUser());
-			
+
 			Boolean ret = (Boolean) scriptRuntime.eval(sc);
 			if (ret != null && ret.booleanValue()) {
 				return true;
@@ -108,8 +110,7 @@ public class MetaScriptingCustomTokenIntrospector extends MetaCustomTokenIntrosp
 		public MetaCustomTokenIntrospector getMetaData() {
 			return MetaScriptingCustomTokenIntrospector.this;
 		}
-		
-	}
 
+	}
 
 }

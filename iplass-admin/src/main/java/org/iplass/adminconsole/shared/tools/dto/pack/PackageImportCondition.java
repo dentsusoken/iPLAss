@@ -67,6 +67,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isTruncate() {
 		return truncate;
 	}
+
 	public void setTruncate(boolean truncate) {
 		this.truncate = truncate;
 	}
@@ -74,6 +75,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isBulkUpdate() {
 		return bulkUpdate;
 	}
+
 	public void setBulkUpdate(boolean bulkUpdate) {
 		this.bulkUpdate = bulkUpdate;
 	}
@@ -81,6 +83,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isErrorSkip() {
 		return errorSkip;
 	}
+
 	public void setErrorSkip(boolean errorSkip) {
 		this.errorSkip = errorSkip;
 	}
@@ -88,6 +91,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isIgnoreNotExistsProperty() {
 		return ignoreNotExistsProperty;
 	}
+
 	public void setIgnoreNotExistsProperty(boolean ignoreNotExistsProperty) {
 		this.ignoreNotExistsProperty = ignoreNotExistsProperty;
 	}
@@ -95,6 +99,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isNotifyListeners() {
 		return notifyListeners;
 	}
+
 	public void setNotifyListeners(boolean notifyListeners) {
 		this.notifyListeners = notifyListeners;
 	}
@@ -102,6 +107,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isWithValidation() {
 		return withValidation;
 	}
+
 	public void setWithValidation(boolean withValidation) {
 		this.withValidation = withValidation;
 	}
@@ -109,6 +115,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isUpdateDisupdatableProperty() {
 		return updateDisupdatableProperty;
 	}
+
 	public void setUpdateDisupdatableProperty(boolean updateDisupdatableProperty) {
 		this.updateDisupdatableProperty = updateDisupdatableProperty;
 	}
@@ -116,6 +123,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isInsertEnableAuditPropertySpecification() {
 		return insertEnableAuditPropertySpecification;
 	}
+
 	public void setInsertEnableAuditPropertySpecification(boolean insertEnableAuditPropertySpecification) {
 		this.insertEnableAuditPropertySpecification = insertEnableAuditPropertySpecification;
 	}
@@ -123,6 +131,7 @@ public class PackageImportCondition implements Serializable {
 	public Integer getCommitLimit() {
 		return commitLimit;
 	}
+
 	public void setCommitLimit(Integer commitLimit) {
 		this.commitLimit = commitLimit;
 	}
@@ -130,6 +139,7 @@ public class PackageImportCondition implements Serializable {
 	public String getPrefixOid() {
 		return prefixOid;
 	}
+
 	public void setPrefixOid(String prefixOid) {
 		this.prefixOid = prefixOid;
 	}
@@ -137,6 +147,7 @@ public class PackageImportCondition implements Serializable {
 	public boolean isFourceUpdate() {
 		return fourceUpdate;
 	}
+
 	public void setFourceUpdate(boolean fourceUpdate) {
 		this.fourceUpdate = fourceUpdate;
 	}
@@ -144,6 +155,7 @@ public class PackageImportCondition implements Serializable {
 	public String getLocale() {
 		return locale;
 	}
+
 	public void setLocale(String locale) {
 		this.locale = locale;
 	}
@@ -151,6 +163,7 @@ public class PackageImportCondition implements Serializable {
 	public String getTimezone() {
 		return timezone;
 	}
+
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
 	}

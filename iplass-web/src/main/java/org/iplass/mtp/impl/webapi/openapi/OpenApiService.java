@@ -115,7 +115,8 @@ public class OpenApiService implements Service {
 			entityWebApiMapper.map(openApi, entityWebApi.getEntityDefinitionName(), entityWebApi.getEntityWebApiTypeList());
 		}
 
-		openApiResolver.getObjectWriter(fileType, version).writeValue(out, openApi);
+		openApiResolver.getObjectWriter(fileType, version)
+				.writeValue(out, openApi);
 	}
 
 	/**
@@ -129,18 +130,26 @@ public class OpenApiService implements Service {
 	public List<OpenApiImportResult> importOpenApiToWebApi(File file, OpenApiFileType fileType, OpenApiVersion version) throws IOException {
 		try (var reader = Files.newBufferedReader(Path.of(file.toURI()), StandardCharsets.UTF_8)) {
 
-			var openApi = openApiResolver.getObjectMapper(fileType, version).readValue(reader, OpenAPI.class);
+			var openApi = openApiResolver.getObjectMapper(fileType, version)
+					.readValue(reader, OpenAPI.class);
 			var webApiMapResultList = webApiMapper.mapWebApi(openApi, fileType, version);
 			var updateResult = webApiUpdater.updateWebApi(webApiMapResultList);
-			return updateResult.stream().map(r -> {
-				var webApiDefinition = r.getMapInfo().getWebApiDefinition();
-				var webApiPath = webApiDefinition == null ? "Not Import." : webApiDefinition.getName();
-				return new OpenApiImportResult(
-						r.getMapInfo().getOpenApiPath(),
-						webApiPath,
-						r.getMapInfo().getUpdateType().name(),
-						r.getUpdateResult().name());
-			}).toList();
+			return updateResult.stream()
+					.map(r -> {
+						var webApiDefinition = r.getMapInfo()
+								.getWebApiDefinition();
+						var webApiPath = webApiDefinition == null ? "Not Import." : webApiDefinition.getName();
+						return new OpenApiImportResult(
+								r.getMapInfo()
+										.getOpenApiPath(),
+								webApiPath,
+								r.getMapInfo()
+										.getUpdateType()
+										.name(),
+								r.getUpdateResult()
+										.name());
+					})
+					.toList();
 		}
 	}
 

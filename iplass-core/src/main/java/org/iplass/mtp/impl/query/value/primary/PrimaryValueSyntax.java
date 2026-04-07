@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.query.value.subquery.ScalarSubQuerySyntax;
 import org.iplass.mtp.impl.query.value.window.WindowFunctionSyntax;
 
 public class PrimaryValueSyntax implements Syntax<ValueExpression>, QueryConstants {
-	
+
 	private ParenValueSyntax bracketValue;
 	private EntityFieldSyntax entityField;
 	private CastSyntax cast;
@@ -58,13 +58,13 @@ public class PrimaryValueSyntax implements Syntax<ValueExpression>, QueryConstan
 	}
 
 	public ValueExpression parse(ParseContext str) throws ParseException {
-		
+
 		//TODO 総当り方式では効率悪い。LL法を作って、先読みしながら、Syntaxを決定する
-		
+
 		// ( の場合は、BracketValueSyntaxか、ScalarSubQuerySyntax
 		if (str.startsWith(LEFT_PAREN)) {
 			int currentIndex = str.getCurrentIndex();
-			
+
 			try {
 				return bracketValue.parse(str);
 			} catch (ParseException e) {
@@ -73,30 +73,30 @@ public class PrimaryValueSyntax implements Syntax<ValueExpression>, QueryConstan
 				return scalarSubQuery.parse(str);
 			}
 		}
-		
+
 		//CASE の場合は、CASE文
 		if (str.equalsNextToken(CASE, ParseContext.WHITE_SPACES)) {
 			return caseClause.parse(str);
 		}
-		
+
 		//総当り。。。
 		if (str.isEnd()) {
 			throw new ParseException(new EvalError("can't parse value.", this, str));
 		}
 		int currentIndex = str.getCurrentIndex();
-		
+
 		try {
 			return arrayValue.parse(str);
 		} catch (ParseException e) {
 			str.setCurrentIndex(currentIndex);
 		}
-		
+
 		try {
 			return literal.parse(str);
 		} catch (ParseException e) {
 			str.setCurrentIndex(currentIndex);
 		}
-		
+
 		try {
 			return windowFunction.parse(str);
 		} catch (ParseException e) {
@@ -108,26 +108,25 @@ public class PrimaryValueSyntax implements Syntax<ValueExpression>, QueryConstan
 //		} catch (ParseException e) {
 //			str.setCurrentIndex(currentIndex);
 //		}
-		
+
 		try {
 			return cast.parse(str);
 		} catch (ParseException e) {
 			str.setCurrentIndex(currentIndex);
 		}
-		
+
 		try {
 			return function.parse(str);
 		} catch (ParseException e) {
 			str.setCurrentIndex(currentIndex);
 		}
-		
+
 		try {
 			return entityField.parse(str);
 		} catch (ParseException e) {
 			str.setCurrentIndex(currentIndex);
 		}
-		
-		
+
 		throw new ParseException(new EvalError("can't parse value.", this, str));
 	}
 

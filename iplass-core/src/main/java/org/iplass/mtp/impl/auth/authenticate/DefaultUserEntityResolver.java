@@ -59,8 +59,7 @@ import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
  */
 public class DefaultUserEntityResolver implements UserEntityResolver {
 
-	public static List<String> DEFAULT_EAGER_LOAD_REFERENCE_PROPERTY
-			= Collections.unmodifiableList(Arrays.asList(new String[]{"rank", "groups"}));
+	public static List<String> DEFAULT_EAGER_LOAD_REFERENCE_PROPERTY = Collections.unmodifiableList(Arrays.asList(new String[] { "rank", "groups" }));
 
 	private AuthService authService;
 
@@ -75,26 +74,33 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 	public boolean isEnableCache() {
 		return enableCache;
 	}
+
 	public void setEnableCache(boolean enableCache) {
 		this.enableCache = enableCache;
 	}
+
 	public boolean isByLoad() {
 		return byLoad;
 	}
+
 	public void setByLoad(boolean byLoad) {
 		this.byLoad = byLoad;
 	}
+
 	@Override
 	public String getUnmodifiableUniqueKeyProperty() {
 		return unmodifiableUniqueKeyProperty;
 	}
+
 	public void setUnmodifiableUniqueKeyProperty(
 			String unmodifiableUniqueKeyProperty) {
 		this.unmodifiableUniqueKeyProperty = unmodifiableUniqueKeyProperty;
 	}
+
 	public List<String> getEagerLoadReferenceProperty() {
 		return eagerLoadReferenceProperty;
 	}
+
 	public void setEagerLoadReferenceProperty(
 			List<String> eagerLoadReferenceProperty) {
 		this.eagerLoadReferenceProperty = eagerLoadReferenceProperty;
@@ -103,6 +109,7 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 	public String getFilterCondition() {
 		return filterCondition;
 	}
+
 	public void setFilterCondition(String filterCondition) {
 		this.filterCondition = filterCondition;
 	}
@@ -135,13 +142,14 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 
 	public User searchUser(final String key) {
 
-		return authService.doSecuredAction(AuthContextHolder.getAuthContext().privilegedAuthContextHolder(), () ->{
-							if (byLoad) {
-								return searchUserByLoad(key);
-							} else {
-								return searchUserByOneEQL(key);
-							}
-						});
+		return authService.doSecuredAction(AuthContextHolder.getAuthContext()
+				.privilegedAuthContextHolder(), () -> {
+					if (byLoad) {
+						return searchUserByLoad(key);
+					} else {
+						return searchUserByOneEQL(key);
+					}
+				});
 	}
 
 	private User searchUserByOneEQL(String key) {
@@ -150,16 +158,16 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 
 			ArrayList<ValueExpression> selectVals = new ArrayList<>();
 			EntityHandler userEh = ec.getHandlerByName(User.DEFINITION_NAME);
-			for (PropertyHandler ph: userEh.getPropertyList(ec)) {
+			for (PropertyHandler ph : userEh.getPropertyList(ec)) {
 				if (ph instanceof PrimitivePropertyHandler) {
 					selectVals.add(new EntityField(ph.getName()));
 				}
 			}
 
 			if (eagerLoadReferenceProperty != null) {
-				for (String refName: eagerLoadReferenceProperty) {
+				for (String refName : eagerLoadReferenceProperty) {
 					EntityHandler refEh = ((ReferencePropertyHandler) userEh.getPropertyCascade(refName, ec)).getReferenceEntityHandler(ec);
-					for (PropertyHandler ph: refEh.getPropertyList(ec)) {
+					for (PropertyHandler ph : refEh.getPropertyList(ec)) {
 						if (ph instanceof PrimitivePropertyHandler) {
 							selectVals.add(new EntityField(refName + "." + ph.getName()));
 						}
@@ -170,7 +178,8 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 			q.setSelect(new Select(false, selectVals));
 
 			if (enableCache) {
-				q.select().addHint(new CacheHint(CacheScope.TRANSACTION));
+				q.select()
+						.addHint(new CacheHint(CacheScope.TRANSACTION));
 			}
 
 			q.from(User.DEFINITION_NAME);
@@ -181,8 +190,10 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 			}
 			q.where(c);
 
-			final EntityBuilder eb = new EntityBuilder(userEh, ec, q.getSelect().getSelectValues());
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+			final EntityBuilder eb = new EntityBuilder(userEh, ec, q.getSelect()
+					.getSelectValues());
+			EntityManager em = ManagerLocator.getInstance()
+					.getManager(EntityManager.class);
 			em.search(q, new Predicate<Object[]>() {
 				@Override
 				public boolean test(Object[] data) {
@@ -195,7 +206,8 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 
 			Collection<Entity> result = eb.getCollection();
 			if (!result.isEmpty()) {
-				return (User) result.iterator().next();
+				return (User) result.iterator()
+						.next();
 			}
 
 			return null;
@@ -209,9 +221,11 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 	private User searchUserByLoad(String key) {
 		try {
 			final String[] oid = new String[1];
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+			EntityManager em = ManagerLocator.getInstance()
+					.getManager(EntityManager.class);
 			if (!unmodifiableUniqueKeyProperty.equals(Entity.OID)) {
-				Query q = new Query().select(Entity.OID).from(User.DEFINITION_NAME);
+				Query q = new Query().select(Entity.OID)
+						.from(User.DEFINITION_NAME);
 
 				Condition c = new Equals(unmodifiableUniqueKeyProperty, key);
 				if (filterConditionNode != null) {
@@ -239,7 +253,7 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 
 				//TODO 現状、1段のみ対応、、、
 				if (eagerLoadReferenceProperty != null) {
-					for (String pName: eagerLoadReferenceProperty) {
+					for (String pName : eagerLoadReferenceProperty) {
 						Object ref = user.getValue(pName);
 						if (ref != null) {
 							if (ref instanceof Entity) {

@@ -57,8 +57,8 @@ public class JavaClassNormalizerAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof JavaClassNormalizer) {
-			txtClassName.setValue(((JavaClassNormalizer)definition).getClassName());
-			chkBindAsArray.setValue(((JavaClassNormalizer)definition).isAsArray());
+			txtClassName.setValue(((JavaClassNormalizer) definition).getClassName());
+			chkBindAsArray.setValue(((JavaClassNormalizer) definition).isAsArray());
 		} else {
 			form.clearValues();
 		}

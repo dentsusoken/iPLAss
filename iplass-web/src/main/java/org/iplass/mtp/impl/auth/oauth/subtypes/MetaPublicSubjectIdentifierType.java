@@ -51,7 +51,7 @@ public class MetaPublicSubjectIdentifierType extends MetaSubjectIdentifierType {
 
 	private String subjectIdMappedUserProperty;
 	private boolean hashing;
-	
+
 	public boolean isHashing() {
 		return hashing;
 	}
@@ -72,13 +72,16 @@ public class MetaPublicSubjectIdentifierType extends MetaSubjectIdentifierType {
 	public PublicSubjectIdentifierTypeRuntime createRuntime() {
 		return new PublicSubjectIdentifierTypeRuntime();
 	}
-	
+
 	public class PublicSubjectIdentifierTypeRuntime extends SubjectIdentifierTypeRuntime {
-		private OAuthAuthorizationService oauthAuthService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
+		private OAuthAuthorizationService oauthAuthService = ServiceRegistry.getRegistry()
+				.getService(OAuthAuthorizationService.class);
+
 		public PublicSubjectIdentifierTypeRuntime() {
 			if (hashing) {
 				if (oauthAuthService.getSubjectIdHashAlgorithm() == null || oauthAuthService.getSubjectIdHashSalt() == null) {
-					throw new IllegalStateException("no hashing configration defined. OAuthAuthorizationService's subjectIdHashAlgorithm and subjectIdHashSalt must specify.");
+					throw new IllegalStateException(
+							"no hashing configration defined. OAuthAuthorizationService's subjectIdHashAlgorithm and subjectIdHashSalt must specify.");
 				}
 			}
 		}
@@ -94,9 +97,12 @@ public class MetaPublicSubjectIdentifierType extends MetaSubjectIdentifierType {
 				try {
 					MessageDigest md = MessageDigest.getInstance(oauthAuthService.getSubjectIdHashAlgorithm());
 					//publicの場合は、clientに依存せず共通のID
-					String msg = ret + "-" + ExecuteContext.getCurrentContext().getClientTenantId() + "-" + oauthAuthService.getSubjectIdHashSalt();
+					String msg = ret + "-" + ExecuteContext.getCurrentContext()
+							.getClientTenantId() + "-" + oauthAuthService.getSubjectIdHashSalt();
 					byte[] bytes = md.digest(msg.getBytes("UTF-8"));
-					ret = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+					ret = Base64.getUrlEncoder()
+							.withoutPadding()
+							.encodeToString(bytes);
 				} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 					throw new RuntimeException(e);
 				}
@@ -109,7 +115,8 @@ public class MetaPublicSubjectIdentifierType extends MetaSubjectIdentifierType {
 			Object value = user.getValue(subjectIdMappedUserProperty);
 			if (value == null) {
 				//maybe another session is update...
-				EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+				EntityManager em = ManagerLocator.getInstance()
+						.getManager(EntityManager.class);
 				User u = (User) em.load(user.getOid(), User.DEFINITION_NAME, new LoadOption(false, false));
 				value = u.getValue(subjectIdMappedUserProperty);
 				if (value == null) {
@@ -121,7 +128,7 @@ public class MetaPublicSubjectIdentifierType extends MetaSubjectIdentifierType {
 			}
 			return user;
 		}
-		
+
 	}
 
 	@Override

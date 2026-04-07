@@ -53,14 +53,14 @@ public class OpenIdConnectDefinition implements Definition {
 	private boolean issParameterSupported = true;
 	private boolean validateSign;
 	private ResponseMode responseMode = ResponseMode.FORM_POST;
-	private String subjectNameClaim ="preferred_username";
+	private String subjectNameClaim = "preferred_username";
 	private String autoUserProvisioningHandler;
 	private boolean enableTransientUser;
 
 	private String backUrlAfterAuth;
 	private String backUrlAfterConnect;
 	private String prompt;
-	
+
 	public String getBackUrlAfterAuth() {
 		return backUrlAfterAuth;
 	}

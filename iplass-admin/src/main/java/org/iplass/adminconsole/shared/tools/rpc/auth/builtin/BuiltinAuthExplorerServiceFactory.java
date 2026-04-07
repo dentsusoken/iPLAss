@@ -39,7 +39,7 @@ public abstract class BuiltinAuthExplorerServiceFactory extends AbstractAdminSer
 
 		BuiltinAuthExplorerServiceAsync service = GWT.create(BuiltinAuthExplorerService.class);
 
-		init((HasRpcToken)service);
+		init((HasRpcToken) service);
 
 		BuiltinAuthExplorerServiceFactory.service = service;
 

@@ -58,10 +58,14 @@ public class MetaDataTagDS extends AbstractAdminDataSource {
 
 	private MetaDataTagDS() {
 
-		DataSourceField nameField = new DataSourceTextField(FIELD_NAME.OID.name(), AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_tagName"));
-		DataSourceField createDateField = new DataSourceDateTimeField(FIELD_NAME.CREATEDATE.name(), AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_createDate"));
-		DataSourceField createDateDispField = new DataSourceTextField(FIELD_NAME.CREATEDATE_DISP.name(), AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_createDate"));
-		DataSourceField descriptionField = new DataSourceTextField(FIELD_NAME.DESCRIPTION.name(), AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_comment"));
+		DataSourceField nameField = new DataSourceTextField(FIELD_NAME.OID.name(),
+				AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_tagName"));
+		DataSourceField createDateField = new DataSourceDateTimeField(FIELD_NAME.CREATEDATE.name(),
+				AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_createDate"));
+		DataSourceField createDateDispField = new DataSourceTextField(FIELD_NAME.CREATEDATE_DISP.name(),
+				AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_createDate"));
+		DataSourceField descriptionField = new DataSourceTextField(FIELD_NAME.DESCRIPTION.name(),
+				AdminClientMessageUtil.getString("datasource_tools_metaexplorer_MetaDataTagDS_comment"));
 
 		setFields(nameField, createDateField, createDateDispField, descriptionField);
 	}
@@ -76,7 +80,7 @@ public class MetaDataTagDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(List<Entity> entities) {
 				List<ListGridRecord> records = createRecord(entities);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}

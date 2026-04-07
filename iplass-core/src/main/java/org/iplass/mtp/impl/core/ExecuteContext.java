@@ -48,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-
 public class ExecuteContext {
 
 	public static final String MDC_TENANT = "tenant";
@@ -90,14 +89,12 @@ public class ExecuteContext {
 			initContext(new ExecuteContext(t, "0", "0"));
 		}
 
-
 		return context.get();
 	}
 
 	public static boolean isInited() {
 		return context.get() != null;
 	}
-
 
 	public static <T> T executeAs(TenantContext tenant, Executable<T> exec) {
 		ExecuteContext current = context.get();
@@ -111,7 +108,7 @@ public class ExecuteContext {
 //				nested.clientId = current.clientId;
 				if (current.contextMap != null) {
 					HashMap<String, AttributeEntry> nestedContextMap = new HashMap<String, ExecuteContext.AttributeEntry>();
-					for (Map.Entry<String, AttributeEntry> e: current.contextMap.entrySet()) {
+					for (Map.Entry<String, AttributeEntry> e : current.contextMap.entrySet()) {
 						AttributeEntry val = e.getValue();
 						if (val != null && val.isShare && !val.removed) {
 							nestedContextMap.put(e.getKey(), val);
@@ -125,14 +122,17 @@ public class ExecuteContext {
 			}
 
 			context.set(nested);
-			MDC.put(MDC_TENANT, nested.getTenantContext().getTenantIdString());
-			MDC.put(MDC_TENANT_NAME, nested.getTenantContext().getTenantName());
+			MDC.put(MDC_TENANT, nested.getTenantContext()
+					.getTenantIdString());
+			MDC.put(MDC_TENANT_NAME, nested.getTenantContext()
+					.getTenantName());
 
-			if(logger.isDebugEnabled()) {
+			if (logger.isDebugEnabled()) {
 				if (current == null) {
 					logger.debug("execute as tenant:" + tenant.getTenantId() + ", context:" + nested);
 				} else {
-					logger.debug("execute as tenant:" + tenant.getTenantId() + ", prevStackTenant:" + current.getClientTenantId() + ", context:" + nested);
+					logger.debug(
+							"execute as tenant:" + tenant.getTenantId() + ", prevStackTenant:" + current.getClientTenantId() + ", context:" + nested);
 				}
 			}
 
@@ -144,7 +144,7 @@ public class ExecuteContext {
 						if (current.contextMap == null) {
 							current.contextMap = new HashMap<String, AttributeEntry>();
 						}
-						for (Map.Entry<String, AttributeEntry> e: nested.contextMap.entrySet()) {
+						for (Map.Entry<String, AttributeEntry> e : nested.contextMap.entrySet()) {
 							AttributeEntry val = e.getValue();
 							if (val != null && val.isShare) {
 								if (val.removed) {
@@ -189,7 +189,6 @@ public class ExecuteContext {
 		}
 	}
 
-
 	public static void initContext(ExecuteContext mtfContext) {
 
 		ExecuteContext previous = context.get();
@@ -197,13 +196,15 @@ public class ExecuteContext {
 			logger.debug("previous ExecuteContext exists.. so cleanup before initContext:" + previous);
 			previous.finallyProcess();
 		}
-		if(logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("init execute context:" + mtfContext);
 		}
 		context.set(mtfContext);
 		if (mtfContext != null && mtfContext.getTenantContext() != null) {
-			MDC.put(MDC_TENANT, mtfContext.getTenantContext().getTenantIdString());
-			MDC.put(MDC_TENANT_NAME, mtfContext.getTenantContext().getTenantName());
+			MDC.put(MDC_TENANT, mtfContext.getTenantContext()
+					.getTenantIdString());
+			MDC.put(MDC_TENANT_NAME, mtfContext.getTenantContext()
+					.getTenantName());
 		} else {
 			MDC.clear();
 		}
@@ -211,13 +212,15 @@ public class ExecuteContext {
 
 	public static void setContext(ExecuteContext mtfContext) {
 
-		if(logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("set context:" + mtfContext);
 		}
 		context.set(mtfContext);
 		if (mtfContext != null && mtfContext.getTenantContext() != null) {
-			MDC.put(MDC_TENANT, mtfContext.getTenantContext().getTenantIdString());
-			MDC.put(MDC_TENANT_NAME, mtfContext.getTenantContext().getTenantName());
+			MDC.put(MDC_TENANT, mtfContext.getTenantContext()
+					.getTenantIdString());
+			MDC.put(MDC_TENANT_NAME, mtfContext.getTenantContext()
+					.getTenantName());
 		} else {
 			MDC.clear();
 		}
@@ -240,7 +243,7 @@ public class ExecuteContext {
 		this.tenantContext = tenantContext;
 //		this.authType = authType;
 	}
-	
+
 	public void mdcPut(String key, String val) {
 		String preVal = MDC.get(key);
 		if (!Objects.equals(preVal, val)) {
@@ -255,7 +258,7 @@ public class ExecuteContext {
 			}
 		}
 	}
-	
+
 	public void mdcPutWithoutLoggingContextReload(String key, String val) {
 		MDC.put(key, val);
 	}
@@ -265,7 +268,8 @@ public class ExecuteContext {
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				sdf.setTimeZone(getTimeZone());
-				defaultEndDate = new Timestamp(sdf.parse("20991231").getTime());
+				defaultEndDate = new Timestamp(sdf.parse("20991231")
+						.getTime());
 			} catch (ParseException e) {
 				throw new RuntimeException(e);
 			}
@@ -300,7 +304,8 @@ public class ExecuteContext {
 
 	private void initI18n() {
 		if (locale == null || langLocale == null) {
-			I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+			I18nService i18n = ServiceRegistry.getRegistry()
+					.getService(I18nService.class);
 			MetaTenantHandler mth = tenantContext.getTenantRuntime();
 			MetaTenantI18nInfoRuntime tenanti18n = (mth != null ? mth.getConfigRuntime(MetaTenantI18nInfoRuntime.class) : null);
 			if (locale == null) {
@@ -318,10 +323,11 @@ public class ExecuteContext {
 			if (langLocale == null) {
 				TenantI18nInfo t = getCurrentTenant().getTenantConfig(TenantI18nInfo.class);
 				if (t.isUseMultilingual() && t.getUseLanguageList() != null) {
-					User user = AuthContext.getCurrentContext().getUser();
+					User user = AuthContext.getCurrentContext()
+							.getUser();
 					String lang = user.getLanguage();
 					if (lang != null) {
-						for (String tl: t.getUseLanguageList()) {
+						for (String tl : t.getUseLanguageList()) {
 							if (lang.equals(tl)) {
 								language = lang;
 								langLocale = Locale.forLanguageTag(language);
@@ -396,12 +402,12 @@ public class ExecuteContext {
 	}
 
 	private void finallyProcess() {
-		if(logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("finalize execute context:" + this);
 		}
 		try {
 			if (contextMap != null) {
-				for (Map.Entry<String, AttributeEntry> e: contextMap.entrySet()) {
+				for (Map.Entry<String, AttributeEntry> e : contextMap.entrySet()) {
 					AttributeEntry val = e.getValue();
 					if (val != null && val.attribute instanceof Finalizable
 							&& (!val.isShare || prevStacked == null)) {
@@ -503,13 +509,15 @@ public class ExecuteContext {
 	public Date getCurrentLocalDate() {
 		if (currentLocalDate == null) {
 			Timestamp ts = getCurrentTimestamp();
-			if (getCurrentTenant() != null && getCurrentTenant().getTenantConfig(TenantI18nInfo.class).getTimezone() != null) {
+			if (getCurrentTenant() != null && getCurrentTenant().getTenantConfig(TenantI18nInfo.class)
+					.getTimezone() != null) {
 				TimeZone systemTz = TimeZone.getDefault();
 				TimeZone localTz = getTimeZone();
 				int offset = localTz.getOffset(ts.getTime()) - systemTz.getOffset(ts.getTime());
 				ts.setTime(ts.getTime() + offset);
 			}
-			currentLocalDate = new Date(DateUtils.truncate(ts, Calendar.DAY_OF_MONTH).getTime());
+			currentLocalDate = new Date(DateUtils.truncate(ts, Calendar.DAY_OF_MONTH)
+					.getTime());
 		}
 		return (Date) currentLocalDate.clone();
 	}
@@ -517,7 +525,8 @@ public class ExecuteContext {
 	public Time getCurrentLocalTime() {
 		if (currentLocalTime == null) {
 			Timestamp ts = getCurrentTimestamp();
-			if (getCurrentTenant() != null && getCurrentTenant().getTenantConfig(TenantI18nInfo.class).getTimezone() != null) {
+			if (getCurrentTenant() != null && getCurrentTenant().getTenantConfig(TenantI18nInfo.class)
+					.getTimezone() != null) {
 				TimeZone systemTz = TimeZone.getDefault();
 				TimeZone localTz = getTimeZone();
 				int offset = localTz.getOffset(ts.getTime()) - systemTz.getOffset(ts.getTime());

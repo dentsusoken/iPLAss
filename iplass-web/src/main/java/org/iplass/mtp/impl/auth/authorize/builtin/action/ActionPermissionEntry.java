@@ -47,7 +47,9 @@ class ActionPermissionEntry {
 		boolean localIsScriptError = false;
 		Script localParameterCondition = null;
 		if (parameterConditionExp != null) {
-			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			ScriptEngine se = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getScriptEngine();
 			try {
 				localParameterCondition = se.createScript(parameterConditionExp, SCRIPT_PREFIX + "_" + oid);
 			} catch (RuntimeException e) {
@@ -77,7 +79,9 @@ class ActionPermissionEntry {
 			return true;
 		}
 
-		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+		ScriptEngine se = ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 		ScriptContext sc = se.newScriptContext();
 		sc.setAttribute("user", authContextHolder.newUserBinding(tenantContext));
 		sc.setAttribute("session", SessionBinding.newSessionBinding());
