@@ -589,43 +589,13 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * ソート設定を取得します。
 	 * @return ソート設定
 	 */
-	protected final List<SortSetting> getSortSetting() {
+	final List<SortSetting> getSortSetting() {
 		List<SortSetting> setting = new ArrayList<>();
 
 		//画面でソート条件が指定されれば第1キーに
 		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
 		if (StringUtil.isNotBlank(sortKey)) {
-			PropertyColumn property = getLayoutPropertyColumn(sortKey);
-			// SearchResultに定義されているPropertyのみ許可
-			if (property != null) {
-				SortSetting ss = null;
-				if (property.getPropertyName()
-						.equals(sortKey)) {
-					// ソートキーが直接D&Dされた列の場合
-					ss = new SortSetting();
-					ss.setSortKey(sortKey);
-				} else {
-					// ネストの存在確認
-					NestProperty np = getLayoutNestProperty(property, sortKey);
-					if (np != null) {
-						ss = new SortSetting();
-						ss.setSortKey(sortKey);
-					}
-				}
-
-				if (ss != null) {
-					String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
-					if (StringUtil.isBlank(sortType)) {
-						ss.setSortType(ConditionSortType.DESC);
-					} else {
-						ss.setSortType(ConditionSortType.valueOf(sortType));
-					}
-
-					ss.setNullOrderType(property.getNullOrderType());
-
-					setting.add(ss);
-				}
-			}
+			setting.add(getRequestSortSpec(sortKey));
 		}
 
 		SearchConditionSection section = getConditionSection();
@@ -634,6 +604,40 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			setting.addAll(section.getSortSetting());
 		}
 		return setting;
+	}
+
+	//TODO: 削除（共通化）
+	private SortSetting getRequestSortSpec(String sortKey) {
+		//ロジック変更：ソート設定なし側に合わせる
+		if (Entity.OID.equals(sortKey)) {
+			SortSetting ss = new SortSetting();
+			ss.setSortKey(sortKey);
+			ss.setSortType(ConditionSortType.valueOf(getSortType().name()));
+			return ss;
+		}
+		PropertyColumn property = getLayoutPropertyColumn(sortKey);
+		if (property == null) {
+			throw new ApplicationException("invalid sort key: " + sortKey);
+		}
+		// SearchResultに定義されているPropertyのみ許可
+		SortSetting ss = new SortSetting();
+		if (property.getPropertyName()
+				.equals(sortKey)) {
+			// ソートキーが直接D&Dされた列の場合
+			ss.setSortKey(sortKey);
+		} else {
+			// ネストの存在確認
+			NestProperty np = getLayoutNestProperty(property, sortKey);
+			if (np == null) {
+				throw new ApplicationException("invalid sort key: " + sortKey);
+			}
+			ss.setSortKey(sortKey);
+		}
+
+		ss.setSortType(ConditionSortType.valueOf(getSortType().name()));
+		ss.setNullOrderType(property.getNullOrderType());
+
+		return ss;
 	}
 
 	/**
