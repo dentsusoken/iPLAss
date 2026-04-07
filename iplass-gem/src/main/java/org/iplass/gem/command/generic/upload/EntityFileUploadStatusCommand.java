@@ -42,7 +42,6 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.fileport.EntityFileUploadService;
 import org.iplass.mtp.impl.fileport.EntityFileUploadStatus;
 import org.iplass.mtp.impl.i18n.LocaleFormat;
-import org.iplass.mtp.impl.webapi.command.definition.DefinitionCommand;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -63,7 +62,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		accepts = { RequestType.REST_FORM, RequestType.REST_JSON, RequestType.REST_XML },
 		methods = MethodType.POST,
 		restJson = @RestJson(parameterName = "params", parameterType = EntityFileUploadStatusParam.class),
-		restXml = @RestXml(parameterName = DefinitionCommand.PARAM_DEFINITION),
+		restXml = @RestXml(parameterName = "params"),
 		results = { WebApiRequestConstants.DEFAULT_RESULT }
 )
 @CommandClass(
