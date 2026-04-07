@@ -194,11 +194,6 @@ public class SearchSelectListContext extends SearchContextBase {
 	}
 
 	@Override
-	protected boolean hasSortSetting() {
-		return context.hasSortSetting();
-	}
-
-	@Override
 	protected Integer getSearchLimit() {
 		return context.getSearchLimit();
 	}
