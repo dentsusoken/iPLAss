@@ -240,7 +240,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			return new OrderBy().add(Entity.OID, getSortType());
 		}
 
-		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getSortSpec);
+		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getRequestSortSpec);
 		Stream<SortSpec> settingSortSpecs = sortSettings.stream()
 				.map(this::getSettingSortSpec);
 
@@ -251,42 +251,37 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return orderBy;
 	}
 
-	//TODO: ロジック共通化
+	/**
+	 * ソート設定からソート条件を取得します。
+	 */
 	private SortSpec getSettingSortSpec(SortSetting ss) {
 		String sortKey = ss.getSortKey();
-		PropertyDefinition pd = getPropertyDefinition(sortKey);
-		// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
-		if (pd instanceof ReferenceProperty) {
+		EntityField field = switch (getPropertyDefinition(sortKey)) {
+		case ReferenceProperty ref -> {
+			// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
 			PropertyColumn property = getLayoutPropertyColumn(sortKey);
-			// 当該項目が画面上表示される場合は、画面上の表示項目でソート
-			if (property != null) {
-				if (property.getPropertyName()
-						.equals(sortKey)) {
-					// ソートキーが直接D&Dされた列の場合
-					sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
-				} else {
-					// ネストの存在チェック
-					NestProperty np = getLayoutNestProperty(property, sortKey);
-					if (np != null) {
-						sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
-					} else {
-						// 画面上に表示されない場合は、Nameでソート
-						sortKey = sortKey + "." + Entity.NAME;
-					}
-				}
-			} else {
-				// 画面上に表示されない場合は、Nameでソート
-				sortKey = sortKey + "." + Entity.NAME;
+			EntityField fallbackField = new EntityField(sortKey + "." + Entity.NAME);
+
+			if (property == null) {
+				// 画面上に表示されない場合
+				yield fallbackField;
 			}
+			yield findInSearchResult(sortKey, property, () -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor())),
+					(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())))
+							.orElse(fallbackField);
+
 		}
-		SortType type = SortType.valueOf(ss.getSortType()
-				.name());
-		NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-		SortSpec sortSpec = new SortSpec(new EntityField(sortKey), type, nullOrderingSpec);
-		return sortSpec;
+		default -> new EntityField(sortKey);
+		};
+
+		return new SortSpec(field, SortType.valueOf(ss.getSortType()
+				.name()), getNullOrderingSpec(ss.getNullOrderType()));
 	}
 
-	private SortSpec getSortSpec(String sortKey) {
+	/**
+	 * リクエストからソート条件を取得します。
+	 */
+	private SortSpec getRequestSortSpec(String sortKey) {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);
@@ -300,34 +295,29 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (property == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);
 		}
-		EntityField field = findEntityFiled(sortKey, pd, property);
 
-		NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-		return new SortSpec(field, getSortType(), nullOrderingSpec);
+		return (switch (pd) {
+		case ReferenceProperty ref -> findInSearchResult(sortKey, property,
+				() -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor())),
+				(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())));
+		default -> findInSearchResult(sortKey, property, () -> new EntityField(sortKey), (np) -> new EntityField(sortKey));
+		}).map(field -> new SortSpec(field, getSortType(), getNullOrderingSpec(property.getNullOrderType())))
+				.orElseThrow(() -> new ApplicationException("invalid sort key: " + sortKey));
 	}
 
-	private EntityField findEntityFiled(String sortKey, PropertyDefinition pd, PropertyColumn property) {
-		// 参照プロパティの場合、画面上の表示項目でソート
-		if (pd instanceof ReferenceProperty) {
-			return findEntityFiled(sortKey, property, () -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor())),
-					(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())));
-		}
-		return findEntityFiled(sortKey, property, () -> new EntityField(sortKey), (np) -> new EntityField(sortKey));
-	}
-
-	private EntityField findEntityFiled(String sortKey, PropertyColumn property, Supplier<EntityField> dndFieldGetter,
+	/**
+	 * 検索結果からソートキーに対応するEntityFieldを取得します。
+	 */
+	private Optional<EntityField> findInSearchResult(String sortKey, PropertyColumn property, Supplier<EntityField> dndFieldGetter,
 			Function<NestProperty, EntityField> nestPropFieldGetter) {
 		if (property.getPropertyName()
 				.equals(sortKey)) {
 			// ソートキーが直接D&Dされた列の場合
-			return dndFieldGetter.get();
+			return Optional.of(dndFieldGetter.get());
 		}
 		// ネストの存在チェック
-		NestProperty np = getLayoutNestProperty(property, sortKey);
-		if (np == null) {
-			throw new ApplicationException("invalid sort key: " + sortKey);
-		}
-		return nestPropFieldGetter.apply(np);
+		return Optional.ofNullable(getLayoutNestProperty(property, sortKey))
+				.map(nestPropFieldGetter);
 	}
 
 	@Override
@@ -600,7 +590,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		//画面でソート条件が指定されれば第1キーに
 		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
 		if (StringUtil.isNotBlank(sortKey)) {
-			setting.add(getRequestSortSpec(sortKey));
+			setting.add(_getRequestSortSpec(sortKey));
 		}
 
 		setting.addAll(getSortSettings());
@@ -617,7 +607,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 
 	//TODO: 削除（共通化）
-	private SortSetting getRequestSortSpec(String sortKey) {
+	private SortSetting _getRequestSortSpec(String sortKey) {
 		//ロジック変更：ソート設定なし側に合わせる
 		if (Entity.OID.equals(sortKey)) {
 			SortSetting ss = new SortSetting();
