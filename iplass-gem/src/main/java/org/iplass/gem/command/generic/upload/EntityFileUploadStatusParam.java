@@ -22,9 +22,6 @@ package org.iplass.gem.command.generic.upload;
 
 import org.iplass.gem.command.GemWebApiParameter;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class EntityFileUploadStatusParam implements GemWebApiParameter {
 
 	private String defName;

@@ -34,7 +34,6 @@ import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.RestJson;
-import org.iplass.mtp.command.annotation.webapi.RestXml;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
@@ -59,10 +58,9 @@ import org.iplass.mtp.webapi.definition.RequestType;
 @WebApi(
 		name = EntityFileUploadStatusCommand.WEBAPI_NAME,
 		displayName = "ファイルアップロードステータス確認",
-		accepts = { RequestType.REST_FORM, RequestType.REST_JSON, RequestType.REST_XML },
+		accepts = { RequestType.REST_FORM, RequestType.REST_JSON },
 		methods = MethodType.POST,
 		restJson = @RestJson(parameterName = "params", parameterType = EntityFileUploadStatusParam.class),
-		restXml = @RestXml(parameterName = "params"),
 		results = { WebApiRequestConstants.DEFAULT_RESULT }
 )
 @CommandClass(
