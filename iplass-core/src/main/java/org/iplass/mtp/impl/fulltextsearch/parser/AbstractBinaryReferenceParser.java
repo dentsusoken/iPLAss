@@ -46,8 +46,6 @@ import org.xml.sax.SAXException;
 
 public abstract class AbstractBinaryReferenceParser implements BinaryReferenceParser {
 
-	private static final String TIKA_WRITE_LIMIT_REACHED_EXCEPTION = "org.apache.tika.sax.WriteOutContentHandler$WriteLimitReachedException";
-
 	private static Logger logger = LoggerFactory.getLogger(AbstractBinaryReferenceParser.class);
 
 	/** 処理継続可能な例外クラス */
@@ -85,14 +83,16 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 
 			try {
 				parser.parse(is, handler, metadata, new ParseContext());
-			} catch (SAXException | TikaException e) {
-				if (isWriteLimitReachedException(e)) {
+			} catch (SAXException e) {
+				if (WriteLimitReachedException.isWriteLimitReached(e)) {
 					//コンテンツのLimitに引っかかった場合はWARNログを出して、今までの結果を出力
 					logger.warn("{} contained more than {} characters. so cut {} characters.", br.getName(), writeLimit,
 							writeLimit);
 				} else {
 					throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 				}
+			} catch (TikaException e) {
+				throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 			} catch (Throwable e) {
 				//タイプに一致するParserで必要なClassがなかったもしくは、処理継続可能な例外クラスに設定されていた場合、BinaryReferenceParseExceptionをthrow
 				if (e instanceof NoClassDefFoundError || continuableExceptions.contains(e.getClass()
@@ -116,20 +116,6 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 		} catch (IOException e) {
 			throw new FulltextSearchRuntimeException("Exception occurred on index creating process.", e);
 		}
-	}
-
-	private boolean isWriteLimitReachedException(Throwable throwable) {
-		Throwable current = throwable;
-		while (current != null) {
-			String exceptionClassName = current.getClass()
-					.getName();
-			if (TIKA_WRITE_LIMIT_REACHED_EXCEPTION.equals(exceptionClassName)
-					|| current instanceof WriteLimitReachedException) {
-				return true;
-			}
-			current = current.getCause();
-		}
-		return false;
 	}
 
 	/**
