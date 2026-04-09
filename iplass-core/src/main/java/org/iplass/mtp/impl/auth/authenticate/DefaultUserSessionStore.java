@@ -28,19 +28,19 @@ import org.iplass.mtp.impl.session.SessionService;
 import org.iplass.mtp.spi.Config;
 
 public class DefaultUserSessionStore implements UserSessionStore {
-	
+
 	public enum SessionFixationProtectionMethod {
 		NEW_SESSION, CHANGE_SESSION_ID;
 	}
-	
+
 	private SessionService sessionService;
-	
+
 	private boolean shareLoginSession;
 	private SessionFixationProtectionMethod sessionFixationProtection = SessionFixationProtectionMethod.CHANGE_SESSION_ID;
-	
+
 	public DefaultUserSessionStore() {
 	}
-	
+
 	public boolean isShareLoginSession() {
 		return shareLoginSession;
 	}
@@ -69,7 +69,9 @@ public class DefaultUserSessionStore implements UserSessionStore {
 			if (shareLoginSession) {
 				key = AuthService.USER_HANDLE_NAME;
 			} else {
-				int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getTenantId();
 				key = AuthService.USER_HANDLE_NAME + "." + tenantId;
 			}
 			return (UserContext) session.getAttribute(key);
@@ -77,7 +79,7 @@ public class DefaultUserSessionStore implements UserSessionStore {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void setUserContext(UserContext user, boolean withSessionInit) {
 		Session session;
@@ -95,11 +97,13 @@ public class DefaultUserSessionStore implements UserSessionStore {
 			}
 			session = sessionService.getSession(true);
 		}
-		
+
 		if (shareLoginSession) {
 			session.setAttribute(AuthService.USER_HANDLE_NAME, user);
 		} else {
-			int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+			int tenantId = ExecuteContext.getCurrentContext()
+					.getTenantContext()
+					.getTenantId();
 			session.setAttribute(AuthService.USER_HANDLE_NAME + "." + tenantId, user);
 		}
 	}

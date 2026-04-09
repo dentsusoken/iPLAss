@@ -19,14 +19,14 @@
  */
 package org.iplass.mtp.impl.webapi.jaxb;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.webapi.WebApiParameterMap;
 import org.iplass.mtp.impl.webapi.WebApiResponse;
 
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 @XmlSeeAlso({
-	WebApiResponse.class,
-	WebApiParameterMap.class
+		WebApiResponse.class,
+		WebApiParameterMap.class
 })
 public class Builtins {
 

@@ -23,10 +23,6 @@ package org.iplass.mtp.impl.web;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-
 import org.iplass.mtp.impl.async.rdb.RdbQueueService;
 import org.iplass.mtp.impl.cache.store.builtin.CacheEntryCleaner;
 import org.iplass.mtp.impl.core.config.BootstrapProps;
@@ -36,6 +32,10 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 public class ApplicationInitializer implements ServletContextListener {
 
@@ -62,7 +62,8 @@ public class ApplicationInitializer implements ServletContextListener {
 						stopMethod.invoke(lf);
 					}
 				}
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
 				//ignore
 				e.printStackTrace();
 			}

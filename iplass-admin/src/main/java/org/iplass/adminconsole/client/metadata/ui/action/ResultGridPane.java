@@ -80,21 +80,21 @@ public class ResultGridPane extends VLayout {
 		Label captionHint = new Label();
 		SmartGWTUtil.addHintToLabel(captionHint,
 				"<style type=\"text/css\"><!--"
-				+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
-				+ "ul.notes li{padding:5px 0px;}"
-				+ "ul.notes li span.strong {text-decoration:underline;color:red}"
-				+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
-				+ "--></style>"
-				+ "<h3>Notes</h3>"
-				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_action_ResultGridPane_statusComment1")
-				+ "</ul>");
+						+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
+						+ "ul.notes li{padding:5px 0px;}"
+						+ "ul.notes li span.strong {text-decoration:underline;color:red}"
+						+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
+						+ "--></style>"
+						+ "<h3>Notes</h3>"
+						+ "<ul class=\"notes\">"
+						+ AdminClientMessageUtil.getString("ui_metadata_action_ResultGridPane_statusComment1")
+						+ "</ul>");
 		captionComposit.addMember(captionHint);
 
 		grid = new ResultGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editResult((ListGridRecord)event.getRecord());
+				editResult((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -128,7 +128,7 @@ public class ResultGridPane extends VLayout {
 			for (ResultDefinition result : results) {
 				records.add(createRecord(result, null));
 			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
+			grid.setData(records.toArray(new ListGridRecord[] {}));
 		}
 	}
 
@@ -157,7 +157,7 @@ public class ResultGridPane extends VLayout {
 		ResultDefinition[] results = new ResultDefinition[records.length];
 		int i = 0;
 		for (ListGridRecord record : records) {
-			ResultDefinition result = (ResultDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+			ResultDefinition result = (ResultDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 			results[i] = result;
 			i++;
 		}
@@ -168,9 +168,11 @@ public class ResultGridPane extends VLayout {
 
 	public void addResult(MetaDataItemMenuTreeNode itemNode) {
 
-		if (itemNode.getDefinitionClassName().equals(TemplateDefinition.class.getName())) {
+		if (itemNode.getDefinitionClassName()
+				.equals(TemplateDefinition.class.getName())) {
 			addTemplate(itemNode);
-		} else if (itemNode.getDefinitionClassName().equals(StaticResourceDefinition.class.getName())) {
+		} else if (itemNode.getDefinitionClassName()
+				.equals(StaticResourceDefinition.class.getName())) {
 			addStaticResource(itemNode);
 		}
 	}
@@ -214,7 +216,8 @@ public class ResultGridPane extends VLayout {
 		}
 		record.setAttribute(FIELD_NAME.STATUS.name(), definition.getCommandResultStatus());
 		record.setAttribute(FIELD_NAME.EXCEPTION_CLASS_NAME.name(), definition.getExceptionClassName());
-		record.setAttribute(FIELD_NAME.RESULT_TYPE.name(), ResultType.valueOf(definition).displayName());
+		record.setAttribute(FIELD_NAME.RESULT_TYPE.name(), ResultType.valueOf(definition)
+				.displayName());
 		record.setAttribute(FIELD_NAME.SUMMARY.name(), definition.summaryInfo());
 		record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), definition);
 		return record;
@@ -244,7 +247,7 @@ public class ResultGridPane extends VLayout {
 
 		if (record != null) {
 			dialog.setDefinition(
-					(ResultDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+					(ResultDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 		}
 		dialog.show();
 	}
@@ -259,14 +262,14 @@ public class ResultGridPane extends VLayout {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
@@ -290,27 +293,32 @@ public class ResultGridPane extends VLayout {
 		@Override
 		protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 			final String fieldName = this.getFieldName(colNum);
-			if (FIELD_NAME.SHOW_ICON.name().equals(fieldName)) {
+			if (FIELD_NAME.SHOW_ICON.name()
+					.equals(fieldName)) {
 
 				//typeがTemplate,StaticResourceの場合のみ表示
 				String type = record.getAttributeAsString(FIELD_NAME.RESULT_TYPE.name());
-				if (ResultType.TEMPLATE.displayName().equals(type)){
+				if (ResultType.TEMPLATE.displayName()
+						.equals(type)) {
 					MetaDataViewGridButton button = new MetaDataViewGridButton(TemplateDefinition.class.getName());
 					button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 						@Override
 						public String targetDefinitionName() {
-							TemplateResultDefinition definition = (TemplateResultDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+							TemplateResultDefinition definition = (TemplateResultDefinition) record
+									.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 							return definition.getTemplateName();
 						}
 					});
 					return button;
 
-				} else if (ResultType.STATICRESOURCE.displayName().equals(type)){
+				} else if (ResultType.STATICRESOURCE.displayName()
+						.equals(type)) {
 					MetaDataViewGridButton button = new MetaDataViewGridButton(StaticResourceDefinition.class.getName());
 					button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 						@Override
 						public String targetDefinitionName() {
-							StaticResourceResultDefinition definition = (StaticResourceResultDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+							StaticResourceResultDefinition definition = (StaticResourceResultDefinition) record
+									.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 							return definition.getStaticResourceName();
 						}
 					});

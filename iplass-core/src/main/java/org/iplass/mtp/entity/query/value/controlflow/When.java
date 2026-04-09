@@ -39,7 +39,7 @@ public class When implements ASTNode {
 
 	private Condition condition;
 	private ValueExpression result;
-	
+
 	public When() {
 	}
 
@@ -47,7 +47,7 @@ public class When implements ASTNode {
 		this.condition = condition;
 		this.result = result;
 	}
-	
+
 	public When(Condition condition, Object resultLiteral) {
 		this.condition = condition;
 		if (resultLiteral instanceof ValueExpression) {
@@ -88,7 +88,7 @@ public class When implements ASTNode {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

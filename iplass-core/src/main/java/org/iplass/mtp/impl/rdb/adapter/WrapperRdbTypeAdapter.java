@@ -26,9 +26,8 @@ import java.sql.SQLException;
 
 import org.iplass.mtp.impl.entity.property.PropertyType;
 
-
 public class WrapperRdbTypeAdapter extends BaseRdbTypeAdapter {
-	
+
 	private BaseRdbTypeAdapter wrappedAdapter;
 
 	public WrapperRdbTypeAdapter(PropertyType propertyType, BaseRdbTypeAdapter wrappedAdapter) {

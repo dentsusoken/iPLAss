@@ -42,5 +42,4 @@ public class ReportOutputException extends ApplicationException {
 		super(cause);
 	}
 
-
 }

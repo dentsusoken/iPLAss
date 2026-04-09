@@ -30,7 +30,6 @@ import org.iplass.mtp.impl.command.MetaCommandFactory.MetaCommandResult;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
-
 public class MetaAsyncCommandFactory implements
 		AnnotatableMetaDataFactory<AsyncCommand, Object> {
 
@@ -85,7 +84,7 @@ public class MetaAsyncCommandFactory implements
 			res = commandFactory.toMetaCommand(asyncCommand.command(), annotatedClass);
 		}
 		metaAsyncCommand.setCommand(res.metaCommand);
-		
+
 		if (!DEFAULT.equals(asyncCommand.queue())) {
 			metaAsyncCommand.setQueue(asyncCommand.queue());
 		}
@@ -103,6 +102,5 @@ public class MetaAsyncCommandFactory implements
 		AsyncCommand asyncCommand = annotatedClass.getAnnotation(AsyncCommand.class);
 		return toMetaData(asyncCommand, annotatedClass);
 	}
-
 
 }

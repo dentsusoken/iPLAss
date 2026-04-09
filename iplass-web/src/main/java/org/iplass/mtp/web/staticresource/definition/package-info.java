@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/definition/web/staticresource",
-	xmlns={
-		@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/definition/web/staticresource", prefix="def-static")
-	}
+		namespace = "http://mtp.iplass.org/xml/definition/web/staticresource",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/definition/web/staticresource", prefix = "def-static")
+		}
 )
 package org.iplass.mtp.web.staticresource.definition;

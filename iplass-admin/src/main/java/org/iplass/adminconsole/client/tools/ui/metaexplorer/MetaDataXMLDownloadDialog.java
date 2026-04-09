@@ -40,7 +40,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 public class MetaDataXMLDownloadDialog extends AbstractWindow {
 
 	public MetaDataXMLDownloadDialog(final String path, final String repositoryType) {
-		this(new String[]{path}, repositoryType);
+		this(new String[] { path }, repositoryType);
 	}
 
 	public MetaDataXMLDownloadDialog(final String[] paths, final String repositoryType) {
@@ -57,14 +57,14 @@ public class MetaDataXMLDownloadDialog extends AbstractWindow {
 		fileTypeField.setTitle("File Type");
 		fileTypeField.setValueMap(FILETYPE.XML.name());
 		fileTypeField.setValue(FILETYPE.XML.name());
-		fileTypeField.setDisabled(true);	//XML固定
+		fileTypeField.setDisabled(true); //XML固定
 
 		final SelectItem encodeField = new SelectItem();
 		encodeField.setTitle("Encode");
 //		encodeField.setValueMap(ENCODE.UTF8.name(), ENCODE.MS932.name());
 		encodeField.setValueMap(ENCODE.UTF8.name());
 		encodeField.setValue(ENCODE.UTF8.name());
-		encodeField.setDisabled(true);	//UTF8固定
+		encodeField.setDisabled(true); //UTF8固定
 
 		final DynamicForm form = new DynamicForm();
 		form.setMargin(5);
@@ -86,13 +86,15 @@ public class MetaDataXMLDownloadDialog extends AbstractWindow {
 //				new GetDownloadFrame(builder.toEncodedUrl());
 				PostDownloadFrame frame = new PostDownloadFrame();
 				frame.setAction(GWT.getModuleBaseURL() + ConfigDownloadProperty.ACTION_URL)
-					.addParameter(ConfigDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-					.addParameter(ConfigDownloadProperty.TARGET_MODE, TargetMode.LIVE.name())
-					.addParameter(ConfigDownloadProperty.TARGET_PATH, pathArrayString(paths))
-					.addParameter(ConfigDownloadProperty.FILE_TYPE, FILETYPE.valueOf(fileTypeField.getValueAsString()).name())
-					.addParameter(ConfigDownloadProperty.ENCODE, ENCODE.valueOf(encodeField.getValueAsString()).getValue())
-					.addParameter(ConfigDownloadProperty.REPOSITORY_TYPE, repositoryType)
-					.execute();
+						.addParameter(ConfigDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+						.addParameter(ConfigDownloadProperty.TARGET_MODE, TargetMode.LIVE.name())
+						.addParameter(ConfigDownloadProperty.TARGET_PATH, pathArrayString(paths))
+						.addParameter(ConfigDownloadProperty.FILE_TYPE, FILETYPE.valueOf(fileTypeField.getValueAsString())
+								.name())
+						.addParameter(ConfigDownloadProperty.ENCODE, ENCODE.valueOf(encodeField.getValueAsString())
+								.getValue())
+						.addParameter(ConfigDownloadProperty.REPOSITORY_TYPE, repositoryType)
+						.execute();
 				destroy();
 			}
 		});

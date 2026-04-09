@@ -38,15 +38,15 @@ public class DecimalType extends BasicType {
 	//Integer.MIN_VALUEは桁数未指定の意とする
 	private int scale;
 	private RoundingMode roundingMode;
-	
+
 	public DecimalType() {
 	}
-	
+
 	public DecimalType(int scale, RoundingMode roundingMode) {
 		this.scale = scale;
 		this.roundingMode = roundingMode;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -97,29 +97,29 @@ public class DecimalType extends BasicType {
 		DecimalProperty def = new DecimalProperty();
 		def.setScale(scale);
 		switch (roundingMode) {
-			case UP:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.UP);
-				break;
-			case DOWN:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.DOWN);
-				break;
-			case CEILING:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.CEILING);
-				break;
-			case FLOOR:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.FLOOR);
-				break;
-			case HALF_UP:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.HALF_UP);
-				break;
-			case HALF_DOWN:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.HALF_DOWN);
-				break;
-			case HALF_EVEN:
-				def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.HALF_EVEN);
-				break;
-			default:
-				break;
+		case UP:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.UP);
+			break;
+		case DOWN:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.DOWN);
+			break;
+		case CEILING:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.CEILING);
+			break;
+		case FLOOR:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.FLOOR);
+			break;
+		case HALF_UP:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.HALF_UP);
+			break;
+		case HALF_DOWN:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.HALF_DOWN);
+			break;
+		case HALF_EVEN:
+			def.setRoundingMode(org.iplass.mtp.entity.definition.properties.RoundingMode.HALF_EVEN);
+			break;
+		default:
+			break;
 		}
 		return def;
 	}
@@ -127,32 +127,32 @@ public class DecimalType extends BasicType {
 	@Override
 	public void applyDefinition(PropertyDefinition def) {
 		super.applyDefinition(def);
-		
+
 		scale = ((DecimalProperty) def).getScale();
 		switch (((DecimalProperty) def).getRoundingMode()) {
-			case UP:
-				setRoundingMode(java.math.RoundingMode.UP);
-				break;
-			case DOWN:
-				setRoundingMode(java.math.RoundingMode.DOWN);
-				break;
-			case CEILING:
-				setRoundingMode(java.math.RoundingMode.CEILING);
-				break;
-			case FLOOR:
-				setRoundingMode(java.math.RoundingMode.FLOOR);
-				break;
-			case HALF_UP:
-				setRoundingMode(java.math.RoundingMode.HALF_UP);
-				break;
-			case HALF_DOWN:
-				setRoundingMode(java.math.RoundingMode.HALF_DOWN);
-				break;
-			case HALF_EVEN:
-				setRoundingMode(java.math.RoundingMode.HALF_EVEN);
-				break;
-			default:
-				break;
+		case UP:
+			setRoundingMode(java.math.RoundingMode.UP);
+			break;
+		case DOWN:
+			setRoundingMode(java.math.RoundingMode.DOWN);
+			break;
+		case CEILING:
+			setRoundingMode(java.math.RoundingMode.CEILING);
+			break;
+		case FLOOR:
+			setRoundingMode(java.math.RoundingMode.FLOOR);
+			break;
+		case HALF_UP:
+			setRoundingMode(java.math.RoundingMode.HALF_UP);
+			break;
+		case HALF_DOWN:
+			setRoundingMode(java.math.RoundingMode.HALF_DOWN);
+			break;
+		case HALF_EVEN:
+			setRoundingMode(java.math.RoundingMode.HALF_EVEN);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -165,12 +165,12 @@ public class DecimalType extends BasicType {
 	public Class<?> storeType() {
 		return BigDecimal.class;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.DECIMAL;
 	}
-	
+
 	@Override
 	public Object toDataStore(Object toDataStore) {
 		if (toDataStore == null) {
@@ -192,10 +192,11 @@ public class DecimalType extends BasicType {
 		if (value == null) {
 			return null;
 		}
-		
+
 		if (((BigDecimal) value).scale() != scale
 				&& scale != Integer.MIN_VALUE) {
-			return ((BigDecimal) value).setScale(scale, roundingMode).toString();
+			return ((BigDecimal) value).setScale(scale, roundingMode)
+					.toString();
 		} else {
 			return ((BigDecimal) value).toString();
 		}

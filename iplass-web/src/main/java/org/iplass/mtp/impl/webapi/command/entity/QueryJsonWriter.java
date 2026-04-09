@@ -48,10 +48,10 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 	private final QueryCsvWriteOption option;
 	private final EntityManager em;
 	private final boolean isCountTotal;
-	
+
 	private ObjectMapper mapper;
 	private JsonGenerator gen;
-	
+
 	public QueryJsonWriter(OutputStream out, Query query, boolean isCountTotal, ObjectMapper mapper,
 			JsonFactory jsonFactory) throws IOException {
 		this(out, query, isCountTotal, new QueryCsvWriteOption(), mapper, jsonFactory);
@@ -68,27 +68,29 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 	}
 
 	public void write() throws IOException {
-		
+
 		gen.writeStartObject();
 		gen.writeStringField("status", CMD_EXEC_SUCCESS);
-		
-		Query optQuery = option.getBeforeSearch().apply(query);
+
+		Query optQuery = option.getBeforeSearch()
+				.apply(query);
 
 		//header
 		gen.writeArrayFieldStart("listHeader");
-		for (ValueExpression ve: optQuery.getSelect().getSelectValues()) {
+		for (ValueExpression ve : optQuery.getSelect()
+				.getSelectValues()) {
 			gen.writeString(ve.toString());
 		}
 		gen.writeEndArray();
-		
+
 		gen.writeFieldName("list");
 		gen.writeStartArray();
 
 		// 検索結果のJSONレコードを出力
 		int countTotal = search(optQuery);
-		
+
 		gen.writeEndArray();
-		
+
 		if (isCountTotal) {
 			gen.writeNumberField("count", countTotal);
 		}
@@ -114,7 +116,7 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 			mapper.writeValue(gen, values);
 		} catch (IOException e) {
 			throw new SystemException(e);
-		} 
+		}
 	}
 
 	private int search(Query optQuery) throws IOException {
@@ -128,7 +130,8 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 
 			@Override
 			public boolean test(Object[] values) {
-				option.getAfterSearch().accept(optQuery.copy(), values);
+				option.getAfterSearch()
+						.accept(optQuery.copy(), values);
 
 				writeValues(values);
 

@@ -22,19 +22,18 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.impl.web.WebRequestStack;
-import org.iplass.mtp.impl.web.staticresource.StaticResourceService;
 import org.iplass.mtp.impl.web.staticresource.MetaStaticResource.StaticResourceRuntime;
+import org.iplass.mtp.impl.web.staticresource.StaticResourceService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.StaticResourceResultDefinition;
 
+import jakarta.servlet.ServletException;
 
 public class StaticResourceResult extends Result {
 
@@ -119,12 +118,14 @@ public class StaticResourceResult extends Result {
 	public void applyConfig(ResultDefinition definition) {
 		fillFrom(definition);
 		StaticResourceResultDefinition def = (StaticResourceResultDefinition) definition;
-		StaticResourceService service = ServiceRegistry.getRegistry().getService(StaticResourceService.class);
+		StaticResourceService service = ServiceRegistry.getRegistry()
+				.getService(StaticResourceService.class);
 		StaticResourceRuntime srr = service.getRuntimeByName(def.getStaticResourceName());
 		if (srr == null) {
 			throw new NullPointerException(def.getStaticResourceName() + " not found");
 		}
-		staticResourceId = srr.getMetaData().getId();
+		staticResourceId = srr.getMetaData()
+				.getId();
 		resolveByName = false;
 		useContentDisposition = def.isUseContentDisposition();
 		contentDispositionType = def.getContentDispositionType();
@@ -135,7 +136,8 @@ public class StaticResourceResult extends Result {
 	public ResultDefinition currentConfig() {
 		StaticResourceResultDefinition definition = new StaticResourceResultDefinition();
 		fillTo(definition);
-		StaticResourceService service = ServiceRegistry.getRegistry().getService(StaticResourceService.class);
+		StaticResourceService service = ServiceRegistry.getRegistry()
+				.getService(StaticResourceService.class);
 		StaticResourceRuntime sr;
 		if (resolveByName) {
 			sr = service.getRuntimeByName(staticResourceName);
@@ -143,7 +145,8 @@ public class StaticResourceResult extends Result {
 			sr = service.getRuntimeById(staticResourceId);
 		}
 		if (sr != null) {
-			definition.setStaticResourceName(sr.getMetaData().getName());
+			definition.setStaticResourceName(sr.getMetaData()
+					.getName());
 		}
 
 		definition.setUseContentDisposition(useContentDisposition);
@@ -170,7 +173,8 @@ public class StaticResourceResult extends Result {
 
 			RequestContext cmdRequestContext = request.getRequestContext();
 
-			StaticResourceService srs = ServiceRegistry.getRegistry().getService(StaticResourceService.class);
+			StaticResourceService srs = ServiceRegistry.getRegistry()
+					.getService(StaticResourceService.class);
 			StaticResourceRuntime sr;
 			if (resolveByName) {
 				sr = srs.getRuntimeByName(staticResourceName);
@@ -205,6 +209,5 @@ public class StaticResourceResult extends Result {
 		}
 
 	}
-
 
 }

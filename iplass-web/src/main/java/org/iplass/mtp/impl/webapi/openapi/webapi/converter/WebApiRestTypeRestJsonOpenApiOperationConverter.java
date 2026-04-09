@@ -71,12 +71,16 @@ public class WebApiRestTypeRestJsonOpenApiOperationConverter extends AbstractWeb
 
 	@Override
 	protected void setWebApiDefaultValue(WebApiOpenApiConvertContext context) {
-		var accepts = context.getWebApiDefinition().getAccepts();
+		var accepts = context.getWebApiDefinition()
+				.getAccepts();
 		if (ArrayUtil.contains(accepts, RequestType.REST_JSON)) {
 			// accepts に REST_JSON が含まれている場合は削除する
 			var list = new ArrayList<RequestType>(accepts.length - 1);
-			Stream.of(accepts).filter(a -> RequestType.REST_JSON != a).forEach(a -> list.add(a));
-			context.getWebApiDefinition().setAccepts(list.toArray(RequestType[]::new));
+			Stream.of(accepts)
+					.filter(a -> RequestType.REST_JSON != a)
+					.forEach(a -> list.add(a));
+			context.getWebApiDefinition()
+					.setAccepts(list.toArray(RequestType[]::new));
 		}
 	}
 
@@ -89,26 +93,35 @@ public class WebApiRestTypeRestJsonOpenApiOperationConverter extends AbstractWeb
 
 		var content = getRequestBodyContent(operation.getOperation());
 
-		if (null == content || content.keySet().stream().noneMatch(k -> null != k && APPLICATION_JSON.equals(k.toLowerCase()))) {
+		if (null == content || content.keySet()
+				.stream()
+				.noneMatch(k -> null != k && APPLICATION_JSON.equals(k.toLowerCase()))) {
 			return CheckNext.CONTINUE;
 		}
 
 		// accepts に REST_JSON を追加する
-		var accepts = context.getWebApiDefinition().getAccepts();
+		var accepts = context.getWebApiDefinition()
+				.getAccepts();
 		var appended = ArrayUtil.add(accepts, RequestType.REST_JSON, RequestType[]::new);
-		context.getWebApiDefinition().setAccepts(appended);
+		context.getWebApiDefinition()
+				.setAccepts(appended);
 		return CheckNext.FINISH;
 	}
 
 	private void createMediaType(OperationContext operation, WebApiOpenApiConvertContext context, String contentType) {
 		var def = context.getWebApiDefinition();
 		var objectSchema = new ObjectSchema();
-		operation.getOperation().getRequestBody().getContent().addMediaType(contentType, new MediaType().schema(objectSchema));
+		operation.getOperation()
+				.getRequestBody()
+				.getContent()
+				.addMediaType(contentType, new MediaType().schema(objectSchema));
 
 		if (StringUtil.isNotEmpty(def.getRestJsonParameterType())) {
 			var clazz = ClassUtil.forName(def.getRestJsonParameterType());
-			var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-			var ref = service.getReusableSchemaFactory().addReusableSchema(clazz, context.getOpenApi(), OpenApiJsonSchemaType.JSON);
+			var service = ServiceRegistry.getRegistry()
+					.getService(OpenApiService.class);
+			var ref = service.getReusableSchemaFactory()
+					.addReusableSchema(clazz, context.getOpenApi(), OpenApiJsonSchemaType.JSON);
 			objectSchema.set$ref(ref);
 		}
 

@@ -137,7 +137,8 @@ public class ServiceAccountSecretKeyGoogleCredentialsFactory implements GoogleCr
 					// プロキシ設定有り
 					: GoogleCredentials.fromStream(sercretKeyFile, () -> {
 						Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-						return new NetHttpTransport.Builder().setProxy(proxy).build();
+						return new NetHttpTransport.Builder().setProxy(proxy)
+								.build();
 					});
 
 			// スコープを設定

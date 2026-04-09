@@ -50,12 +50,15 @@ public class EntityLocalizationInterceptor extends EntityInterceptorAdapter {
 	public String insert(EntityInsertInvocation invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 		if (eh.getDataLocalizationStrategyRuntime() != null) {
-			if (invocation.getInsertOption() != null && invocation.getInsertOption().isLocalized()) {
+			if (invocation.getInsertOption() != null && invocation.getInsertOption()
+					.isLocalized()) {
 
 				Entity forRet = invocation.getEntity();
 				Entity e = ((GenericEntity) forRet).copy();
-				InsertOption op = invocation.getInsertOption().copy();
-				eh.getDataLocalizationStrategyRuntime().handleEntityForInsert(e, op);
+				InsertOption op = invocation.getInsertOption()
+						.copy();
+				eh.getDataLocalizationStrategyRuntime()
+						.handleEntityForInsert(e, op);
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("translate to Local:from=" + forRet + ", to=" + e);
@@ -72,7 +75,7 @@ public class EntityLocalizationInterceptor extends EntityInterceptorAdapter {
 				//auto numberを通知
 				List<PropertyHandler> pList = eh.getPropertyListByPropertyType(AutoNumberType.class, EntityContext.getCurrentContext());
 				if (pList != null) {
-					for (PropertyHandler ph: pList) {
+					for (PropertyHandler ph : pList) {
 						forRet.setValue(ph.getName(), e.getValue(ph.getName()));
 					}
 				}
@@ -91,11 +94,14 @@ public class EntityLocalizationInterceptor extends EntityInterceptorAdapter {
 	public void update(EntityUpdateInvocation invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 		if (eh.getDataLocalizationStrategyRuntime() != null) {
-			if (invocation.getUpdateOption() != null && invocation.getUpdateOption().isLocalized()) {
+			if (invocation.getUpdateOption() != null && invocation.getUpdateOption()
+					.isLocalized()) {
 				Entity forRet = invocation.getEntity();
 				Entity e = ((GenericEntity) forRet).copy();
-				UpdateOption op = invocation.getUpdateOption().copy();
-				eh.getDataLocalizationStrategyRuntime().handleEntityForUpdate(e, op);
+				UpdateOption op = invocation.getUpdateOption()
+						.copy();
+				eh.getDataLocalizationStrategyRuntime()
+						.handleEntityForUpdate(e, op);
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("translate to Local:from=" + forRet + ", to=" + e);
@@ -120,10 +126,12 @@ public class EntityLocalizationInterceptor extends EntityInterceptorAdapter {
 	public Entity load(EntityLoadInvocation invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
 		if (eh.getDataLocalizationStrategyRuntime() != null) {
-			if (invocation.getLoadOption() != null && invocation.getLoadOption().isLocalized()) {
+			if (invocation.getLoadOption() != null && invocation.getLoadOption()
+					.isLocalized()) {
 
 				Entity e = invocation.proceed();
-				Entity transed = eh.getDataLocalizationStrategyRuntime().handleEntityForLoad(e);
+				Entity transed = eh.getDataLocalizationStrategyRuntime()
+						.handleEntityForLoad(e);
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("translate to Local:from=" + e + ", to=" + transed);
@@ -142,9 +150,11 @@ public class EntityLocalizationInterceptor extends EntityInterceptorAdapter {
 	@Override
 	public void query(EntityQueryInvocation invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
-		if (invocation.getQuery().isLocalized()) {
+		if (invocation.getQuery()
+				.isLocalized()) {
 			QueryLocalizer ql = new QueryLocalizer(eh, EntityContext.getCurrentContext());
-			Query q = (Query) invocation.getQuery().accept(ql);
+			Query q = (Query) invocation.getQuery()
+					.accept(ql);
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("translate to Local:from=" + invocation.getQuery() + ", to=" + q);
@@ -165,9 +175,11 @@ public class EntityLocalizationInterceptor extends EntityInterceptorAdapter {
 	@Override
 	public int count(EntityCountInvocation invocation) {
 		EntityHandler eh = ((EntityInvocationImpl<?>) invocation).getEntityHandler();
-		if (invocation.getQuery().isLocalized()) {
+		if (invocation.getQuery()
+				.isLocalized()) {
 			QueryLocalizer ql = new QueryLocalizer(eh, EntityContext.getCurrentContext());
-			Query q = (Query) invocation.getQuery().accept(ql);
+			Query q = (Query) invocation.getQuery()
+					.accept(ql);
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("translate to Local:from=" + invocation.getQuery() + ", to=" + q);

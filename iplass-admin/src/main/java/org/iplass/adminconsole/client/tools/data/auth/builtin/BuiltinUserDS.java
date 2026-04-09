@@ -64,7 +64,6 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 	public static final String LAST_PASSWORD_CHANGE = "lastPasswordChange";
 	public static final String LAST_LOGIN = "lastLogin";
 
-
 	protected BuiltinAuthUserSearchConditionDto condition;
 
 	protected BuiltinAuthUserListResultDto result;
@@ -98,7 +97,8 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 		ListGridField endDateField = new ListGridField(END_DATE, "End Date");
 		endDateField.setWidth(130);
 
-		grid.setFields(oidField, accountIdField, nameField, mailField, policyNameField, adminField, loginErrorCntField, loginErrorDateField, lastPasswordChangeField, passwordRemainDaysField, lastLoginField, startDateField, endDateField);
+		grid.setFields(oidField, accountIdField, nameField, mailField, policyNameField, adminField, loginErrorCntField, loginErrorDateField,
+				lastPasswordChangeField, passwordRemainDaysField, lastLoginField, startDateField, endDateField);
 
 		return instance;
 
@@ -135,7 +135,8 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 		DataSourceField startDateField = new DataSourceTextField(START_DATE, "Start Date");
 		DataSourceField endDateField = new DataSourceTextField(END_DATE, "End Date");
 
-		setFields(accountIdField, nameField, mailField, policyNameField, adminField, loginErrorCntField, loginErrorDateField, lastPasswordChangeField, passwordRemainDaysField, lastLoginField, startDateField, endDateField);
+		setFields(accountIdField, nameField, mailField, policyNameField, adminField, loginErrorCntField, loginErrorDateField, lastPasswordChangeField,
+				passwordRemainDaysField, lastLoginField, startDateField, endDateField);
 	}
 
 	@Override
@@ -171,11 +172,11 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 
 						//レコードの作成
 						if (result.isError()) {
-							response.setData(new ListGridRecord[]{});
+							response.setData(new ListGridRecord[] {});
 							response.setTotalRows(0);
 						} else {
 							List<ListGridRecord> records = createRecord(result);
-							response.setData(records.toArray(new ListGridRecord[]{}));
+							response.setData(records.toArray(new ListGridRecord[] {}));
 							response.setTotalRows(records.size());
 						}
 						processResponse(requestId, response);
@@ -198,7 +199,7 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 
 						debug("executeFetch searchでエラーが発生. exec time -> " + (System.currentTimeMillis() - starttime) + "ms");
 					}
-		});
+				});
 	}
 
 	/**
@@ -212,8 +213,8 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 			return new ArrayList<ListGridRecord>(0);
 		}
 
-
-		List<ListGridRecord> list = new ArrayList<ListGridRecord>(result.getUsers().size());
+		List<ListGridRecord> list = new ArrayList<ListGridRecord>(result.getUsers()
+				.size());
 
 		for (BuiltinAuthUserDto user : result.getUsers()) {
 			ListGridRecord record = new ListGridRecord();

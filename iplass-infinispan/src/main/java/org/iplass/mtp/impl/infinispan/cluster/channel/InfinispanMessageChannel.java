@@ -56,7 +56,6 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 	private BlockingQueue<InternalMessage> msgQueue;
 	private ExecutorService ats;
 
-
 	public boolean isSync() {
 		return sync;
 	}
@@ -124,9 +123,8 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 		this.receiver = receiver;
 	}
 
-
 	void receiveMessage(Message[] msgList) {
-		for (Message msg: msgList) {
+		for (Message msg : msgList) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("receive message :" + msg);
 			}
@@ -142,7 +140,7 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 		} else {
 			if (!msgQueue.offer(new InternalMessage(message, MDC.get(ExecuteContext.MDC_TRACE_ID)))) {
 				fatalLog.error("send message failed. cause cant put to messageQueue. message=" + message);
-			};
+			} ;
 		}
 	}
 
@@ -164,16 +162,19 @@ public class InfinispanMessageChannel implements MessageChannel, ServiceInitList
 
 		// MDCトレースID単位でリクエスト実行
 		for (Map.Entry<String, List<Message>> entry : mdcTraceIdGroup.entrySet()) {
-			Message[] messageArray = entry.getValue().toArray(new Message[entry.getValue().size()]);
+			Message[] messageArray = entry.getValue()
+					.toArray(new Message[entry.getValue()
+							.size()]);
 			String mdcTraceId = entry.getKey();
 			InfinispanTaskState<Void> state = InfinispanTaskExecutor.submitRemote(new InfinispanMessageTask(messageArray), mdcTraceId);
-			state.getFuture().forEach(f -> {
-				try {
-					f.get();
-				} catch (Exception e) {
-					fatalLog.error("send message failed.error={}, message={}", e.toString(), Arrays.toString(message), e);
-				}
-			});
+			state.getFuture()
+					.forEach(f -> {
+						try {
+							f.get();
+						} catch (Exception e) {
+							fatalLog.error("send message failed.error={}, message={}", e.toString(), Arrays.toString(message), e);
+						}
+					});
 		}
 	}
 

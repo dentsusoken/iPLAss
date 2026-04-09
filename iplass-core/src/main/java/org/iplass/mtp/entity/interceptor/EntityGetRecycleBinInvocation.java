@@ -27,9 +27,11 @@ import org.iplass.mtp.entity.Entity;
 public interface EntityGetRecycleBinInvocation extends EntityInvocation<Void> {
 
 	public Long getRecycleBinId();
+
 	public void setRecycleBinId(Long recycleBinId);
 
 	public Predicate<Entity> getCallback();
+
 	public void setCallback(Predicate<Entity> callback);
-	
+
 }

@@ -66,7 +66,8 @@ public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 		init();
 
 		if (metaData.getValidationSkipScript() != null) {
-			TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+			TenantContext tc = ExecuteContext.getCurrentContext()
+					.getTenantContext();
 			validationSkipScriptEngine = tc.getScriptEngine();
 			String scriptName = VALIDATION_SKIP_SCRIPT + "_" + entity.getId() + "_" + property.getId() + "_" + metaData.getMessageId();
 			compiledValidationSkipScript = validationSkipScriptEngine.createScript(metaData.getValidationSkipScript(), scriptName);
@@ -116,10 +117,13 @@ public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 		// MesageItemからメッセージを作成
 		if (msg == null || msg.length() == 0) {
 			if (metaData.getMessageCategory() != null && metaData.getMessageId() != null) {
-				MessageService ms = ServiceRegistry.getRegistry().getService(MessageService.class);
+				MessageService ms = ServiceRegistry.getRegistry()
+						.getService(MessageService.class);
 				MetaMessageCategoryHandler mmc = ms.getRuntimeByName(metaData.getMessageCategory());
 				if (mmc != null) {
-					MetaMessageItem mmi = mmc.getMetaData().getMessages().get(metaData.getMessageId());
+					MetaMessageItem mmi = mmc.getMetaData()
+							.getMessages()
+							.get(metaData.getMessageId());
 					if (mmi != null) {
 						msg = mmi.getMessage();
 						localizedMsg = mmi.getLocalizedMessageList();
@@ -133,10 +137,12 @@ public abstract class ValidationHandler /* implements MetaDataRuntime */ {
 		//${name},${entityName}を置換
 		if (msg != null) {
 			if (msg.contains("${name}")) {
-				msg = namePattern.matcher(msg).replaceAll(propertyDisplayName);
+				msg = namePattern.matcher(msg)
+						.replaceAll(propertyDisplayName);
 			}
 			if (msg.contains("${entityName}")) {
-				msg = entityNamePattern.matcher(msg).replaceAll(entityDisplayName);
+				msg = entityNamePattern.matcher(msg)
+						.replaceAll(entityDisplayName);
 			}
 		}
 

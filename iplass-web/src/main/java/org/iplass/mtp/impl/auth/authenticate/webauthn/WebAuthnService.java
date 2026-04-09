@@ -64,7 +64,8 @@ public class WebAuthnService extends AbstractTypedMetaDataService<MetaWebAuthn, 
 
 		@Override
 		public TypedDefinitionManager<WebAuthnDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(WebAuthnDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(WebAuthnDefinitionManager.class);
 		}
 
 		@Override
@@ -97,7 +98,9 @@ public class WebAuthnService extends AbstractTypedMetaDataService<MetaWebAuthn, 
 		certPathTrustworthinessVerifier = new DefaultCertPathTrustworthinessVerifier(new TrustAnchorRepositoryImpl(metadataStatementRepository));
 		objectConverter = new ObjectConverter();
 		dataMapper = new WebAuthn4jDataMapper();
-		webAuthnChallengeGenerator = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator("webAuthnChallengeGenerator");
+		webAuthnChallengeGenerator = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator("webAuthnChallengeGenerator");
 	}
 
 	@Override
@@ -135,7 +138,8 @@ public class WebAuthnService extends AbstractTypedMetaDataService<MetaWebAuthn, 
 		if (defName == null) {
 			defName = DEFAULT_NAME;
 		}
-		return MetaDataContext.getContext().getMetaDataHandler(WebAuthnRuntime.class, WEBAUTHN_PATH + defName);
+		return MetaDataContext.getContext()
+				.getMetaDataHandler(WebAuthnRuntime.class, WEBAUTHN_PATH + defName);
 	}
 
 	MetadataStatement getMetadataStatement(String aaguid) {
@@ -144,7 +148,8 @@ public class WebAuthnService extends AbstractTypedMetaDataService<MetaWebAuthn, 
 		if (statements == null || statements.isEmpty()) {
 			return null;
 		} else {
-			return statements.iterator().next();
+			return statements.iterator()
+					.next();
 		}
 	}
 

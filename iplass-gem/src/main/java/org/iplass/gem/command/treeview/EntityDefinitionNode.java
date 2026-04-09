@@ -20,7 +20,6 @@
 
 package org.iplass.gem.command.treeview;
 
-
 /**
  * Entity定義を表すノード
  * @author lis3wg

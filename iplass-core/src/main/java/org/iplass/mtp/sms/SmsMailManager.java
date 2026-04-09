@@ -29,6 +29,8 @@ import org.iplass.mtp.Manager;
  */
 public interface SmsMailManager extends Manager {
 	SmsMail createMail();
+
 	SmsMail createMail(String tmplDefName, Map<String, Object> bindings);
+
 	void sendMail(SmsMail mail);
 }

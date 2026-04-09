@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.datastore.grdb.RawColIndexType;
 import org.iplass.mtp.impl.datastore.grdb.RawColType;
 
 public class ColContext {
-	
+
 	public static class ColCopy {
 		IndexType indexType;
 		ColConverter converter;
@@ -43,8 +43,9 @@ public class ColContext {
 //		int toType;
 //		int fromType;
 		boolean setToNull;
-		public ColCopy(ColConverter converter, int toPageNo, String toColName, /*int toType,*/
-				int fromPageNo, String fromColName, /*int fromType,*/ IndexType indexType) {
+
+		public ColCopy(ColConverter converter, int toPageNo, String toColName, /* int toType, */
+				int fromPageNo, String fromColName, /* int fromType, */ IndexType indexType) {
 			this.converter = converter;
 			this.toPageNo = toPageNo;
 			this.toColName = toColName;
@@ -54,34 +55,41 @@ public class ColContext {
 //			this.fromType = fromType;
 			this.indexType = indexType;
 		}
+
 		public ColCopy(int toPageNo, String toColName, IndexType indexType, boolean setToNull) {
 			this.toPageNo = toPageNo;
 			this.toColName = toColName;
 			this.indexType = indexType;
 			this.setToNull = setToNull;
 		}
-		
+
 		public boolean isSetToNull() {
 			return setToNull;
 		}
+
 		public IndexType getIndexType() {
 			return indexType;
 		}
+
 		public ColConverter getConverter() {
 			return converter;
 		}
+
 		public int getToPageNo() {
 			return toPageNo;
 		}
+
 		public String getToColName() {
 			return toColName;
 		}
+
 //		public int getToType() {
 //			return toType;
 //		}
 		public int getFromPageNo() {
 			return fromPageNo;
 		}
+
 		public String getFromColName() {
 			return fromColName;
 		}
@@ -91,22 +99,23 @@ public class ColContext {
 	}
 
 	private Map<Integer, List<ColCopy>> colParPage;
-	
+
 	public ColContext() {
 	}
-	
+
 	public boolean hasColCopy() {
 		return colParPage != null && colParPage.size() > 0;
 	}
-	
+
 	public List<ColCopy> getColCopyList(int pageNo) {
 		if (colParPage == null) {
 			return null;
 		}
 		return colParPage.get(pageNo);
 	}
-	
-	private void add(ColConverter converter, int toPageNo, String toColName, /*int toType,*/ int fromPageNo, String fromColName, /*int fromType,*/ IndexType indexType) {
+
+	private void add(ColConverter converter, int toPageNo, String toColName, /* int toType, */ int fromPageNo, String fromColName,
+			/* int fromType, */ IndexType indexType) {
 		if (colParPage == null) {
 			colParPage = new HashMap<>();
 		}
@@ -115,14 +124,14 @@ public class ColContext {
 			list = new ArrayList<>();
 			colParPage.put(toPageNo, list);
 		}
-		list.add(new ColCopy(converter, toPageNo, toColName, /*toType,*/ fromPageNo, fromColName, /*fromType,*/ indexType));
+		list.add(new ColCopy(converter, toPageNo, toColName, /* toType, */ fromPageNo, fromColName, /* fromType, */ indexType));
 	}
-	
+
 	public void addConvert(ColConverter converter, MetaGRdbPropertyStore toStore, MetaGRdbPropertyStore fromStore) {
 		add(converter, toStore.getPageNo(), toStore.getColumnName(),
 				fromStore.getPageNo(), fromStore.getColumnName(), null);
 	}
-	
+
 	public void addIndexConvert(ColConverter converter, IndexType indexType, MetaGRdbPropertyStore toStore, MetaGRdbPropertyStore fromStore) {
 		RawColType ct = RawColType.typeOf(converter.to);
 		add(converter, toStore.getIndexPageNo(), ct.getIndexColNamePrefix(indexType) + toStore.getIndexColumnNo(),
@@ -133,12 +142,13 @@ public class ColContext {
 //		add(ColConverter.NCC, toStore.getIndexPageNo(), ct.getIndexColNamePrefix(indexType) + toStore.getIndexColumnNo(),
 //				toStore.getPageNo(), toStore.getColumnName(), indexType);
 //	}
-	
+
 	public void addMove(ColumnPosition to, ColumnPosition from, RawColType ct, IndexType indexType) {
 		RawColIndexType cit = RawColIndexType.typeOf(indexType);
-		add(new ColConverter.NoneColConverter(null, null), to.getPageNo(), ct.getColNamePrefix(cit) + to.getColumnNo(), from.getPageNo(), ct.getColNamePrefix(cit) + from.getColumnNo(), indexType);
+		add(new ColConverter.NoneColConverter(null, null), to.getPageNo(), ct.getColNamePrefix(cit) + to.getColumnNo(), from.getPageNo(),
+				ct.getColNamePrefix(cit) + from.getColumnNo(), indexType);
 	}
-	
+
 	public void addSetNull(ColumnPosition to, RawColType ct, IndexType indexType) {
 		if (colParPage == null) {
 			colParPage = new HashMap<>();
@@ -151,5 +161,5 @@ public class ColContext {
 		RawColIndexType cit = RawColIndexType.typeOf(indexType);
 		list.add(new ColCopy(to.getPageNo(), ct.getColNamePrefix(cit) + to.getColumnNo(), indexType, true));
 	}
-	
+
 }

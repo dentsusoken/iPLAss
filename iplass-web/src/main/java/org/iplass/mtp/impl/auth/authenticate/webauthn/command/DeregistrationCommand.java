@@ -58,7 +58,10 @@ public class DeregistrationCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
-		if (!ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn()) {
+		if (!ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseWebAuthn()) {
 			throw new WebAuthnRuntimeException("WebAuthn is not enabled");
 		}
 

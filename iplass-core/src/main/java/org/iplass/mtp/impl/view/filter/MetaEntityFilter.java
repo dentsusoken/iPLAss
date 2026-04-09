@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -36,6 +34,8 @@ import org.iplass.mtp.impl.util.KeyGenerator;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * フィルタ定義
@@ -74,7 +74,8 @@ public class MetaEntityFilter extends BaseRootMetaData implements DefinableMetaD
 	 * @return Entityのフィルタ設定
 	 */
 	public List<MetaEntityFilterItem> getItems() {
-		if (items == null) items = new ArrayList<MetaEntityFilterItem>();
+		if (items == null)
+			items = new ArrayList<MetaEntityFilterItem>();
 		return items;
 	}
 
@@ -94,7 +95,9 @@ public class MetaEntityFilter extends BaseRootMetaData implements DefinableMetaD
 		getItems().add(item);
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see prot.spi.metadata.RootMetaData#createRuntime()
 	 */
 	@Override
@@ -102,7 +105,9 @@ public class MetaEntityFilter extends BaseRootMetaData implements DefinableMetaD
 		return new EntityFilterHandler();
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see prot.spi.metadata.RootMetaData#copy()
 	 */
 	@Override
@@ -120,7 +125,8 @@ public class MetaEntityFilter extends BaseRootMetaData implements DefinableMetaD
 		}
 
 		EntityContext metaContext = EntityContext.getCurrentContext();
-		MetaEntity metaEntity = metaContext.getHandlerByName(filter.getDefinitionName()).getMetaData();
+		MetaEntity metaEntity = metaContext.getHandlerByName(filter.getDefinitionName())
+				.getMetaData();
 
 		this.name = filter.getName();
 		this.displayName = filter.getDisplayName();
@@ -140,7 +146,8 @@ public class MetaEntityFilter extends BaseRootMetaData implements DefinableMetaD
 	 */
 	public EntityFilter currentConfig() {
 		EntityContext metaContext = EntityContext.getCurrentContext();
-		MetaEntity metaEntity = metaContext.getHandlerById(definitionId).getMetaData();
+		MetaEntity metaEntity = metaContext.getHandlerById(definitionId)
+				.getMetaData();
 
 		EntityFilter filter = new EntityFilter();
 		filter.setName(name);
@@ -159,7 +166,9 @@ public class MetaEntityFilter extends BaseRootMetaData implements DefinableMetaD
 	 * @author lis3wg
 	 */
 	public class EntityFilterHandler extends BaseMetaDataRuntime {
-		/* (非 Javadoc)
+		/*
+		 * (非 Javadoc)
+		 * 
 		 * @see prot.spi.metadata.MetaDataRuntime#getMetaData()
 		 */
 		@Override

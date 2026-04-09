@@ -25,7 +25,6 @@ import java.sql.Timestamp;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class CrawlLogUpdateSql extends UpdateSqlHandler {
 
 	public String toSql(int tenantId, String defId, int version, Timestamp sysdate, RdbAdapter rdb) {

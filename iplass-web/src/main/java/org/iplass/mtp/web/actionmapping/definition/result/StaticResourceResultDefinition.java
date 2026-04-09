@@ -28,14 +28,14 @@ package org.iplass.mtp.web.actionmapping.definition.result;
  */
 public class StaticResourceResultDefinition extends ResultDefinition {
 	private static final long serialVersionUID = 4481823608566637666L;
-	
+
 	/**
 	 * entryPathAttributeName未指定時のデフォルト名：entryPath
 	 */
 	public static final String DEFAULT_ENTRY_PATH_ATTRIBUTE_NAME = "entryPath";
 
 	private String staticResourceName;
-	
+
 	private boolean useContentDisposition;
 	private ContentDispositionType contentDispositionType;
 	private String entryPathAttributeName = DEFAULT_ENTRY_PATH_ATTRIBUTE_NAME;
@@ -50,6 +50,7 @@ public class StaticResourceResultDefinition extends ResultDefinition {
 	public String getEntryPathAttributeName() {
 		return entryPathAttributeName;
 	}
+
 	/**
 	 * StaticResourceがアーカイブ（StaticResourceDefinitionのresourceのインスタンスがArchiveBinaryDefinition）の場合に利用する、
 	 * アーカイブ内エントリのパスを指し示すattribute名（RequestContext#getAttribute()利用時の名前）、
@@ -60,7 +61,7 @@ public class StaticResourceResultDefinition extends ResultDefinition {
 	public void setEntryPathAttributeName(String entryPathAttributeName) {
 		this.entryPathAttributeName = entryPathAttributeName;
 	}
-	
+
 	/**
 	 * 静的リソース定義名を取得
 	 * @return

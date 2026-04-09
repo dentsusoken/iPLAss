@@ -33,26 +33,32 @@ public enum RawColType {
 		public String getColNamePrefix() {
 			return ObjStoreTable.VALUE_STR_PREFIX;
 		}
+
 		@Override
 		public String getNonUniqueIndexColNamePrefix() {
 			return ObjStoreTable.INDEX_STR_PREFIX;
 		}
+
 		@Override
 		public String getUniqueIndexColNamePrefix() {
 			return ObjStoreTable.UNIQUE_STR_PREFIX;
 		}
+
 		@Override
 		public int getMaxNormalCol(StorageSpaceMap ssm) {
 			return ssm.getVarcharColumns();
 		}
+
 		@Override
 		public int getMaxIndexCol(StorageSpaceMap ssm) {
 			return ssm.getIndexedVarcharColumns();
 		}
+
 		@Override
 		public int getMaxUniqueIndexCol(StorageSpaceMap ssm) {
 			return ssm.getUniqueIndexedVarcharColumns();
 		}
+
 		@Override
 		public ColumnPosition getColumnPositionOf(MetaGRdbEntityStore store, RawColIndexType type) {
 			if (type == null) {
@@ -69,6 +75,7 @@ public enum RawColType {
 				return null;
 			}
 		}
+
 		@Override
 		public void setColumnPositionOf(MetaGRdbEntityStore store,
 				RawColIndexType type, ColumnPosition columnPosition) {
@@ -95,26 +102,32 @@ public enum RawColType {
 		public String getColNamePrefix() {
 			return ObjStoreTable.VALUE_NUM_PREFIX;
 		}
+
 		@Override
 		public String getNonUniqueIndexColNamePrefix() {
 			return ObjStoreTable.INDEX_NUM_PREFIX;
 		}
+
 		@Override
 		public String getUniqueIndexColNamePrefix() {
 			return ObjStoreTable.UNIQUE_NUM_PREFIX;
 		}
+
 		@Override
 		public int getMaxNormalCol(StorageSpaceMap ssm) {
 			return ssm.getDecimalColumns();
 		}
+
 		@Override
 		public int getMaxIndexCol(StorageSpaceMap ssm) {
 			return ssm.getIndexedDecimalColumns();
 		}
+
 		@Override
 		public int getMaxUniqueIndexCol(StorageSpaceMap ssm) {
 			return ssm.getUniqueIndexedDecimalColumns();
 		}
+
 		@Override
 		public ColumnPosition getColumnPositionOf(MetaGRdbEntityStore store, RawColIndexType type) {
 			if (type == null) {
@@ -131,6 +144,7 @@ public enum RawColType {
 				return null;
 			}
 		}
+
 		@Override
 		public void setColumnPositionOf(MetaGRdbEntityStore store,
 				RawColIndexType type, ColumnPosition columnPosition) {
@@ -157,26 +171,32 @@ public enum RawColType {
 		public String getColNamePrefix() {
 			return ObjStoreTable.VALUE_TS_PREFIX;
 		}
+
 		@Override
 		public String getNonUniqueIndexColNamePrefix() {
 			return ObjStoreTable.INDEX_TS_PREFIX;
 		}
+
 		@Override
 		public String getUniqueIndexColNamePrefix() {
 			return ObjStoreTable.UNIQUE_TS_PREFIX;
 		}
+
 		@Override
 		public int getMaxNormalCol(StorageSpaceMap ssm) {
 			return ssm.getTimestampColumns();
 		}
+
 		@Override
 		public int getMaxIndexCol(StorageSpaceMap ssm) {
 			return ssm.getIndexedTimestampColumns();
 		}
+
 		@Override
 		public int getMaxUniqueIndexCol(StorageSpaceMap ssm) {
 			return ssm.getUniqueIndexedTimestampColumns();
 		}
+
 		@Override
 		public ColumnPosition getColumnPositionOf(MetaGRdbEntityStore store, RawColIndexType type) {
 			if (type == null) {
@@ -193,6 +213,7 @@ public enum RawColType {
 				return null;
 			}
 		}
+
 		@Override
 		public void setColumnPositionOf(MetaGRdbEntityStore store,
 				RawColIndexType type, ColumnPosition columnPosition) {
@@ -219,26 +240,32 @@ public enum RawColType {
 		public String getColNamePrefix() {
 			return ObjStoreTable.VALUE_DBL_PREFIX;
 		}
+
 		@Override
 		public String getNonUniqueIndexColNamePrefix() {
 			return ObjStoreTable.INDEX_DBL_PREFIX;
 		}
+
 		@Override
 		public String getUniqueIndexColNamePrefix() {
 			return ObjStoreTable.UNIQUE_DBL_PREFIX;
 		}
+
 		@Override
 		public int getMaxNormalCol(StorageSpaceMap ssm) {
 			return ssm.getDoubleColumns();
 		}
+
 		@Override
 		public int getMaxIndexCol(StorageSpaceMap ssm) {
 			return ssm.getIndexedDoubleColumns();
 		}
+
 		@Override
 		public int getMaxUniqueIndexCol(StorageSpaceMap ssm) {
 			return ssm.getUniqueIndexedDoubleColumns();
 		}
+
 		@Override
 		public ColumnPosition getColumnPositionOf(MetaGRdbEntityStore store, RawColIndexType type) {
 			if (type == null) {
@@ -255,6 +282,7 @@ public enum RawColType {
 				return null;
 			}
 		}
+
 		@Override
 		public void setColumnPositionOf(MetaGRdbEntityStore store,
 				RawColIndexType type, ColumnPosition columnPosition) {
@@ -276,7 +304,7 @@ public enum RawColType {
 			}
 		}
 	};
-	
+
 	public int getMaxCol(StorageSpaceMap ssm, RawColIndexType indexType) {
 		switch (indexType) {
 		case NONE:
@@ -289,7 +317,7 @@ public enum RawColType {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	public String getColNamePrefix(RawColIndexType indexType) {
 		switch (indexType) {
 		case NONE:
@@ -302,23 +330,31 @@ public enum RawColType {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	public abstract String getColNamePrefix();
+
 	public abstract String getNonUniqueIndexColNamePrefix();
+
 	public abstract String getUniqueIndexColNamePrefix();
+
 	public abstract int getMaxNormalCol(StorageSpaceMap ssm);
+
 	public abstract int getMaxIndexCol(StorageSpaceMap ssm);
+
 	public abstract int getMaxUniqueIndexCol(StorageSpaceMap ssm);
+
 	public abstract ColumnPosition getColumnPositionOf(MetaGRdbEntityStore store, RawColIndexType type);
+
 	public abstract void setColumnPositionOf(MetaGRdbEntityStore store, RawColIndexType type, ColumnPosition columnPosition);
-	
+
 	public void setColumnPositionOf(MetaGRdbEntityStore store, IndexType type, ColumnPosition columnPosition) {
 		setColumnPositionOf(store, RawColIndexType.typeOf(type), columnPosition);
 	}
+
 	public ColumnPosition getColumnPositionOf(MetaGRdbEntityStore store, IndexType type) {
 		return getColumnPositionOf(store, RawColIndexType.typeOf(type));
 	}
-	
+
 	public int getMaxCol(StorageSpaceMap ssm, IndexType type) {
 		if (type == null) {
 			type = IndexType.NON_INDEXED;
@@ -335,7 +371,7 @@ public enum RawColType {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	public String getIndexColNamePrefix(IndexType type) {
 		if (type == null) {
 			return null;
@@ -350,7 +386,7 @@ public enum RawColType {
 			return null;
 		}
 	}
-	
+
 	public static RawColType typeOf(BaseRdbTypeAdapter type) {
 		switch (type.sqlType()) {
 		case Types.TIMESTAMP:
@@ -368,7 +404,7 @@ public enum RawColType {
 			throw new IllegalArgumentException("no support sql type:" + type.sqlType() + ", rdbType:" + type);
 		}
 	}
-	
+
 	public static RawColType typeOf(PropertyType type) {
 		switch (type.getDataStoreEnumType()) {
 //		case AUTONUMBER:

@@ -28,13 +28,13 @@ import org.iplass.mtp.impl.auth.authorize.AuthorizationContext;
  *
  */
 public abstract class BuiltinAuthorizationContext implements AuthorizationContext {
-	
+
 	private final String contextName;
-	
+
 	public BuiltinAuthorizationContext(String contextName) {
 		this.contextName = contextName;
 	}
-	
+
 	public String getContextName() {
 		return contextName;
 	}

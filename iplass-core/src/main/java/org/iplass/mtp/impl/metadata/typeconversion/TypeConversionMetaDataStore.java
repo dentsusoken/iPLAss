@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.metadata.MetaDataStore;
 import org.iplass.mtp.spi.Config;
 
 public class TypeConversionMetaDataStore implements MetaDataStore {
-	
+
 	private MetaDataStore store;
 	private List<TypeConverter> converters;
 
@@ -64,7 +64,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	public MetaDataEntry loadById(int tenantId, String id) {
 		MetaDataEntry entry = store.loadById(tenantId, id);
 		if (entry != null && converters != null) {
-			for (TypeConverter c: converters) {
+			for (TypeConverter c : converters) {
 				if (c.isConvertTarget(entry)) {
 					c.convert(entry);
 					break;
@@ -78,7 +78,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	public MetaDataEntry loadById(int tenantId, String id, int version) {
 		MetaDataEntry entry = store.loadById(tenantId, id, version);
 		if (entry != null && converters != null) {
-			for (TypeConverter c: converters) {
+			for (TypeConverter c : converters) {
 				if (c.isConvertTarget(entry)) {
 					c.convert(entry);
 					break;
@@ -87,7 +87,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 		}
 		return entry;
 	}
-	
+
 	//TODO prefixPathが/の場合の考慮
 	//MetaDataExplorerでExportしてみたら変換されない？
 
@@ -101,7 +101,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 		List<MetaDataEntryInfo> list = store.definitionList(tenantId, prefixPath, withInvalid);
 		if (converters != null) {
 			List<MetaDataEntryInfo> newList = null;
-			for (TypeConverter c: converters) {
+			for (TypeConverter c : converters) {
 				if (c.hasFallbackPath(prefixPath)) {
 					String fallbackPath = c.fallbackPath(prefixPath);
 					List<MetaDataEntryInfo> fallbackList = store.definitionList(tenantId, fallbackPath, withInvalid);
@@ -116,9 +116,9 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 			if (newList != null) {
 				list = newList;
 			}
-			
-			for (MetaDataEntryInfo mi: list) {
-				for (TypeConverter c: converters) {
+
+			for (MetaDataEntryInfo mi : list) {
+				for (TypeConverter c : converters) {
 					if (c.isConvertTarget(mi)) {
 						c.convert(mi);
 						break;
@@ -126,7 +126,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 				}
 			}
 		}
-		
+
 		return list;
 	}
 
@@ -134,8 +134,8 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	public MetaDataEntry load(int tenantId, String path) throws MetaDataRuntimeException {
 
 		MetaDataEntry entry = store.load(tenantId, path);
-		if (path !=null && entry == null && converters != null) {
-			for (TypeConverter c: converters) {
+		if (path != null && entry == null && converters != null) {
+			for (TypeConverter c : converters) {
 				if (c.hasFallbackPath(path)) {
 					String fallbackPath = c.fallbackPath(path);
 					MetaDataEntry fallbackEntry = store.load(tenantId, fallbackPath);
@@ -147,9 +147,9 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 				}
 			}
 		}
-		
+
 		if (entry != null && converters != null) {
-			for (TypeConverter c: converters) {
+			for (TypeConverter c : converters) {
 				if (c.isConvertTarget(entry)) {
 					c.convert(entry);
 					break;
@@ -162,8 +162,8 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	@Override
 	public MetaDataEntry load(int tenantId, String path, int version) throws MetaDataRuntimeException {
 		MetaDataEntry entry = store.load(tenantId, path, version);
-		if (path !=null && entry == null && converters != null) {
-			for (TypeConverter c: converters) {
+		if (path != null && entry == null && converters != null) {
+			for (TypeConverter c : converters) {
 				if (c.hasFallbackPath(path)) {
 					String fallbackPath = c.fallbackPath(path);
 					MetaDataEntry fallbackEntry = store.load(tenantId, fallbackPath, version);
@@ -175,9 +175,9 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 				}
 			}
 		}
-		
+
 		if (entry != null && converters != null) {
-			for (TypeConverter c: converters) {
+			for (TypeConverter c : converters) {
 				if (c.isConvertTarget(entry)) {
 					c.convert(entry);
 					break;
@@ -200,8 +200,8 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	@Override
 	public void remove(int tenantId, String path) throws MetaDataRuntimeException {
 		boolean removeFallback = false;
-		if (path !=null && converters != null) {
-			for (TypeConverter c: converters) {
+		if (path != null && converters != null) {
+			for (TypeConverter c : converters) {
 				if (c.hasFallbackPath(path)) {
 					String fallbackPath = c.fallbackPath(path);
 					MetaDataEntry fallbackEntry = store.load(tenantId, fallbackPath);
@@ -213,11 +213,11 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 				}
 			}
 		}
-		
+
 		if (removeFallback && store.load(tenantId, path) == null) {
 			return;
 		}
-		
+
 		store.remove(tenantId, path);
 	}
 
@@ -239,15 +239,15 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	@Override
 	public List<MetaDataEntryInfo> getHistoryById(int tenantId, String id) {
 		List<MetaDataEntryInfo> list = store.getHistoryById(tenantId, id);
-		for (MetaDataEntryInfo mi: list) {
-			for (TypeConverter c: converters) {
+		for (MetaDataEntryInfo mi : list) {
+			for (TypeConverter c : converters) {
 				if (c.isConvertTarget(mi)) {
 					c.convert(mi);
 					break;
 				}
 			}
 		}
-		
+
 		return list;
 	}
 

@@ -23,14 +23,14 @@ package org.iplass.mtp.impl.web;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.command.RequestContextHolder;
+import org.iplass.mtp.impl.core.ExecuteContext;
+
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.PageContext;
-
-import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.impl.command.RequestContextHolder;
-import org.iplass.mtp.impl.core.ExecuteContext;
 
 public final class WebRequestStack {
 
@@ -44,7 +44,7 @@ public final class WebRequestStack {
 	private PageContext pageContext;
 
 	private WebRequestStack prevStack;
-	private HashMap<String,Object> stackAttribute;
+	private HashMap<String, Object> stackAttribute;
 
 	private RequestContext webRequestContext;
 
@@ -54,14 +54,16 @@ public final class WebRequestStack {
 	private boolean isRenderContentStack;
 
 	public static WebRequestStack getCurrent() {
-		return (WebRequestStack) ExecuteContext.getCurrentContext().getAttribute(CALL_STACK_NAME);
+		return (WebRequestStack) ExecuteContext.getCurrentContext()
+				.getAttribute(CALL_STACK_NAME);
 	}
 
 	public WebRequestStack(RequestPath requestPath, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) {
 		this(requestPath, null, servletContext, request, response, null);
 	}
 
-	public WebRequestStack(RequestContext webRequestContext, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response, PageContext pageContext) {
+	public WebRequestStack(RequestContext webRequestContext, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response,
+			PageContext pageContext) {
 		this(null, webRequestContext, servletContext, request, response, pageContext);
 	}
 
@@ -69,7 +71,8 @@ public final class WebRequestStack {
 		this(null, null, null, null, null, null);
 	}
 
-	public WebRequestStack(RequestPath requestPath, RequestContext webRequestContext, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response, PageContext pageContext) {
+	public WebRequestStack(RequestPath requestPath, RequestContext webRequestContext, ServletContext servletContext, HttpServletRequest request,
+			HttpServletResponse response, PageContext pageContext) {
 
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		prevStack = (WebRequestStack) ec.getAttribute(CALL_STACK_NAME);
@@ -201,12 +204,15 @@ public final class WebRequestStack {
 	public ServletContext getServletContext() {
 		return servletContext;
 	}
+
 	public HttpServletRequest getRequest() {
 		return request;
 	}
+
 	public HttpServletResponse getResponse() {
 		return response;
 	}
+
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
 	}
@@ -214,10 +220,10 @@ public final class WebRequestStack {
 	public PageContext getPageContext() {
 		return pageContext;
 	}
+
 	public boolean isClientDirectRequest() {
 		return prevStack == null;
 	}
-
 
 //	public void setRequestContext(RequestContext requestContext) {
 //		this.webRequestContext = requestContext;
@@ -225,7 +231,6 @@ public final class WebRequestStack {
 //		RequestContextHolder.setCurrent(webRequestContext);
 //
 //	}
-
 
 	public RequestContext getRequestContext() {
 		return webRequestContext;

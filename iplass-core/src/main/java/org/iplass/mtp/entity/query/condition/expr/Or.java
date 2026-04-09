@@ -39,8 +39,8 @@ import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
-import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.entity.query.condition.predicate.Like.MatchPattern;
+import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 
 /**
  * OR条件を表す。
@@ -52,20 +52,20 @@ public class Or extends Condition {
 	private static final long serialVersionUID = -7950847141304557913L;
 
 	private List<Condition> childExpressions;
-	
+
 	public Or() {
 	}
-	
+
 	public Or(Condition... condition) {
 		if (condition != null) {
 			ArrayList<Condition> condList = new ArrayList<Condition>();
-			for (Condition c: condition) {
+			for (Condition c : condition) {
 				condList.add(c);
 			}
 			childExpressions = condList;
 		}
 	}
-	
+
 	public Or(List<Condition> childExpressions) {
 		this.childExpressions = childExpressions;
 	}
@@ -73,7 +73,7 @@ public class Or extends Condition {
 	public void setConditions(List<Condition> conditions) {
 		this.childExpressions = conditions;
 	}
-	
+
 	//TODO アクセッサメソッド名変更
 	public void addExpression(Condition expression) {
 		if (childExpressions == null) {
@@ -81,11 +81,11 @@ public class Or extends Condition {
 		}
 		childExpressions.add(expression);
 	}
-	
+
 	public List<Condition> getChildExpressions() {
 		return childExpressions;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -121,28 +121,29 @@ public class Or extends Condition {
 				if (i != 0) {
 					sb.append(" or ");
 				}
-				sb.append(childExpressions.get(i).toString());
+				sb.append(childExpressions.get(i)
+						.toString());
 			}
 			return sb.toString();
 		}
-		
+
 		return null;
 	}
 
 	public void accept(ConditionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (childExpressions != null) {
-				for (Condition exp: childExpressions) {
+				for (Condition exp : childExpressions) {
 					exp.accept(visitor);
 				}
 			}
 		}
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	public Condition strip() {
 		if (childExpressions != null && childExpressions.size() == 1) {
 			return childExpressions.get(0);
@@ -150,7 +151,7 @@ public class Or extends Condition {
 			return this;
 		}
 	}
-	
+
 	/**
 	 * 指定の条件を追加する。
 	 * 
@@ -161,7 +162,7 @@ public class Or extends Condition {
 		addExpression(expression);
 		return this;
 	}
-	
+
 	//TODO Andとのスーパークラス作成して、ユーティリティメソッドを実装
 	/**
 	 * Equals条件を追加する。
@@ -175,7 +176,7 @@ public class Or extends Condition {
 		addExpression(eq);
 		return this;
 	}
-	
+
 	/**
 	 * NotEquals条件を追加する。
 	 * 
@@ -188,7 +189,7 @@ public class Or extends Condition {
 		addExpression(eq);
 		return this;
 	}
-	
+
 	/**
 	 * Lesser条件を追加する。
 	 * 
@@ -201,7 +202,7 @@ public class Or extends Condition {
 		addExpression(less);
 		return this;
 	}
-	
+
 	/**
 	 * LesserEqual条件を追加する。
 	 * 
@@ -214,7 +215,7 @@ public class Or extends Condition {
 		addExpression(lessEq);
 		return this;
 	}
-	
+
 	/**
 	 * Greater条件を追加する。
 	 * 
@@ -227,7 +228,7 @@ public class Or extends Condition {
 		addExpression(great);
 		return this;
 	}
-	
+
 	/**
 	 * GreaterEqual条件を追加する。
 	 * 
@@ -240,7 +241,7 @@ public class Or extends Condition {
 		addExpression(greatEq);
 		return this;
 	}
-	
+
 	/**
 	 * In条件を追加する。
 	 * 
@@ -253,7 +254,7 @@ public class Or extends Condition {
 		addExpression(in);
 		return this;
 	}
-	
+
 	/**
 	 * In条件を追加する。
 	 * 
@@ -266,7 +267,7 @@ public class Or extends Condition {
 		addExpression(in);
 		return this;
 	}
-	
+
 	/**
 	 * ※なるべく{@link #like(String, String, MatchPattern)}を利用すること。
 	 * 
@@ -278,12 +279,12 @@ public class Or extends Condition {
 	 * @return
 	 */
 	@Deprecated
-	public Or like(String propName, String pattern)  {
+	public Or like(String propName, String pattern) {
 		Like like = new Like(propName, pattern);
 		addExpression(like);
 		return this;
 	}
-	
+
 	/**
 	 * Like条件を追加する。
 	 * 
@@ -292,12 +293,12 @@ public class Or extends Condition {
 	 * @param matchPatternType
 	 * @return
 	 */
-	public Or like(String propName, String str, MatchPattern matchPatternType)  {
+	public Or like(String propName, String str, MatchPattern matchPatternType) {
 		Like like = new Like(propName, str, matchPatternType);
 		addExpression(like);
 		return this;
 	}
-	
+
 	/**
 	 * Between条件を追加する。
 	 * 
@@ -311,14 +312,14 @@ public class Or extends Condition {
 		addExpression(bet);
 		return this;
 	}
-	
+
 	/**
 	 * IsNull条件を追加する。
 	 * 
 	 * @param propName
 	 * @return
 	 */
-	public Or isNull(String propName)  {
+	public Or isNull(String propName) {
 		IsNull isNull = new IsNull(propName);
 		addExpression(isNull);
 		return this;
@@ -330,12 +331,12 @@ public class Or extends Condition {
 	 * @param propName
 	 * @return
 	 */
-	public Or isNotNull(String propName)  {
+	public Or isNotNull(String propName) {
 		IsNotNull isNotNull = new IsNotNull(propName);
 		addExpression(isNotNull);
 		return this;
 	}
-	
+
 	/**
 	 * Contains条件を追加する。
 	 * 

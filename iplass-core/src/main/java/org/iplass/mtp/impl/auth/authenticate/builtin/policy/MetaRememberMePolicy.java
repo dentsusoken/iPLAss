@@ -29,27 +29,33 @@ public class MetaRememberMePolicy implements MetaData {
 
 	private long lifetimeMinutes;//単位：分。0はRememberMe機能を利用しない。
 	private boolean absoluteLifetime;
-	
+
 	public boolean isAbsoluteLifetime() {
 		return absoluteLifetime;
 	}
+
 	public void setAbsoluteLifetime(boolean absoluteLifetime) {
 		this.absoluteLifetime = absoluteLifetime;
 	}
+
 	public long getLifetimeMinutes() {
 		return lifetimeMinutes;
 	}
+
 	public void setLifetimeMinutes(long lifetimeMinutes) {
 		this.lifetimeMinutes = lifetimeMinutes;
 	}
+
 	@Override
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
 	}
+
 	public void applyConfig(RememberMePolicyDefinition def) {
 		lifetimeMinutes = def.getLifetimeMinutes();
 		absoluteLifetime = def.isAbsoluteLifetime();
 	}
+
 	public RememberMePolicyDefinition currentConfig() {
 		RememberMePolicyDefinition def = new RememberMePolicyDefinition();
 		def.setAbsoluteLifetime(absoluteLifetime);

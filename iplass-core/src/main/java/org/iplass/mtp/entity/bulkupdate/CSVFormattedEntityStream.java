@@ -112,7 +112,6 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 	 */
 	public static final String CTRL_MERGE = EntityCsvReader.CTRL_MERGE;
 
-
 	private String definitionName;
 	private List<String> updateProperties;
 	private boolean enableAuditPropertySpecification;
@@ -200,7 +199,8 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 			throw new EntityRuntimeException("concurrent iterate not supported on CSVFormattedEntityStream.");
 		}
 
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 		EntityDefinition def = edm.get(definitionName);
 		if (def == null) {
 			throw new EntityRuntimeException(definitionName + " definition not found.");
@@ -250,7 +250,6 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 	public void setEnableAuditPropertySpecification(boolean enableAuditPropertySpecification) {
 		this.enableAuditPropertySpecification = enableAuditPropertySpecification;
 	}
-
 
 	private class It implements Iterator<BulkUpdateEntity> {
 

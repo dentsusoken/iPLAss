@@ -77,12 +77,11 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 
 	private HashMap<String, PermissionInfo> permissionCheckReslt = new HashMap<String, AuthQueryASTTransformer.PermissionInfo>();
 	private EntityAuthContextHandler eacHandler;
-	
+
 	//バージョンカラムが指定されていた場合の挙動を制御するため
 	//TODO このあたりをSecurityで意識しなければならないのはちょっといただけない、、、
 	private boolean isVersionSpecify;
 	private boolean isConditonNode;
-
 
 	private class PermissionInfo {
 		boolean isPermit;
@@ -163,7 +162,8 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 						if (ph instanceof ReferencePropertyHandler) {
 							ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
 							EntityHandler reh = rph.getReferenceEntityHandler(entityContext);
-							EntityPermission ep = new EntityPermission(reh.getMetaData().getName(), action);
+							EntityPermission ep = new EntityPermission(reh.getMetaData()
+									.getName(), action);
 							if (!user.checkPermission(ep)) {
 								p = new PermissionInfo(false, true);
 							} else {
@@ -188,10 +188,12 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 						String prop = propName.substring(dotIndex + 1);
 						ReferencePropertyHandler rph = (ReferencePropertyHandler) eh.getPropertyCascade(ref, entityContext);
 						if (rph == null) {
-							throw new NullPointerException(" reference:" + ref + " of " + eh.getMetaData().getName() + " not found.");
+							throw new NullPointerException(" reference:" + ref + " of " + eh.getMetaData()
+									.getName() + " not found.");
 						}
 						EntityHandler reh = rph.getReferenceEntityHandler(entityContext);
-						if (user.checkPermission(new EntityPropertyPermission(reh.getMetaData().getName(), prop, propAction))) {
+						if (user.checkPermission(new EntityPropertyPermission(reh.getMetaData()
+								.getName(), prop, propAction))) {
 							p = new PermissionInfo(true, false);
 						} else {
 							p = new PermissionInfo(false, false);
@@ -217,7 +219,7 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 
 	@Override
 	public ASTNode visit(EntityField entityField) {
-		
+
 		String propName = entityField.getPropertyName();
 		int unnestCount = unnestCount(propName);
 		AuthQueryASTTransformer target = this;
@@ -230,7 +232,7 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 				}
 			}
 		}
-		
+
 		//バージョン制御用のカラムを条件に指定している場合は、oid指定するサブクエリーにversionedを付ける
 		if (target.isConditonNode && VersionedQueryNormalizer.isVersionProperty(propName)) {
 			target.isVersionSpecify = true;
@@ -249,12 +251,14 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 
 		Query subQ = subQuery.getQuery();
 		Condition on = subQuery.getOn();
-		EntityHandler subEh = entityContext.getHandlerByName(subQ.getFrom().getEntityName());
+		EntityHandler subEh = entityContext.getHandlerByName(subQ.getFrom()
+				.getEntityName());
 		if (subEh == null) {
 			throw new QueryException("subQuery's Entity not defined:" + subQuery);
 		}
-		
-		BuiltinEntityAuthContext subEac = (BuiltinEntityAuthContext) user.getAuthorizationContext(new EntityPermission(subQ.getFrom().getEntityName(), action));
+
+		BuiltinEntityAuthContext subEac = (BuiltinEntityAuthContext) user.getAuthorizationContext(new EntityPermission(subQ.getFrom()
+				.getEntityName(), action));
 		TenantAuthorizeContext subTac = subEac.getTenantAuthContext();
 
 		AuthQueryASTTransformer subTrans = new AuthQueryASTTransformer(
@@ -282,13 +286,13 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 
 		HasReferencePropertyChecker queryHasRefChecker = new HasReferencePropertyChecker();
 		q.accept(queryHasRefChecker);
-		
+
 		EntityQueryAuthContextHolder eqaContext = EntityQueryAuthContextHolder.getContext();
 
 		//referの設定（参照先のEntityで制限条件がある場合で、かつwithPermissionConditionがtrueの場合）
 		if (queryHasRefChecker.hasReferenceProperty()) {
 			if (permissionCheckReslt != null) {
-				for (final Map.Entry<String, PermissionInfo> e: permissionCheckReslt.entrySet()) {
+				for (final Map.Entry<String, PermissionInfo> e : permissionCheckReslt.entrySet()) {
 					PermissionInfo pInfo = e.getValue();
 					if (pInfo.isReference) {
 						if (pInfo.limitCondition != null) {
@@ -300,7 +304,8 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 									HasReferencePropertyChecker refChecker = new HasReferencePropertyChecker();
 									pInfo.limitCondition.accept(refChecker);
 									if (refChecker.hasReferenceProperty()) {
-										pInfo.limitCondition = toOidInCondition(refEh.getMetaData().getName(), pInfo.limitCondition, e.getKey());
+										pInfo.limitCondition = toOidInCondition(refEh.getMetaData()
+												.getName(), pInfo.limitCondition, e.getKey());
 									}
 
 									//参照先として条件構築
@@ -354,18 +359,20 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 		// 参照プロパティに対しての限定条件がある場合、
 		//権限条件は、select * from A where (a.x = 'hoge') and (oid,version) in (select distinct oid,version from A where 権限条件)
 		if (hasRefChecker.hasReferenceProperty()) {
-			cond = toOidInCondition(eh.getMetaData().getName(), cond, SubQuery.THIS);
+			cond = toOidInCondition(eh.getMetaData()
+					.getName(), cond, SubQuery.THIS);
 		}
 
-		if (q.getWhere() == null || q.getWhere().getCondition() == null) {
+		if (q.getWhere() == null || q.getWhere()
+				.getCondition() == null) {
 			q.where(cond);
 		} else {
 			And and = new And();
-			and.addExpression(new Paren(q.getWhere().getCondition()));
+			and.addExpression(new Paren(q.getWhere()
+					.getCondition()));
 			and.addExpression(new Paren(cond));
 			q.where(and);
 		}
-
 
 		return q;
 	}
@@ -378,10 +385,9 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 		return node;
 	}
 
-
 	private Condition toOidInCondition(String fromEntityName, Condition cond, String refName) {
 		Query q = new Query();
-		q.setSelect(new Select(true, new ValueExpression[]{new EntityField(Entity.OID), new EntityField(Entity.VERSION)}));
+		q.setSelect(new Select(true, new ValueExpression[] { new EntityField(Entity.OID), new EntityField(Entity.VERSION) }));
 		q.from(fromEntityName);
 		q.where(cond);
 
@@ -389,9 +395,11 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 		if (isVersionSpecify) {
 			q.setVersioned(true);
 		}
-		
+
 		SubQuery sq = new SubQuery(q);
-		AuthorizationProvider azp = ServiceRegistry.getRegistry().getService(AuthService.class).getAuthorizationProvider();
+		AuthorizationProvider azp = ServiceRegistry.getRegistry()
+				.getService(AuthService.class)
+				.getAuthorizationProvider();
 		if (azp instanceof BuiltinAuthorizationProvider) {
 			if (eacHandler == null) {
 				eacHandler = (EntityAuthContextHandler) ((BuiltinAuthorizationProvider) azp).getAuthorizationContextHandler(EntityPermission.class);
@@ -401,7 +409,7 @@ class AuthQueryASTTransformer extends ASTTransformerSupport {
 			}
 		}
 
-		In in = new In(new String[]{Entity.OID, Entity.VERSION}, sq);
+		In in = new In(new String[] { Entity.OID, Entity.VERSION }, sq);
 		return in;
 	}
 }

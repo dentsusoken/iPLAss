@@ -38,8 +38,10 @@ public abstract class EntityFileDownloadUploadableWriter implements ResultStream
 	public EntityFileDownloadUploadableWriter(final EntityFileDownloadSearchContext context) {
 		this.context = context;
 
-		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-		efus = ServiceRegistry.getRegistry().getService(EntityFileUploadService.class);
+		gcs = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
+		efus = ServiceRegistry.getRegistry()
+				.getService(EntityFileUploadService.class);
 	}
 
 }

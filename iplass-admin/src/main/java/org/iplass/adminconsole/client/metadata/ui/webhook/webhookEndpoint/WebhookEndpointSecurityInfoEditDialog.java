@@ -21,10 +21,12 @@ package org.iplass.adminconsole.client.metadata.ui.webhook.webhookEndpoint;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
@@ -38,10 +40,10 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
-	
-	public WebhookEndpointSecurityInfoEditDialog(String targetSecurityType, String existedTokenContent ) {
-		securityType=targetSecurityType;
-		tokenContent=existedTokenContent;
+
+	public WebhookEndpointSecurityInfoEditDialog(String targetSecurityType, String existedTokenContent) {
+		securityType = targetSecurityType;
+		tokenContent = existedTokenContent;
 		if ("WHHM".equals(securityType)) {
 			setTitle("HMAC Secret Key Editor");
 		} else {
@@ -49,15 +51,15 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 		}
 		setHeight(500);
 		centerInPage();
-		
+
 		securityAttributePane = new SecurityAttributePane();
 		securityAttributePane.setHeight100();
 		container.addMember(securityAttributePane);
-		
+
 		IButton save = new IButton("Save");
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-				
+
 				String result = securityAttributePane.getEditDefinition();
 				fireDataChanged(result);
 				markForDestroy();
@@ -72,6 +74,7 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 		});
 		footer.setMembers(save, cancel);
 	}
+
 	/**
 	 * {@link DataChangedHandler} を追加します。
 	 *
@@ -80,7 +83,7 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 	public void addDataChangeHandler(DataChangedHandler handler) {
 		handlers.add(0, handler);
 	}
-	
+
 	/**
 	 * データ変更通知処理
 	 */
@@ -92,7 +95,7 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 		}
 	}
 
-	public class SecurityAttributePane extends VLayout{
+	public class SecurityAttributePane extends VLayout {
 		private DynamicForm form;
 
 		private TextAreaItem tokenContentField;
@@ -104,28 +107,29 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 			form = new DynamicForm();
 			form.setNumCols(2);
 
-			basicUsernameField = new TextItem("basicUsernameField","UserName");
-			basicPasswordField = new TextItem("basicPasswordField","Password");
-			
+			basicUsernameField = new TextItem("basicUsernameField", "UserName");
+			basicPasswordField = new TextItem("basicPasswordField", "Password");
+
 			String tokenContentLabel = "Token Content";
 			if ("WHHM".equals(securityType)) {
 				tokenContentLabel = "HMAC Secret Key";
 			}
-			
-			tokenContentField = new TextAreaItem("tokenContentField",tokenContentLabel);
+
+			tokenContentField = new TextAreaItem("tokenContentField", tokenContentLabel);
 			tokenContentField.setHeight(300);
 			tokenContentField.setWidth("100%");
 			form.setItems(tokenContentField, basicUsernameField, basicPasswordField);
 			addMember(form);
-			setDefinition(securityType,tokenContent);
+			setDefinition(securityType, tokenContent);
 			adjustContentDisplay();
 		}
+
 		public void adjustContentDisplay() {
-			if (securityType==null) {
+			if (securityType == null) {
 				basicUsernameField.setVisible(false);
 				basicPasswordField.setVisible(false);
 				tokenContentField.setVisible(false);
-			}else if (securityType.equals("WHBA")) {
+			} else if (securityType.equals("WHBA")) {
 				tokenContentField.setVisible(false);
 				basicUsernameField.setVisible(true);
 				basicPasswordField.setVisible(true);
@@ -136,6 +140,7 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 			}
 			this.redraw();
 		}
+
 		/** definition -> dialog 
 		 * @param tokenContent 
 		 * @param securityType */
@@ -146,10 +151,10 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 			if (securityType.equals("WHBA")) {
 				//basic
 				String[] basic;
-				if (tokenContent!=null) {
-					basic= tokenContent.split(":");
+				if (tokenContent != null) {
+					basic = tokenContent.split(":");
 
-					if (basic.length <2) {
+					if (basic.length < 2) {
 						basicUsernameField.clearValue();
 						basicPasswordField.clearValue();
 					} else {
@@ -161,7 +166,7 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 					basicPasswordField.clearValue();
 				}
 			} else {
-				if (tokenContent!=null) {
+				if (tokenContent != null) {
 					tokenContentField.setValue(tokenContent);
 				} else {
 					tokenContentField.clearValue();
@@ -170,23 +175,25 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 		}
 
 		/** dialog -> definition */
-		public String getEditDefinition(){
+		public String getEditDefinition() {
 			String result = "";
 			if (securityType.equals("WHBA")) {
 				String basicName = SmartGWTUtil.getStringValue(basicUsernameField);
 				String basicPass = SmartGWTUtil.getStringValue(basicPasswordField);
-				if (basicName==null
-						||basicPass==null
-						||basicName.replaceAll("\\s","").isEmpty()
-						||basicPass.replaceAll("\\s","").isEmpty()) {
+				if (basicName == null
+						|| basicPass == null
+						|| basicName.replaceAll("\\s", "")
+								.isEmpty()
+						|| basicPass.replaceAll("\\s", "")
+								.isEmpty()) {
 				} else {
-					result = basicName+":"+basicPass;
+					result = basicName + ":" + basicPass;
 				}
 			} else {
 				result = SmartGWTUtil.getStringValue(tokenContentField);
 			}
 			return result;
-			
+
 		}
 	}
 }

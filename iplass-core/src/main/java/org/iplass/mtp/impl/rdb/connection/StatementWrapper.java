@@ -43,7 +43,7 @@ public class StatementWrapper implements Statement {
 	protected int warnLogThreshold;
 	protected boolean warnLogBefore;
 	protected boolean countSqlExecution;
-	
+
 	protected AdditionalWarnLogInfo additionalWarnLogInfo;
 	protected AtomicInteger sqlCount;
 
@@ -54,9 +54,9 @@ public class StatementWrapper implements Statement {
 		this.warnLogBefore = warnLogBefore;
 		this.countSqlExecution = countSqlExecution;
 	}
-	
+
 	private <T> T withLog(String method, String sql, SQLExecution<T> s) throws SQLException {
-		
+
 		if (countSqlExecution) {
 			if (sqlCount == null) {
 				ExecuteContext ec = ExecuteContext.getCurrentContext();
@@ -66,18 +66,18 @@ public class StatementWrapper implements Statement {
 				sqlCount.incrementAndGet();
 			}
 		}
-		
+
 		long start = System.currentTimeMillis();
 		try {
 			if (warnLogBefore && additionalWarnLogInfo != null && additionalWarnLogInfo.logBefore()) {
 				logger.warn(Markers.append("warning_type", "alert"), withWarnLogFormat(method, sql, null), logParam(method, sql, null));
 			}
-			
+
 			return s.run();
-			
+
 		} finally {
 			long queryTime = System.currentTimeMillis() - start;
-			if (warnLogThreshold > 0  && queryTime > warnLogThreshold) {
+			if (warnLogThreshold > 0 && queryTime > warnLogThreshold) {
 				if (logger.isWarnEnabled()) {
 					logger.warn(Markers.append("warning_type", "time"), withWarnLogFormat(method, sql, queryTime), logParam(method, sql, queryTime));
 				}
@@ -88,7 +88,7 @@ public class StatementWrapper implements Statement {
 			}
 		}
 	}
-	
+
 	private Object[] logParam(String method, String sql, Long queryTime) {
 		Object[] logParam;
 		int base;
@@ -102,7 +102,7 @@ public class StatementWrapper implements Statement {
 		} else {
 			logParam = new Object[base + additionalWarnLogInfo.parameterSize()];
 		}
-		
+
 		int i = 0;
 		logParam[i++] = StructuredArguments.value("method", method);
 		if (queryTime != null) {
@@ -116,7 +116,7 @@ public class StatementWrapper implements Statement {
 		}
 		return logParam;
 	}
-	
+
 	private String withWarnLogFormat(String method, String sql, Long queryTime) {
 		String fmt;
 		if (queryTime == null) {
@@ -132,17 +132,19 @@ public class StatementWrapper implements Statement {
 				fmt = "{} time= {} ms. sql={}";
 			}
 		}
-		
+
 		if (additionalWarnLogInfo == null) {
 			return fmt;
 		} else {
 			String warnLogFmt = additionalWarnLogInfo.logFormat();
 			StringBuilder sb = new StringBuilder(fmt.length() + 4 + warnLogFmt.length());
-			sb.append(fmt).append(" -- ").append(warnLogFmt);
+			sb.append(fmt)
+					.append(" -- ")
+					.append(warnLogFmt);
 			return sb.toString();
 		}
 	}
-	
+
 	public AdditionalWarnLogInfo getAdditionalWarnLogInfo() {
 		return additionalWarnLogInfo;
 	}

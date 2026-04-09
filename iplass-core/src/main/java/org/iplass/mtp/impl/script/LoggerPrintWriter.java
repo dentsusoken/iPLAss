@@ -27,23 +27,24 @@ import java.io.Writer;
 import org.slf4j.Logger;
 
 public class LoggerPrintWriter extends PrintWriter {
-	
+
 	public LoggerPrintWriter(Logger logger) {
 		super(new LoggerWriter(logger), true);
 	}
-	
+
 	@Override
 	public void println() {
 		//loggerでは自動的に改行されてしまうので、、、
 		try {
-        	synchronized (lock) {
-        		if (out == null) {
-        			throw new IOException("Stream closed");
-        		}
-        		out.flush();
-            }
+			synchronized (lock) {
+				if (out == null) {
+					throw new IOException("Stream closed");
+				}
+				out.flush();
+			}
 		} catch (InterruptedIOException x) {
-			Thread.currentThread().interrupt();
+			Thread.currentThread()
+					.interrupt();
 		} catch (IOException x) {
 			setError();
 		}
@@ -54,17 +55,17 @@ public class LoggerPrintWriter extends PrintWriter {
 		super.finalize();
 		close();
 	}
-	
+
 	private static class LoggerWriter extends Writer {
 		private Logger logger;
-		
+
 		String bufStr = null;
 		StringBuilder buf = null;
-		
+
 		private LoggerWriter(Logger logger) {
 			this.logger = logger;
 		}
-		
+
 		@Override
 		public void write(int c) throws IOException {
 			super.write(c);
@@ -107,7 +108,7 @@ public class LoggerPrintWriter extends PrintWriter {
 				bufStr = null;
 			}
 		}
-		
+
 		@Override
 		public Writer append(CharSequence csq) throws IOException {
 			return super.append(csq);

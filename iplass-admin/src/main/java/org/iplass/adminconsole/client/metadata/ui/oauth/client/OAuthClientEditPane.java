@@ -104,7 +104,8 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -185,8 +186,10 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (OAuthClientDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
@@ -219,18 +222,18 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_saveComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					final OAuthClientDefinition definition = curDefinition;
-					commonSection.getEditDefinition(definition);
-					definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-					clientAttributePane.getEditDefinition(definition);
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							final OAuthClientDefinition definition = curDefinition;
+							commonSection.getEditDefinition(definition);
+							definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+							clientAttributePane.getEditDefinition(definition);
 
-					updateDefinition(definition, true);
-				}
-			}
-		});
+							updateDefinition(definition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -239,17 +242,16 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 	private void cancelDefinition() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**
@@ -304,7 +306,7 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 
 	private void generateCredential() {
 
-		SC.ask(	AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_generateCredentialConfirm"), new BooleanCallback() {
+		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_generateCredentialConfirm"), new BooleanCallback() {
 
 			@Override
 			public void execute(Boolean value) {
@@ -320,7 +322,7 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 						}
 
 						@Override
-						protected void beforeFailure(Throwable caught){
+						protected void beforeFailure(Throwable caught) {
 							SmartGWTUtil.hideProgress();
 						};
 					});
@@ -334,24 +336,24 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm2"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					SmartGWTUtil.showProgress();
-					service.deleteOldCredentialOAuthClient(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<Void>() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							SmartGWTUtil.showProgress();
+							service.deleteOldCredentialOAuthClient(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<Void>() {
 
-						@Override
-						public void onSuccess(Void result) {
-							SmartGWTUtil.hideProgress();
+								@Override
+								public void onSuccess(Void result) {
+									SmartGWTUtil.hideProgress();
+								}
+
+								@Override
+								protected void beforeFailure(Throwable caught) {
+									SmartGWTUtil.hideProgress();
+								};
+							});
 						}
-
-						@Override
-						protected void beforeFailure(Throwable caught){
-							SmartGWTUtil.hideProgress();
-						};
-					});
-				}
-			}
-		});
+					}
+				});
 	}
 }

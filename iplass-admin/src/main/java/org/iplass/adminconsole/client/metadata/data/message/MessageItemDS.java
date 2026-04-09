@@ -43,7 +43,6 @@ import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-
 /**
  * メッセージアイテム データソース
  */
@@ -59,20 +58,21 @@ public class MessageItemDS extends AbstractAdminDataSource {
 		key.setPrimaryKey(true);
 		DataSourceTextField id = new DataSourceTextField("id", "ID");
 		DataSourceTextField message = new DataSourceTextField("message", AdminClientMessageUtil.getString("datasource_message_MessageItemDS_message"));
-		DataSourceTextField shortMessage = new DataSourceTextField("shortMessage", AdminClientMessageUtil.getString("datasource_message_MessageItemDS_shortMessage"));
+		DataSourceTextField shortMessage = new DataSourceTextField("shortMessage",
+				AdminClientMessageUtil.getString("datasource_message_MessageItemDS_shortMessage"));
 
-		fields = new DataSourceField[] {key, id, message, shortMessage};
+		fields = new DataSourceField[] { key, id, message, shortMessage };
 	}
 
 	/** MenuItemクラスごとのDS */
 	private static HashMap<String, MessageItemDS> dsList = null;
 
-    /**
-     * MenuItemDSのインスタンスを返します。
-     *
-     * @return MenuItemDS
-     */
-    public static MessageItemDS getInstance(String category) {
+	/**
+	 * MenuItemDSのインスタンスを返します。
+	 *
+	 * @return MenuItemDS
+	 */
+	public static MessageItemDS getInstance(String category) {
 
 		if (dsList == null) {
 			dsList = new HashMap<String, MessageItemDS>();
@@ -84,7 +84,7 @@ public class MessageItemDS extends AbstractAdminDataSource {
 		MessageItemDS ds = new MessageItemDS("MessageItemDS", category);
 		dsList.put(category, ds);
 		return ds;
-    }
+	}
 
 	/**
 	 * コンストラクタ
@@ -92,15 +92,16 @@ public class MessageItemDS extends AbstractAdminDataSource {
 	 * @param id ID
 	 * @param category メッセージカテゴリ
 	 */
-    private MessageItemDS(String id, String category) {
+	private MessageItemDS(String id, String category) {
 
-    	String categoryId = category.replace("/", "_").replace(".", "_");
+		String categoryId = category.replace("/", "_")
+				.replace(".", "_");
 
-    	setID(id + categoryId);
-    	setAttribute("category", category, true);
+		setID(id + categoryId);
+		setAttribute("category", category, true);
 
 		setFields(fields);
-    }
+	}
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request,
@@ -131,15 +132,18 @@ public class MessageItemDS extends AbstractAdminDataSource {
 					} else {
 						records = new ArrayList<ListGridRecord>(items.size());
 
-						for (Iterator<Map.Entry<String, MessageItem>> it = items.entrySet().iterator(); it.hasNext();) {
+						for (Iterator<Map.Entry<String, MessageItem>> it = items.entrySet()
+								.iterator(); it.hasNext();) {
 							Map.Entry<String, MessageItem> entry = it.next();
 							MessageItem item = entry.getValue();
 							ListGridRecord record = new ListGridRecord();
 							record.setAttribute("key", entry.getKey());
 							record.setAttribute("id", item.getMessageId());
 							record.setAttribute("message", item.getMessage());
-							if (item.getMessage() != null && item.getMessage().length() > 30) {
-								record.setAttribute("shortMessage", item.getMessage().substring(0, 30) + "...");
+							if (item.getMessage() != null && item.getMessage()
+									.length() > 30) {
+								record.setAttribute("shortMessage", item.getMessage()
+										.substring(0, 30) + "...");
 							} else {
 								record.setAttribute("shortMessage", item.getMessage());
 							}
@@ -149,7 +153,7 @@ public class MessageItemDS extends AbstractAdminDataSource {
 					}
 				}
 
-		    	response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -160,21 +164,21 @@ public class MessageItemDS extends AbstractAdminDataSource {
 	@Override
 	protected void executeAdd(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 
 	@Override
 	protected void executeUpdate(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 
 	@Override
 	protected void executeRemove(String requestId, DSRequest request, DSResponse response) {
 		ListGridRecord record = new ListGridRecord(request.getData());
-		response.setData(new ListGridRecord[] {record});
+		response.setData(new ListGridRecord[] { record });
 		processResponse(requestId, response);
 	}
 

@@ -98,13 +98,13 @@ public class MetaDataDeleteDialog extends AbstractWindow {
 				SC.ask(AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataDeleteDialog_confirm"),
 						AdminClientMessageUtil.getString("ui_tools_metaexplorer_MetaDataDeleteDialog_startDeleteConfirm"), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							deleteMetaData();
-						}
-					}
-				});
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									deleteMetaData();
+								}
+							}
+						});
 			}
 		});
 		cancel = new IButton("Cancel");
@@ -198,7 +198,7 @@ public class MetaDataDeleteDialog extends AbstractWindow {
 		}
 
 		disableComponent(false);
-		delete.setDisabled(true);	//削除ボタンは使用不可
+		delete.setDisabled(true); //削除ボタンは使用不可
 		messageTabSet.setTabTitleNormal();
 
 		//リフレッシュ
@@ -216,7 +216,8 @@ public class MetaDataDeleteDialog extends AbstractWindow {
 		if (caught.getMessage() != null) {
 			errors.add(caught.getMessage());
 		} else {
-			errors.add(caught.getClass().getName());
+			errors.add(caught.getClass()
+					.getName());
 		}
 		messageTabSet.setErrorMessage(errors);
 
@@ -226,8 +227,8 @@ public class MetaDataDeleteDialog extends AbstractWindow {
 
 	private String getCountString(DeleteResultInfo result) {
 		return "(Error : " + result.getErrorCount()
-			+ ", Warning : " + result.getWarnCount()
-			+ ", Deleted : " + result.getDeleteCount() + ")";
+				+ ", Warning : " + result.getWarnCount()
+				+ ", Deleted : " + result.getDeleteCount() + ")";
 	}
 
 	private void disableComponent(boolean disabled) {

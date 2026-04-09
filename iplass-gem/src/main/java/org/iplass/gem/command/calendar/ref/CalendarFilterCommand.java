@@ -30,19 +30,20 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 
 @ActionMapping(
-		name=CalendarFilterCommand.ACTION_NANE,
-				displayName="カレンダーフィルター",
-		command={@CommandConfig(commandClass=CalendarFilterCommand.class)},
-		result={
-			@Result(type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_CALENDAR_FILTER,
-					templateName="gem/calendar/ref/calendarFilter",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
+		name = CalendarFilterCommand.ACTION_NANE,
+		displayName = "カレンダーフィルター",
+		command = { @CommandConfig(commandClass = CalendarFilterCommand.class) },
+		result = {
+				@Result(
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_CALENDAR_FILTER,
+						templateName = "gem/calendar/ref/calendarFilter",
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
 		})
-@CommandClass(name="gem/calendar/ref/CalendarFilterCommand", displayName="カレンダーフィルター")
+@CommandClass(name = "gem/calendar/ref/CalendarFilterCommand", displayName = "カレンダーフィルター")
 public final class CalendarFilterCommand implements Command {
 
-	public  static final String ACTION_NANE = "gem/calendar/ref/calendarFilter";
+	public static final String ACTION_NANE = "gem/calendar/ref/calendarFilter";
 
 	@Override
 	public String execute(RequestContext request) {

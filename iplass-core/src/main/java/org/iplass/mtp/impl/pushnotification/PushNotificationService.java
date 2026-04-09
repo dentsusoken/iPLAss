@@ -41,7 +41,8 @@ import org.iplass.mtp.tenant.Tenant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PushNotificationService extends AbstractTypedMetaDataService<MetaPushNotificationTemplate, PushNotificationTemplateRuntime> implements Service {
+public class PushNotificationService extends AbstractTypedMetaDataService<MetaPushNotificationTemplate, PushNotificationTemplateRuntime>
+		implements Service {
 	public static final String PUSH_NOTIFICATION_TEMPLATE_META_PATH = "/pushNotification/template/";
 
 	private static Logger logger = LoggerFactory.getLogger(PushNotificationService.class);
@@ -50,9 +51,11 @@ public class PushNotificationService extends AbstractTypedMetaDataService<MetaPu
 		public TypeMap() {
 			super(getFixedPath(), MetaPushNotificationTemplate.class, PushNotificationTemplateDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<PushNotificationTemplateDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(PushNotificationTemplateDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(PushNotificationTemplateDefinitionManager.class);
 		}
 
 		@Override
@@ -82,7 +85,7 @@ public class PushNotificationService extends AbstractTypedMetaDataService<MetaPu
 	public final PushNotificationResult push(Tenant tenant, PushNotification notification) {
 		try {
 			if (listener != null) {
-				for (PushNotificationListener l: listener) {
+				for (PushNotificationListener l : listener) {
 					if (!l.beforePush(notification)) {
 						logger.info("Push notification canceled by Listener:" + l);
 						HashMap<String, Object> details = new HashMap<>();
@@ -96,7 +99,7 @@ public class PushNotificationService extends AbstractTypedMetaDataService<MetaPu
 			PushNotificationResult res = pushImpl(tenant, notification);
 
 			if (listener != null) {
-				for (PushNotificationListener l: listener) {
+				for (PushNotificationListener l : listener) {
 					l.onSuccess(notification, res);
 				}
 			}
@@ -105,7 +108,7 @@ public class PushNotificationService extends AbstractTypedMetaDataService<MetaPu
 
 		} catch (Exception e) {
 			if (listener != null) {
-				for (PushNotificationListener l: listener) {
+				for (PushNotificationListener l : listener) {
 					if (!l.onFailure(notification, e)) {
 						HashMap<String, Object> details = new HashMap<>();
 						details.put("listener", l.getClass());
@@ -125,7 +128,8 @@ public class PushNotificationService extends AbstractTypedMetaDataService<MetaPu
 
 	protected PushNotificationResult pushImpl(Tenant tenant, PushNotification notification) {
 		//noop
-		logger.warn("can't push notification, use FCMPushNotificationService or own implementation of PushNotificationService. toList:" + notification.getToList() + ", notification:" + notification.getNotification() + ", data:" + notification.getData());
+		logger.warn("can't push notification, use FCMPushNotificationService or own implementation of PushNotificationService. toList:"
+				+ notification.getToList() + ", notification:" + notification.getNotification() + ", data:" + notification.getData());
 		HashMap<String, Object> details = new HashMap<>();
 		details.put("noop", true);
 		return new PushNotificationResult(true, details);

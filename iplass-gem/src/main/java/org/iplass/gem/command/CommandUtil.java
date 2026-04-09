@@ -31,7 +31,6 @@ import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 
-
 public class CommandUtil {
 
 	/** 文字列から日付変換を行う際のフォーマット */
@@ -53,7 +52,8 @@ public class CommandUtil {
 	 * @return Integer型の値
 	 */
 	public static Integer getInteger(String value) {
-		if (StringUtil.isBlank(value)) return null;
+		if (StringUtil.isBlank(value))
+			return null;
 		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
@@ -67,7 +67,8 @@ public class CommandUtil {
 	 * @return Long型の値
 	 */
 	public static Long getLong(String value) {
-		if (StringUtil.isBlank(value)) return null;
+		if (StringUtil.isBlank(value))
+			return null;
 		try {
 			return Long.parseLong(value);
 		} catch (NumberFormatException e) {
@@ -81,7 +82,8 @@ public class CommandUtil {
 	 * @return Double型の値
 	 */
 	public static Double getDouble(String value) {
-		if (StringUtil.isBlank(value)) return null;
+		if (StringUtil.isBlank(value))
+			return null;
 		try {
 			return Double.parseDouble(value);
 		} catch (NumberFormatException e) {
@@ -94,8 +96,9 @@ public class CommandUtil {
 	 * @param value 文字列
 	 * @return Decimal型の値
 	 */
-	public static  BigDecimal getDecimal(String value) {
-		if (value == null || value.length() == 0) return null;
+	public static BigDecimal getDecimal(String value) {
+		if (value == null || value.length() == 0)
+			return null;
 		try {
 			return new BigDecimal(value);
 		} catch (NumberFormatException e) {
@@ -115,7 +118,8 @@ public class CommandUtil {
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseDateErr") + "[" + value + "]");
 		}
-		if (date == null) return null;
+		if (date == null)
+			return null;
 		return new Date(date);
 	}
 
@@ -131,7 +135,8 @@ public class CommandUtil {
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseTimeErr") + "[" + value + "]");
 		}
-		if (date == null) return null;
+		if (date == null)
+			return null;
 		return new Time(date);
 	}
 
@@ -147,7 +152,8 @@ public class CommandUtil {
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseTimeErr") + "[" + value + "]");
 		}
-		if (date == null) return null;
+		if (date == null)
+			return null;
 		return new Time(date);
 	}
 
@@ -167,6 +173,7 @@ public class CommandUtil {
 			return null;
 		return new Time(date);
 	}
+
 	/**
 	 * 文字列からTimestamp型の値を取得します。
 	 * @param value 文字列
@@ -179,7 +186,8 @@ public class CommandUtil {
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseDateTimeErr") + "[" + value + "]");
 		}
-		if (date == null) return null;
+		if (date == null)
+			return null;
 		return new Timestamp(date);
 	}
 
@@ -195,7 +203,8 @@ public class CommandUtil {
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseDateTimeErr") + "[" + value + "]");
 		}
-		if (date == null) return null;
+		if (date == null)
+			return null;
 		return new Timestamp(date);
 	}
 
@@ -211,7 +220,8 @@ public class CommandUtil {
 		} catch (ParseException e) {
 			throw new ApplicationException(resourceString("command.CommandUtil.parseDateTimeErr") + "[" + value + "]");
 		}
-		if (date == null) return null;
+		if (date == null)
+			return null;
 		return new Timestamp(date);
 	}
 
@@ -223,12 +233,14 @@ public class CommandUtil {
 	 * @throws ParseException
 	 */
 	private static Long getDateTime(String value, String format) throws ParseException {
-		if (StringUtil.isBlank(value)) return null;
+		if (StringUtil.isBlank(value))
+			return null;
 
 //		SimpleDateFormat sd = new SimpleDateFormat(format);
 		SimpleDateFormat sd = DateUtil.getSimpleDateFormat(format, true);
 		sd.setLenient(false);
-		return sd.parse(value).getTime();
+		return sd.parse(value)
+				.getTime();
 	}
 
 	private static String resourceString(String key, Object... arguments) {

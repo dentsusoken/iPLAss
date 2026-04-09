@@ -53,7 +53,8 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 
 	@Override
 	public Locale getLocale() {
-		return ExecuteContext.getCurrentContext().getLangLocale();
+		return ExecuteContext.getCurrentContext()
+				.getLangLocale();
 	}
 
 	@Override
@@ -230,7 +231,7 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 			ServletResponse servletResponse) throws IllegalStateException {
 		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
 	}
-	
+
 	private class NullServletInputStream extends ServletInputStream {
 
 		@Override
@@ -252,7 +253,7 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 		public int read() throws IOException {
 			return -1;
 		}
-		
+
 	}
 
 }

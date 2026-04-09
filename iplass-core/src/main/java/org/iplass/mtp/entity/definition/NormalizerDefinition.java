@@ -22,8 +22,6 @@ package org.iplass.mtp.entity.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
@@ -34,6 +32,7 @@ import org.iplass.mtp.entity.definition.normalizers.UnicodeNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.WhiteSpaceTrimmer;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * <% if (doclang == "ja") {%>

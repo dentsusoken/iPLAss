@@ -33,7 +33,7 @@ public class CredentialExpiredException extends LoginException {
 	private static final long serialVersionUID = 5891584135962867247L;
 	private boolean isInitialLogin;
 	private String policyName;
-	
+
 	/**
 	 *
 	 */
@@ -61,11 +61,11 @@ public class CredentialExpiredException extends LoginException {
 	public CredentialExpiredException(String message, Throwable cause) {
 		super(message, cause);
 	}
-	
+
 	public boolean isInitialLogin() {
 		return isInitialLogin;
 	}
-	
+
 	public void setInitialLogin(boolean isInitialLogin) {
 		this.isInitialLogin = isInitialLogin;
 	}

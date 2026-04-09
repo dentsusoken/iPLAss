@@ -32,7 +32,7 @@ public enum ResponseMode {
 	QUERY,
 	/** Response Mode: form_postの指定です。OPが対応している場合、この値を指定することを推奨します。 */
 	FORM_POST
-	
+
 	//TODO JARM対応
 	//QUERY_JWT
 	//FORM_POST_JWT

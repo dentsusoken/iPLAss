@@ -56,14 +56,14 @@ public class MTPTest {
 	public static <T> void setManagerMock(Class<T> managerInterface, T mock) {
 		((TestManagerLocator) ManagerLocator.getInstance()).setManager(managerInterface, mock);
 	}
-	
+
 	/**
 	 * 明示的に、現在設定されているモックをクリアします。
 	 */
 	public static void resetManagerMock() {
 		((TestManagerLocator) ManagerLocator.getInstance()).reset();
 	}
-	
+
 	/**
 	 * commandNameで定義されているCommandを実行します。
 	 * 実行する際には、トランザクションは自動で開始されます。
@@ -73,9 +73,11 @@ public class MTPTest {
 	 * @return
 	 */
 	public static String invokeCommand(String commandName, RequestContext request) {
-		return ManagerLocator.getInstance().getManager(CommandInvoker.class).execute(commandName, request);
+		return ManagerLocator.getInstance()
+				.getManager(CommandInvoker.class)
+				.execute(commandName, request);
 	}
-	
+
 	/**
 	 * commandNameで定義されているCommandのインスタンスを取得します。
 	 * 
@@ -83,9 +85,11 @@ public class MTPTest {
 	 * @return
 	 */
 	public static Command newCommand(String commandName) {
-		return ManagerLocator.getInstance().getManager(CommandInvoker.class).getCommandInstance(commandName);
+		return ManagerLocator.getInstance()
+				.getManager(CommandInvoker.class)
+				.getCommandInstance(commandName);
 	}
-	
+
 	/**
 	 * cmdで指定されるCommandのインスタンスを実行します。
 	 * 実行する際には、トランザクションは自動で開始されます。
@@ -95,9 +99,11 @@ public class MTPTest {
 	 * @return
 	 */
 	public static String invokeCommand(Command cmd, RequestContext request) {
-		return ManagerLocator.getInstance().getManager(CommandInvoker.class).execute(cmd, request);
+		return ManagerLocator.getInstance()
+				.getManager(CommandInvoker.class)
+				.execute(cmd, request);
 	}
-	
+
 	/**
 	 * runnableの処理をトランザクション内で実行します。
 	 * 
@@ -108,7 +114,7 @@ public class MTPTest {
 			runnable.run();
 		});
 	}
-	
+
 	/**
 	 * 指定のnameで定義されるUtilityClassのクラスを取得します。
 	 * 
@@ -117,14 +123,15 @@ public class MTPTest {
 	 */
 	public static Class<?> getUtilityClass(String name) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		GroovyScriptEngine gse = (GroovyScriptEngine) ec.getTenantContext().getScriptEngine();
+		GroovyScriptEngine gse = (GroovyScriptEngine) ec.getTenantContext()
+				.getScriptEngine();
 		try {
 			return Class.forName(name, true, gse.getSharedClassLoader());
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException("can't load Utility class:" + name, e);
 		}
 	}
-	
+
 	/**
 	 * 指定のnameで定義されるUtilityClassのインスタンスを生成します。
 	 * コンストラクタはデフォルトコンストラクタが呼び出されます。
@@ -134,8 +141,9 @@ public class MTPTest {
 	 */
 	public static Object newUC(String name) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		GroovyScriptEngine gse = (GroovyScriptEngine) ec.getTenantContext().getScriptEngine();
-		
+		GroovyScriptEngine gse = (GroovyScriptEngine) ec.getTenantContext()
+				.getScriptEngine();
+
 		try {
 			Class<?> clazz = Class.forName(name, true, gse.getSharedClassLoader());
 			return clazz.newInstance();
@@ -143,7 +151,7 @@ public class MTPTest {
 			throw new IllegalArgumentException("can't create Utility class instance:" + name, e);
 		}
 	}
-	
+
 	/**
 	 * 指定のnameで定義されるUtilityClassのインスタンスを生成します。
 	 * コンストラクタはargsで指定される引数に合わせたコンストラクタが呼び出されます。
@@ -154,22 +162,23 @@ public class MTPTest {
 	 */
 	public static Object newUC(String name, Object... args) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		GroovyScriptEngine gse = (GroovyScriptEngine) ec.getTenantContext().getScriptEngine();
-		
+		GroovyScriptEngine gse = (GroovyScriptEngine) ec.getTenantContext()
+				.getScriptEngine();
+
 		Class<?> clazz;
 		try {
 			clazz = Class.forName(name, true, gse.getSharedClassLoader());
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException("can't load Utility class:" + name, e);
 		}
-		
+
 		if (args == null || args.length == 0) {
 			args = new Object[1];
 		}
-		
+
 		Lookup lookup = MethodHandles.lookup();
 		Exception ee = null;
-		for (Constructor<?> c: clazz.getConstructors()) {
+		for (Constructor<?> c : clazz.getConstructors()) {
 			if (c.getParameterTypes().length == args.length) {
 				try {
 					MethodHandle constructor = lookup.unreflectConstructor(c);
@@ -185,9 +194,9 @@ public class MTPTest {
 				}
 			}
 		}
-		
+
 		throw new IllegalArgumentException("can't create Utility class instance:" + name, ee);
-			
+
 	}
 
 }

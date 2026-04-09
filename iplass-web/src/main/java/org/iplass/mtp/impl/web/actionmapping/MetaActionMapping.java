@@ -29,12 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.impl.command.InterceptorService;
@@ -71,6 +65,12 @@ import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.iplass.mtp.web.interceptor.RequestInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * ActionMappingの定義。
@@ -208,7 +208,6 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		this.synchronizeOnSession = synchronizeOnSession;
 	}
 
-
 	public MetaCacheCriteria getCacheCriteria() {
 		return cacheCriteria;
 	}
@@ -246,7 +245,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		//新しい属性の方が有効
 		return privileged;
 	}
- 
+
 	public void setPrivileged(boolean isPrivileged) {
 		//保存時に古い属性をnullにセットするようにする
 		this.privileged = isPrivileged;
@@ -382,7 +381,6 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 		needTrustedAuthenticate = definition.isNeedTrustedAuthenticate();
 
-
 		if (definition.getAllowRequestContentTypes() != null) {
 			allowRequestContentTypes = new String[definition.getAllowRequestContentTypes().length];
 			System.arraycopy(definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes, 0, allowRequestContentTypes.length);
@@ -488,8 +486,9 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 					cmd = command.createRuntime();
 				}
 
-				TemplateService ts = ServiceRegistry.getRegistry().getService(
-						TemplateService.class);
+				TemplateService ts = ServiceRegistry.getRegistry()
+						.getService(
+								TemplateService.class);
 				TemplateRuntime tr = ts.getRuntimeByName(name);
 				if (tr != null) {
 					defaultResult = new TemplateResult("*", tr.getMetaData()
@@ -514,7 +513,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 				if (paramMap != null) {
 					paramMapRuntimes = new HashMap<>();
-					for (ParamMap p: paramMap) {
+					for (ParamMap p : paramMap) {
 						ParamMapRuntime pmr = p.createRuntime();
 						List<ParamMapRuntime> pmrList = paramMapRuntimes.get(p.getName());
 						if (pmrList == null) {
@@ -526,7 +525,8 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				}
 
 				//デフォルト設定の読み込み
-				WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+				WebFrontendService wfs = ServiceRegistry.getRegistry()
+						.getService(WebFrontendService.class);
 				if (getClientCacheType() == null) {
 					clientCacheTypeRuntime = wfs.getDefaultClientCacheType();
 				} else {
@@ -547,7 +547,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 						}
 						if (allowMethod != null && allowMethod.length > 0) {
 							ArrayList<String> aml = new ArrayList<>(allowMethod.length);
-							for (HttpMethodType hmt: allowMethod) {
+							for (HttpMethodType hmt : allowMethod) {
 								aml.add(hmt.toString());
 							}
 							requestRestrictionRuntime.setAllowMethods(aml);
@@ -567,9 +567,11 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				}
 
 				//TODO カスタムインターセプターの追加
-				InterceptorService is = ServiceRegistry.getRegistry().getService(InterceptorService.class);
+				InterceptorService is = ServiceRegistry.getRegistry()
+						.getService(InterceptorService.class);
 				cmdInterceptors = is.getInterceptors(ActionMappingService.COMMAND_INTERCEPTOR_NAME);
-				ActionMappingService as = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+				ActionMappingService as = ServiceRegistry.getRegistry()
+						.getService(ActionMappingService.class);
 				reqInterceptors = as.getInterceptors();
 
 			} catch (RuntimeException e) {
@@ -580,29 +582,41 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 		private String allowString() {
 			StringBuilder sb = new StringBuilder();
-			for (String m: requestRestrictionRuntime.getAllowMethods()) {
+			for (String m : requestRestrictionRuntime.getAllowMethods()) {
 				switch (m) {
 				case GET:
-					sb.append(GET).append(", ").append(HEAD).append(", ");
+					sb.append(GET)
+							.append(", ")
+							.append(HEAD)
+							.append(", ");
 					break;
 				case POST:
-					sb.append(POST).append(", ");
+					sb.append(POST)
+							.append(", ");
 					break;
 				case PUT:
-					sb.append(PUT).append(", ");
+					sb.append(PUT)
+							.append(", ");
 					break;
 				case DELETE:
-					sb.append(DELETE).append(", ");
+					sb.append(DELETE)
+							.append(", ");
 					break;
 				case WILDCARD:
 					// GET
-					sb.append(GET).append(", ").append(HEAD).append(", ");
+					sb.append(GET)
+							.append(", ")
+							.append(HEAD)
+							.append(", ");
 					// POST
-					sb.append(POST).append(", ");
+					sb.append(POST)
+							.append(", ");
 					// PUT
-					sb.append(PUT).append(", ");
+					sb.append(PUT)
+							.append(", ");
 					// DELETE
-					sb.append(DELETE).append(", ");
+					sb.append(DELETE)
+							.append(", ");
 					break;
 				default:
 					// PATCH, CONNECT は設定しない
@@ -611,7 +625,9 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 					break;
 				}
 			}
-			sb.append(TRACE).append(", ").append(OPTIONS);
+			sb.append(TRACE)
+					.append(", ")
+					.append(OPTIONS);
 			return sb.toString();
 		}
 
@@ -632,7 +648,10 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				result = defaultResult;
 			} else {
 				for (ResultRuntime r : resultList) {
-					if (r.getMetaData().getCommandResultStatus() != null && r.getMetaData().getCommandResultStatus().equals(cmdResult)) {
+					if (r.getMetaData()
+							.getCommandResultStatus() != null && r.getMetaData()
+									.getCommandResultStatus()
+									.equals(cmdResult)) {
 						result = r;
 						break;
 					}
@@ -650,31 +669,42 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 		private void doOptions(WebRequestStack req) {
 			//TODO ActionにもCORS必要か？（canvasとかで利用される？）MetaData側でも設定可能に
-			req.getResponse().setHeader("Allow", allowString);
+			req.getResponse()
+					.setHeader("Allow", allowString);
 		}
 
 		private void doTrace(WebRequestStack req) throws IOException {
 			int responseLength;
 
 			String CRLF = "\r\n";
-			StringBuilder buffer = new StringBuilder("TRACE ").append(req.getRequest().getRequestURI())
-					.append(" ").append(req.getRequest().getProtocol());
+			StringBuilder buffer = new StringBuilder("TRACE ").append(req.getRequest()
+					.getRequestURI())
+					.append(" ")
+					.append(req.getRequest()
+							.getProtocol());
 
-			Enumeration<String> reqHeaderEnum = req.getRequest().getHeaderNames();
+			Enumeration<String> reqHeaderEnum = req.getRequest()
+					.getHeaderNames();
 
-			while( reqHeaderEnum.hasMoreElements() ) {
+			while (reqHeaderEnum.hasMoreElements()) {
 				String headerName = reqHeaderEnum.nextElement();
-				buffer.append(CRLF).append(headerName).append(": ")
-				.append(req.getRequest().getHeader(headerName));
+				buffer.append(CRLF)
+						.append(headerName)
+						.append(": ")
+						.append(req.getRequest()
+								.getHeader(headerName));
 			}
 
 			buffer.append(CRLF);
 
 			responseLength = buffer.length();
 
-			req.getResponse().setContentType("message/http");
-			req.getResponse().setContentLength(responseLength);
-			ServletOutputStream out = req.getResponse().getOutputStream();
+			req.getResponse()
+					.setContentType("message/http");
+			req.getResponse()
+					.setContentLength(responseLength);
+			ServletOutputStream out = req.getResponse()
+					.getOutputStream();
 			out.print(buffer.toString());
 			out.close();
 		}
@@ -682,7 +712,8 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 		public void executeCommand(final WebRequestStack req) throws IOException, ServletException {
 			checkState();
 
-			String httpMethod = req.getRequest().getMethod();
+			String httpMethod = req.getRequest()
+					.getMethod();
 			switch (httpMethod) {
 			case TRACE:
 				doTrace(req);
@@ -702,7 +733,8 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 			case PUT:
 				break;
 			default:
-				req.getResponse().sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
+				req.getResponse()
+						.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
 				return;
 			}
 
@@ -710,22 +742,28 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				if (logger.isDebugEnabled()) {
 					logger.debug("reject Request. HTTP Method:" + httpMethod + " not allowed for Action:" + getName());
 				}
-				String protocol = req.getRequest().getProtocol();
+				String protocol = req.getRequest()
+						.getProtocol();
 				if (protocol.endsWith("1.1")) {
-					req.getResponse().setHeader("Allow", allowString);
-					req.getResponse().sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+					req.getResponse()
+							.setHeader("Allow", allowString);
+					req.getResponse()
+							.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 				} else {
-					req.getResponse().sendError(HttpServletResponse.SC_BAD_REQUEST);
+					req.getResponse()
+							.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
 				return;
 			}
 
-			String rct = req.getRequest().getContentType();
+			String rct = req.getRequest()
+					.getContentType();
 			if (rct != null && !requestRestrictionRuntime.isAllowedContentType(rct)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("reject Request. Content Type:" + rct + " not allowed for Action:" + getName());
 				}
-				req.getResponse().sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+				req.getResponse()
+						.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				return;
 			}
 
@@ -758,7 +796,8 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 
 			RequestContext requestContext = req.getRequestContext();
 			//cache tenantContextPath( and for implicit object: "tenantContextPath" in JSP)
-			requestContext.setAttribute(WebRequestConstants.TENANT_CONTEXT_PATH, req.getRequestPath().getTenantContextPath(req.getRequest()));
+			requestContext.setAttribute(WebRequestConstants.TENANT_CONTEXT_PATH, req.getRequestPath()
+					.getTenantContextPath(req.getRequest()));
 
 			if (requestContext instanceof WebRequestContext) {
 				WebRequestContext webRequestContext = (WebRequestContext) requestContext;
@@ -776,7 +815,7 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 				}
 			}
 
-			WebInvocationImpl invoke =  new WebInvocationImpl(reqInterceptors, cmdInterceptors, cmd, requestContext, req, this);
+			WebInvocationImpl invoke = new WebInvocationImpl(reqInterceptors, cmdInterceptors, cmd, requestContext, req, this);
 
 			if (isSynchronizeOnSession()) {
 				synchronized (requestContext.getSession()) {

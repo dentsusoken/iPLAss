@@ -23,10 +23,6 @@ package org.iplass.mtp.view.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
@@ -36,6 +32,10 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.element.Button;
 import org.iplass.mtp.view.generic.element.section.Section;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 /**
  * 汎用データ画面のFormに相当するレイアウト情報
  *
@@ -43,8 +43,8 @@ import org.iplass.mtp.view.generic.element.section.Section;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({DetailFormView.class, SearchFormView.class, BulkFormView.class})
-@FieldOrder(manual=true)
+@XmlSeeAlso({ DetailFormView.class, SearchFormView.class, BulkFormView.class })
+@FieldOrder(manual = true)
 public abstract class FormView implements Refrectable {
 
 	/** シリアルバージョンID */
@@ -59,88 +59,79 @@ public abstract class FormView implements Refrectable {
 
 	/** タイトル */
 	@MetaFieldInfo(
-			displayName="画面タイトル",
-			description="画面に表示されるタイトルを入力します",
-			displayNameKey="generic_FormView_titleDisplaNameKey",
-			descriptionKey="generic_FormView_titleDescriptionKey",
-			inputType=InputType.MULTI_LANG,
+			displayName = "画面タイトル",
+			description = "画面に表示されるタイトルを入力します",
+			displayNameKey = "generic_FormView_titleDisplaNameKey",
+			descriptionKey = "generic_FormView_titleDescriptionKey",
+			inputType = InputType.MULTI_LANG,
 			multiLangField = "localizedTitleList",
-			displayOrder=10
+			displayOrder = 10
 	)
 	@MultiLang(itemNameGetter = "getName")
 	private String title;
 
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
-			displayName="多言語設定情報",
-			displayNameKey="generic_FormView_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=20
+			displayName = "多言語設定情報",
+			displayNameKey = "generic_FormView_localizedTitleListDisplaNameKey",
+			inputType = InputType.MULTI_LANG_LIST,
+			displayOrder = 20
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
-
-
-
 	/** イメージカラー */
 	@MetaFieldInfo(
-			displayName="イメージカラー",
-			inputType=InputType.TEXT,
-			description="ビューのイメージカラーを選択します。",
-			displayNameKey="generic_FormView_imageColorDisplaNameKey",
-			descriptionKey="generic_FormView_imageColorDescriptionKey",
-			displayOrder=100
+			displayName = "イメージカラー",
+			inputType = InputType.TEXT,
+			description = "ビューのイメージカラーを選択します。",
+			displayNameKey = "generic_FormView_imageColorDisplaNameKey",
+			descriptionKey = "generic_FormView_imageColorDescriptionKey",
+			displayOrder = 100
 	)
 	private String imageColor;
 
 	/** アイコンタグ */
 	@MetaFieldInfo(
-			displayName="アイコンタグ",
-			description="タイトルの前に表示するiタグ等を利用した独自のアイコンを設定できます。",
-			displayNameKey="generic_FormView_iconTagDisplaNameKey",
-			descriptionKey="generic_FormView_iconTagDescriptionKey",
-			displayOrder=110
+			displayName = "アイコンタグ",
+			description = "タイトルの前に表示するiタグ等を利用した独自のアイコンを設定できます。",
+			displayNameKey = "generic_FormView_iconTagDisplaNameKey",
+			descriptionKey = "generic_FormView_iconTagDescriptionKey",
+			displayOrder = 110
 	)
 	private String iconTag;
 
 	/** ダイアログ表示時に最大化 */
 	@MetaFieldInfo(
-			displayName="ダイアログ表示時に最大化",
-			inputType=InputType.CHECKBOX,
-			displayOrder=120,
-			description="ダイアログ表示時に最大化するかを設定します。",
-			displayNameKey="generic_FormView_dialogMaximizeDisplaNameKey",
-			descriptionKey="generic_FormView_dialogMaximizeDescriptionKey")
+			displayName = "ダイアログ表示時に最大化",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 120,
+			description = "ダイアログ表示時に最大化するかを設定します。",
+			displayNameKey = "generic_FormView_dialogMaximizeDisplaNameKey",
+			descriptionKey = "generic_FormView_dialogMaximizeDescriptionKey")
 	private boolean dialogMaximize;
-
-
-
 
 	/** ボタン */
 	@MetaFieldInfo(
-			displayName="ボタン",
-			displayNameKey="generic_FormView_buttonsDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			multiple=true,
-			referenceClass=Button.class,
-			displayOrder=1000,
-			description="編集画面上下にカスタムボタンを設定します",
-			descriptionKey="generic_FormView_buttonsDescriptionKey"
+			displayName = "ボタン",
+			displayNameKey = "generic_FormView_buttonsDisplaNameKey",
+			inputType = InputType.REFERENCE,
+			multiple = true,
+			referenceClass = Button.class,
+			displayOrder = 1000,
+			description = "編集画面上下にカスタムボタンを設定します",
+			descriptionKey = "generic_FormView_buttonsDescriptionKey"
 	)
 	@MultiLang(itemNameGetter = "getName", isMultiLangValue = false)
 	private List<Button> buttons;
 
-
-
-
 	/** データを多言語化するかどうか */
 	@MetaFieldInfo(
-			displayName="データを多言語化",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1500,
-			description="データを多言語化するかを設定します。",
-			displayNameKey="generic_FormView_localizationDataDisplaNameKey",
-			descriptionKey="generic_FormView_localizationDataDescriptionKey")
+			displayName = "データを多言語化",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 1500,
+			description = "データを多言語化するかを設定します。",
+			displayNameKey = "generic_FormView_localizationDataDisplaNameKey",
+			descriptionKey = "generic_FormView_localizationDataDescriptionKey")
 	private boolean localizationData;
 
 	/** カスタムスタイルキー */
@@ -167,7 +158,8 @@ public abstract class FormView implements Refrectable {
 	 * @return セクション
 	 */
 	public List<Section> getSections() {
-		if (this.sections == null) this.sections = new ArrayList<Section>();
+		if (this.sections == null)
+			this.sections = new ArrayList<Section>();
 		return sections;
 	}
 
@@ -208,7 +200,7 @@ public abstract class FormView implements Refrectable {
 	 * @return データを多言語化するかどうか
 	 */
 	public boolean isLocalizationData() {
-	    return localizationData;
+		return localizationData;
 	}
 
 	/**
@@ -216,7 +208,7 @@ public abstract class FormView implements Refrectable {
 	 * @param localizationData データを多言語化するかどうか
 	 */
 	public void setLocalizationData(boolean localizationData) {
-	    this.localizationData = localizationData;
+		this.localizationData = localizationData;
 	}
 
 	/**
@@ -224,7 +216,7 @@ public abstract class FormView implements Refrectable {
 	 * @return ダイアログ表示時に最大化
 	 */
 	public boolean isDialogMaximize() {
-	    return dialogMaximize;
+		return dialogMaximize;
 	}
 
 	/**
@@ -232,7 +224,7 @@ public abstract class FormView implements Refrectable {
 	 * @param dialogMaximize ダイアログ表示時に最大化
 	 */
 	public void setDialogMaximize(boolean dialogMaximize) {
-	    this.dialogMaximize = dialogMaximize;
+		this.dialogMaximize = dialogMaximize;
 	}
 
 	/**
@@ -256,7 +248,7 @@ public abstract class FormView implements Refrectable {
 	 * @return アイコンタグ
 	 */
 	public String getIconTag() {
-	    return iconTag;
+		return iconTag;
 	}
 
 	/**
@@ -264,7 +256,7 @@ public abstract class FormView implements Refrectable {
 	 * @param iconTag アイコンタグ
 	 */
 	public void setIconTag(String iconTag) {
-	    this.iconTag = iconTag;
+		this.iconTag = iconTag;
 	}
 
 	/**
@@ -272,7 +264,8 @@ public abstract class FormView implements Refrectable {
 	 * @return ボタン
 	 */
 	public List<Button> getButtons() {
-		if (this.buttons == null) this.buttons = new ArrayList<Button>();
+		if (this.buttons == null)
+			this.buttons = new ArrayList<Button>();
 		return buttons;
 	}
 

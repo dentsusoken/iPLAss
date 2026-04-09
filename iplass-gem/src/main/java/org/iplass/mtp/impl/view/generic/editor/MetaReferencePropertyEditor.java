@@ -23,8 +23,6 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -51,6 +49,8 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefComboSearch
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
+
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * 参照型プロパティエディタのメタデータ
@@ -199,13 +199,12 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 	/** Label形式の場合の更新制御 */
 	private boolean updateWithLabelValue = false;
-	
+
 	/** CHECKBOX形式の場合のアイテムを縦に並べるような表示するか */
 	private boolean itemDirectionColumn;
-	
+
 	/** 「値なし」を検索条件の選択肢に追加するか */
 	private boolean isNullSearchEnabled;
-
 
 	/**
 	 * 表示タイプを取得します。
@@ -278,7 +277,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 選択ダイアログ利用可否
 	 */
 	public boolean isUseSearchDialog() {
-	    return useSearchDialog;
+		return useSearchDialog;
 	}
 
 	/**
@@ -286,7 +285,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param useSearchDialog 選択ダイアログ利用可否
 	 */
 	public void setUseSearchDialog(boolean useSearchDialog) {
-	    this.useSearchDialog = useSearchDialog;
+		this.useSearchDialog = useSearchDialog;
 	}
 
 	/**
@@ -294,7 +293,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 検索条件で単一選択
 	 */
 	public boolean isSingleSelect() {
-	    return singleSelect;
+		return singleSelect;
 	}
 
 	/**
@@ -302,7 +301,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param singleSelect 検索条件で単一選択
 	 */
 	public void setSingleSelect(boolean singleSelect) {
-	    this.singleSelect = singleSelect;
+		this.singleSelect = singleSelect;
 	}
 
 	/**
@@ -327,7 +326,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 */
 	@Override
 	public List<MetaNestProperty> getNestProperties() {
-		if (nestProperties == null) nestProperties = new ArrayList<>();
+		if (nestProperties == null)
+			nestProperties = new ArrayList<>();
 		return nestProperties;
 	}
 
@@ -380,7 +380,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 新規ボタン非表示設定
 	 */
 	public boolean isHideSelectButton() {
-	    return hideSelectButton;
+		return hideSelectButton;
 	}
 
 	/**
@@ -388,7 +388,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param hideSelectButton 新規ボタン非表示設定
 	 */
 	public void setHideSelectButton(boolean hideSelectButton) {
-	    this.hideSelectButton = hideSelectButton;
+		this.hideSelectButton = hideSelectButton;
 	}
 
 	/**
@@ -396,7 +396,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 参照リンク編集可否
 	 */
 	public boolean isEditableReference() {
-	    return editableReference;
+		return editableReference;
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param editableReference 参照リンク編集可否
 	 */
 	public void setEditableReference(boolean editableReference) {
-	    this.editableReference = editableReference;
+		this.editableReference = editableReference;
 	}
 
 	/**
@@ -444,7 +444,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return ダイアログ編集アクション名
 	 */
 	public String getDetailrefActionName() {
-	    return detailrefActionName;
+		return detailrefActionName;
 	}
 
 	/**
@@ -452,7 +452,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param detailrefActionName ダイアログ編集アクション名
 	 */
 	public void setDetailrefActionName(String detailrefActionName) {
-	    this.detailrefActionName = detailrefActionName;
+		this.detailrefActionName = detailrefActionName;
 	}
 
 	/**
@@ -605,7 +605,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 編集ページ
 	 */
 	public EditPage getEditPage() {
-	    return editPage;
+		return editPage;
 	}
 
 	/**
@@ -613,7 +613,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param editPage 編集ページ
 	 */
 	public void setEditPage(EditPage editPage) {
-	    this.editPage = editPage;
+		this.editPage = editPage;
 	}
 
 	/**
@@ -686,7 +686,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 検索条件
 	 */
 	public String getCondition() {
-	    return condition;
+		return condition;
 	}
 
 	/**
@@ -694,7 +694,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param condition 検索条件
 	 */
 	public void setCondition(String condition) {
-	    this.condition = condition;
+		this.condition = condition;
 	}
 
 	/**
@@ -718,7 +718,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 参照コンボの親を表示するか
 	 */
 	public boolean isShowRefComboParent() {
-	    return showRefComboParent;
+		return showRefComboParent;
 	}
 
 	/**
@@ -726,7 +726,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param showRefComboParent 参照コンボの親を表示するか
 	 */
 	public void setShowRefComboParent(boolean showRefComboParent) {
-	    this.showRefComboParent = showRefComboParent;
+		this.showRefComboParent = showRefComboParent;
 	}
 
 	/**
@@ -734,7 +734,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 再帰構造Entityのツリー設定
 	 */
 	public MetaReferenceRecursiveTreeSetting getReferenceRecursiveTreeSetting() {
-	    return referenceRecursiveTreeSetting;
+		return referenceRecursiveTreeSetting;
 	}
 
 	/**
@@ -742,7 +742,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param referenceRecursiveTreeSetting 再帰構造Entityのツリー設定
 	 */
 	public void setReferenceRecursiveTreeSetting(MetaReferenceRecursiveTreeSetting referenceRecursiveTreeSetting) {
-	    this.referenceRecursiveTreeSetting = referenceRecursiveTreeSetting;
+		this.referenceRecursiveTreeSetting = referenceRecursiveTreeSetting;
 	}
 
 	/**
@@ -766,7 +766,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 特定バージョンの基準となるプロパティ
 	 */
 	public String getSpecificVersionPropertyName() {
-	    return specificVersionPropertyName;
+		return specificVersionPropertyName;
 	}
 
 	/**
@@ -774,7 +774,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param specificVersionPropertyName 特定バージョンの基準となるプロパティ
 	 */
 	public void setSpecificVersionPropertyName(String specificVersionPropertyName) {
-	    this.specificVersionPropertyName = specificVersionPropertyName;
+		this.specificVersionPropertyName = specificVersionPropertyName;
 	}
 
 	/**
@@ -782,7 +782,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return ネストテーブルの表示順プロパティ
 	 */
 	public String getTableOrderPropertyId() {
-	    return tableOrderPropertyId;
+		return tableOrderPropertyId;
 	}
 
 	/**
@@ -790,7 +790,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param tableOrderPropertyId ネストテーブルの表示順プロパティ
 	 */
 	public void setTableOrderPropertyId(String tableOrderPropertyId) {
-	    this.tableOrderPropertyId = tableOrderPropertyId;
+		this.tableOrderPropertyId = tableOrderPropertyId;
 	}
 
 	/**
@@ -814,7 +814,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @return 検索条件での全選択を許可
 	 */
 	public boolean isPermitConditionSelectAll() {
-	    return permitConditionSelectAll;
+		return permitConditionSelectAll;
 	}
 
 	/**
@@ -822,7 +822,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * @param permitConditionSelectAll 検索条件での全選択を許可
 	 */
 	public void setPermitConditionSelectAll(boolean permitConditionSelectAll) {
-	    this.permitConditionSelectAll = permitConditionSelectAll;
+		this.permitConditionSelectAll = permitConditionSelectAll;
 	}
 
 	/**
@@ -900,7 +900,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
 		this.updateWithLabelValue = updateWithLabelValue;
 	}
-	
+
 	/**
 	 * CHECKBOX形式の場合のアイテムを縦に並べるような表示するかを取得します。
 	 * @return CHECKBOX形式の場合のアイテムを縦に並べるような表示するか
@@ -916,7 +916,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	public void setItemDirectionColumn(boolean itemDirectionColumn) {
 		this.itemDirectionColumn = itemDirectionColumn;
 	}
-	
+
 	/**
 	 * 「値なし」を検索条件の選択肢に追加するかを取得します。
 	 * @return 「値なし」を検索条件の選択肢に追加するか
@@ -958,14 +958,16 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		EntityContext context = EntityContext.getCurrentContext();
 
 		EntityHandler referenceEntity = context.getHandlerByName(rpe.getObjectName());
-		objectId = referenceEntity.getMetaData().getId();
+		objectId = referenceEntity.getMetaData()
+				.getId();
 
 		EntityHandler fromEntity = null;
 		if (rpe.getReferenceFromObjectName() != null) {
 			fromEntity = context.getHandlerByName(rpe.getReferenceFromObjectName());
 		}
 		if (fromEntity != null) {
-			referenceFromObjectId = fromEntity.getMetaData().getId();
+			referenceFromObjectId = fromEntity.getMetaData()
+					.getId();
 		} else {
 			referenceFromObjectId = null;
 		}
@@ -975,7 +977,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			rootEntity = context.getHandlerByName(rpe.getRootObjectName());
 		}
 		if (rootEntity != null) {
-			rootObjectId = rootEntity.getMetaData().getId();
+			rootObjectId = rootEntity.getMetaData()
+					.getId();
 		} else {
 			rootObjectId = null;
 			// ルートを参照元Entityとする
@@ -1000,8 +1003,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		useSearchDialog = rpe.isUseSearchDialog();
 		singleSelect = rpe.isSingleSelect();
 		useNestConditionWithProperty = rpe.isUseNestConditionWithProperty();
-		hideDeleteButton  =rpe.isHideDeleteButton();
-		hideRegistButton  =rpe.isHideRegistButton();
+		hideDeleteButton = rpe.isHideDeleteButton();
+		hideRegistButton = rpe.isHideRegistButton();
 		hideSelectButton = rpe.isHideSelectButton();
 		editableReference = rpe.isEditableReference();
 		insertType = rpe.getInsertType();
@@ -1036,17 +1039,21 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		for (NestProperty np : rpe.getNestProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
 			mnp.applyConfig(np, referenceEntity, fromEntity, rootEntity);
-			if (mnp.getPropertyId() != null) addNestProperty(mnp);
+			if (mnp.getPropertyId() != null)
+				addNestProperty(mnp);
 		}
-		if (rpe.getReferenceComboSetting() != null && rpe.getReferenceComboSetting().getPropertyName() != null) {
+		if (rpe.getReferenceComboSetting() != null && rpe.getReferenceComboSetting()
+				.getPropertyName() != null) {
 			MetaReferenceComboSetting tmp = new MetaReferenceComboSetting();
 			tmp.applyConfig(rpe.getReferenceComboSetting(), referenceEntity);
 
 			//プロパティIDが設定されてない場合は保存しない(不正なプロパティ名や被参照でない場合等)
-			if (tmp.getPropertyId() != null) referenceComboSetting = tmp;
+			if (tmp.getPropertyId() != null)
+				referenceComboSetting = tmp;
 		}
 		if (ReferenceDisplayType.SELECTFILTER == rpe.getDisplayType() && rpe.getReferenceSelectFilterSetting() != null
-				&& rpe.getReferenceSelectFilterSetting().getPropertyName() != null) {
+				&& rpe.getReferenceSelectFilterSetting()
+						.getPropertyName() != null) {
 			MetaReferenceSelectFilterSetting selectFilterSetting = new MetaReferenceSelectFilterSetting();
 			selectFilterSetting.applyConfig(rpe.getReferenceSelectFilterSetting(), referenceEntity);
 
@@ -1059,7 +1066,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			setting.applyConfig(rpe.getReferenceRecursiveTreeSetting(), referenceEntity);
 
 			//プロパティIDが設定されてない場合は保存しない
-			if (setting.getChildPropertyId() != null) referenceRecursiveTreeSetting = setting;
+			if (setting.getChildPropertyId() != null)
+				referenceRecursiveTreeSetting = setting;
 		}
 		if (rpe.getLinkProperty() != null && fromEntity != null) {
 			//参照元Entityが設定されている場合のみ有効にする
@@ -1089,14 +1097,16 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 		editor.setDisplayType(displayType);
 
-		editor.setObjectName(referenceEntity.getMetaData().getName());
+		editor.setObjectName(referenceEntity.getMetaData()
+				.getName());
 
 		EntityHandler fromEntity = null;
 		if (referenceFromObjectId != null) {
 			fromEntity = context.getHandlerById(referenceFromObjectId);
 		}
 		if (fromEntity != null) {
-			editor.setReferenceFromObjectName(fromEntity.getMetaData().getName());
+			editor.setReferenceFromObjectName(fromEntity.getMetaData()
+					.getName());
 		}
 
 		EntityHandler rootEntity = null;
@@ -1104,7 +1114,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			rootEntity = context.getHandlerById(rootObjectId);
 		}
 		if (rootEntity != null) {
-			editor.setRootObjectName(rootEntity.getMetaData().getName());
+			editor.setRootObjectName(rootEntity.getMetaData()
+					.getName());
 		} else {
 			// ルートを参照元Entityとする
 			rootEntity = fromEntity;
@@ -1161,7 +1172,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setForceUpadte(forceUpadte);
 		for (MetaNestProperty mnp : getNestProperties()) {
 			NestProperty np = mnp.currentConfig(referenceEntity, fromEntity, rootEntity);
-			if (np != null && np.getPropertyName() != null) editor.addNestProperty(np);
+			if (np != null && np.getPropertyName() != null)
+				editor.addNestProperty(np);
 		}
 		if (referenceComboSetting != null && referenceComboSetting.getPropertyId() != null) {
 			editor.setReferenceComboSetting(referenceComboSetting.currentConfig(referenceEntity));
@@ -1206,8 +1218,11 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			super(entityView, formView, propertyLayout, context, eh);
 
 			if (StringUtil.isNotEmpty(urlParameter)) {
-				urlParameterScriptKey = "ReferencePropertyEditor_UrlParameter_" + GroovyTemplateCompiler.randomName().replace("-", "_");
-				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				urlParameterScriptKey = "ReferencePropertyEditor_UrlParameter_" + GroovyTemplateCompiler.randomName()
+						.replace("-", "_");
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				urlParameterScript = GroovyTemplateCompiler.compile(urlParameter,
 						urlParameterScriptKey + "_" + SCRIPT_PREFIX,
 						(GroovyScriptEngine) scriptEngine);
@@ -1217,8 +1232,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 			if (nestProperties != null && !nestProperties.isEmpty()) {
 				for (MetaNestProperty meta : nestProperties) {
-					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
+					if (meta.getAutocompletionSetting() != null) {
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting()
+								.createRuntime(entityView));
 					}
 				}
 			}

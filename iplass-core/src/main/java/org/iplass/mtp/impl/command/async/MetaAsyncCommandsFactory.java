@@ -27,16 +27,15 @@ import org.iplass.mtp.command.annotation.async.AsyncCommands;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
-
 public class MetaAsyncCommandsFactory implements
 		AnnotatableMetaDataFactory<AsyncCommands, Object> {
-	
+
 	private MetaAsyncCommandFactory metaAsyncCommandfactory;
-	
+
 	public MetaAsyncCommandsFactory() {
 		metaAsyncCommandfactory = new MetaAsyncCommandFactory();
 	}
-	
+
 	@Override
 	public Class<Object> getAnnotatedClass() {
 		return Object.class;
@@ -46,7 +45,7 @@ public class MetaAsyncCommandsFactory implements
 	public Class<AsyncCommands> getAnnotationClass() {
 		return AsyncCommands.class;
 	}
-	
+
 	@Override
 	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
@@ -56,6 +55,5 @@ public class MetaAsyncCommandsFactory implements
 		}
 		return map;
 	}
-
 
 }

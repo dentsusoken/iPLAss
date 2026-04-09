@@ -41,17 +41,17 @@ public class MetaCommandFactory {
 			this.cmdClass = cmdClass;
 		}
 	}
-	
+
 	public static class MetaCommandResult {
 		public List<MetaCommandInfo> metaCommandInfos;
 		public MetaCommand metaCommand;
-		
+
 		public MetaCommandResult(List<MetaCommandInfo> metaCommandInfos, MetaCommand metaCommand) {
 			this.metaCommandInfos = metaCommandInfos;
 			this.metaCommand = metaCommand;
 		}
 	}
-	
+
 	public MetaCommandResult toMetaCommand(CommandConfig[] commandDefs, Class<?> annotatedClass) {
 		List<MetaCommandInfo> metaCommandInfos = new ArrayList<MetaCommandInfo>();
 		MetaCommand meta = null;
@@ -72,18 +72,18 @@ public class MetaCommandFactory {
 		}
 		return new MetaCommandResult(metaCommandInfos, meta);
 	}
-	
+
 	public MetaCommandResult toMetaCommand(CompositeCommandConfig compositeCommandDef, Class<?> annotatedClass) {
 		if (compositeCommandDef.command().length == 0) {
 			return null;
 		}
-		
+
 		List<MetaCommandInfo> metaCommandInfos = new ArrayList<MetaCommandInfo>();
 		MetaCompositeCommand metaComposite = new MetaCompositeCommand();
 		metaComposite.setTransactionPropagation(compositeCommandDef.transactionPropagation());
 		metaComposite.setRollbackWhenException(compositeCommandDef.rollbackWhenException());
 		metaComposite.setThrowExceptionIfSetRollbackOnly(compositeCommandDef.throwExceptionIfSetRollbackOnly());
-		
+
 		MetaCommand[] cmds = new MetaCommand[compositeCommandDef.command().length];
 		for (int i = 0; i < cmds.length; i++) {
 			MetaCommandInfo info = toMetaCommand(compositeCommandDef.command()[i], annotatedClass);
@@ -96,7 +96,7 @@ public class MetaCommandFactory {
 		}
 		return new MetaCommandResult(metaCommandInfos, metaComposite);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public MetaCommandInfo toMetaCommand(CommandConfig commandDef, Class<?> anotatedClass) {
 		MetaSingleCommand metaCommand = new MetaSingleCommand();
@@ -112,7 +112,7 @@ public class MetaCommandFactory {
 		} else {
 			cmdClass = commandDef.commandClass();
 		}
-		
+
 		metaCommand.setTransactionPropagation(commandDef.transactionPropagation());
 		metaCommand.setRollbackWhenException(commandDef.rollbackWhenException());
 		metaCommand.setThrowExceptionIfSetRollbackOnly(commandDef.throwExceptionIfSetRollbackOnly());
@@ -121,7 +121,8 @@ public class MetaCommandFactory {
 		CommandClass ano = cmdClass.getAnnotation(CommandClass.class);
 		if (AnnotatableMetaDataFactory.DEFAULT.equals(ano.name())) {
 			//CommandClassにアノテーションでName指定がない場合はCommandClass名を.->/にしたもの
-			metaCommand.setMetaMetaCommandId(MetaCommandClassFactory.PATH_PREFIX + cmdClass.getName().replace(".", "/"));
+			metaCommand.setMetaMetaCommandId(MetaCommandClassFactory.PATH_PREFIX + cmdClass.getName()
+					.replace(".", "/"));
 		} else {
 			metaCommand.setMetaMetaCommandId(MetaCommandClassFactory.PATH_PREFIX + ano.name());
 		}
@@ -129,10 +130,8 @@ public class MetaCommandFactory {
 			//デフォルト出ない場合、設定
 			metaCommand.setCommandConfig(commandDef.value());
 		}
-		
+
 		return new MetaCommandInfo(metaCommand, cmdClass);
 	}
 
-	
 }
-

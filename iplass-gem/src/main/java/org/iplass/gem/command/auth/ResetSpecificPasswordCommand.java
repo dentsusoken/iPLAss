@@ -56,42 +56,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(name=ResetSpecificPasswordCommand.ACTION_VIEW_SPECIFIC_PASSWORD,
-			allowMethod=HttpMethodType.POST,
-			clientCacheType=ClientCacheType.CACHE,
-			needTrustedAuthenticate=true,
-			command={},
-			result=@Result(type=Type.JSP,
-							value=Constants.CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD,
-							templateName="gem/auth/SpecificPassword",
-							layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
-	),
-	@ActionMapping(name=ResetSpecificPasswordCommand.ACTION_RESET_SPECIFIC_PASSWORD,
-			allowMethod=HttpMethodType.POST,
-			clientCacheType=ClientCacheType.NO_CACHE,
-			needTrustedAuthenticate=true,
-			command=@CommandConfig(commandClass=ResetSpecificPasswordCommand.class),
-			result=@Result(type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD,
-					templateName="gem/auth/SpecificPassword",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			tokenCheck=@TokenCheck
-	)
+		@ActionMapping(
+				name = ResetSpecificPasswordCommand.ACTION_VIEW_SPECIFIC_PASSWORD,
+				allowMethod = HttpMethodType.POST,
+				clientCacheType = ClientCacheType.CACHE,
+				needTrustedAuthenticate = true,
+				command = {},
+				result = @Result(
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD,
+						templateName = "gem/auth/SpecificPassword",
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION)
+		),
+		@ActionMapping(
+				name = ResetSpecificPasswordCommand.ACTION_RESET_SPECIFIC_PASSWORD,
+				allowMethod = HttpMethodType.POST,
+				clientCacheType = ClientCacheType.NO_CACHE,
+				needTrustedAuthenticate = true,
+				command = @CommandConfig(commandClass = ResetSpecificPasswordCommand.class),
+				result = @Result(
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD,
+						templateName = "gem/auth/SpecificPassword",
+						layoutActionName = Constants.LAYOUT_POPOUT_ACTION),
+				tokenCheck = @TokenCheck
+		)
 })
 @CommandClass(name = "gem/auth/ResetSpecificPasswordCommand", description = "パスワード指定リセット")
 public class ResetSpecificPasswordCommand implements Command, AuthCommandConstants {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResetSpecificPasswordCommand.class);
-	
+
 	public static final String ACTION_VIEW_SPECIFIC_PASSWORD = "gem/auth/specificpassword";
 	public static final String ACTION_RESET_SPECIFIC_PASSWORD = "gem/auth/specificpassword/reset";
 
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	@Override
 	public String execute(RequestContext request) {
 
-		User current = AuthContext.getCurrentContext().getUser();
+		User current = AuthContext.getCurrentContext()
+				.getUser();
 		if (current == null || current.isAnonymous()) {
 			throw new SystemException("not logined");
 		}
@@ -102,11 +108,13 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 			throw new SystemException("oid is null");
 		}
 		// アカウントID存在チェック
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		Entity user = EntityPermission.doQueryAs(EntityPermission.Action.UPDATE, () ->
-				em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		Entity user = EntityPermission.doQueryAs(EntityPermission.Action.UPDATE,
+				() -> em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
 						.from(User.DEFINITION_NAME)
-						.where(new Equals(Entity.OID, oid))).getFirst());
+						.where(new Equals(Entity.OID, oid)))
+						.getFirst());
 
 		// アカウントID存在チェック
 		String id = null;
@@ -120,7 +128,8 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 			return Constants.CMD_EXEC_ERROR;
 		}
 
-		AuthenticationPolicyService aps = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+		AuthenticationPolicyService aps = ServiceRegistry.getRegistry()
+				.getService(AuthenticationPolicyService.class);
 		AuthenticationPolicyRuntime policy = aps.getOrDefault(user.getValue(User.ACCOUNT_POLICY));
 		if (!policy.isResetPasswordWithSpecificPassword()) {
 			// 指定パスワードでリセットすることができないため、エラー
@@ -139,7 +148,7 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 				request.setAttribute(RESULT_PASSWORD_EXPIRE_USER_ID, id);
 				request.setAttribute(RESULT_ERROR, new ApplicationException(resourceString("command.auth.UpdatePasswordCommand.notMatch")));
 				return Constants.CMD_EXEC_ERROR;
-			} 
+			}
 			password = newPass1;
 		}
 
@@ -159,7 +168,8 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		}
 
 		// 管理者以外にもpasswordリセットを許可するか確認
-		Tenant tenant = AuthContext.getCurrentContext().getTenant();
+		Tenant tenant = AuthContext.getCurrentContext()
+				.getTenant();
 		// パスワードリセット実施者が管理者権限であること
 		if (!ResetPasswordCommand.isUserAdminRole(tenant)) {
 			// 管理者権限がないため、エラー
@@ -168,8 +178,9 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		}
 
 		//UserのEntityProperty権限チェック
-		if (!AuthContext.getCurrentContext().checkPermission(
-				new EntityPropertyPermission(User.DEFINITION_NAME, User.PASSWORD, EntityPropertyPermission.Action.UPDATE))) {
+		if (!AuthContext.getCurrentContext()
+				.checkPermission(
+						new EntityPropertyPermission(User.DEFINITION_NAME, User.PASSWORD, EntityPropertyPermission.Action.UPDATE))) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
 			return Constants.CMD_EXEC_ERROR;
 		}
@@ -180,8 +191,8 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 			am.resetCredential(credential, user.getValue(User.ACCOUNT_POLICY));
 			return Constants.CMD_EXEC_SUCCESS;
 		} catch (CredentialUpdateException e) {
-			if(logger.isDebugEnabled()) {
-				logger.debug(e.getMessage(),e);
+			if (logger.isDebugEnabled()) {
+				logger.debug(e.getMessage(), e);
 			}
 			request.setAttribute(RESULT_ERROR, e);
 			return Constants.CMD_EXEC_ERROR;
@@ -195,7 +206,7 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		}
 		return false;
 	}
-	
+
 	private boolean checkSame(String pass1, String pass2) {
 		if (pass1 == null) {
 			return false;
@@ -205,7 +216,7 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		}
 		return pass1.equals(pass2);
 	}
-	
+
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}

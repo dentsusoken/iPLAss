@@ -35,7 +35,7 @@ import org.iplass.mtp.spi.Config;
  *
  */
 public class AddableMultiLobStore implements LobStore {
-	
+
 	private List<LobStore> lobStore;
 	private LobValidator lobValidator;
 
@@ -57,7 +57,8 @@ public class AddableMultiLobStore implements LobStore {
 
 	@Override
 	public LobData create(int tenantId, long lobDataId) {
-		return lobStore.get(0).create(tenantId, lobDataId);
+		return lobStore.get(0)
+				.create(tenantId, lobDataId);
 	}
 
 	@Override
@@ -65,7 +66,8 @@ public class AddableMultiLobStore implements LobStore {
 		LobData ld = null;
 		if (lobStore != null) {
 			for (int i = 0; i < lobStore.size(); i++) {
-				ld = lobStore.get(i).load(tenantId, lobDataId);
+				ld = lobStore.get(i)
+						.load(tenantId, lobDataId);
 				if (i == lobStore.size() - 1) {
 					//last one
 					return ld;
@@ -75,14 +77,14 @@ public class AddableMultiLobStore implements LobStore {
 				}
 			}
 		}
-		
+
 		return ld;
 	}
 
 	@Override
 	public void remove(int tenantId, long lobDataId) {
 		if (lobStore != null) {
-			for (LobStore ls: lobStore) {
+			for (LobStore ls : lobStore) {
 				ls.remove(tenantId, lobDataId);
 			}
 		}
@@ -96,5 +98,5 @@ public class AddableMultiLobStore implements LobStore {
 	public void setLobValidator(LobValidator lobValidator) {
 		this.lobValidator = lobValidator;
 	}
-	
+
 }

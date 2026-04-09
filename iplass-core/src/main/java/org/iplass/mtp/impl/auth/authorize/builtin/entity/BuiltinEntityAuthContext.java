@@ -66,14 +66,15 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		systemUseProperty.add(Entity.RECYCLE_BIN_ID);
 	}
 
-
 //	private String entityDefinitionName;
 	private EnumMap<EntityPermission.Action, EntityPermissionEntry[]> entityPermissionEntry;
 	private EnumMap<EntityPropertyPermission.Action, EntityPropertyPermissionEntry[]> entityPropertyPermissionEntry;
 
 	private TenantAuthorizeContext tenantAuthContext;
 
-	BuiltinEntityAuthContext(String entityDefinitionName, EnumMap<EntityPermission.Action, EntityPermissionEntry[]> entityPermissionEntry, EnumMap<EntityPropertyPermission.Action, EntityPropertyPermissionEntry[]> entityPropertyPermissionEntry, TenantAuthorizeContext tenantAuthContext) {
+	BuiltinEntityAuthContext(String entityDefinitionName, EnumMap<EntityPermission.Action, EntityPermissionEntry[]> entityPermissionEntry,
+			EnumMap<EntityPropertyPermission.Action, EntityPropertyPermissionEntry[]> entityPropertyPermissionEntry,
+			TenantAuthorizeContext tenantAuthContext) {
 		super(entityDefinitionName);
 //		this.entityDefinitionName = entityDefinitionName;
 		this.tenantAuthContext = tenantAuthContext;
@@ -108,7 +109,8 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 			entityPermissionEntry.put(EntityPermission.Action.DELETE, deleteEntityPermissionEntry);
 		}
 
-		entityPropertyPermissionEntry = new EnumMap<EntityPropertyPermission.Action, EntityPropertyPermissionEntry[]>(EntityPropertyPermission.Action.class);
+		entityPropertyPermissionEntry = new EnumMap<EntityPropertyPermission.Action, EntityPropertyPermissionEntry[]>(
+				EntityPropertyPermission.Action.class);
 		if (createEntityPropertyPermissionEntry != null && createEntityPropertyPermissionEntry.length != 0) {
 			entityPropertyPermissionEntry.put(EntityPropertyPermission.Action.CREATE, createEntityPropertyPermissionEntry);
 		}
@@ -119,7 +121,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 			entityPropertyPermissionEntry.put(EntityPropertyPermission.Action.UPDATE, updateEntityPropertyPermissionEntry);
 		}
 	}
-	
+
 	TenantAuthorizeContext getTenantAuthContext() {
 		return tenantAuthContext;
 	}
@@ -128,7 +130,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 //		return entityDefinitionName;
 //	}
 
-	private List<EntityPermissionEntry> listEntityTarget (EntityPermission.Action action, AuthContextHolder userAuthContext) {
+	private List<EntityPermissionEntry> listEntityTarget(EntityPermission.Action action, AuthContextHolder userAuthContext) {
 		EntityPermissionEntry[] toList = entityPermissionEntry.get(action);
 		if (toList == null) {
 			return null;
@@ -136,7 +138,8 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		List<EntityPermissionEntry> target = new LinkedList<EntityPermissionEntry>();
 		long currentPriority = 0;
 		for (int i = 0; i < toList.length; i++) {
-			if (userAuthContext.userInRole(toList[i].getRole(), tenantAuthContext.getTenantContext().getTenantId())) {
+			if (userAuthContext.userInRole(toList[i].getRole(), tenantAuthContext.getTenantContext()
+					.getTenantId())) {
 				RoleContext role = tenantAuthContext.getRoleContext(toList[i].getRole());
 				if (currentPriority < role.getPriority()) {
 					//reset priority
@@ -150,23 +153,24 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		}
 		return target;
 	}
-	
+
 	private List<EntityPermissionEntry> listEntityTarget(EntityPermission.Action action, String role) {
 		EntityPermissionEntry[] toList = entityPermissionEntry.get(action);
 		if (toList == null) {
 			return null;
 		}
 		List<EntityPermissionEntry> target = new LinkedList<EntityPermissionEntry>();
-		
+
 		for (int i = 0; i < toList.length; i++) {
-			if (toList[i].getRole().equals(role)) {
+			if (toList[i].getRole()
+					.equals(role)) {
 				target.add(toList[i]);
 			}
 		}
 		return target;
 	}
 
-	private List<EntityPropertyPermissionEntry> listEntityPropertyTarget (EntityPropertyPermission.Action action, AuthContextHolder userAuthContext) {
+	private List<EntityPropertyPermissionEntry> listEntityPropertyTarget(EntityPropertyPermission.Action action, AuthContextHolder userAuthContext) {
 		EntityPropertyPermissionEntry[] toList = entityPropertyPermissionEntry.get(action);
 		if (toList == null) {
 			return null;
@@ -174,7 +178,8 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		List<EntityPropertyPermissionEntry> target = new LinkedList<EntityPropertyPermissionEntry>();
 		long currentPriority = 0;
 		for (int i = 0; i < toList.length; i++) {
-			if (userAuthContext.userInRole(toList[i].getRole(), tenantAuthContext.getTenantContext().getTenantId())) {
+			if (userAuthContext.userInRole(toList[i].getRole(), tenantAuthContext.getTenantContext()
+					.getTenantId())) {
 				RoleContext role = tenantAuthContext.getRoleContext(toList[i].getRole());
 				if (currentPriority < role.getPriority()) {
 					//reset priority
@@ -198,7 +203,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 			return isPermit(epp.getPropertyName(), epp.getAction(), user);
 		}
 	}
-	
+
 	@Override
 	public boolean isResultCacheable(Permission permission) {
 		return true;
@@ -215,7 +220,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 
 		List<EntityPermissionEntry> checkTargetList = listEntityTarget(action, userAuthContext);
 		if (checkTargetList != null) {
-			for (EntityPermissionEntry c: checkTargetList) {
+			for (EntityPermissionEntry c : checkTargetList) {
 				if (c.isPermit()) {
 					ret = true;
 					break;
@@ -244,12 +249,12 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		} else {
 			List<EntityPropertyPermissionEntry> checkTarget = listEntityPropertyTarget(action, userAuthContext);
 			if (checkTarget != null) {
-				for (EntityPropertyPermissionEntry c: checkTarget) {
+				for (EntityPropertyPermissionEntry c : checkTarget) {
 					if (c.isPermit(propertyName)) {
 						//対象roleのEntityレベルの権限チェック
 						List<EntityPermissionEntry> checkEntityTarget = listEntityTarget(toEntityAction(action), c.getRole());
 						if (checkEntityTarget != null) {
-							for (EntityPermissionEntry e: checkEntityTarget) {
+							for (EntityPermissionEntry e : checkEntityTarget) {
 								if (e.isPermit()) {
 									ret = true;
 									break;
@@ -257,7 +262,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 							}
 						}
 					}
-					
+
 					if (ret == true) {
 						break;
 					}
@@ -267,7 +272,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 
 		return ret;
 	}
-	
+
 	private EntityPermission.Action toEntityAction(EntityPropertyPermission.Action action) {
 		switch (action) {
 		case CREATE:
@@ -299,7 +304,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		Or or = new Or();
 		boolean isPermit = false;
 		boolean hasNoCondition = false;
-		for (EntityPermissionEntry c: checkTarget) {
+		for (EntityPermissionEntry c : checkTarget) {
 			if (c.isPermit()) {
 				isPermit = true;
 			}
@@ -333,7 +338,8 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 	}
 
 	@Override
-	public Query modifyQuery(Query orignal, EntityPermission.Action action, EntityPropertyPermission.Action propAction, AuthContextHolder userAuthContext) {
+	public Query modifyQuery(Query orignal, EntityPermission.Action action, EntityPropertyPermission.Action propAction,
+			AuthContextHolder userAuthContext) {
 
 //		//admin（かつ、他テナントユーザーでない）は全権限保持
 //		UserBinding user = new UserBinding(userAuthContext.getUserContext(), tenantAuthContext);
@@ -356,12 +362,12 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		Query authedQuery = t.transform(orignal);
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("modifyQuery " + action + "(" + propAction + ") :time=" + (System.currentTimeMillis() - time) + "ms." + " orginal=" + orignal + " : authed=" + authedQuery);
+			logger.debug("modifyQuery " + action + "(" + propAction + ") :time=" + (System.currentTimeMillis() - time) + "ms." + " orginal=" + orignal
+					+ " : authed=" + authedQuery);
 		}
 
 		return authedQuery;
 	}
-
 
 	@Override
 	public boolean hasLimitCondition(EntityPermission permission, AuthContextHolder userAuthContext) {
@@ -378,7 +384,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 			throw new NoPermissionException("access denyed:" + getContextName());
 		}
 
-		for (EntityPermissionEntry c: checkTarget) {
+		for (EntityPermissionEntry c : checkTarget) {
 			if (c.isPermit() && !c.hasLimitCondition()) {
 				return false;
 			}

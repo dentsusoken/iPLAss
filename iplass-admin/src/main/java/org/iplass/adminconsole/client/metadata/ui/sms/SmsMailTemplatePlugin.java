@@ -102,23 +102,27 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), SmsMailTemplateDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_failedToDeleteSmsTemplate") + caught.getMessage());
-			}
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_deleteSmsTemplateComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), SmsMailTemplateDefinition.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_failedToDeleteSmsTemplate")
+								+ caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_failedToDeleteSmsTemplate") + result.getMessage());
-				}
-			}
-		});
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_completion"),
+									AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_deleteSmsTemplateComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_failedToDeleteSmsTemplate")
+									+ result.getMessage());
+						}
+					}
+				});
 
 	}
 
@@ -129,6 +133,6 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{ SmsMailTemplateEditPane.class };
+		return new Class[] { SmsMailTemplateEditPane.class };
 	}
 }

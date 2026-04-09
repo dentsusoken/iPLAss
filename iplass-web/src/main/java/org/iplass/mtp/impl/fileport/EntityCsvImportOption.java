@@ -96,7 +96,7 @@ public class EntityCsvImportOption implements Serializable {
 	public void withOption() {
 		setWithOption(true);
 	}
-	
+
 	/**
 	 * 既存データをすべて削除するかを取得
 	 * @return 既存データをすべて削除するか

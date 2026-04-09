@@ -20,33 +20,33 @@
 
 package org.iplass.mtp.impl.web.template.report;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 
-@XmlSeeAlso({MetaJavaClassPoiReportOutputLogic.class, MetaGroovyPoiReportOutputLogic.class})
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
+@XmlSeeAlso({ MetaJavaClassPoiReportOutputLogic.class, MetaGroovyPoiReportOutputLogic.class })
 public abstract class MetaPoiReportOutputLogic implements MetaData {
 
 	private static final long serialVersionUID = -2738794242654152258L;
-	
+
 	protected void fillTo(ReportOutputLogicDefinition def) {
 	}
 
 	public abstract MetaPoiReportOutputLogic copy();
-	
+
 	public abstract void applyConfig(ReportOutputLogicDefinition def);
-	
+
 	public abstract ReportOutputLogicDefinition currentConfig();
-	
+
 	public abstract PoiReportOutputLogicRuntime createRuntime(MetaReportType reportType);
-	
-	public abstract class PoiReportOutputLogicRuntime /*implements MetaDataRuntime*/ {
-		
+
+	public abstract class PoiReportOutputLogicRuntime /* implements MetaDataRuntime */ {
+
 		public abstract void outputReport(RequestContext context, Workbook book);
-		
+
 		public MetaPoiReportOutputLogic getMetaData() {
 			return MetaPoiReportOutputLogic.this;
 		}

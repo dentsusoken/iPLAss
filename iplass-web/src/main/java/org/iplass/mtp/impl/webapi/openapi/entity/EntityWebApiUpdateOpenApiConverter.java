@@ -76,41 +76,52 @@ public class EntityWebApiUpdateOpenApiConverter extends AbstractEntityWebApiOpen
 		var operation = new Operation().responses(new ApiResponses());
 
 		// parameters
-		var withValidation = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_WITH_VALIDATION).required(Boolean.FALSE)
+		var withValidation = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_WITH_VALIDATION)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var notifyListeners = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_NOTIFY_LISTENERS).required(Boolean.FALSE)
+		var notifyListeners = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_NOTIFY_LISTENERS)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var localized = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_LOCALIZED).required(Boolean.FALSE).schema(new BooleanSchema());
-		var forceUpdate = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_FORCE_UPDATE).required(Boolean.FALSE)
+		var localized = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_LOCALIZED)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var updateProperties = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_UPDATE_PROPERTIES).required(Boolean.FALSE)
+		var forceUpdate = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_FORCE_UPDATE)
+				.required(Boolean.FALSE)
+				.schema(new BooleanSchema());
+		var updateProperties = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_UPDATE_PROPERTIES)
+				.required(Boolean.FALSE)
 				.schema(new StringSchema());
-		var checkTimestamp = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_CHECK_TIMESTAMP).required(Boolean.FALSE)
+		var checkTimestamp = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_CHECK_TIMESTAMP)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
 		var purgeCompositionedEntity = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_PURGE_COMPOSITIONED_ENTITY)
 				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
-		var checkLockedByUser = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_CHECK_LOCKED_BY_USER).required(Boolean.FALSE)
+		var checkLockedByUser = new QueryParameter().name(UpdateEntityCommand.PARAM_PUT_CHECK_LOCKED_BY_USER)
+				.required(Boolean.FALSE)
 				.schema(new BooleanSchema());
 
 		operation
-		.addParametersItem(withValidation)
-		.addParametersItem(notifyListeners)
-		.addParametersItem(localized)
-		.addParametersItem(forceUpdate)
-		.addParametersItem(updateProperties)
-		.addParametersItem(checkTimestamp)
-		.addParametersItem(purgeCompositionedEntity)
-		.addParametersItem(checkLockedByUser);
+				.addParametersItem(withValidation)
+				.addParametersItem(notifyListeners)
+				.addParametersItem(localized)
+				.addParametersItem(forceUpdate)
+				.addParametersItem(updateProperties)
+				.addParametersItem(checkTimestamp)
+				.addParametersItem(purgeCompositionedEntity)
+				.addParametersItem(checkLockedByUser);
 
-		var service = ServiceRegistry.getRegistry().getService(OpenApiService.class);
-		var componentsSchemaRef = service.getReusableSchemaFactory().addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
+		var service = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class);
+		var componentsSchemaRef = service.getReusableSchemaFactory()
+				.addReusableSchema(entityDefinition, openApi, OpenApiJsonSchemaType.JSON);
 
 		// requestBody
 		var requestBodySchema = new ObjectSchema().$ref(componentsSchemaRef);
 		var requestBodyMediaType = new MediaType().schema(requestBodySchema);
-		var requestBodyContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON,requestBodyMediaType);
-		operation.requestBody(new RequestBody().required(Boolean.TRUE).content(requestBodyContent));
+		var requestBodyContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, requestBodyMediaType);
+		operation.requestBody(new RequestBody().required(Boolean.TRUE)
+				.content(requestBodyContent));
 
 		// responses
 		var okSchema = new ObjectSchema()
@@ -118,9 +129,11 @@ public class EntityWebApiUpdateOpenApiConverter extends AbstractEntityWebApiOpen
 				.addProperty(UpdateEntityCommand.RESULT_OID, new StringSchema());
 		var okMediaType = new MediaType().schema(okSchema);
 		var okContent = new Content().addMediaType(jakarta.ws.rs.core.MediaType.APPLICATION_JSON, okMediaType);
-		var okResponse = new ApiResponse().content(okContent).description(description);
+		var okResponse = new ApiResponse().content(okContent)
+				.description(description);
 
-		operation.getResponses().addApiResponse(STATUS_OK, okResponse);
+		operation.getResponses()
+				.addApiResponse(STATUS_OK, okResponse);
 
 		return operation;
 	}

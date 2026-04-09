@@ -39,19 +39,19 @@ public class IsNotNullSyntax implements Syntax<IsNotNull>, QueryConstants {
 		}
 		str.consumeChars(IS.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.equalsNextToken(NOT, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("not null expected.", this, str));
 		}
 		str.consumeChars(NOT.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		if (!str.equalsNextToken(NULL, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("null expected.", this, str));
 		}
 		str.consumeChars(NULL.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		return new IsNotNull();
 	}
 

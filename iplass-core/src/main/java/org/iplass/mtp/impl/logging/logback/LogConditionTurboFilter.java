@@ -32,22 +32,23 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 
 public class LogConditionTurboFilter extends TurboFilter {
-	
+
 	@Override
 	public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-		
+
 		//tenantが確定していない場合は、適用しない
 		String tenantIdString = MDC.get(ExecuteContext.MDC_TENANT);
 		if (tenantIdString == null) {
 			return FilterReply.NEUTRAL;
 		}
-		
+
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		LoggingContext lc = ec.getTenantContext().getResource(LoggingContext.class);
+		LoggingContext lc = ec.getTenantContext()
+				.getResource(LoggingContext.class);
 		if (lc == null) {
 			return FilterReply.NEUTRAL;
 		}
-		
+
 		LogConditionRuntime cond = lc.getMatched(ec);
 		if (cond == null) {
 			return FilterReply.NEUTRAL;
@@ -59,7 +60,7 @@ public class LogConditionTurboFilter extends TurboFilter {
 		if (!cond.isTargetLogger(logger.getName())) {
 			return FilterReply.NEUTRAL;
 		}
-		
+
 		if (level.isGreaterOrEqual(levelCond)) {
 			return FilterReply.ACCEPT;
 		} else {

@@ -93,7 +93,8 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -113,7 +114,7 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 
 		SectionStack menuLayoutSection = new SectionStack();
 		SectionStackSection sec1 = new SectionStackSection("Target Items");
-		sec1.setCanCollapse(false);	//CLOSE不可
+		sec1.setCanCollapse(false); //CLOSE不可
 		sec1.addItem(calendarGrid);
 		menuLayoutSection.addSection(sec1);
 		layout.addMember(menuLayoutSection);
@@ -137,7 +138,6 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		//表示データの取得
 		initializeData();
 	}
-
 
 	/**
 	 * データ初期化処理
@@ -170,7 +170,6 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 
 	}
 
-
 	/**
 	 * 対象のCalendarをレイアウト表示パネルに設定します。
 	 *
@@ -178,8 +177,10 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 	 */
 	private void setCalendar(DefinitionEntry entry) {
 		this.curDefinition = (EntityCalendar) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
@@ -249,24 +250,23 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 			}
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_saveConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_saveConfirmComment")
-					, new BooleanCallback() {
+					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
 
-						EntityCalendar calendar = new EntityCalendar();
+								EntityCalendar calendar = new EntityCalendar();
 
-						calendar = commonSection.getEditDefinition(calendar);
-						calendar.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-						calendar = attributePane.getEditCalendar(calendar);
-						calendar.setItems(calendarGrid.getItems());
+								calendar = commonSection.getEditDefinition(calendar);
+								calendar.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
+								calendar = attributePane.getEditCalendar(calendar);
+								calendar.setItems(calendarGrid.getItems());
 
-						updateCalendar(calendar, true);
-					}
-				}
-			});
+								updateCalendar(calendar, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -279,16 +279,15 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 

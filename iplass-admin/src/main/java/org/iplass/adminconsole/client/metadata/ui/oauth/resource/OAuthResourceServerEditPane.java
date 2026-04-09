@@ -102,7 +102,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -128,7 +129,6 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 			}
 		});
 		headerPane.addMember(btnDeleteOldCredential);
-
 
 		// 共通属性
 		commonSection = new MetaCommonAttributeSection<>(targetNode, OAuthResourceServerDefinition.class, false);
@@ -158,22 +158,24 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		// エラーのクリア
 		commonSection.clearErrors();
 
-		service.getDefinitionEntry(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
+		service.getDefinitionEntry(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), defName,
+				new AsyncCallback<DefinitionEntry>() {
 
-			@Override
-			public void onSuccess(DefinitionEntry result) {
-				// 画面に反映
-				setDefinition(result);
-			}
+					@Override
+					public void onSuccess(DefinitionEntry result) {
+						// 画面に反映
+						setDefinition(result);
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_failed"),
-						AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_failedGetScreenInfo") + caught.getMessage());
+					@Override
+					public void onFailure(Throwable caught) {
+						SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_failed"),
+								AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_failedGetScreenInfo")
+										+ caught.getMessage());
 
-				GWT.log(caught.toString(), caught);
-			}
-		});
+						GWT.log(caught.toString(), caught);
+					}
+				});
 
 		// ステータスチェック
 		StatusCheckUtil.statuCheck(OAuthResourceServerDefinition.class.getName(), defName, this);
@@ -186,8 +188,10 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (OAuthResourceServerDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
@@ -207,17 +211,17 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveConfirm"),
 				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveComment"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					final OAuthResourceServerDefinition definition = curDefinition;
-					commonSection.getEditDefinition(definition);
-					attributePane.getEditDefinition(definition);
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							final OAuthResourceServerDefinition definition = curDefinition;
+							commonSection.getEditDefinition(definition);
+							attributePane.getEditDefinition(definition);
 
-					updateDefinition(definition, true);
-				}
-			}
-		});
+							updateDefinition(definition, true);
+						}
+					}
+				});
 	}
 
 	/**
@@ -226,17 +230,16 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	private void cancelDefinition() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirmComment")
-				, new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					//再表示
-					initializeData();
-					commonSection.refreshSharedConfig();
-				}
-			}
-		});
+				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirmComment"), new BooleanCallback() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							//再表示
+							initializeData();
+							commonSection.refreshSharedConfig();
+						}
+					}
+				});
 	}
 
 	/**
@@ -291,55 +294,59 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 
 	private void generateCredential() {
 
-		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_generateCredentialConfirm"), new BooleanCallback() {
+		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_generateCredentialConfirm"),
+				new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					SmartGWTUtil.showProgress();
-					service.generateCredentialOAuthResourceServer(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<String>() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							SmartGWTUtil.showProgress();
+							service.generateCredentialOAuthResourceServer(TenantInfoHolder.getId(), commonSection.getName(),
+									new AdminAsyncCallback<String>() {
 
-						@Override
-						public void onSuccess(String result) {
-							SmartGWTUtil.hideProgress();
-							CredentialResultDialog dialog = new CredentialResultDialog(result);
-							dialog.show();
+										@Override
+										public void onSuccess(String result) {
+											SmartGWTUtil.hideProgress();
+											CredentialResultDialog dialog = new CredentialResultDialog(result);
+											dialog.show();
+										}
+
+										@Override
+										protected void beforeFailure(Throwable caught) {
+											SmartGWTUtil.hideProgress();
+										};
+									});
 						}
-
-						@Override
-						protected void beforeFailure(Throwable caught){
-							SmartGWTUtil.hideProgress();
-						};
-					});
-				}
-			}
-		});
+					}
+				});
 	}
 
 	private void deleteOldCredential() {
 
 		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm2"), new BooleanCallback() {
+				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm2"),
+				new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					SmartGWTUtil.showProgress();
-					service.deleteOldCredentialOAuthResourceServer(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<Void>() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							SmartGWTUtil.showProgress();
+							service.deleteOldCredentialOAuthResourceServer(TenantInfoHolder.getId(), commonSection.getName(),
+									new AdminAsyncCallback<Void>() {
 
-						@Override
-						public void onSuccess(Void result) {
-							SmartGWTUtil.hideProgress();
+										@Override
+										public void onSuccess(Void result) {
+											SmartGWTUtil.hideProgress();
+										}
+
+										@Override
+										protected void beforeFailure(Throwable caught) {
+											SmartGWTUtil.hideProgress();
+										};
+									});
 						}
-
-						@Override
-						protected void beforeFailure(Throwable caught){
-							SmartGWTUtil.hideProgress();
-						};
-					});
-				}
-			}
-		});
+					}
+				});
 	}
 
 }

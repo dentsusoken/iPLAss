@@ -46,14 +46,14 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class OpaqueOAuthAccessTokenStore implements OAuthAccessTokenStore, ServiceInitListener<OAuthAuthorizationService> {
-	
+
 	private String authTokenType = AccessTokenHandler.TYPE_OAUTH_DEFAULT;
 	private String seriesHashSalt = "iPLAss#OAT2018";
 	private String seriesHashAlgorithm = "SHA-256";
 	private TokenCreationStrategy tokenCreationStrategy;
-	
+
 	private AccessTokenHandler accessTokenHandler;
-	
+
 	public String getAuthTokenType() {
 		return authTokenType;
 	}
@@ -85,24 +85,29 @@ public class OpaqueOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 	public void setSeriesHashAlgorithm(String seriesHashAlgorithm) {
 		this.seriesHashAlgorithm = seriesHashAlgorithm;
 	}
-	
+
 	@Override
 	public AccessToken getAccessTokenByUserOid(OAuthClientRuntime client, String userOid) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		AuthToken authToken = accessTokenHandler.authTokenStore().getBySeries(tenantId, accessTokenHandler.getType(), toSeriesString(client, userOid));
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		AuthToken authToken = accessTokenHandler.authTokenStore()
+				.getBySeries(tenantId, accessTokenHandler.getType(), toSeriesString(client, userOid));
 		if (authToken == null) {
 			return null;
 		}
 		AccessTokenMement mement = (AccessTokenMement) authToken.getDetails();
-		return new OpaqueAccessToken(client, mement, authToken.getSeries(), null, authToken.getStartDate().getTime(), null);
+		return new OpaqueAccessToken(client, mement, authToken.getSeries(), null, authToken.getStartDate()
+				.getTime(), null);
 	}
 
 	@Override
 	public AccessToken getAccessToken(String tokenString) {
 		AuthToken authToken = new AuthToken(tokenString);
 		String tokenPart = authToken.getToken();
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		authToken = accessTokenHandler.authTokenStore().getBySeries(tenantId, authToken.getType(), authToken.getSeries());
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		authToken = accessTokenHandler.authTokenStore()
+				.getBySeries(tenantId, authToken.getType(), authToken.getSeries());
 		if (authToken == null) {
 			return null;
 		}
@@ -111,7 +116,8 @@ public class OpaqueOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 		}
 		AccessTokenMement mement = (AccessTokenMement) authToken.getDetails();
 		OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeById(mement.getClientMetaDataId());
-		return new OpaqueAccessToken(client, mement, authToken.getSeries(), null, authToken.getStartDate().getTime(), null);
+		return new OpaqueAccessToken(client, mement, authToken.getSeries(), null, authToken.getStartDate()
+				.getTime(), null);
 	}
 
 	@Override
@@ -121,30 +127,40 @@ public class OpaqueOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 			return null;
 		}
 		AccessTokenMement mement = (AccessTokenMement) authToken.getDetails();
-		OpaqueAccessToken accessToken = new OpaqueAccessToken(client, mement, authToken.getSeries(), authToken.encodeToken(), authToken.getStartDate().getTime(), null);
+		OpaqueAccessToken accessToken = new OpaqueAccessToken(client, mement, authToken.getSeries(), authToken.encodeToken(), authToken.getStartDate()
+				.getTime(), null);
 		return accessToken;
 	}
 
 	@Override
 	public AccessToken createAccessToken(OAuthClientRuntime client, String userOid, List<String> scopes) {
 		AccessTokenInfo ati = new AccessTokenInfo();
-		ati.setClientName(client.getMetaData().getName());
+		ati.setClientName(client.getMetaData()
+				.getName());
 		ati.setGrantedScopes(scopes);
 		ati.setType(accessTokenHandler.getType());
 		AuthToken authToken = tokenCreationStrategy.create(client, accessTokenHandler, userOid, ati);
 		AccessTokenMement mement = (AccessTokenMement) authToken.getDetails();
 		OpaqueRefreshToken refreshToken = null;
 		if (mement.getRefreshToken() != null) {
-			refreshToken = new OpaqueRefreshToken(client, (RefreshTokenMement) mement.getRefreshToken().getDetails(), mement.getRefreshToken().getSeries(), mement.getRefreshToken().encodeToken());
+			refreshToken = new OpaqueRefreshToken(client, (RefreshTokenMement) mement.getRefreshToken()
+					.getDetails(), mement.getRefreshToken()
+							.getSeries(),
+					mement.getRefreshToken()
+							.encodeToken());
 		}
-		
-		OpaqueAccessToken accessToken = new OpaqueAccessToken(client, (AccessTokenMement) authToken.getDetails(), authToken.getSeries(), authToken.encodeToken(), authToken.getStartDate().getTime(), refreshToken);
+
+		OpaqueAccessToken accessToken = new OpaqueAccessToken(client, (AccessTokenMement) authToken.getDetails(), authToken.getSeries(),
+				authToken.encodeToken(), authToken.getStartDate()
+						.getTime(),
+				refreshToken);
 		return accessToken;
 	}
 
 	@Override
 	public void inited(OAuthAuthorizationService service, Config config) {
-		AuthTokenService ats = ServiceRegistry.getRegistry().getService(AuthTokenService.class);
+		AuthTokenService ats = ServiceRegistry.getRegistry()
+				.getService(AuthTokenService.class);
 		accessTokenHandler = (AccessTokenHandler) ats.getHandler(authTokenType);
 		try {
 			MessageDigest.getInstance(seriesHashAlgorithm);
@@ -161,9 +177,15 @@ public class OpaqueOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 	String toSeriesString(OAuthClientRuntime client, String ownerId) {
 		try {
 			MessageDigest md = MessageDigest.getInstance(seriesHashAlgorithm);
-			String msg = ownerId + "-" + client.getMetaData().getId() + "-" + ExecuteContext.getCurrentContext().getClientTenantId() + "-" + seriesHashSalt;
+			String msg = ownerId + "-" + client.getMetaData()
+					.getId() + "-"
+					+ ExecuteContext.getCurrentContext()
+							.getClientTenantId()
+					+ "-" + seriesHashSalt;
 			byte[] bytes = md.digest(msg.getBytes("UTF-8"));
-			return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+			return Base64.getUrlEncoder()
+					.withoutPadding()
+					.encodeToString(bytes);
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -173,49 +195,61 @@ public class OpaqueOAuthAccessTokenStore implements OAuthAccessTokenStore, Servi
 	public RefreshToken getRefreshToken(String tokenString) {
 		AuthToken authToken = new AuthToken(tokenString);
 		String tokenPart = authToken.getToken();
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		authToken = accessTokenHandler.refreshTokenHandler().authTokenStore().getBySeries(tenantId, authToken.getType(), authToken.getSeries());
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		authToken = accessTokenHandler.refreshTokenHandler()
+				.authTokenStore()
+				.getBySeries(tenantId, authToken.getType(), authToken.getSeries());
 		if (authToken == null) {
 			return null;
 		}
-		if (!accessTokenHandler.refreshTokenHandler().checkTokenValid(tokenPart, authToken)) {
+		if (!accessTokenHandler.refreshTokenHandler()
+				.checkTokenValid(tokenPart, authToken)) {
 			return null;
 		}
 		RefreshTokenMement mement = (RefreshTokenMement) authToken.getDetails();
 		OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeById(mement.getClientMetaDataId());
-		
+
 		return new OpaqueRefreshToken(client, mement, authToken.getSeries(), null);
 	}
 
 	@Override
 	public void revokeToken(OAuthClientRuntime client, String tokenString, String tokenTypeHint) {
 		//tokenTypeHintは利用しない
-		
+
 		AuthToken authToken = new AuthToken(tokenString);
 		String type = authToken.getType();
 		if (type.equals(accessTokenHandler.getType())) {
 			AccessToken at = getAccessToken(tokenString);
-			if (!at.getClientId().equals(client.getMetaData().getName())) {
+			if (!at.getClientId()
+					.equals(client.getMetaData()
+							.getName())) {
 				return;
 			}
 		} else if (type.equals(accessTokenHandler.getRefreshTokenType())) {
 			RefreshToken rt = getRefreshToken(tokenString);
-			if (!rt.getClientId().equals(client.getMetaData().getName())) {
+			if (!rt.getClientId()
+					.equals(client.getMetaData()
+							.getName())) {
 				return;
 			}
 		} else {
 			//illegal type...
 			return;
 		}
-		
+
 		//accessTokenとrefreshTokenは一蓮托生
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		accessTokenHandler.authTokenStore().deleteBySeries(tenantId, authToken.getType(), authToken.getSeries());
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		accessTokenHandler.authTokenStore()
+				.deleteBySeries(tenantId, authToken.getType(), authToken.getSeries());
 	}
 
 	@Override
 	public void revokeTokenByUserOid(String userOid) {
-		accessTokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), accessTokenHandler.getType(), userOid);
+		accessTokenHandler.authTokenStore()
+				.delete(ExecuteContext.getCurrentContext()
+						.getClientTenantId(), accessTokenHandler.getType(), userOid);
 	}
 
 }

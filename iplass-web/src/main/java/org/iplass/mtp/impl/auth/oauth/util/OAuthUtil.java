@@ -30,15 +30,18 @@ import java.util.Base64;
 import org.iplass.mtp.SystemException;
 
 public class OAuthUtil {
-	
+
 	public static String encodeRfc3986(String str) {
 		try {
-			return URLEncoder.encode(str, "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+			return URLEncoder.encode(str, "UTF-8")
+					.replace("+", "%20")
+					.replace("*", "%2A")
+					.replace("%7E", "~");
 		} catch (UnsupportedEncodingException e) {
 			throw new SystemException(e);
 		}
 	}
-	
+
 	public static String calcCodeChallenge(String codeChallengeMethod, String codeVerifier) {
 		if (codeVerifier == null) {
 			return null;
@@ -46,28 +49,32 @@ public class OAuthUtil {
 		if (codeChallengeMethod == null) {
 			//code_verifier == code_challenge.
 			return codeVerifier;
-		} else switch (codeChallengeMethod) {
-		case OAuthConstants.CODE_CHALLENGE_METHOD_PLAIN:
-			//code_verifier == code_challenge.
-			return codeVerifier;
-		case OAuthConstants.CODE_CHALLENGE_METHOD_S256:
-			//BASE64URL-ENCODE(SHA256(ASCII(code_verifier))) == code_challenge
-			try {
-				return Base64.getUrlEncoder().withoutPadding().encodeToString(
-						MessageDigest.getInstance("SHA-256").digest(codeVerifier.getBytes("UTF-8")));
-			} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-				throw new SystemException(e);
+		} else
+			switch (codeChallengeMethod) {
+			case OAuthConstants.CODE_CHALLENGE_METHOD_PLAIN:
+				//code_verifier == code_challenge.
+				return codeVerifier;
+			case OAuthConstants.CODE_CHALLENGE_METHOD_S256:
+				//BASE64URL-ENCODE(SHA256(ASCII(code_verifier))) == code_challenge
+				try {
+					return Base64.getUrlEncoder()
+							.withoutPadding()
+							.encodeToString(
+									MessageDigest.getInstance("SHA-256")
+											.digest(codeVerifier.getBytes("UTF-8")));
+				} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+					throw new SystemException(e);
+				}
+			default:
+				return null;
 			}
-		default:
-			return null;
-		}
-		
+
 	}
-	
+
 	public static String atHash(String accessToken, String jwtSignAlg) {
 		return hashValue(accessToken, jwtSignAlg);
 	}
-	
+
 	public static String cHash(String code, String jwtSignAlg) {
 		return hashValue(code, jwtSignAlg);
 	}
@@ -76,12 +83,14 @@ public class OAuthUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance(hashAlg(jwtSignAlg));
 			byte[] b = md.digest(target.getBytes("UTF-8"));
-			return Base64.getUrlEncoder().withoutPadding().encodeToString(Arrays.copyOf(b, (b.length / 2)));
+			return Base64.getUrlEncoder()
+					.withoutPadding()
+					.encodeToString(Arrays.copyOf(b, (b.length / 2)));
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			throw new SystemException(e);
 		}
 	}
-	
+
 	private static String hashAlg(String jwtSignAlg) {
 		switch (jwtSignAlg) {
 		case "HS256":

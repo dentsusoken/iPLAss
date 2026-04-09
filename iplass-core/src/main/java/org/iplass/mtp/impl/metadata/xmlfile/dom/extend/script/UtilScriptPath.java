@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute;
 import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExtention;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/script", 
+		path = "/metaDataEntry/metaData/script",
 		fileExtension = FileExtention.GROOVY,
 		useGroovyDir = true)
 public class UtilScriptPath extends AbstractExternalRefPath {

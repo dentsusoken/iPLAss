@@ -22,11 +22,10 @@ package org.iplass.mtp.auth.oauth.definition;
 import java.io.Serializable;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * スコープの定義です。
@@ -35,45 +34,54 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlSeeAlso({
-	OIDCClaimScopeDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+		OIDCClaimScopeDefinition.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public class ScopeDefinition implements Serializable {
 	private static final long serialVersionUID = 5164831280206763413L;
 
 	private String name;
 	private String displayName;
 	private String description;
-	
+
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 	private List<LocalizedStringDefinition> localizedDescriptionList;
 
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
 		return localizedDisplayNameList;
 	}
+
 	public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
 		this.localizedDisplayNameList = localizedDisplayNameList;
 	}
+
 	public List<LocalizedStringDefinition> getLocalizedDescriptionList() {
 		return localizedDescriptionList;
 	}
+
 	public void setLocalizedDescriptionList(List<LocalizedStringDefinition> localizedDescriptionList) {
 		this.localizedDescriptionList = localizedDescriptionList;
 	}

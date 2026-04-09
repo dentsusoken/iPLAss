@@ -72,7 +72,8 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 	 * @return カテゴリ名
 	 */
 	public static String getTenantCategoryName(String strCategory) {
-		return getRS(TenantCategory.valueOf(strCategory).getDisplayName());
+		return getRS(TenantCategory.valueOf(strCategory)
+				.getDisplayName());
 	}
 
 	/**
@@ -176,9 +177,11 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 		} else if ("url".equals(name)) {
 			tenant.setUrl(record.getAttributeAsString(valueKey));
 		} else if ("from".equals(name)) {
-			tenant.setFrom(new java.sql.Date(record.getAttributeAsDate(valueKey).getTime()));
+			tenant.setFrom(new java.sql.Date(record.getAttributeAsDate(valueKey)
+					.getTime()));
 		} else if ("to".equals(name)) {
-			tenant.setTo(new java.sql.Date(record.getAttributeAsDate(valueKey).getTime()));
+			tenant.setTo(new java.sql.Date(record.getAttributeAsDate(valueKey)
+					.getTime()));
 		} else {
 			applied = false;
 		}
@@ -413,7 +416,9 @@ public abstract class BaseTenantDS extends AbstractAdminDataSource {
 			Object dispValue = null;
 			if (colType == TenantColType.BOOLEAN) {
 				Map<String, String> selectItem = record.getAttributeAsMap("selectItem");
-				dispValue = getSelectDispValue(selectItem, (value == null ? "" : value.toString().toLowerCase()));
+				dispValue = getSelectDispValue(selectItem, (value == null ? ""
+						: value.toString()
+								.toLowerCase()));
 			} else if (colType == TenantColType.SELECTCOMBO) {
 				Map<String, String> selectItem = record.getAttributeAsMap("selectItem");
 				dispValue = getSelectDispValue(selectItem, (value == null ? "" : value.toString()));

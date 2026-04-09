@@ -127,16 +127,18 @@ public class QueryCsvWriter implements AutoCloseable {
 	private void writeHeader() {
 		init();
 
-		List<ValueExpression> cols = query.getSelect().getSelectValues();
+		List<ValueExpression> cols = query.getSelect()
+				.getSelectValues();
 
-		IntStream.range(0, cols.size()).forEach(i -> {
-			ValueExpression col = cols.get(i);
-			writeText(col.toString());
+		IntStream.range(0, cols.size())
+				.forEach(i -> {
+					ValueExpression col = cols.get(i);
+					writeText(col.toString());
 
-			if (i < cols.size() - 1) {
-				writeComma();
-			}
-		});
+					if (i < cols.size() - 1) {
+						writeComma();
+					}
+				});
 
 		newLine();
 	}
@@ -144,33 +146,34 @@ public class QueryCsvWriter implements AutoCloseable {
 	private void writeValues(final Object[] values) {
 		init();
 
-		IntStream.range(0, values.length).forEach(i -> {
-			Object value = values[i];
-			if (value != null && value.getClass().isArray()) {
-				Object[] array = (Object[]) value;
-				List<String> valueList = new ArrayList<>();
-				for (int j = 0; j < array.length; j++) {
-					if (array[j] != null) {
-						if (option.isQuoteAll()) {
-							valueList.add(DOUBLE_QUOT + stringValue(array[j]) + DOUBLE_QUOT);
-						} else {
-							valueList.add(stringValue(array[j]));
-						}
+		IntStream.range(0, values.length)
+				.forEach(i -> {
+					Object value = values[i];
+					if (value != null && value.getClass()
+							.isArray()) {
+						Object[] array = (Object[]) value;
+						List<String> valueList = new ArrayList<>();
+						for (int j = 0; j < array.length; j++) {
+							if (array[j] != null) {
+								if (option.isQuoteAll()) {
+									valueList.add(DOUBLE_QUOT + stringValue(array[j]) + DOUBLE_QUOT);
+								} else {
+									valueList.add(stringValue(array[j]));
+								}
+							} else {
+								valueList.add("");
+							}
+						} ;
+
+						writeText(toJsonString(valueList));
 					} else {
-						valueList.add("");
+						writeText(stringValue(value));
 					}
-				};
 
-				writeText(toJsonString(valueList));
-			} else {
-				writeText(stringValue(value));
-			}
-
-
-			if (i < values.length - 1) {
-				writeComma();
-			}
-		});
+					if (i < values.length - 1) {
+						writeComma();
+					}
+				});
 
 		newLine();
 	}
@@ -194,7 +197,8 @@ public class QueryCsvWriter implements AutoCloseable {
 
 	private int search() {
 
-		final Query optQuery = option.getBeforeSearch().apply(query);
+		final Query optQuery = option.getBeforeSearch()
+				.apply(query);
 
 		if (option.getLimit() > 0) {
 			optQuery.setLimit(new Limit(option.getLimit()));
@@ -206,7 +210,8 @@ public class QueryCsvWriter implements AutoCloseable {
 			@Override
 			public boolean test(Object[] values) {
 
-				option.getAfterSearch().accept(optQuery.copy(), values);
+				option.getAfterSearch()
+						.accept(optQuery.copy(), values);
 
 				writeValues(values);
 
@@ -247,11 +252,14 @@ public class QueryCsvWriter implements AutoCloseable {
 			valueMap.put("type", br.getType());
 			return toJsonString(valueMap);
 		} else if (value instanceof java.sql.Date) {
-			return DateUtil.getSimpleDateFormat(getDateFormat(), false).format((java.sql.Date) value);
+			return DateUtil.getSimpleDateFormat(getDateFormat(), false)
+					.format((java.sql.Date) value);
 		} else if (value instanceof Timestamp) {
-			return DateUtil.getSimpleDateFormat(getDateTimeFormat(), false).format((Timestamp) value);
+			return DateUtil.getSimpleDateFormat(getDateTimeFormat(), false)
+					.format((Timestamp) value);
 		} else if (value instanceof Time) {
-			return DateUtil.getSimpleDateFormat(getTimeFormat(), false).format((Time) value);
+			return DateUtil.getSimpleDateFormat(getTimeFormat(), false)
+					.format((Time) value);
 		} else {
 			return value.toString();
 		}
@@ -263,7 +271,8 @@ public class QueryCsvWriter implements AutoCloseable {
 			mapper = new ObjectMapper();
 			// for backward compatibility
 			mapper.configOverride(java.sql.Date.class)
-					.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
+					.setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd")
+							.withTimeZone(TimeZone.getDefault()));
 		}
 		try (StringWriter writer = new StringWriter()) {
 			mapper.writeValue(writer, value);
@@ -321,11 +330,13 @@ public class QueryCsvWriter implements AutoCloseable {
 
 		if (dateFormat != null) {
 			return dateFormat;
-		};
+		} ;
 		if (option.getDateFormat() != null) {
 			dateFormat = option.getDateFormat();
 		} else {
-			dateFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDateFormat();
+			dateFormat = ExecuteContext.getCurrentContext()
+					.getLocaleFormat()
+					.getOutputDateFormat();
 		}
 		return dateFormat;
 
@@ -335,11 +346,13 @@ public class QueryCsvWriter implements AutoCloseable {
 
 		if (dateTimeFormat != null) {
 			return dateTimeFormat;
-		};
+		} ;
 		if (option.getDatetimeSecFormat() != null) {
 			dateTimeFormat = option.getDatetimeSecFormat();
 		} else {
-			dateTimeFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputDatetimeSecFormat();
+			dateTimeFormat = ExecuteContext.getCurrentContext()
+					.getLocaleFormat()
+					.getOutputDatetimeSecFormat();
 		}
 		return dateTimeFormat;
 
@@ -349,11 +362,13 @@ public class QueryCsvWriter implements AutoCloseable {
 
 		if (timeFormat != null) {
 			return timeFormat;
-		};
+		} ;
 		if (option.getTimeSecFormat() != null) {
 			timeFormat = option.getTimeSecFormat();
 		} else {
-			timeFormat = ExecuteContext.getCurrentContext().getLocaleFormat().getOutputTimeSecFormat();
+			timeFormat = ExecuteContext.getCurrentContext()
+					.getLocaleFormat()
+					.getOutputTimeSecFormat();
 		}
 		return timeFormat;
 

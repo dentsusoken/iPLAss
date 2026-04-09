@@ -26,23 +26,24 @@ import org.iplass.mtp.webhook.WebhookResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
-	private static Logger logger =  LoggerFactory.getLogger(DefaultWebhookResponseHandler.class);
+public class DefaultWebhookResponseHandler implements WebhookResponseHandler {
+	private static Logger logger = LoggerFactory.getLogger(DefaultWebhookResponseHandler.class);
+
 	@Override
 	public void handleResponse(WebhookResponse response) {
 		if (200 <= response.getStatusCode() && response.getStatusCode() < 300) {
 			writeLog(response);
 		} else {
-			throw new WebhookException("UnHandled Response Status Code: "+response.getStatusCode()+"("+response.getReasonPhrase()+")");
+			throw new WebhookException("UnHandled Response Status Code: " + response.getStatusCode() + "(" + response.getReasonPhrase() + ")");
 		}
 	}
 
 	private void writeLog(WebhookResponse response) {
 		if (logger.isDebugEnabled()) {
-	        StringBuilder msg = new StringBuilder();
-	        makeStatusString(response, msg);
-	        makeHeaderString(response, msg);
-	        makeEntityString(response, msg);
+			StringBuilder msg = new StringBuilder();
+			makeStatusString(response, msg);
+			makeHeaderString(response, msg);
+			makeEntityString(response, msg);
 
 			logger.debug(msg.toString());
 		}
@@ -58,27 +59,28 @@ public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
 
 	private void makeHeaderString(WebhookResponse response, StringBuilder msg) {
 		msg.append("Headers: ");
-		if (response.getHeaders()==null) {
+		if (response.getHeaders() == null) {
 			msg.append("null;");
 		} else {
-			for (WebhookHeader hd:response.getHeaders()) {
+			for (WebhookHeader hd : response.getHeaders()) {
 				msg.append(hd.getKey());
 				msg.append(":");
 				msg.append(hd.getValue());
 				msg.append("|");
 			}
-			msg.substring(0, msg.length()-1);
+			msg.substring(0, msg.length() - 1);
 			msg.append(";");
 		}
 	}
+
 	private void makeEntityString(WebhookResponse whr, StringBuilder msg) {
-		if ( whr.getResponseBody() == null) {
+		if (whr.getResponseBody() == null) {
 			msg.append("Entity(null);");
 		} else {
 			msg.append("Entity(");
-			msg.append(whr.getContentType()==null?"nullTypeName":whr.getContentType());
+			msg.append(whr.getContentType() == null ? "nullTypeName" : whr.getContentType());
 			msg.append(":");
-			msg.append(whr.getContentEncoding()==null?"nullEncodeName":whr.getContentEncoding());
+			msg.append(whr.getContentEncoding() == null ? "nullEncodeName" : whr.getContentEncoding());
 			msg.append("):");
 			msg.append(whr.getResponseBody());
 		}

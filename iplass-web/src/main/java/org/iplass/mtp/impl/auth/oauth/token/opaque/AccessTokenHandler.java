@@ -55,10 +55,10 @@ import org.iplass.mtp.spi.Config;
  *
  */
 public class AccessTokenHandler extends AuthTokenHandler {
-	
+
 	public static final String TYPE_OAUTH_DEFAULT = "OAT";
 	public static final String TYPE_OAUTH_REFRESH_DEFAULT = "ORT";
-	
+
 	private class AccessTokenAuthTokenStore implements AuthTokenStore {
 
 		@Override
@@ -74,16 +74,23 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		@Override
 		public void create(AuthToken token) {
 			AccessTokenHandler.super.authTokenStore().create(token);
-			
+
 			//create refresh token
 			AccessTokenMement mement = (AccessTokenMement) token.getDetails();
 			OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeById(mement.getClientMetaDataId());
 			OAuthAuthorizationRuntime authorizationServer = client.getAuthorizationServer();
-			if (authorizationServer.getClientPolicy(client.getMetaData().getClientType()).isRequireRefreshToken(mement.getGrantedScopes())) {
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-				refreshTokenHandler.authTokenStore().deleteBySeries(tenantId, refreshTokenHandler.getType(), token.getSeries());
-				AuthToken refreshToken = refreshTokenHandler.newAuthToken(token.getOwnerId(), token.getPolicyName(), new RefreshTokenInfo(client.getMetaData().getName()));
-				refreshTokenHandler.authTokenStore().create(refreshToken);
+			if (authorizationServer.getClientPolicy(client.getMetaData()
+					.getClientType())
+					.isRequireRefreshToken(mement.getGrantedScopes())) {
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
+				refreshTokenHandler.authTokenStore()
+						.deleteBySeries(tenantId, refreshTokenHandler.getType(), token.getSeries());
+				AuthToken refreshToken = refreshTokenHandler.newAuthToken(token.getOwnerId(), token.getPolicyName(),
+						new RefreshTokenInfo(client.getMetaData()
+								.getName()));
+				refreshTokenHandler.authTokenStore()
+						.create(refreshToken);
 				mement.setRefreshToken(refreshToken);
 			}
 		}
@@ -91,20 +98,29 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		@Override
 		public void update(AuthToken newToken, AuthToken currentToken) {
 			AccessTokenHandler.super.authTokenStore().update(newToken, currentToken);
-			
+
 			//create refresh token if none
 			AccessTokenMement newMement = (AccessTokenMement) newToken.getDetails();
 			AccessTokenMement currentMement = (AccessTokenMement) currentToken.getDetails();
-			if (newMement.getGrantedScopes() != null && newMement.getGrantedScopes().contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
+			if (newMement.getGrantedScopes() != null && newMement.getGrantedScopes()
+					.contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
 				if (currentMement.getGrantedScopes() == null
-						|| !currentMement.getGrantedScopes().contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
+						|| !currentMement.getGrantedScopes()
+								.contains(OAuthConstants.SCOPE_OFFLINE_ACCESS)) {
 					OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeById(newMement.getClientMetaDataId());
 					OAuthAuthorizationRuntime authorizationServer = client.getAuthorizationServer();
-					if (authorizationServer.getClientPolicy(client.getMetaData().getClientType()).isRequireRefreshToken(newMement.getGrantedScopes())) {
-						int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-						refreshTokenHandler.authTokenStore().deleteBySeries(tenantId, refreshTokenHandler.getType(), newToken.getSeries());
-						AuthToken refreshToken = refreshTokenHandler.newAuthToken(newToken.getOwnerId(), newToken.getPolicyName(), new RefreshTokenInfo(client.getMetaData().getName()));
-						refreshTokenHandler.authTokenStore().create(refreshToken);
+					if (authorizationServer.getClientPolicy(client.getMetaData()
+							.getClientType())
+							.isRequireRefreshToken(newMement.getGrantedScopes())) {
+						int tenantId = ExecuteContext.getCurrentContext()
+								.getClientTenantId();
+						refreshTokenHandler.authTokenStore()
+								.deleteBySeries(tenantId, refreshTokenHandler.getType(), newToken.getSeries());
+						AuthToken refreshToken = refreshTokenHandler.newAuthToken(newToken.getOwnerId(), newToken.getPolicyName(),
+								new RefreshTokenInfo(client.getMetaData()
+										.getName()));
+						refreshTokenHandler.authTokenStore()
+								.create(refreshToken);
 						newMement.setRefreshToken(refreshToken);
 					}
 				}
@@ -114,34 +130,37 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		@Override
 		public void delete(int tenantId, String type, String ownerId) {
 			AccessTokenHandler.super.authTokenStore().delete(tenantId, type, ownerId);
-			refreshTokenHandler.authTokenStore().delete(tenantId, refreshTokenHandler.getType(), ownerId);
+			refreshTokenHandler.authTokenStore()
+					.delete(tenantId, refreshTokenHandler.getType(), ownerId);
 		}
 
 		@Override
 		public void deleteBySeries(int tenantId, String type, String series) {
 			AccessTokenHandler.super.authTokenStore().deleteBySeries(tenantId, type, series);
-			refreshTokenHandler.authTokenStore().deleteBySeries(tenantId, refreshTokenHandler.getType(), series);
+			refreshTokenHandler.authTokenStore()
+					.deleteBySeries(tenantId, refreshTokenHandler.getType(), series);
 		}
 
 		@Override
 		public void deleteByDate(int tenantId, String type, Timestamp ts) {
 			AccessTokenHandler.super.authTokenStore().deleteByDate(tenantId, type, ts);
-			refreshTokenHandler.authTokenStore().deleteByDate(tenantId, refreshTokenHandler.getType(), ts);
+			refreshTokenHandler.authTokenStore()
+					.deleteByDate(tenantId, refreshTokenHandler.getType(), ts);
 		}
-		
+
 	}
-	
+
 	private String refreshTokenStore;
 	private String refreshTokenType;
 	private String refreshTokenSecureRandomGeneratorName;
-	
+
 	private AccessTokenAuthTokenStore atatStore = new AccessTokenAuthTokenStore();
 	private RefreshTokenHandler refreshTokenHandler;
-	
+
 	public RefreshTokenHandler refreshTokenHandler() {
 		return refreshTokenHandler;
 	}
-	
+
 	public String getRefreshTokenStore() {
 		return refreshTokenStore;
 	}
@@ -172,7 +191,7 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		if (getType() == null) {
 			setType(TYPE_OAUTH_DEFAULT);
 		}
-		
+
 		refreshTokenHandler = new RefreshTokenHandler();
 		if (refreshTokenStore != null) {
 			refreshTokenHandler.setStore(refreshTokenStore);
@@ -188,11 +207,11 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		refreshTokenHandler.setHashSettings(getHashSettings());
 		refreshTokenHandler.inited(service, config);
 	}
-	
+
 	public AuthTokenStore authTokenStore() {
 		return atatStore;
 	}
-	
+
 	@Override
 	public AuthTokenInfo toAuthTokenInfo(AuthToken authToken) {
 		AccessTokenInfo info = new AccessTokenInfo();
@@ -200,10 +219,10 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		info.setKey(authToken.getSeries());
 		info.setStartDate(authToken.getStartDate());
 		((AccessTokenMement) authToken.getDetails()).fill(info);
-		
+
 		return info;
 	}
-	
+
 	@Override
 	public Credential toCredential(AuthToken newToken) {
 		AccessTokenCredential cre = new AccessTokenCredential(newToken.encodeToken());
@@ -216,19 +235,22 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		AccessTokenInfo info = (AccessTokenInfo) tokenInfo;
 		OAuthClientRuntime client = OAuthServiceHolder.client.getRuntimeByName(info.getClientName());
 		OAuthAuthorizationRuntime server = client.getAuthorizationServer();
-		ClientPolicyRuntime cp = server.getClientPolicy(client.getMetaData().getClientType());
-		long expires = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(cp.getMetaData().getAccessTokenLifetimeSeconds());
+		ClientPolicyRuntime cp = server.getClientPolicy(client.getMetaData()
+				.getClientType());
+		long expires = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(cp.getMetaData()
+				.getAccessTokenLifetimeSeconds());
 		AccessTokenAccountHandle dummy = new AccessTokenAccountHandle(userUniqueId, null, null);
 		User user = OAuthServiceHolder.userEntityResolver.searchUser(dummy);
 		if (user == null) {
 			throw new OAuthRuntimeException("can not search User:" + userUniqueId);
 		}
-		
+
 		//キャッシュするのでこのタイミングでsubjectIdを付与（もしまだ付与されていなかったら）
 		if (server.getSubjectIdentifierType() != null) {
-			user = server.getSubjectIdentifierType().handleOnLoad(user);
+			user = server.getSubjectIdentifierType()
+					.handleOnLoad(user);
 		}
-		
+
 		mement.save(info, expires, userUniqueId, user);
 		return mement;
 	}

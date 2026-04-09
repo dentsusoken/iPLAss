@@ -47,7 +47,7 @@ import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefiniti
  */
 public class MailAccountNotificationListenerDefinition extends AccountNotificationListenerDefinition {
 	private static final long serialVersionUID = 7463255129416810210L;
-	
+
 	private String createUserMailTemplate;
 	private String credentialResetMailTemplate;
 	private String createUserWithSpecifiedPasswordMailTemplate;
@@ -58,7 +58,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	private String removeUserMailTemplate;
 	private String loginSuccessUserMailTemplate;
 	private List<String> propertiesForUpdateNotification;
-	
+
 	/**
 	 * ログイン成功時のメールのテンプレート。
 	 * テンプレートが指定された場合、ログイン成功したアカウントにメールが送信される。
@@ -76,7 +76,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public void setLoginSuccessUserMailTemplate(String loginSuccessUserMailTemplate) {
 		this.loginSuccessUserMailTemplate = loginSuccessUserMailTemplate;
 	}
-	
+
 	/**
 	 * パスワード更新時のメールのテンプレート。
 	 * テンプレートが指定された場合、更新されたアカウントにメールが送信される。
@@ -85,7 +85,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getCredentialUpdatedMailTemplate() {
 		return credentialUpdatedMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getCredentialUpdatedMailTemplate()
 	 * @param credentialUpdatedMailTemplate
@@ -94,7 +94,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 			String credentialUpdatedMailTemplate) {
 		this.credentialUpdatedMailTemplate = credentialUpdatedMailTemplate;
 	}
-	
+
 	/**
 	 * アカウントの属性が更新された際のメールのテンプレート。
 	 * テンプレートが指定された場合、propertiesForUpdateNotificationが未設定の場合、
@@ -105,7 +105,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getPropertyUpdatedMailTemplate() {
 		return propertyUpdatedMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getPropertyUpdatedMailTemplate()
 	 * @param propertyUpdatedMailTemplate
@@ -113,7 +113,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public void setPropertyUpdatedMailTemplate(String propertyUpdatedMailTemplate) {
 		this.propertyUpdatedMailTemplate = propertyUpdatedMailTemplate;
 	}
-	
+
 	/**
 	 * アカウントの属性が更新された際、どの属性が更新された場合にメールを送信するかを指定する。
 	 * この値が設定されている場合は、このプロパティ名リストに指定されているプロパティの値が更新された場合のみメールが送信される。
@@ -123,7 +123,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public List<String> getPropertiesForUpdateNotification() {
 		return propertiesForUpdateNotification;
 	}
-	
+
 	/**
 	 * @see #getPropertiesForUpdateNotification()
 	 * @param propertiesForUpdateNotification
@@ -132,7 +132,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 			List<String> propertiesForUpdateNotification) {
 		this.propertiesForUpdateNotification = propertiesForUpdateNotification;
 	}
-	
+
 	/**
 	 * ユーザー削除時のメールのテンプレート。
 	 * テンプレートが指定された場合、ユーザーアカウントが削除された場合、当該アカウントにメールが送信される。
@@ -141,7 +141,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getRemoveUserMailTemplate() {
 		return removeUserMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getRemoveUserMailTemplate()
 	 * @param removedUpdatedMailTemplate
@@ -149,7 +149,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public void setRemoveUserMailTemplate(String removeUserMailTemplate) {
 		this.removeUserMailTemplate = removeUserMailTemplate;
 	}
-	
+
 	/**
 	 * アカウント作成時（初期パスワード自動生成）のメールのテンプレート。
 	 * テンプレートが指定された場合、かつパスワードが自動生成された場合は、作成されたアカウントにメールが送信される。
@@ -159,7 +159,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getCreateUserMailTemplate() {
 		return createUserMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getCreateUserMailTemplate()
 	 * @param createUserMailTemplate
@@ -167,7 +167,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public void setCreateUserMailTemplate(String createUserMailTemplate) {
 		this.createUserMailTemplate = createUserMailTemplate;
 	}
-	
+
 	/**
 	 * アカウント作成時（パスワード指定あり）のメールのテンプレート。
 	 * テンプレートが指定された場合、かつパスワードが指定された場合は、作成されたアカウントにメールが送信される。
@@ -177,7 +177,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getCreateUserWithSpecifiedPasswordMailTemplate() {
 		return createUserWithSpecifiedPasswordMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getCreateUserWithSpecifiedPasswordMailTemplate()
 	 * @param createUserWithSpecifiedPasswordMailTemplate
@@ -186,6 +186,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 			String createUserWithSpecifiedPasswordMailTemplate) {
 		this.createUserWithSpecifiedPasswordMailTemplate = createUserWithSpecifiedPasswordMailTemplate;
 	}
+
 	/**
 	 * パスワードリセット時（パスワード自動生成）のメールのテンプレート。
 	 * テンプレートが指定された場合、かつパスワードが自動生成された場合、リセットされたアカウントにメールが送信される。
@@ -194,7 +195,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getCredentialResetMailTemplate() {
 		return credentialResetMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getCredentialResetMailTemplate()
 	 * @param credentialResetMailTemplate
@@ -202,7 +203,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public void setCredentialResetMailTemplate(String credentialResetMailTemplate) {
 		this.credentialResetMailTemplate = credentialResetMailTemplate;
 	}
-	
+
 	/**
 	 * パスワードリセット時（パスワード指定あり）のメールのテンプレート。
 	 * テンプレートが指定された場合、かつパスワードが指定された場合、リセットされたアカウントにメールが送信される。
@@ -212,7 +213,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getCredentialResetWithSpecifiedPasswordMailTemplate() {
 		return credentialResetWithSpecifiedPasswordMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getCredentialResetWithSpecifiedPasswordMailTemplate()
 	 * @param credentialResetWithSpecifiedPasswordMailTemplate
@@ -221,7 +222,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 			String credentialResetWithSpecifiedPasswordMailTemplate) {
 		this.credentialResetWithSpecifiedPasswordMailTemplate = credentialResetWithSpecifiedPasswordMailTemplate;
 	}
-	
+
 	/**
 	 * アカウントロックアウト時のメールのテンプレート。
 	 * テンプレートが指定された場合、ロックアウトされたアカウントにメールが送信される。
@@ -230,7 +231,7 @@ public class MailAccountNotificationListenerDefinition extends AccountNotificati
 	public String getLockedoutMailTemplate() {
 		return lockedoutMailTemplate;
 	}
-	
+
 	/**
 	 * @see #getLockedoutMailTemplate()
 	 * @param lockedoutMailTemplate

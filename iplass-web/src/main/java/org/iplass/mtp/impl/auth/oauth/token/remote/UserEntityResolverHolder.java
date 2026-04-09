@@ -29,8 +29,9 @@ import org.iplass.mtp.spi.ServiceRegistry;
 class UserEntityResolverHolder {
 	static UserEntityResolver userEntityResolver;
 	static {
-		AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
-		for (AuthenticationProvider ap: as.getAuthenticationProviders()) {
+		AuthService as = ServiceRegistry.getRegistry()
+				.getService(AuthService.class);
+		for (AuthenticationProvider ap : as.getAuthenticationProviders()) {
 			if (ap instanceof AccessTokenAuthenticationProvider) {
 				userEntityResolver = ((AccessTokenUserEntityResolver) ap.getUserEntityResolver()).getActual();
 				break;

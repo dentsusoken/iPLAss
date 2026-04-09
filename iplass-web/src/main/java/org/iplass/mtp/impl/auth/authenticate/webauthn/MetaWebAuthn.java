@@ -203,10 +203,14 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 
 	public class WebAuthnRuntime extends BaseMetaDataRuntime {
 
-		private WebAuthnService service = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
-		private CredentialRecordHandler crh = (CredentialRecordHandler) ServiceRegistry.getRegistry().getService(AuthTokenService.class).getHandler(CredentialRecordHandler.TYPE_WEBAUTHN_CREDENTIAL_DEFAULT);
-		private AuthenticationPolicyService policyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
-		
+		private WebAuthnService service = ServiceRegistry.getRegistry()
+				.getService(WebAuthnService.class);
+		private CredentialRecordHandler crh = (CredentialRecordHandler) ServiceRegistry.getRegistry()
+				.getService(AuthTokenService.class)
+				.getHandler(CredentialRecordHandler.TYPE_WEBAUTHN_CREDENTIAL_DEFAULT);
+		private AuthenticationPolicyService policyService = ServiceRegistry.getRegistry()
+				.getService(AuthenticationPolicyService.class);
+
 		private WebAuthnManager webAuthnManager;
 
 		private WebAuthnRuntime() {
@@ -227,7 +231,7 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 						selfAttestationTrustworthinessVerifier,
 						service.getObjectConverter());
 			}
-			
+
 		}
 
 		@Override
@@ -236,9 +240,12 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 		}
 
 		public boolean isAllowedOnPolicy(AuthenticationPolicyRuntime policy) {
-			if (policy.getMetaData().getWebAuthnDefinition() != null) {
-				for (String waName : policy.getMetaData().getWebAuthnDefinition()) {
-					if (getMetaData().getName().equals(waName)) {
+			if (policy.getMetaData()
+					.getWebAuthnDefinition() != null) {
+				for (String waName : policy.getMetaData()
+						.getWebAuthnDefinition()) {
+					if (getMetaData().getName()
+							.equals(waName)) {
 						return true;
 					}
 				}
@@ -261,42 +268,55 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 			checkState();
 
 			UserVerificationRequirement uv = requireUserVerification ? UserVerificationRequirement.REQUIRED : userVerificationRequirement;
-			PublicKeyCredentialRequestOptions options = service.getDataMapper().newPublicKeyCredentialRequestOptions(
-					rpId(server), service.getWebAuthnChallengeGenerator().randomBytes(16),
-					uv, TimeUnit.MINUTES.toMillis(service.getOptionsTimeoutMinutes()));
+			PublicKeyCredentialRequestOptions options = service.getDataMapper()
+					.newPublicKeyCredentialRequestOptions(
+							rpId(server), service.getWebAuthnChallengeGenerator()
+									.randomBytes(16),
+							uv, TimeUnit.MINUTES.toMillis(service.getOptionsTimeoutMinutes()));
 
 			WebAuthnState state = new WebAuthnState();
 			state.setMetaDataName(name);
-			state.setChallenge(options.getChallenge().getValue());
+			state.setChallenge(options.getChallenge()
+					.getValue());
 			state.setRpId(options.getRpId());
 			server.saveWebAuthnState(state);
 
-			return service.getObjectConverter().getJsonConverter().writeValueAsString(options);
+			return service.getObjectConverter()
+					.getJsonConverter()
+					.writeValueAsString(options);
 		}
 
 		public String publicKeyCredentialCreationOptions(User user, WebAuthnServer server) {
 			checkState();
 
-			PublicKeyCredentialCreationOptions options = service.getDataMapper().newPublicKeyCredentialCreationOptions(
-					rpId(server), I18nUtil.stringMeta(displayName, localizedDisplayNameList),
-					userId(user), user.getAccountId(), user.getName(),
-					service.getWebAuthnChallengeGenerator().randomBytes(16),
-					attestationConveyancePreference, authenticatorAttachment, residentKeyRequirement, userVerificationRequirement,
-					service.getSignatureAlgorithms(),
-					TimeUnit.MINUTES.toMillis(service.getOptionsTimeoutMinutes()));
-			
+			PublicKeyCredentialCreationOptions options = service.getDataMapper()
+					.newPublicKeyCredentialCreationOptions(
+							rpId(server), I18nUtil.stringMeta(displayName, localizedDisplayNameList),
+							userId(user), user.getAccountId(), user.getName(),
+							service.getWebAuthnChallengeGenerator()
+									.randomBytes(16),
+							attestationConveyancePreference, authenticatorAttachment, residentKeyRequirement, userVerificationRequirement,
+							service.getSignatureAlgorithms(),
+							TimeUnit.MINUTES.toMillis(service.getOptionsTimeoutMinutes()));
+
 			WebAuthnState state = new WebAuthnState();
 			state.setMetaDataName(name);
-			state.setChallenge(options.getChallenge().getValue());
-			state.setRpId(options.getRp().getId());
-			state.setUserId(options.getUser().getId());
+			state.setChallenge(options.getChallenge()
+					.getValue());
+			state.setRpId(options.getRp()
+					.getId());
+			state.setUserId(options.getUser()
+					.getId());
 			server.saveWebAuthnState(state);
 
-			return service.getObjectConverter().getJsonConverter().writeValueAsString(options);
+			return service.getObjectConverter()
+					.getJsonConverter()
+					.writeValueAsString(options);
 		}
 
 		private byte[] userId(User user) {
-			return service.getUserHandleSupplier().get(user);
+			return service.getUserHandleSupplier()
+					.get(user);
 		}
 
 		private String rpId(WebAuthnServer server) {
@@ -338,13 +358,16 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 			validateRegistrationData(registrationData);
 
 			// Server properties
-			Origin origin = service.getDataMapper().newOrigin(origin(server));
+			Origin origin = service.getDataMapper()
+					.newOrigin(origin(server));
 			String rpId = state.getRpId();
-			Challenge challenge = service.getDataMapper().newChallenge(state.getChallenge());
+			Challenge challenge = service.getDataMapper()
+					.newChallenge(state.getChallenge());
 			ServerProperty serverProperty = new ServerProperty(origin, rpId, challenge);
 
 			// expectations
-			List<PublicKeyCredentialParameters> pubKeyCredParams = service.getDataMapper().newPublicKeyCredentialParameters(service.getSignatureAlgorithms());
+			List<PublicKeyCredentialParameters> pubKeyCredParams = service.getDataMapper()
+					.newPublicKeyCredentialParameters(service.getSignatureAlgorithms());
 			boolean userVerificationRequired = (userVerificationRequirement == UserVerificationRequirement.REQUIRED);//client sideでrejectされるが一応
 			boolean userPresenceRequired = true;
 
@@ -356,11 +379,19 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 			} catch (TrustAnchorNotFoundException e) {
 				if (logger.isDebugEnabled()) {
 					logger.error("webauthn registration verification failed. TrustAnchor not found of aaguid: " +
-							registrationData.getAttestationObject().getAuthenticatorData().getAttestedCredentialData().getAaguid().toString()
+							registrationData.getAttestationObject()
+									.getAuthenticatorData()
+									.getAttestedCredentialData()
+									.getAaguid()
+									.toString()
 							+ ", publicKeyCredential:" + publicKeyCredentialJson, e);
 				} else {
 					logger.error("webauthn registration verification failed. TrustAnchor not found of aaguid: " +
-							registrationData.getAttestationObject().getAuthenticatorData().getAttestedCredentialData().getAaguid().toString()
+							registrationData.getAttestationObject()
+									.getAuthenticatorData()
+									.getAttestedCredentialData()
+									.getAaguid()
+									.toString()
 							+ ", publicKeyCredential of User:" + user.getOid(), e);
 				}
 				throw new WebAuthnApplicationException("WebAuthn registration verification failed.", e);
@@ -388,11 +419,14 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 			WebAuthnAuthenticatorInfoImpl authenticatorInfo = new WebAuthnAuthenticatorInfoImpl();
 			authenticatorInfo.setCredentialRecord(credentialRecord);
 			authenticatorInfo.setAuthenticatorDisplayName(
-					authenticatorDisplayName(registrationData.getAttestationObject().getAuthenticatorData().getAttestedCredentialData()));
+					authenticatorDisplayName(registrationData.getAttestationObject()
+							.getAuthenticatorData()
+							.getAttestedCredentialData()));
 			authenticatorInfo.setUserHandle(state.getUserId());
-			
+
 			AuthToken at = crh.newAuthToken(user.getOid(), policyName, authenticatorInfo);
-			crh.authTokenStore().create(at);
+			crh.authTokenStore()
+					.create(at);
 			if (logger.isDebugEnabled()) {
 				logger.debug("WebAuthn registration success. user:" + user.getOid() + ", credentialId: " + at.getSeries());
 			}
@@ -418,9 +452,11 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 			}
 
 			// Server properties
-			Origin origin = service.getDataMapper().newOrigin(origin(server));
+			Origin origin = service.getDataMapper()
+					.newOrigin(origin(server));
 			String rpId = state.getRpId();
-			Challenge challenge = service.getDataMapper().newChallenge(state.getChallenge());
+			Challenge challenge = service.getDataMapper()
+					.newChallenge(state.getChallenge());
 			ServerProperty serverProperty = new ServerProperty(origin, rpId, challenge);
 
 			// expectations
@@ -456,9 +492,10 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 			} catch (VerificationException e) {
 				return new WebAuthnVerifyResult("authentication_failed", "Authentication failed.", e);
 			}
-			
+
 			//念のためチェック
-			if (!Arrays.equals(authenticationData.getCredentialId(), credentialRecord.getAttestedCredentialData().getCredentialId())) {
+			if (!Arrays.equals(authenticationData.getCredentialId(), credentialRecord.getAttestedCredentialData()
+					.getCredentialId())) {
 				return new WebAuthnVerifyResult("invalid_credential_state", "Invalid credential state.", null);
 			}
 			if (authenticationData.getUserHandle() != null) {
@@ -466,20 +503,24 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 					return new WebAuthnVerifyResult("invalid_credential_state", "Invalid credential state.", null);
 				}
 			}
-			
+
 			// update the counter of the authenticator record
-			credentialRecord.setCounter(authenticationData.getAuthenticatorData().getSignCount());
-			credentialRecord.setUvInitialized(authenticationData.getAuthenticatorData().isFlagUV());
-			credentialRecord.setBackedUp(authenticationData.getAuthenticatorData().isFlagBS());
+			credentialRecord.setCounter(authenticationData.getAuthenticatorData()
+					.getSignCount());
+			credentialRecord.setUvInitialized(authenticationData.getAuthenticatorData()
+					.isFlagUV());
+			credentialRecord.setBackedUp(authenticationData.getAuthenticatorData()
+					.isFlagBS());
 			crh.updateCredentialRecord(at, credentialRecord, new Timestamp(System.currentTimeMillis()));
-			
+
 			return new WebAuthnVerifyResult(authenticationData.getCredentialId(), at.getToken(), at.getOwnerId(), at.getPolicyName());
 		}
 
 		private String authenticatorDisplayName(AttestedCredentialData attestedCredentialData) {
 			MetadataStatement metadataStatement = null;
 			if (attestedCredentialData != null) {
-				String aaguid = attestedCredentialData.getAaguid().toString();
+				String aaguid = attestedCredentialData.getAaguid()
+						.toString();
 				metadataStatement = service.getMetadataStatement(aaguid);
 			}
 			if (metadataStatement != null) {
@@ -492,7 +533,11 @@ public class MetaWebAuthn extends BaseRootMetaData implements DefinableMetaData<
 		private void validateRegistrationData(RegistrationData registrationData) {
 			if (allowedAaguidList != null && !allowedAaguidList.isEmpty()
 					&& attestationConveyancePreference != AttestationConveyancePreference.NONE) {
-				String aaguid = registrationData.getAttestationObject().getAuthenticatorData().getAttestedCredentialData().getAaguid().toString();
+				String aaguid = registrationData.getAttestationObject()
+						.getAuthenticatorData()
+						.getAttestedCredentialData()
+						.getAaguid()
+						.toString();
 				if (!allowedAaguidList.contains(aaguid)) {
 					throw new WebAuthnApplicationException("Authenticator's AAGUID is not allowed.");
 				}

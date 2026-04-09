@@ -64,6 +64,7 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 	public EntityDeserializer() {
 		super(Entity.class);
 	}
+
 	public EntityDeserializer(Class<?> vc) {
 		super(vc);
 	}
@@ -84,7 +85,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 
 		PropertyDefinitionType pdType = ph.getEnumType();
 		if (pdType == PropertyDefinitionType.EXPRESSION) {
-			ExpressionType et = (ExpressionType) ((PrimitivePropertyHandler) ph).getMetaData().getType();
+			ExpressionType et = (ExpressionType) ((PrimitivePropertyHandler) ph).getMetaData()
+					.getType();
 			if (et.getResultType() != null) {
 				pdType = et.getResultType();
 			} else {
@@ -99,7 +101,9 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 			return node.asText();
 		case BINARY:
 			if (node.isObject()) {
-				return node.traverse(ctxt.getParser().getCodec()).readValueAs(BinaryReference.class);
+				return node.traverse(ctxt.getParser()
+						.getCodec())
+						.readValueAs(BinaryReference.class);
 			} else {
 				BinaryReference br = new BinaryReference();
 				br.setLobId(node.asLong());
@@ -113,7 +117,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 //			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//TODO ThradLocalCache?
 			SimpleDateFormat sdf = DateUtil.getSimpleDateFormat("yyyy-MM-dd", false);
 			try {
-				return new java.sql.Date(sdf.parse(dateStr).getTime());
+				return new java.sql.Date(sdf.parse(dateStr)
+						.getTime());
 			} catch (ParseException e) {
 				// TODO date クラスが java.sql.Date
 				// reportInputMismatch で例外スローする
@@ -121,7 +126,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 			}
 		case DATETIME:
 			//timestamp (long)
-			return new java.sql.Timestamp(ctxt.parseDate(node.asText()).getTime());
+			return new java.sql.Timestamp(ctxt.parseDate(node.asText())
+					.getTime());
 
 		case TIME:
 			//HH:mm:ss
@@ -147,7 +153,9 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 			return toEntity(ec, refEh, node, ctxt);
 		case SELECT:
 			if (node.isObject()) {
-				return node.traverse(ctxt.getParser().getCodec()).readValueAs(SelectValue.class);
+				return node.traverse(ctxt.getParser()
+						.getCodec())
+						.readValueAs(SelectValue.class);
 			} else {
 				SelectValue sv = new SelectValue();
 				sv.setValue(node.asText());
@@ -168,7 +176,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 			if (ph == null) {
 				if (!EntitySerializer.PROP_DEFINITION_NAME.equals(e.getKey())) {
 					//unknown property...
-					logger.warn("unknown property name:" + e.getKey() + " of Entity:" + eh.getMetaData().getName() + ", so ignore value");
+					logger.warn("unknown property name:" + e.getKey() + " of Entity:" + eh.getMetaData()
+							.getName() + ", so ignore value");
 				}
 			} else {
 				JsonNode value = e.getValue();
@@ -180,7 +189,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 						Object[] arrayVal = null;
 
 						if (value.isArray()) {
-							if (ph.getMetaData().getMultiplicity() == 1) {
+							if (ph.getMetaData()
+									.getMultiplicity() == 1) {
 								if (value.size() > 0) {
 									propVal = getValue(ec, eh, ph, value.get(0), ctxt);
 								}
@@ -191,7 +201,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 								}
 							}
 						} else {
-							if (ph.getMetaData().getMultiplicity() == 1) {
+							if (ph.getMetaData()
+									.getMultiplicity() == 1) {
 								propVal = getValue(ec, eh, ph, value, ctxt);
 							} else {
 								arrayVal = ph.newArrayInstance(1, ec);
@@ -216,7 +227,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 	@Override
 	public Entity deserialize(JsonParser jp, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
-		JsonNode buf = jp.getCodec().readTree(jp);
+		JsonNode buf = jp.getCodec()
+				.readTree(jp);
 		EntityContext ec = EntityContext.getCurrentContext();
 		String defName = null;
 		JsonNode defNode = buf.get(EntitySerializer.PROP_DEFINITION_NAME);

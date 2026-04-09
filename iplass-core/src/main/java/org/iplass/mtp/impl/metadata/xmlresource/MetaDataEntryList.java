@@ -26,7 +26,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="metaDataList")
+@XmlRootElement(name = "metaDataList")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaDataEntryList {
 	private List<ContextPath> contextPath;
@@ -38,10 +38,10 @@ public class MetaDataEntryList {
 	public void setContextPath(List<ContextPath> contextPath) {
 		this.contextPath = contextPath;
 	}
-	
+
 	public ContextPath getContextPath(String name) {
 		if (contextPath != null) {
-			for (ContextPath c: contextPath) {
+			for (ContextPath c : contextPath) {
 				if (name.equals(c.getName())) {
 					return c;
 				}

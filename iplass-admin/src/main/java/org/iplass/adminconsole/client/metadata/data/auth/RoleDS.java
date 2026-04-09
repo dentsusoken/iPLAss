@@ -34,17 +34,17 @@ public class RoleDS extends AbstractAdminDataSource {
 				FieldType.TEXT,
 				DataSourceConstants.FIELD_NAME_TITLE);
 		DataSourceField code = new DataSourceField("code", FieldType.CUSTOM, "CODE");
-		fields = new DataSourceField[] {key, name, code};
+		fields = new DataSourceField[] { key, name, code };
 	}
 
-    public static void setDataSource(final SelectItem item) {
+	public static void setDataSource(final SelectItem item) {
 
-    	item.setOptionDataSource(RoleDS.getInstance());
-    	item.setValueField("code");
+		item.setOptionDataSource(RoleDS.getInstance());
+		item.setValueField("code");
 		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
 		item.setPickListFields(nameField);
 		item.setPickListWidth(420);
-    }
+	}
 
 	public static RoleDS getInstance() {
 		return new RoleDS();

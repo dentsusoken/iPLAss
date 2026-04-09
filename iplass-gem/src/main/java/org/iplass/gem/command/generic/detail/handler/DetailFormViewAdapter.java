@@ -33,12 +33,12 @@ public class DetailFormViewAdapter implements DetailFormViewHandler {
 
 	@Override
 	final public void onShowDetailView(FormViewEvent event) {
-		onShowDetailView((ShowDetailLayoutViewEvent)event);
+		onShowDetailView((ShowDetailLayoutViewEvent) event);
 	}
 
 	@Override
 	final public void onShowEditView(FormViewEvent event) {
-		onShowEditView((ShowDetailLayoutViewEvent)event);
+		onShowEditView((ShowDetailLayoutViewEvent) event);
 	}
 
 	/**

@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.web.actionmapping;
 
-import jakarta.servlet.http.Cookie;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.web.WebRequestConstants;
+
+import jakarta.servlet.http.Cookie;
 
 /**
  * HTTPレスポンスのヘッダーに値をセットしたい際に利用するインタフェース。
@@ -38,18 +38,25 @@ import org.iplass.mtp.web.WebRequestConstants;
  *
  */
 public interface ResponseHeader {
-	
+
 	public void addCookie(Cookie cookie);
+
 	public boolean containsHeader(String name);
-	
+
 	//TODO sendErrorは非公開の方向か。例外をスローの形（ただ現状だとエラーコードは500限定）
 //	public void sendError(int sc, String msg);
 //	public void sendError(int sc);
 	public void setDateHeader(String name, long date);
+
 	public void addDateHeader(String name, long date);
+
 	public void setHeader(String name, String value);
+
 	public void addHeader(String name, String value);
+
 	public void setIntHeader(String name, int value);
+
 	public void addIntHeader(String name, int value);
+
 	public void setStatus(int sc);
 }

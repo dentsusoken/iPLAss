@@ -30,12 +30,12 @@ public class FilterSetting implements Refrectable {
 
 	/** フィルタ名 */
 	@MetaFieldInfo(
-			displayName="フィルタ名",
-			displayNameKey="generic_element_section_FilterSetting_filterNameDisplayNameKey",
-			inputType=InputType.FILTER,
-			description="定型検索に表示するフィルタを指定します。",
-			descriptionKey="generic_element_section_FilterSetting_filterNameDescriptionKey",
-			required=true
+			displayName = "フィルタ名",
+			displayNameKey = "generic_element_section_FilterSetting_filterNameDisplayNameKey",
+			inputType = InputType.FILTER,
+			description = "定型検索に表示するフィルタを指定します。",
+			descriptionKey = "generic_element_section_FilterSetting_filterNameDescriptionKey",
+			required = true
 	)
 	private String filterName;
 
@@ -44,7 +44,7 @@ public class FilterSetting implements Refrectable {
 	 * @return フィルタ名
 	 */
 	public String getFilterName() {
-	    return filterName;
+		return filterName;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class FilterSetting implements Refrectable {
 	 * @param filterName フィルタ名
 	 */
 	public void setFilterName(String filterName) {
-	    this.filterName = filterName;
+		this.filterName = filterName;
 	}
 
 }

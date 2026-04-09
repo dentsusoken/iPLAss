@@ -32,7 +32,8 @@ public class CommandDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	private CommandService service;
 
 	public CommandDefinitionManagerImpl() {
-		service = ServiceRegistry.getRegistry().getService(CommandService.class);
+		service = ServiceRegistry.getRegistry()
+				.getService(CommandService.class);
 	}
 
 	@Override

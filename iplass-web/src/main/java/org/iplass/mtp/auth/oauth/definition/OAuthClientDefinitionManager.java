@@ -23,7 +23,7 @@ import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 
 public interface OAuthClientDefinitionManager extends TypedDefinitionManager<OAuthClientDefinition> {
-	
+
 	/**
 	 * client_secretを生成します。
 	 * 

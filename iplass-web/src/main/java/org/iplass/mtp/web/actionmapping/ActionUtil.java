@@ -33,7 +33,7 @@ import org.iplass.mtp.web.actionmapping.definition.cache.RelatedEntityType;
  *
  */
 public class ActionUtil {
-	
+
 	/**
 	 * 現在のAction処理コンテキストの中で、
 	 * プログラムから明示的に当該のEntityをキャッシュに関連付ける。
@@ -42,9 +42,10 @@ public class ActionUtil {
 	 * @param oid
 	 */
 	public static void linkToActionCache(String entityName, String oid) {
-		ContentCacheContext.getContentCacheContext().recordForce(RelatedEntityType.SPECIFIC_ID, entityName, oid);
+		ContentCacheContext.getContentCacheContext()
+				.recordForce(RelatedEntityType.SPECIFIC_ID, entityName, oid);
 	}
-	
+
 	/**
 	 * 現在のAction処理コンテキストの中で、
 	 * プログラムから明示的に当該のEntity名のEntityすべてをキャッシュに関連付ける。
@@ -52,9 +53,10 @@ public class ActionUtil {
 	 * @param entityName
 	 */
 	public static void linkToActionCache(String entityName) {
-		ContentCacheContext.getContentCacheContext().recordForce(RelatedEntityType.WHOLE, entityName, null);
+		ContentCacheContext.getContentCacheContext()
+				.recordForce(RelatedEntityType.WHOLE, entityName, null);
 	}
-	
+
 	/**
 	 * 現在のAction処理コンテキストの中で、
 	 * キャッシュの有効切れする日時を指定（参照：System.currentTimeMillis()）する。
@@ -64,9 +66,10 @@ public class ActionUtil {
 	 * @param expires ミリ秒で測定した、現在時刻と協定世界時の UTC 1970 年 1 月 1 日午前 0 時との差
 	 */
 	public static void setCacheExpires(long expires) {
-		ContentCacheContext.getContentCacheContext().setCacheExpires(expires);
+		ContentCacheContext.getContentCacheContext()
+				.setCacheExpires(expires);
 	}
-	
+
 	/**
 	 * 現在のAciton処理コンテキストの中で、
 	 * クライアントへのHTTPレスポンスのヘッダー情報を扱う際利用可能なResponseHeaderを取得する。
@@ -82,22 +85,24 @@ public class ActionUtil {
 			return (ResponseHeader) context.getAttribute(WebRequestConstants.RESPONSE_HEADER);
 		}
 	}
-	
+
 	/**
 	 * 指定のactionNameに関連するキャッシュをクリアする。
 	 * 
 	 * @param actionName
 	 */
 	public static void clearActionCache(String actionName) {
-		ContentCacheContext.getContentCacheContext().invalidateByActionName(actionName);
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByActionName(actionName);
 	}
-	
+
 	/**
 	 * すべてのActionキャッシュをクリアする。
 	 * 
 	 */
 	public static void clearAllActionCache() {
-		ContentCacheContext.getContentCacheContext().invalidateAllEntry();
+		ContentCacheContext.getContentCacheContext()
+				.invalidateAllEntry();
 	}
 
 }

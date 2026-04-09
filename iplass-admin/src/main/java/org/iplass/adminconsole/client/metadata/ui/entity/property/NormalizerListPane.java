@@ -105,7 +105,7 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				showNormalizerEditDialog(false, (NormalizerListGridRecord)event.getRecord());
+				showNormalizerEditDialog(false, (NormalizerListGridRecord) event.getRecord());
 			}
 		});
 
@@ -171,7 +171,7 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 	public void applyTo(PropertyListGridRecord propertyRecord) {
 		List<NormalizerDefinition> normalizerList = new ArrayList<>();
 		for (ListGridRecord record : grid.getRecords()) {
-			NormalizerListGridRecord nrecord = (NormalizerListGridRecord)record;
+			NormalizerListGridRecord nrecord = (NormalizerListGridRecord) record;
 			normalizerList.add(nrecord.getNormalizerDefinition());
 		}
 		propertyRecord.setNormalizerList(normalizerList);
@@ -209,7 +209,8 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 			NormalizerListGridRecord recode = new NormalizerListGridRecord(definition);
 
 			//先頭に追加
-			grid.getRecordList().addAt(recode, 0);
+			grid.getRecordList()
+					.addAt(recode, 0);
 			grid.refreshFields();
 		}
 	}
@@ -221,7 +222,7 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 		boolean isExistTrimSpace = false;
 		ListGridRecord[] records = grid.getRecords();
 		for (ListGridRecord record : records) {
-			NormalizerListGridRecord nrecord = (NormalizerListGridRecord)record;
+			NormalizerListGridRecord nrecord = (NormalizerListGridRecord) record;
 			if (NormalizerType.TRIM_WHITE_SPACE.equals(nrecord.getType())) {
 				isExistTrimSpace = true;
 				break;
@@ -266,9 +267,9 @@ public class NormalizerListPane extends VLayout implements PropertyAttributePane
 		NewlineType newLineType = null;
 		ListGridRecord[] records = grid.getRecords();
 		for (ListGridRecord record : records) {
-			NormalizerListGridRecord nrecord = (NormalizerListGridRecord)record;
+			NormalizerListGridRecord nrecord = (NormalizerListGridRecord) record;
 			if (NormalizerType.NORMALIZE_NEW_LINE.equals(nrecord.getType())) {
-				NewlineNormalizer definition = (NewlineNormalizer)nrecord.getNormalizerDefinition();
+				NewlineNormalizer definition = (NewlineNormalizer) nrecord.getNormalizerDefinition();
 				newLineType = definition.getType();
 			}
 		}

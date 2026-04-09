@@ -162,24 +162,28 @@ public class WebFrontendService implements Service {
 	}
 
 	public boolean isAcceptPathes(String path) {
-		boolean ret = (getAcceptPathes() == null || getAcceptPathes().matcher(path).matches());
+		boolean ret = (getAcceptPathes() == null || getAcceptPathes().matcher(path)
+				.matches());
 		if (getRejectPathes() != null) {
-			ret = ret && !getRejectPathes().matcher(path).matches();
+			ret = ret && !getRejectPathes().matcher(path)
+					.matches();
 		}
 		return ret;
 	}
 
 	public boolean isExcludePath(String path) {
-		return getExcluePathes() != null && getExcluePathes().matcher(path).matches();
+		return getExcluePathes() != null && getExcluePathes().matcher(path)
+				.matches();
 	}
 
 	public boolean isThroughPath(String path) {
-		return getThroughPathes() != null && getThroughPathes().matcher(path).matches();
+		return getThroughPathes() != null && getThroughPathes().matcher(path)
+				.matches();
 	}
 
 	public boolean isRestPath(String path) {
 		if (restPath != null) {
-			for (String rp: restPath) {
+			for (String rp : restPath) {
 				if (path.startsWith(rp)) {
 					return true;
 				}
@@ -200,6 +204,7 @@ public class WebFrontendService implements Service {
 	public Pattern getThroughPathes() {
 		return throughPathes;
 	}
+
 	public String getFixedTenant() {
 		return fixedTenant;
 	}
@@ -280,7 +285,7 @@ public class WebFrontendService implements Service {
 					} else {
 						throw new ServiceConfigrationException("tempFileDir create failed:" + tFile.getAbsolutePath());
 					}
-				} catch(SecurityException e) {
+				} catch (SecurityException e) {
 					throw new ServiceConfigrationException("tempFileDir create failed:" + tFile.getAbsolutePath());
 				}
 			} else {
@@ -324,7 +329,6 @@ public class WebFrontendService implements Service {
 
 		loginUrlSelector = (LoginUrlSelector) config.getBean("loginUrlSelector");
 
-
 		List<String> accept = config.getValues("acceptPath");
 		if (accept != null && accept.size() > 0) {
 			acceptPathes = Pattern.compile(String.join("|", accept));
@@ -347,7 +351,7 @@ public class WebFrontendService implements Service {
 
 		requestRestrictions = config.getValues("requestRestriction", RequestRestriction.class);
 		if (requestRestrictions != null) {
-			for (RequestRestriction rr: requestRestrictions) {
+			for (RequestRestriction rr : requestRestrictions) {
 				if (rr.getPathPattern() == null) {
 					defaultRequestRestriction = rr;
 				}
@@ -360,7 +364,7 @@ public class WebFrontendService implements Service {
 		restPath = config.getValues("restPath");
 
 		logoutUrl = config.getValue("logoutUrl");
-		if(logoutUrl == null || logoutUrl.length() == 0) {
+		if (logoutUrl == null || logoutUrl.length() == 0) {
 			throw new ServiceConfigrationException("logoutUrl is not set");
 		}
 
@@ -395,12 +399,13 @@ public class WebFrontendService implements Service {
 		// マルチパートリクエストのパラメータ最大数を設定
 		// 設定が無い場合はデフォルト値を設定する
 		maxMultipartParameterCount = config
-				.getValue("maxMultipartParameterCount", Long.class, DEFAULT_MAX_MULTIPART_PARAMETER_COUNT).longValue();
+				.getValue("maxMultipartParameterCount", Long.class, DEFAULT_MAX_MULTIPART_PARAMETER_COUNT)
+				.longValue();
 
 		Map<String, Object> mdcFromConfig = config.getValue("mdc", Map.class);
 		if (mdcFromConfig != null) {
 			mdc = new HashMap<>();
-			for (Map.Entry<String, Object> e: mdcFromConfig.entrySet()) {
+			for (Map.Entry<String, Object> e : mdcFromConfig.entrySet()) {
 				if (e.getValue() != null) {
 					if (e.getValue() instanceof String) {
 						String valStr = (String) e.getValue();
@@ -433,7 +438,7 @@ public class WebFrontendService implements Service {
 	}
 
 	private RequestRestriction createDefaultRequestRestriction(Config config) {
-		RequestRestriction rr  =new RequestRestriction();
+		RequestRestriction rr = new RequestRestriction();
 		rr.setAllowMethods(Arrays.asList("*"));
 		rr.setAllowContentTypes(Arrays.asList("*/*"));
 		rr.setMaxFileSize(config.getValue("maxUploadFileSize", Long.class, -1L));
@@ -447,41 +452,47 @@ public class WebFrontendService implements Service {
 
 		if (requestRestrictions != null) {
 			switch (type) {
-				case ACTION:
-					path = "/" + metaDataName;
-					for (RequestRestriction rr: requestRestrictions) {
-						if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
-							return rr;
-						}
+			case ACTION:
+				path = "/" + metaDataName;
+				for (RequestRestriction rr : requestRestrictions) {
+					if (rr.getPathPattern() != null && rr.getPathPatternCompile()
+							.matcher(path)
+							.matches()) {
+						return rr;
 					}
-					if (welcomeAction != null) {
-						int slaIndex = path.lastIndexOf('/');
-						String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
+				}
+				if (welcomeAction != null) {
+					int slaIndex = path.lastIndexOf('/');
+					String shortName = slaIndex < 0 ? path : path.substring(slaIndex + 1);
 
-						for (String wa: welcomeAction) {
-							if (wa.equals(shortName)) {
-								String remainPath = path.substring(0, slaIndex + 1);
-								for (RequestRestriction rr: requestRestrictions) {
-									if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
-										return rr;
-									}
+					for (String wa : welcomeAction) {
+						if (wa.equals(shortName)) {
+							String remainPath = path.substring(0, slaIndex + 1);
+							for (RequestRestriction rr : requestRestrictions) {
+								if (rr.getPathPattern() != null && rr.getPathPatternCompile()
+										.matcher(remainPath)
+										.matches()) {
+									return rr;
 								}
 							}
 						}
 					}
-					break;
-				case REST:
-					for (String rp : restPath) {
-						path = rp + metaDataName;
-						for (RequestRestriction rr: requestRestrictions) {
-							if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
-								return rr;
-							}
+				}
+				break;
+			case REST:
+				for (String rp : restPath) {
+					path = rp + metaDataName;
+					for (RequestRestriction rr : requestRestrictions) {
+						if (rr.getPathPattern() != null && rr.getPathPatternCompile()
+								.matcher(path)
+								.matches()) {
+							return rr;
 						}
 					}
-					break;
-				default:
-					break;
+				}
+				break;
+			default:
+				break;
 			}
 		}
 		return defaultRequestRestriction;

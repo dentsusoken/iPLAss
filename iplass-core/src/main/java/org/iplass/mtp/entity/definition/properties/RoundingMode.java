@@ -32,15 +32,15 @@ public enum RoundingMode {
 	/** 0から離れるようにする(正数切り上げ/負数切り上げ) */
 	UP,
 	/** 0に近づける(正数切り下げ/負数切り下げ) */
-    DOWN,
+	DOWN,
 	/** 正の無限大に近づける(正数切り上げ/負数切り下げ) */
-    CEILING,
+	CEILING,
 	/** 負の無限大に近づける(正数切り下げ/負数切り上げ) */
-    FLOOR,
-    /** 四捨五入 */
-    HALF_UP,
-    /** 五捨六入 */
-    HALF_DOWN,
-    /** 銀行型丸め */
-    HALF_EVEN
+	FLOOR,
+	/** 四捨五入 */
+	HALF_UP,
+	/** 五捨六入 */
+	HALF_DOWN,
+	/** 銀行型丸め */
+	HALF_EVEN
 }

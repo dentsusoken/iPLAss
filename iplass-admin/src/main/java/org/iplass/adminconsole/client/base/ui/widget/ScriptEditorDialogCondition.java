@@ -33,7 +33,7 @@ public class ScriptEditorDialogCondition implements ScriptEditorDialogConstants 
 	private String value;
 
 	private boolean readOnly;
-	
+
 	private boolean enableMaxHeight = false;
 
 	/**

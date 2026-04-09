@@ -74,7 +74,8 @@ public class SelectBuiltinUserDS extends BuiltinUserDS {
 		DataSourceField startDateField = new DataSourceTextField(START_DATE, "Start Date");
 		DataSourceField endDateField = new DataSourceTextField(END_DATE, "End Date");
 
-		setFields(accountIdField, nameField, mailField, adminField, loginErrorCntField, lastPasswordChangeField, passwordRemainDaysField, lastLoginField, startDateField, endDateField);
+		setFields(accountIdField, nameField, mailField, adminField, loginErrorCntField, lastPasswordChangeField, passwordRemainDaysField,
+				lastLoginField, startDateField, endDateField);
 	}
 
 	@Override

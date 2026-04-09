@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.iplass.mtp.entity.definition.EventListenerDefinition;
 
-
 /**
  * <p>
  * GroovyScriptによるEventListenerの定義。

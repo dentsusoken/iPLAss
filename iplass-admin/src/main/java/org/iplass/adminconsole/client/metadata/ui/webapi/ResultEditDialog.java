@@ -81,7 +81,7 @@ public class ResultEditDialog extends MtpDialog {
 		save.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (form.validate()){
+				if (form.validate()) {
 					editComplete();
 				}
 			}

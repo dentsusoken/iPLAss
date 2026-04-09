@@ -36,13 +36,13 @@ public class EntityExportParameter {
 	public static final String PROP_EXPORT_DIR = "exportDir";
 	/** BinaryデータをExportするか */
 	public static final String PROP_EXPORT_BINARY_DATA = "exportBinaryData";
-	
+
 	/** Where条件 */
 	public static final String PROP_ENTITY_WHERE_CLAUSE = "entity.whereClause";
 
 	/** OrderBy条件 */
 	public static final String PROP_ENTITY_ORDER_BY_CLAUSE = "entity.orderByClause";
-	
+
 	/** 全バージョン検索 */
 	public static final String PROP_ENTITY_VERSIONED = "entity.versioned";
 
@@ -60,7 +60,7 @@ public class EntityExportParameter {
 
 	//出力先ディレクトリ(内部用)
 	private File exportDir;
-	
+
 	//BinaryデータをExportするか
 	private boolean isExportBinaryData;
 

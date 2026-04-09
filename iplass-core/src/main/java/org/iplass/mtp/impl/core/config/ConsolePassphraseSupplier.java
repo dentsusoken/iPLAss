@@ -32,7 +32,8 @@ public class ConsolePassphraseSupplier implements PassphraseSupplier {
 		System.out.println("enter passphrase:");
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 		try {
-			return console.readLine().toCharArray();
+			return console.readLine()
+					.toCharArray();
 		} catch (IOException e) {
 			throw new ServiceConfigrationException(e);
 		}

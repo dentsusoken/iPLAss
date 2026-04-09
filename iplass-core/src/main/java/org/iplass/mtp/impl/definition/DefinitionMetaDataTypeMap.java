@@ -45,14 +45,17 @@ public abstract class DefinitionMetaDataTypeMap<D extends Definition, M extends 
 		}
 		return null;
 	};
+
 	public abstract TypedDefinitionManager<D> typedDefinitionManager();
 
 	public String toPath(String defName) {
 		return pathPrefix + defName;
 	}
+
 	public String toDefName(String path) {
 		return path.substring(pathPrefix.length());
 	}
+
 	public String typeName() {
 		return defType.getSimpleName();
 	}

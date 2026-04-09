@@ -33,7 +33,8 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
  * OpenAPI の components/schemas に再利用可能なエンティティ定義スキーマを追加するファクトリクラス
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements OpenApiComponentReusableSchemaFactory<EntityDefinition>, OpenApiComponentTarget {
+public class OpenApiComponentEntityDefinitionReusableSchemaFactory
+		implements OpenApiComponentReusableSchemaFactory<EntityDefinition>, OpenApiComponentTarget {
 	/** ログ */
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentEntityDefinitionReusableSchemaFactory.class);
 	/** エンティティ定義プロパティのJSONスキーマ解決クラス */
@@ -57,9 +58,11 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements Op
 	 */
 	@Override
 	public String addReusableSchema(EntityDefinition entityDef, OpenAPI openApi, OpenApiJsonSchemaType schemaType) {
-		if (null != entityDef.getMapping() && StringUtil.isNotEmpty(entityDef.getMapping().getMappingModelClass())) {
+		if (null != entityDef.getMapping() && StringUtil.isNotEmpty(entityDef.getMapping()
+				.getMappingModelClass())) {
 			// POJOマッピングが設定されている場合は、class から定義を作成
-			Class<?> entityClass = ClassUtil.forName(entityDef.getMapping().getMappingModelClass());
+			Class<?> entityClass = ClassUtil.forName(entityDef.getMapping()
+					.getMappingModelClass());
 			return schemaFactory.addReusableSchema(entityClass, openApi, schemaType);
 		}
 
@@ -68,7 +71,8 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements Op
 
 		var components = getOpenApiComponents(openApi);
 
-		if (null != components.getSchemas() && components.getSchemas().containsKey(name)) {
+		if (null != components.getSchemas() && components.getSchemas()
+				.containsKey(name)) {
 			// すでに定義済みの場合は再利用
 			return ref;
 		}
@@ -122,7 +126,6 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements Op
 		return schema;
 	}
 
-
 	/**
 	 * OpenAPI の Components を取得します。
 	 * <p>
@@ -140,6 +143,5 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory implements Op
 
 		return components;
 	}
-
 
 }

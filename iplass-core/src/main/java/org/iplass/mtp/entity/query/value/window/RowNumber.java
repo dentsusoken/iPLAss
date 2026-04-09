@@ -36,7 +36,7 @@ public class RowNumber extends WindowRankFunction {
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-	
+
 	@Override
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
@@ -48,7 +48,7 @@ public class RowNumber extends WindowRankFunction {
 			}
 		}
 	}
-	
+
 	@Override
 	public RowNumber partitionBy(Object... partitionField) {
 		super.partitionBy(partitionField);
@@ -60,7 +60,7 @@ public class RowNumber extends WindowRankFunction {
 		super.orderBy(sortSpec);
 		return this;
 	}
-	
+
 	@Override
 	protected String getFuncName() {
 		return "row_number";

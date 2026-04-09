@@ -25,7 +25,7 @@ import org.iplass.mtp.impl.metadata.xmlfile.dom.ExternalRefPathAttribute.FileExt
 import org.w3c.dom.Node;
 
 @ExternalRefPathAttribute(
-		path = "/metaDataEntry/metaData/binary", 
+		path = "/metaDataEntry/metaData/binary",
 		base64Tag = true)
 public class BinaryPath extends AbstractExternalRefPath {
 
@@ -34,7 +34,8 @@ public class BinaryPath extends AbstractExternalRefPath {
 	 */
 	@Override
 	public String getFileExtention(Node textNode) {
-		Node metaDataNode = textNode.getParentNode().getParentNode();
+		Node metaDataNode = textNode.getParentNode()
+				.getParentNode();
 		String contentType = getChildNodeValue(metaDataNode, "contentType");
 		String fileName = getChildNodeValue(metaDataNode, "fileName");
 

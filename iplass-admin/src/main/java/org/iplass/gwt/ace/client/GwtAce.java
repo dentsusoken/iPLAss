@@ -31,9 +31,14 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class GwtAce extends Composite implements TakesValue<String>, HasText, RequiresResize /*, HasValueChangeHandlers<String>, HasEnabled, Focusable */ {
+public class GwtAce extends Composite implements TakesValue<String>, HasText, RequiresResize /*
+																								 * ,
+																								 * HasValueChangeHandlers
+																								 * <String>, HasEnabled,
+																								 * Focusable
+																								 */ {
 
-    private static final Logger logger = Logger.getLogger(GwtAce.class.getName());
+	private static final Logger logger = Logger.getLogger(GwtAce.class.getName());
 
 	/** default mode */
 	public static final EditorMode DEFAULT_MODE = EditorMode.TEXT;
@@ -41,14 +46,14 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 	/** default mode */
 	public static final EditorTheme DEFAULT_THEME = EditorTheme.ECLIPSE;
 
-    private static final String ELEMENT_ID_PREFIX = "ace-editor-";
+	private static final String ELEMENT_ID_PREFIX = "ace-editor-";
 
-    private static int counter = 0;
+	private static int counter = 0;
 
-    private InitialOptions initialOptions = new InitialOptions();
+	private InitialOptions initialOptions = new InitialOptions();
 
-    private boolean loadedAce = false;
-    private JavaScriptObject theAce;
+	private boolean loadedAce = false;
+	private JavaScriptObject theAce;
 
 	public GwtAce() {
 		this(DEFAULT_MODE);
@@ -58,40 +63,40 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 		this(mode, DEFAULT_THEME);
 	}
 
-    public GwtAce(EditorMode mode, EditorTheme theme) {
+	public GwtAce(EditorMode mode, EditorTheme theme) {
 		initialOptions.setMode(mode);
 		initialOptions.setTheme(theme);
-        initWidget(new SimplePanel());
-    }
+		initWidget(new SimplePanel());
+	}
 
-    @Override
-    protected void onLoad() {
-        super.onLoad();
+	@Override
+	protected void onLoad() {
+		super.onLoad();
 
-        if (loadedAce) {
-            return;
-        }
+		if (loadedAce) {
+			return;
+		}
 
-        loadedAce = true;
-        Element element = getElement();
-        String id = ELEMENT_ID_PREFIX + ++counter;
-        element.setId(id);
-        element.addClassName("gwt_ace_editor_container");
-        theAce = setup(this, id, initialOptions.toJavaScriptObject());
+		loadedAce = true;
+		Element element = getElement();
+		String id = ELEMENT_ID_PREFIX + ++counter;
+		element.setId(id);
+		element.addClassName("gwt_ace_editor_container");
+		theAce = setup(this, id, initialOptions.toJavaScriptObject());
 
 		logger.fine("completed setup ace editor.");
-    }
+	}
 
-    /**
-     * If you need to manually resize, please execute {@link GwtAce#redisplay()}.
-     */
+	/**
+	 * If you need to manually resize, please execute {@link GwtAce#redisplay()}.
+	 */
 	@Override
 	public void onResize() {
 		redisplay();
 	}
 
 	public void redisplay() {
-		if (getAceElement().isPresent()){
+		if (getAceElement().isPresent()) {
 			logger.fine("executed redisplay.");
 			resize(theAce);
 		} else {
@@ -100,7 +105,7 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 	}
 
 	public void destroy() {
-		if (getAceElement().isPresent()){
+		if (getAceElement().isPresent()) {
 			logger.fine("executed destroy.");
 			destroy(theAce);
 		} else {
@@ -110,7 +115,7 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 
 	@Override
 	public void setValue(String value) {
-		if (getAceElement().isPresent()){
+		if (getAceElement().isPresent()) {
 			setValue(theAce, value);
 		} else {
 			initialOptions.setValue(value);
@@ -121,7 +126,8 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 	public String getValue() {
 		return getAceElement().map(element -> {
 			return getValue(theAce);
-		}).orElse(initialOptions.getValue());
+		})
+				.orElse(initialOptions.getValue());
 	}
 
 	@Override
@@ -134,39 +140,39 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 		setValue(text);
 	}
 
-    public void setMode(EditorMode mode) {
-		if (getAceElement().isPresent()){
+	public void setMode(EditorMode mode) {
+		if (getAceElement().isPresent()) {
 			setMode(theAce, mode.getModeName());
 		} else {
 			initialOptions.setMode(mode);
 		}
-    }
+	}
 
-    public void setTheme(EditorTheme theme) {
-		if (getAceElement().isPresent()){
+	public void setTheme(EditorTheme theme) {
+		if (getAceElement().isPresent()) {
 			setTheme(theAce, theme.getThemeName());
 		} else {
 			initialOptions.setTheme(theme);
 		}
-    }
+	}
 
-    public void setReadOnly(boolean readOnly) {
-		if (getAceElement().isPresent()){
+	public void setReadOnly(boolean readOnly) {
+		if (getAceElement().isPresent()) {
 			setReadOnly(theAce, readOnly);
 		} else {
 			initialOptions.setReadOnly(readOnly);
 		}
-    }
+	}
 
 	public void setHScrollBarAlwaysVisible(boolean hScrollBarAlwaysVisible) {
-		if (getAceElement().isPresent()){
+		if (getAceElement().isPresent()) {
 			setHScrollBarAlwaysVisible(theAce, hScrollBarAlwaysVisible);
 		} else {
 			initialOptions.setHScrollBarAlwaysVisible(hScrollBarAlwaysVisible);
 		}
 	}
 
-    private native JavaScriptObject setup(GwtAce myAce, String id, JavaScriptObject initialOptions)/*-{
+	private native JavaScriptObject setup(GwtAce myAce, String id, JavaScriptObject initialOptions)/*-{
 
 	    var element = $doc.getElementById(id);
 
@@ -198,34 +204,41 @@ public class GwtAce extends Composite implements TakesValue<String>, HasText, Re
 
 	}-*/;
 
-    private native void resize(JavaScriptObject theAce)/*-{
+	private native void resize(JavaScriptObject theAce)/*-{
 	    theAce.resize();
 	}-*/;
+
 	private native void destroy(JavaScriptObject theAce) /*-{
 		theAce.destroy();
 	}-*/;
-    private native void setValue(JavaScriptObject theAce, String text)/*-{
+
+	private native void setValue(JavaScriptObject theAce, String text)/*-{
     	theAce.getSession().setValue(text);
 	}-*/;
-    private native String getValue(JavaScriptObject theAce)/*-{
+
+	private native String getValue(JavaScriptObject theAce)/*-{
 	    return theAce.getSession().getValue();
 	}-*/;
-    private native void setMode(JavaScriptObject theAce, String modeName)/*-{
+
+	private native void setMode(JavaScriptObject theAce, String modeName)/*-{
 		theAce.getSession().setMode("ace/mode/" + modeName);
 	}-*/;
-    private native void setTheme(JavaScriptObject theAce, String themeName)/*-{
+
+	private native void setTheme(JavaScriptObject theAce, String themeName)/*-{
 		theAce.setTheme("ace/theme/" + themeName);
 	}-*/;
-    private native void setReadOnly(JavaScriptObject theAce, boolean readOnly)/*-{
+
+	private native void setReadOnly(JavaScriptObject theAce, boolean readOnly)/*-{
 		theAce.setReadOnly(readOnly);
 	}-*/;
+
 	private native void setHScrollBarAlwaysVisible(JavaScriptObject theAce, boolean hScrollBarAlwaysVisible) /*-{
 		theAce.renderer.setHScrollBarAlwaysVisible(hScrollBarAlwaysVisible);
 	}-*/;
 
-    private Optional<com.google.gwt.dom.client.Element> getAceElement() {
-        return Optional.ofNullable(getElement().getFirstChildElement());
-    }
+	private Optional<com.google.gwt.dom.client.Element> getAceElement() {
+		return Optional.ofNullable(getElement().getFirstChildElement());
+	}
 
 	private static class InitialOptions {
 

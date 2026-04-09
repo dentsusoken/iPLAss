@@ -119,7 +119,6 @@ public class TenantContextService implements Service {
 //		logger.debug("update tenant:{} in cache.", tc.getTenantId());
 //	}
 
-
 	public void destroy() {
 		destroyed = true;
 		CacheStore cs = cache.getStore();
@@ -128,7 +127,7 @@ public class TenantContextService implements Service {
 		}
 		if (cs != null) {
 			List<Object> keyList = cs.keySet();
-			for (Object k: keyList) {
+			for (Object k : keyList) {
 				CacheEntry lce = cs.get(k);
 				if (lce != null) {
 					TenantContext tc = (TenantContext) lce.getValue();
@@ -138,7 +137,9 @@ public class TenantContextService implements Service {
 				}
 			}
 		}
-		ServiceRegistry.getRegistry().getService(CacheService.class).invalidate(TENANT_CONTEXT_CACHE_NAMESPACE);
+		ServiceRegistry.getRegistry()
+				.getService(CacheService.class)
+				.invalidate(TENANT_CONTEXT_CACHE_NAMESPACE);
 	}
 
 	public void init(Config config) {
@@ -151,95 +152,96 @@ public class TenantContextService implements Service {
 
 		if (config.getValues("localTenantIds") != null) {
 			localTenantIds = new ArrayList<Integer>();
-			for (String ltid: config.getValues("localTenantIds")) {
+			for (String ltid : config.getValues("localTenantIds")) {
 				localTenantIds.add(Integer.parseInt(ltid));
 			}
 		}
 
-
 		CacheService cs = config.getDependentService(CacheService.class);
 
 		//TODO バージョン情報の定義と取得
-		cache = new CacheController<Integer, TenantContext>(cs.getCache(TENANT_CONTEXT_CACHE_NAMESPACE), false, 1, new LoadingAdapter<Integer, TenantContext>() {
+		cache = new CacheController<Integer, TenantContext>(cs.getCache(TENANT_CONTEXT_CACHE_NAMESPACE), false, 1,
+				new LoadingAdapter<Integer, TenantContext>() {
 
-			@Override
-			public TenantContext load(Integer key) {
-
-				if (destroyed) {
-					return null;
-				}
-
-				Tenant tenant = tenantService.getTenant(key);
-				if (tenant == null) {
-					//check shared
-					if (key.intValue() == sharedTenantId) {
-						logger.debug("load and cache TenantContext as Shared Tenant:{}.", key);
-						return new TenantContext(sharedTenantId, "_shared", null, true);
-					} else {
-						return null;
-					}
-				} else {
-					logger.debug("load and cache TenantContext:{}.", key);
-					return new TenantContext(tenant, false);
-				}
-			}
-
-			@Override
-			public List<TenantContext> loadByIndex(int indexType,
-					Object indexVal) {
-
-				if (destroyed) {
-					return null;
-				}
-
-				if (indexType != CACHE_INDEX_URL) {
-					throw new IllegalArgumentException("not support indexType");
-				}
-				Tenant tenant = tenantService.getTenant((String) indexVal);
-				if (tenant == null) {
-					return null;
-				} else {
-					return Arrays.asList(new TenantContext(tenant, false));
-				}
-			}
-
-			@Override
-			public long getVersion(TenantContext value) {
-				return 0;
-			}
-
-			@Override
-			public Object getIndexVal(int indexType, TenantContext value) {
-				if (indexType != CACHE_INDEX_URL) {
-					throw new IllegalArgumentException("not support indexType");
-				}
-				return value.getTenantUrl();
-			}
-
-			@Override
-			public Integer getKey(TenantContext val) {
-				return val.getTenantId();
-			}
-		}, false, true);
-
-
-		ServiceRegistry.getRegistry().getService(ClusterService.class).registerListener(
-				new String[]{CLUSTER_EVENT_NAME_TENANT_RELOAD},
-				new ClusterEventListener() {
 					@Override
-					public void onMessage(Message msg) {
-						String tenantIdStr = msg.getParameter(CLUSTER_MESSAGE_TENANT_ID);
-						if (tenantIdStr != null) {
-							int tenantId = Integer.parseInt(tenantIdStr);
-							reloadTenantContext(tenantId, true);
+					public TenantContext load(Integer key) {
+
+						if (destroyed) {
+							return null;
+						}
+
+						Tenant tenant = tenantService.getTenant(key);
+						if (tenant == null) {
+							//check shared
+							if (key.intValue() == sharedTenantId) {
+								logger.debug("load and cache TenantContext as Shared Tenant:{}.", key);
+								return new TenantContext(sharedTenantId, "_shared", null, true);
+							} else {
+								return null;
+							}
+						} else {
+							logger.debug("load and cache TenantContext:{}.", key);
+							return new TenantContext(tenant, false);
 						}
 					}
-				});
+
+					@Override
+					public List<TenantContext> loadByIndex(int indexType,
+							Object indexVal) {
+
+						if (destroyed) {
+							return null;
+						}
+
+						if (indexType != CACHE_INDEX_URL) {
+							throw new IllegalArgumentException("not support indexType");
+						}
+						Tenant tenant = tenantService.getTenant((String) indexVal);
+						if (tenant == null) {
+							return null;
+						} else {
+							return Arrays.asList(new TenantContext(tenant, false));
+						}
+					}
+
+					@Override
+					public long getVersion(TenantContext value) {
+						return 0;
+					}
+
+					@Override
+					public Object getIndexVal(int indexType, TenantContext value) {
+						if (indexType != CACHE_INDEX_URL) {
+							throw new IllegalArgumentException("not support indexType");
+						}
+						return value.getTenantUrl();
+					}
+
+					@Override
+					public Integer getKey(TenantContext val) {
+						return val.getTenantId();
+					}
+				}, false, true);
+
+		ServiceRegistry.getRegistry()
+				.getService(ClusterService.class)
+				.registerListener(
+						new String[] { CLUSTER_EVENT_NAME_TENANT_RELOAD },
+						new ClusterEventListener() {
+							@Override
+							public void onMessage(Message msg) {
+								String tenantIdStr = msg.getParameter(CLUSTER_MESSAGE_TENANT_ID);
+								if (tenantIdStr != null) {
+									int tenantId = Integer.parseInt(tenantIdStr);
+									reloadTenantContext(tenantId, true);
+								}
+							}
+						});
 
 		List<String> trcNames = config.getValues("tenantResource");
 		if (trcNames != null) {
 			tenantResourceClasses = new ArrayList<>();
-			for (String trcName: trcNames) {
+			for (String trcName : trcNames) {
 				try {
 					tenantResourceClasses.add(Class.forName(trcName));
 				} catch (ClassNotFoundException e) {
@@ -270,12 +272,14 @@ public class TenantContextService implements Service {
 
 	@SuppressWarnings("unchecked")
 	public List<Integer> getCurrentLoadedTenantIdList() {
-		List<?> keySet = cache.getStore().keySet();
+		List<?> keySet = cache.getStore()
+				.keySet();
 		return (List<Integer>) keySet;
 	}
 
 	public void reloadTenantContext(int tenantId, boolean notifyOnlyLocal) {
-		CacheEntry ce = cache.getStore().get(tenantId);
+		CacheEntry ce = cache.getStore()
+				.get(tenantId);
 		if (ce != null) {
 			TenantContext tc = (TenantContext) ce.getValue();
 			if (tc != null) {
@@ -289,9 +293,10 @@ public class TenantContextService implements Service {
 		//共有テナントの場合
 		if (tenantId == sharedTenantId) {
 			if (localTenantIds != null) {
-				for (Integer ltid: localTenantIds) {
+				for (Integer ltid : localTenantIds) {
 					//ローカルテナントが宣言されている場合は、その対象のみクリア
-					CacheEntry lce = cache.getStore().get(ltid);
+					CacheEntry lce = cache.getStore()
+							.get(ltid);
 					if (lce != null) {
 						TenantContext tc = (TenantContext) lce.getValue();
 						if (tc != null) {
@@ -304,9 +309,11 @@ public class TenantContextService implements Service {
 				}
 			} else {
 				//すべてのテナントに影響あるので全クリア。
-				List<Object> keyList = cache.getStore().keySet();
-				for (Object k: keyList) {
-					CacheEntry lce = cache.getStore().get(k);
+				List<Object> keyList = cache.getStore()
+						.keySet();
+				for (Object k : keyList) {
+					CacheEntry lce = cache.getStore()
+							.get(k);
 					if (lce != null) {
 						TenantContext tc = (TenantContext) lce.getValue();
 						if (tc != null) {
@@ -321,9 +328,10 @@ public class TenantContextService implements Service {
 		if (!notifyOnlyLocal) {
 			Message msg = new Message(CLUSTER_EVENT_NAME_TENANT_RELOAD);
 			msg.addParameter(CLUSTER_MESSAGE_TENANT_ID, Integer.toString(tenantId));
-			ServiceRegistry.getRegistry().getService(ClusterService.class).sendMessage(msg);
+			ServiceRegistry.getRegistry()
+					.getService(ClusterService.class)
+					.sendMessage(msg);
 		}
 	}
 
 }
-

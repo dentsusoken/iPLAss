@@ -118,11 +118,11 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 				//編集ダイアログ表示
 				Record record = event.getRecord();
-				TreeNode node = (TreeNode)record;
+				TreeNode node = (TreeNode) record;
 				if (!getTree().isFolder(node)) {
 					//Folderは対象外
-					MenuItem menuItem = (MenuItem)record.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
-					MenuItemTreeDS.MenuItemType type = (MenuItemTreeDS.MenuItemType)record.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
+					MenuItem menuItem = (MenuItem) record.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+					MenuItemTreeDS.MenuItemType type = (MenuItemTreeDS.MenuItemType) record.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
 					owner.showMenuItemDialog(type, menuItem);
 				}
 			}
@@ -212,10 +212,11 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 
 		//追加するItemの生成
 		TreeNode itemNode = ds.createMenuItemNode(createItem);
-		MenuItemType type = (MenuItemType)itemNode.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
+		MenuItemType type = (MenuItemType) itemNode.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
 
 		//フォルダの追加
-		String[] nodePaths = createItem.getName().split("/");
+		String[] nodePaths = createItem.getName()
+				.split("/");
 		if (nodePaths.length > 1) {
 			//階層
 			String path = "";
@@ -235,7 +236,8 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 							parent = addNode;
 							break;
 						}
-						int compare = child.getName().compareTo(path);
+						int compare = child.getName()
+								.compareTo(path);
 						if (compare == 0) {
 							//既に存在
 							addNode = child;
@@ -275,7 +277,8 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 				if (getTree().isFolder(child)) {
 					continue;
 				}
-				if (child.getName().compareTo(itemNode.getName()) > 0) {
+				if (child.getName()
+						.compareTo(itemNode.getName()) > 0) {
 					//childの前に追加
 					getTree().add(itemNode, parent, i);
 					isAdded = true;
@@ -314,8 +317,9 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 			if (getTree().isFolder(child)) {
 				continue;
 			}
-			MenuItem menuItem = (MenuItem)child.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
-			if (menuItem != null && menuItem.getName().equals(updateItem.getName())) {
+			MenuItem menuItem = (MenuItem) child.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (menuItem != null && menuItem.getName()
+					.equals(updateItem.getName())) {
 				itemNode = child;
 				int curIndex = getCurrentIndex(itemNode);
 				TreeNode parent = getTree().getParent(itemNode);
@@ -353,14 +357,15 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 			if (getTree().isFolder(child)) {
 				continue;
 			}
-			MenuItem menuItem = (MenuItem)child.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
-			if (menuItem != null && menuItem.getName().equals(deleteItem.getName())) {
+			MenuItem menuItem = (MenuItem) child.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (menuItem != null && menuItem.getName()
+					.equals(deleteItem.getName())) {
 				TreeNode parent = getTree().getParent(child);
 
 				getTree().remove(child);
 
 				//親の子供がなくなっていたら削除
-				while(parent != null) {
+				while (parent != null) {
 					//ItemのTopなら終了
 					if (parent.getAttributeAsBoolean(MenuItemTreeDS.FieldName.ISITEMTOP.name())) {
 						break;
@@ -385,8 +390,9 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 	public void selectMenuItemNode(MenuItem menuItem) {
 		List<TreeNode> children = Arrays.asList(getTree().getAllNodes());
 		for (TreeNode node : children) {
-			MenuItem nodeItem = (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
-			if (nodeItem != null && nodeItem.getName().equals(menuItem.getName())) {
+			MenuItem nodeItem = (MenuItem) node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (nodeItem != null && nodeItem.getName()
+					.equals(menuItem.getName())) {
 				selectAndScrollNode(node);
 				return;
 			}
@@ -416,7 +422,8 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 
 			int i = 0;
 			for (TreeNode child : children) {
-				if (child.getName().equals(node.getName())) {
+				if (child.getName()
+						.equals(node.getName())) {
 					return i;
 				}
 				i++;
@@ -484,18 +491,18 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 					public void onClick(MenuItemClickEvent event) {
 						String name = node.getAttributeAsString(DataSourceConstants.FIELD_NAME);
 
-						SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemTreeGrid_deleteMenuItemConf", name)
-								, new BooleanCallback() {
+						SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemTreeGrid_deleteMenuItemConf", name),
+								new BooleanCallback() {
 
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									//メニューアイテム削除処理
-									MenuItem menuItem = getMenuItem();
-									owner.delMenuItem(menuItem);
-								}
-							}
-						});
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											//メニューアイテム削除処理
+											MenuItem menuItem = getMenuItem();
+											owner.delMenuItem(menuItem);
+										}
+									}
+								});
 					}
 				});
 
@@ -523,11 +530,11 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 		}
 
 		private MenuItem getMenuItem() {
-			return (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			return (MenuItem) node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
 		}
 
 		private MenuItemTreeDS.MenuItemType getItemType() {
-			return (MenuItemTreeDS.MenuItemType)node.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
+			return (MenuItemTreeDS.MenuItemType) node.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
 		}
 	}
 

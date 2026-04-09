@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory;
 import groovy.lang.Binding;
 
 public class GroovyScriptContext implements ScriptContext {
-	
+
 	private static Logger logger = LoggerFactory.getLogger("mtp.script.out");
-	
+
 	private Binding binding;
 	private PrintWriter out;
-	
+
 	public GroovyScriptContext() {
 		binding = new Binding();
 		setOut(new LoggerPrintWriter(logger));
@@ -43,7 +43,7 @@ public class GroovyScriptContext implements ScriptContext {
 		binding = new Binding();
 		setOut(out);
 	}
-	
+
 	public Object getAttribute(String name) {
 		return binding.getVariable(name);
 	}
@@ -60,9 +60,9 @@ public class GroovyScriptContext implements ScriptContext {
 	public PrintWriter getOut() {
 		return out;
 	}
-	
+
 	public Binding getBinding() {
 		return binding;
 	}
-	
+
 }

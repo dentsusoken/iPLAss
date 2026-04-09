@@ -36,15 +36,14 @@ import org.iplass.mtp.runtime.Runner;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class RunnerImpl implements Runner {
-	
+
 	private ServiceRegistry sr;
-	
+
 	private String tenantUrl;
 	private Integer tenantId;
 	private Credential credential;
 	private String lang;
-	
-	
+
 	RunnerImpl(ServiceRegistry sr) {
 		this.sr = sr;
 	}
@@ -62,7 +61,7 @@ public class RunnerImpl implements Runner {
 		this.tenantUrl = null;
 		return this;
 	}
-	
+
 	@Override
 	public Runner withAuth(Credential credential) {
 		this.credential = credential;
@@ -74,13 +73,13 @@ public class RunnerImpl implements Runner {
 		this.lang = lang;
 		return this;
 	}
-	
+
 	@Override
 	public void run(Runnable r) {
 		run(() -> {
 			r.run();
 			return null;
-			});
+		});
 	}
 
 	@Override
@@ -100,14 +99,14 @@ public class RunnerImpl implements Runner {
 		} else {
 			tc = tcs.getTenantContext(tcs.getSharedTenantId());
 		}
-		
+
 		try {
 			ExecuteContext ec = new ExecuteContext(tc);
 			ExecuteContext.initContext(new ExecuteContext(tc));
 			if (lang != null) {
 				ec.setLanguage(lang);
 			}
-			
+
 			if (credential == null) {
 				return s.get();
 			} else {
@@ -117,12 +116,12 @@ public class RunnerImpl implements Runner {
 					return s.get();
 				});
 			}
-			
+
 		} finally {
 			ExecuteContext.finContext();
 		}
 	}
-	
+
 	@Override
 	public String run(String commandName, RequestContext request) {
 		return run(() -> {

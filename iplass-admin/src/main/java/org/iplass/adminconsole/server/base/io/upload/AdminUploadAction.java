@@ -46,7 +46,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-
 /**
  * Adminファイルアップロード操作サーブレット
  *
@@ -109,14 +108,17 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 
-		contextTempDir = (File) config.getServletContext().getAttribute("jakarta.servlet.context.tempdir");
+		contextTempDir = (File) config.getServletContext()
+				.getAttribute("jakarta.servlet.context.tempdir");
 
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+		WebFrontendService webFront = ServiceRegistry.getRegistry()
+				.getService(WebFrontendService.class);
 		// マルチパートリクエストの最大パラメータ数を設定する。
 		maxParameterCount = webFront.getMaxMultipartParameterCount();
 
 		//サイズ制限についてパラメータで指定されていない場合、Serviceの設定値をセット
-		AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
+		AdminConsoleService acs = ServiceRegistry.getRegistry()
+				.getService(AdminConsoleService.class);
 
 		// initParameter で設定されていない場合、AdminConsoleService の値を設定する
 		String maxSizeString = getInitParameter("maxSize");
@@ -137,7 +139,8 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	 * @return アプリ実行結果JSON文字列
 	 * @throws UploadActionException アップロード操作例外
 	 */
-	abstract public String executeAction(final HttpServletRequest request, final List<MultipartRequestParameter> parameterItem) throws UploadActionException;
+	abstract public String executeAction(final HttpServletRequest request, final List<MultipartRequestParameter> parameterItem)
+			throws UploadActionException;
 
 	@Override
 	protected final void doMultipartPost(HttpServletRequest req, HttpServletResponse resp, List<MultipartRequestParameter> files) {
@@ -147,14 +150,16 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 		try {
 			logger.info("{} START.", logPrefix);
 			// アップロードされたファイル情報のログ出力
-			files.stream().filter(f -> !f.isFormField())
-			.forEach(f -> logger.info("{} FILE INFO. fieldName = {},  file = {}, content-type = {}, size = {}.",
-					logPrefix, f.getFieldName(), removeReturnCode(f.getName()), f.getContentType(), f.getSize()));
+			files.stream()
+					.filter(f -> !f.isFormField())
+					.forEach(f -> logger.info("{} FILE INFO. fieldName = {},  file = {}, content-type = {}, size = {}.",
+							logPrefix, f.getFieldName(), removeReturnCode(f.getName()), f.getContentType(), f.getSize()));
 			if (logger.isDebugEnabled()) {
 				// フォーム入力値パラメータ情報のログ出力
-				files.stream().filter(f -> f.isFormField())
-				.forEach(f -> logger.debug("{} FORM FIELD INFO. fieldName = {}, content-type = {}, size = {}.",
-						logPrefix, f.getFieldName(), f.getContentType(), f.getSize()));
+				files.stream()
+						.filter(f -> f.isFormField())
+						.forEach(f -> logger.debug("{} FORM FIELD INFO. fieldName = {}, content-type = {}, size = {}.",
+								logPrefix, f.getFieldName(), f.getContentType(), f.getSize()));
 			}
 
 			String resultJson = executeAction(req, files);
@@ -287,7 +292,9 @@ public abstract class AdminUploadAction extends XsrfProtectedMultipartServlet {
 	 */
 	private boolean isMessageEqualException(Throwable e, String message) {
 		// メッセージとクラスが同一かチェック
-		if (e.getClass().getName().equals(message)) {
+		if (e.getClass()
+				.getName()
+				.equals(message)) {
 			return true;
 		}
 

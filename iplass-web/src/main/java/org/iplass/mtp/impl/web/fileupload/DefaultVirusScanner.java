@@ -40,7 +40,7 @@ public class DefaultVirusScanner implements FileScanner {
 	private String timeout;
 	private boolean errorOnTimeout;
 	private List<Integer> successExitValue;
-	
+
 	private Long timeoutVal;
 
 	public boolean isErrorOnTimeout() {
@@ -86,7 +86,8 @@ public class DefaultVirusScanner implements FileScanner {
 		Process proc = null;
 		try {
 
-			proc = Runtime.getRuntime().exec(command);
+			proc = Runtime.getRuntime()
+					.exec(command);
 			if (timeoutVal == null) {
 				throw new NullPointerException("timeout must be specified");
 			}
@@ -94,7 +95,7 @@ public class DefaultVirusScanner implements FileScanner {
 			if (ret) {
 				int exitVal = proc.exitValue();
 				if (successExitValue != null && successExitValue.size() > 0) {
-					for (Integer i: successExitValue) {
+					for (Integer i : successExitValue) {
 						if (i.intValue() == exitVal) {
 							return;
 						}

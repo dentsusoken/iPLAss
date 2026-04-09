@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.pack;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -236,7 +235,7 @@ public class PackageListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new MtpListGrid(){
+		grid = new MtpListGrid() {
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				String fieldName = this.getFieldName(colNum);
@@ -245,7 +244,8 @@ public class PackageListPane extends VLayout {
 					if (record.getAttributeAsBoolean(FIELD_NAME.COMPLETED.name())) {
 						GridActionImgButton recordCanvas = new GridActionImgButton();
 						recordCanvas.setActionButtonSrc(EXPORT_ICON);
-						recordCanvas.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_packageDownload")));
+						recordCanvas.setActionButtonPrompt(
+								SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_packageDownload")));
 						recordCanvas.addActionClickHandler(new ClickHandler() {
 
 							@Override
@@ -270,12 +270,13 @@ public class PackageListPane extends VLayout {
 				}
 				return null;
 			}
+
 			@Override
-            protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+			protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
 
 				//Statusに対するCSSスタイル定義を取得
-				PackageEntryStatusInfo info = (PackageEntryStatusInfo)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-				PackageEntryStatus status =  PackageEntryStatus.valueOf(info.getStatus());
+				PackageEntryStatusInfo info = (PackageEntryStatusInfo) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+				PackageEntryStatus status = PackageEntryStatus.valueOf(info.getStatus());
 				String style = status.getStyleName();
 				if (style.isEmpty()) {
 					return super.getBaseStyle(record, rowNum, colNum);
@@ -314,8 +315,10 @@ public class PackageListPane extends VLayout {
 
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				if (event.getRecord().getAttributeAsBoolean(FIELD_NAME.COMPLETED.name())) {
-					String fileOid = event.getRecord().getAttribute(FIELD_NAME.OID.name());
+				if (event.getRecord()
+						.getAttributeAsBoolean(FIELD_NAME.COMPLETED.name())) {
+					String fileOid = event.getRecord()
+							.getAttribute(FIELD_NAME.OID.name());
 					unPack(fileOid);
 				} else {
 					SC.warn(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_genePackageNotFinish"));
@@ -426,34 +429,35 @@ public class PackageListPane extends VLayout {
 		SC.ask(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_confirm"),
 				AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_startDeleteConfirm"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					SmartGWTUtil.showProgress();
-					PackageRpcServiceAsync service = PackageRpcServiceFactory.get();
-					service.deletePackage(TenantInfoHolder.getId(), getSelectedOids(),
-							new AsyncCallback<Void>() {
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							SmartGWTUtil.showProgress();
+							PackageRpcServiceAsync service = PackageRpcServiceFactory.get();
+							service.deletePackage(TenantInfoHolder.getId(), getSelectedOids(),
+									new AsyncCallback<Void>() {
 
-								@Override
-								public void onSuccess(Void result) {
-									SmartGWTUtil.hideProgress();
-									SC.say(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_completion"),
-											AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_delete"));
+										@Override
+										public void onSuccess(Void result) {
+											SmartGWTUtil.hideProgress();
+											SC.say(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_completion"),
+													AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_delete"));
 
-									//一覧再作成
-									refresh();
-								}
+											//一覧再作成
+											refresh();
+										}
 
-								@Override
-								public void onFailure(Throwable caught) {
-									SmartGWTUtil.hideProgress();
-									SC.warn(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_failedToDelete") + caught.getMessage());
-								}
-							});
-				}
+										@Override
+										public void onFailure(Throwable caught) {
+											SmartGWTUtil.hideProgress();
+											SC.warn(AdminClientMessageUtil.getString("ui_tools_pack_PackageListPane_failedToDelete")
+													+ caught.getMessage());
+										}
+									});
+						}
 
-			}
-		});
+					}
+				});
 	}
 
 	/**
@@ -477,9 +481,9 @@ public class PackageListPane extends VLayout {
 	private void downloadPack(String fileOid) {
 		PostDownloadFrame frame = new PostDownloadFrame();
 		frame.setAction(GWT.getModuleBaseURL() + PackageDownloadProperty.ACTION_URL)
-			.addParameter(PackageDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-			.addParameter(PackageDownloadProperty.FILE_OID, fileOid)
-			.execute();
+				.addParameter(PackageDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+				.addParameter(PackageDownloadProperty.FILE_OID, fileOid)
+				.execute();
 	}
 
 	private void publishPack() {

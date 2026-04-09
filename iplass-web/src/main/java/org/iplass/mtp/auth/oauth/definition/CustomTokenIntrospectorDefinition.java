@@ -21,12 +21,11 @@ package org.iplass.mtp.auth.oauth.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.introspectors.JavaClassCustomTokenIntrospectorDefinition;
 import org.iplass.mtp.auth.oauth.definition.introspectors.ScriptingCustomTokenIntrospectorDefinition;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * Introspectionにてカスタムの処理を追加するための定義です。
@@ -35,9 +34,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  */
 @XmlSeeAlso({
-	JavaClassCustomTokenIntrospectorDefinition.class,
-	ScriptingCustomTokenIntrospectorDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+		JavaClassCustomTokenIntrospectorDefinition.class,
+		ScriptingCustomTokenIntrospectorDefinition.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class CustomTokenIntrospectorDefinition implements Serializable {
 	private static final long serialVersionUID = 7744740045019365425L;
 }

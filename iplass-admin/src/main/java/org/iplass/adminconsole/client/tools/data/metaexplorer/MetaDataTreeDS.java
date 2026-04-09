@@ -107,9 +107,9 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 			public void onSuccess(MetaTreeNode result) {
 				TreeNode root = createMetaDataTreeNode(result);
 				if (root != null) {
-					response.setData(new Record[]{root});
+					response.setData(new Record[] { root });
 				} else {
-					response.setData(new Record[]{});
+					response.setData(new Record[] {});
 				}
 				processResponse(requestId, response);
 			}
@@ -124,17 +124,17 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 			Map criteriaMap = criteria.getValues();
 			Set criteriaSet = criteriaMap.entrySet();
 			for (Iterator criteriaIte = criteriaSet.iterator(); criteriaIte.hasNext();) {
-				Map.Entry entry = (Map.Entry)criteriaIte.next();
+				Map.Entry entry = (Map.Entry) criteriaIte.next();
 				if (CRITERIA_REPOSITORY_TYPE.equals(entry.getKey())) {
-					repositoryType = RepositoryType.valueOfTypeName((String)entry.getValue());
+					repositoryType = RepositoryType.valueOfTypeName((String) entry.getValue());
 				} else if (CRITERIA_UPDATE_FROM.equals(entry.getKey())) {
-					updateDateFrom = (Date)entry.getValue();
+					updateDateFrom = (Date) entry.getValue();
 				} else if (CRITERIA_UPDATE_TO.equals(entry.getKey())) {
-					updateDateTo = (Date)entry.getValue();
+					updateDateTo = (Date) entry.getValue();
 				} else if (CRITERIA_TAG_FROM.equals(entry.getKey())) {
-					tagCreateDateFrom = (Date)entry.getValue();
+					tagCreateDateFrom = (Date) entry.getValue();
 				} else if (CRITERIA_TAG_TO.equals(entry.getKey())) {
-					tagCreateDateTo = (Date)entry.getValue();
+					tagCreateDateTo = (Date) entry.getValue();
 				}
 			}
 		}
@@ -147,14 +147,14 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 	 * @return
 	 */
 	private TreeNode createMetaDataTreeNode(MetaTreeNode metaRoot) {
-		TreeNode[] contextPathTreeNodes = createContextPathTreeNodeList(metaRoot.getChildren()).toArray(new TreeNode[]{});
+		TreeNode[] contextPathTreeNodes = createContextPathTreeNodeList(metaRoot.getChildren()).toArray(new TreeNode[] {});
 		if (contextPathTreeNodes.length == 0) {
 			return null;
 		}
 
 		TreeNode root = new TreeNode("root");
 		root.setAttribute(FIELD_NAME.NAME.name(), metaRoot.getName());
-		root.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaRoot.getName());	//フォルダの場合はNameをセット
+		root.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaRoot.getName()); //フォルダの場合はNameをセット
 		root.setAttribute(FIELD_NAME.DESCRIPTION.name(), metaRoot.getDescription());
 		root.setAttribute(FIELD_NAME.IS_ERROR.name(), metaRoot.isError());
 		root.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), metaRoot.getErrorMessage());
@@ -192,7 +192,7 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 	private TreeNode createContextPathTreeNode(MetaTreeNode metaNode) {
 		TreeNode node = new TreeNode(metaNode.getPath());
 		node.setAttribute(FIELD_NAME.NAME.name(), metaNode.getName());
-		node.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaNode.getName());	//フォルダの場合はNameをセット
+		node.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), metaNode.getName()); //フォルダの場合はNameをセット
 		node.setAttribute(FIELD_NAME.DESCRIPTION.name(), metaNode.getDescription());
 		node.setAttribute(FIELD_NAME.PATH.name(), metaNode.getPath());
 		node.setAttribute(FIELD_NAME.IS_ERROR.name(), metaNode.isError());
@@ -203,7 +203,7 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 		children.addAll(createContextPathTreeNodeList(metaNode.getChildren()));
 		children.addAll(createMetaDataEntryTreeNodeList(metaNode.getItems()));
 		if (!children.isEmpty()) {
-			node.setChildren(children.toArray(new TreeNode[]{}));
+			node.setChildren(children.toArray(new TreeNode[] {}));
 			return node;
 		} else {
 			return null;
@@ -254,7 +254,8 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 				//Localリポジトリ以外なので除外
 				return null;
 			}
-			long updateDate = item.getUpdateDate().getTime();
+			long updateDate = item.getUpdateDate()
+					.getTime();
 			//更新日比較は自身を含む(updateDataFrom <= updateDate)
 			if (updateDateFrom.getTime() > updateDate) {
 				return null;
@@ -265,7 +266,8 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 				//Localリポジトリ以外なので除外
 				return null;
 			}
-			long updateDate = item.getUpdateDate().getTime();
+			long updateDate = item.getUpdateDate()
+					.getTime();
 			//更新日比較は自身を含む(updateDataTo => updateDate)
 			if (updateDateTo.getTime() < updateDate) {
 				return null;
@@ -278,7 +280,8 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 				//Localリポジトリ以外なので除外
 				return null;
 			}
-			long updateDate = item.getUpdateDate().getTime();
+			long updateDate = item.getUpdateDate()
+					.getTime();
 			//タグ作成日比較は自身を含まない(tagCreateDataFrom < updateDate)
 			if (tagCreateDateFrom.getTime() >= updateDate) {
 				return null;
@@ -289,13 +292,13 @@ public class MetaDataTreeDS extends AbstractAdminDataSource {
 				//Localリポジトリ以外なので除外
 				return null;
 			}
-			long updateDate = item.getUpdateDate().getTime();
+			long updateDate = item.getUpdateDate()
+					.getTime();
 			//タグ作成日比較は自身を含まない(tagCreateDataTo > updateDate)
 			if (tagCreateDateTo.getTime() <= updateDate) {
 				return null;
 			}
 		}
-
 
 		TreeNode node = new TreeNode(item.getName());
 		node.setAttribute(FIELD_NAME.NAME.name(), item.getName());

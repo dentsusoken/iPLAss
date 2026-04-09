@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.base.ui.widget;
 
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -122,10 +121,10 @@ public class ScriptEditorDialog extends AbstractWindow {
 				adjustHeight();
 			}
 		});
-		
+
 		//maxHeight使用有無
 		boolean enableMaxHeight = condition.isEnableMaxHeight();
-		
+
 		HLayout header = new HLayout();
 		header.setWidth100();
 		header.setAutoHeight();
@@ -187,14 +186,14 @@ public class ScriptEditorDialog extends AbstractWindow {
 		maxHeightField.setWidth(130);
 		maxHeightField.setDisabled(!enableMaxHeight);
 		maxHeightField.setVisible(enableMaxHeight);
-		
+
 		if (enableMaxHeight) {
 			Integer maxHeight = condition.getMaxHeight();
 			if (maxHeight != null && maxHeight > 0) {
 				maxHeightField.setValue(maxHeight);
 			}
 		}
-		
+
 		SmartGWTUtil.addHoverToFormItem(maxHeightField,
 				AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_maxHeightDescriptionKey"));
 		maxHeightField.addChangedHandler(new ChangedHandler() {
@@ -213,12 +212,13 @@ public class ScriptEditorDialog extends AbstractWindow {
 		tipsField.setValue("[Ctrl]+[Space] shows snippets.");
 
 		if (enableMaxHeight) {
-			optionForm.setItems(modeField, themeField, maxHeightField, new SpacerItem(),tipsField);
+			optionForm.setItems(modeField, themeField, maxHeightField, new SpacerItem(), tipsField);
 		} else {
 			optionForm.setItems(modeField, themeField, new SpacerItem(), tipsField);
 		}
 
-		modeField.setValue(condition.getInitEditorMode().name());
+		modeField.setValue(condition.getInitEditorMode()
+				.name());
 		if (condition.getInitEditorTheme() == null) {
 			EditorTheme theme = EditorTheme.ECLIPSE;
 
@@ -236,7 +236,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 			}
 			condition.setInitEditorTheme(theme);
 		}
-		themeField.setValue(condition.getInitEditorTheme().name());
+		themeField.setValue(condition.getInitEditorTheme()
+				.name());
 
 		HLayout mainPane = new HLayout();
 		mainPane.setMargin(10);
@@ -244,8 +245,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 		mainPane.setHeight100();
 
 		editorPane = new EditorPane(condition);
-		editorPane.setShowResizeBar(true);	//リサイズ可能
-		editorPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		editorPane.setShowResizeBar(true); //リサイズ可能
+		editorPane.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		hintPane = new HintPane(condition);
 
@@ -340,7 +341,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 						};
 						timer.schedule(10);
 					} else {
-						logger.fine("normal status	 (editor, hint)=(" + editorPane.getInnerContentHeight() + "," + (hintPane.getInnerContentHeight() + 1) + ")"
+						logger.fine("normal status	 (editor, hint)=(" + editorPane.getInnerContentHeight() + ","
+								+ (hintPane.getInnerContentHeight() + 1) + ")"
 								+ ", (editor, hint)=(" + editorPane.getVisibleHeight() + "," + (hintPane.getVisibleHeight() + 1) + ")");
 						test = false;
 					}
@@ -373,11 +375,15 @@ public class ScriptEditorDialog extends AbstractWindow {
 			StringBuilder contents = new StringBuilder();
 			contents.append("<h3>Notes</h3>");
 			if (!SmartGWTUtil.isEmpty(condition.getHintMessage())) {
-				contents.append("<div>").append(condition.getHintMessage()).append("</div>");
+				contents.append("<div>")
+						.append(condition.getHintMessage())
+						.append("</div>");
 			} else if (!SmartGWTUtil.isEmpty(condition.getHintKey())) {
 				String hint = AdminClientMessageUtil.getString(condition.getHintKey());
 				if (!SmartGWTUtil.isEmpty(hint)) {
-					contents.append("<div>").append(hint).append("</div>");
+					contents.append("<div>")
+							.append(hint)
+							.append("</div>");
 				}
 			}
 			hintContents.setContents(contents.toString());
@@ -454,7 +460,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 		private static class WrappedEditor extends Canvas {
 
 			//Widthは100%でOK
-			private static final String DEFAULT_EDITOR_WIDTH  = "100%";
+			private static final String DEFAULT_EDITOR_WIDTH = "100%";
 			private static final String DEFAULT_EDITOR_HEIGHT = "100%";
 
 			private GwtAce aceEditor;
@@ -468,7 +474,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			public WrappedEditor() {
 				setWidth100();
 				setHeight100();
-				setBorder("1px solid lightgray");	//枠がほしいので
+				setBorder("1px solid lightgray"); //枠がほしいので
 
 				aceEditor = new GwtAce();
 				aceEditor.setWidth(DEFAULT_EDITOR_WIDTH);
@@ -524,7 +530,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 			public void fitWrapHeight() {
 
 				if (wrap.getVisibleHeight() != wrap.getInnerContentHeight()) {
-					GWT.log("Illegal state of wrapper[" + wrap.getID() + "]  height :(" + wrap.getInnerContentHeight() + "," + wrap.getVisibleHeight() + ")");
+					GWT.log("Illegal state of wrapper[" + wrap.getID() + "]  height :(" + wrap.getInnerContentHeight() + "," + wrap.getVisibleHeight()
+							+ ")");
 				}
 				removeWrapper();
 				createWrapper();
@@ -582,7 +589,8 @@ public class ScriptEditorDialog extends AbstractWindow {
 				int before = aceEditor.getOffsetHeight();
 				aceEditor.setHeight(WrappedEditor.this.getInnerContentHeight() + "px");
 				aceEditor.redisplay();
-				GWT.log("changed editor height :(" + WrappedEditor.this.getInnerContentHeight() + "),result:(" + before + "->" + aceEditor.getOffsetHeight() + ")");
+				GWT.log("changed editor height :(" + WrappedEditor.this.getInnerContentHeight() + "),result:(" + before + "->"
+						+ aceEditor.getOffsetHeight() + ")");
 			}
 
 		}

@@ -28,11 +28,11 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 
 public class InternalCreatedAccountHandle implements AccountHandle {
 	private static final long serialVersionUID = -6723035594874988582L;
-	
+
 	private String accountId;
 	private int authenticationProviderIndex;
 	private Map<String, Object> attributeMap;
-	
+
 	public InternalCreatedAccountHandle(String accountId) {
 		this.accountId = accountId;
 		attributeMap = new HashMap<>();

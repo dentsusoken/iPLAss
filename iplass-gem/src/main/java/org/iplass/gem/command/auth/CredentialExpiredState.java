@@ -34,9 +34,9 @@ public class CredentialExpiredState implements Serializable {
 	private final boolean rememberMe;
 	private final boolean useTwoStep;
 	private final String redirectPath;
-	
+
 	private final String policyName;
-	
+
 	public CredentialExpiredState(String id, String token, Credential secondaryCredential,
 			boolean rememberMe, boolean useTwoStep, String redirectPath, String policyName) {
 		this.id = id;
@@ -67,11 +67,11 @@ public class CredentialExpiredState implements Serializable {
 	public boolean isUseTwoStep() {
 		return useTwoStep;
 	}
-	
+
 	public String getRedirectPath() {
 		return redirectPath;
 	}
-	
+
 	public String getPolicyName() {
 		return policyName;
 	}

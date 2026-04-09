@@ -53,14 +53,14 @@ import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-		name=SearchTreeDataCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_FORM,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={Constants.DATA},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/reftree/SearchTreeDataCommand")
+		name = SearchTreeDataCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_FORM,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.DATA },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/reftree/SearchTreeDataCommand")
 public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/reftree/searchReferenceTreeData";
@@ -69,8 +69,10 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 	private EntityManager em;
 
 	public SearchTreeDataCommand() {
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 
 		//検索
-		List<RefTreeJqTreeData > ret = new ArrayList<>();
+		List<RefTreeJqTreeData> ret = new ArrayList<>();
 		ret.addAll(search((ReferencePropertyEditor) editor, oid, linkValue));
 
 		request.setAttribute(Constants.DATA, new JsonStreamingOutput(ret));
@@ -94,20 +96,23 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private List<RefTreeJqTreeData > search(ReferencePropertyEditor editor, String oid, String linkValue) {
+	private List<RefTreeJqTreeData> search(ReferencePropertyEditor editor, String oid, String linkValue) {
 		ReferenceRecursiveTreeSetting treeSetting = editor.getReferenceRecursiveTreeSetting();
 
 		Query query = new Query().select(Entity.OID, Entity.VERSION, new Count(treeSetting.getChildPropertyName() + ".oid"))
 				.from(editor.getObjectName())
 				.groupBy(Entity.OID, Entity.VERSION);
 		if (editor.getDisplayLabelItem() != null) {
-			query.select().add(editor.getDisplayLabelItem());
-			query.getGroupBy().add(editor.getDisplayLabelItem());
+			query.select()
+					.add(editor.getDisplayLabelItem());
+			query.getGroupBy()
+					.add(editor.getDisplayLabelItem());
 		} else {
-			query.select().add(Entity.NAME);
-			query.getGroupBy().add(Entity.NAME);
+			query.select()
+					.add(Entity.NAME);
+			query.getGroupBy()
+					.add(Entity.NAME);
 		}
-
 
 		//条件設定
 		if (oid == null && treeSetting.getRootCondition() != null) {
@@ -117,7 +122,8 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 
 			//連動プロパティの設定がある場合はルート検索時に条件追加
 			if (editor.getLinkProperty() != null && StringUtil.isNotBlank(linkValue)) {
-				and.addExpression(new Equals(editor.getLinkProperty().getLinkToPropertyName(), linkValue));
+				and.addExpression(new Equals(editor.getLinkProperty()
+						.getLinkToPropertyName(), linkValue));
 			}
 
 			query.where(and);
@@ -125,9 +131,8 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 			//親のOIDから紐づく子のOIDを取得し、それを条件にして子を検索
 			query.where(new In(Entity.OID, new SubQuery(
 					new Query().selectDistinct(treeSetting.getChildPropertyName() + ".oid")
-						.from(editor.getObjectName())
-						.where(new Equals(Entity.OID, oid))
-					)));
+							.from(editor.getObjectName())
+							.where(new Equals(Entity.OID, oid)))));
 		}
 
 		//ソート指定
@@ -137,13 +142,16 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 			if (editor.getSortType() == null) {
 				sortType = SortType.ASC;
 			} else {
-				sortType = SortType.valueOf(editor.getSortType().name());
+				sortType = SortType.valueOf(editor.getSortType()
+						.name());
 			}
-			query.getGroupBy().add(sortItem);
+			query.getGroupBy()
+					.add(sortItem);
 			query.order(new SortSpec(sortItem, sortType));
 		}
 
-		List<Object[]> list = em.search(query).getList();
+		List<Object[]> list = em.search(query)
+				.getList();
 		List<RefTreeJqTreeData> ret = new ArrayList<>();
 		for (Object[] data : list) {
 			ret.add(new RefTreeJqTreeData(data));
@@ -169,7 +177,7 @@ public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings 
 		}
 
 		public void setOid(String oid) {
-			this.oid  = oid;
+			this.oid = oid;
 		}
 
 		public Long getVersion() {

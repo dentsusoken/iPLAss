@@ -31,27 +31,27 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.expr.PolynomialSyntax;
 
 public class PartitionBySyntax implements Syntax<PartitionBy>, QueryConstants {
-	
+
 	private PolynomialSyntax polynomial;
 
 	public PartitionBy parse(ParseContext str) throws ParseException {
-		
+
 		//PARTITION
 		if (!str.equalsNextToken(PARTITION, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("PARTITION BY expected.", this, str));
 		}
 		str.consumeChars(PARTITION.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		//BY
 		if (!str.equalsNextToken(BY, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("BY expected.", this, str));
 		}
 		str.consumeChars(BY.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		PartitionBy partitionBy = new PartitionBy();
-		
+
 		//ValueExpression
 		boolean isFirst = true;
 		while (true) {
@@ -67,10 +67,9 @@ public class PartitionBySyntax implements Syntax<PartitionBy>, QueryConstants {
 			ValueExpression partitionField = polynomial.parse(str);
 			partitionBy.add(partitionField);
 		}
-		
+
 		return partitionBy;
 	}
-
 
 	public void init(SyntaxContext context) {
 		polynomial = context.getSyntax(PolynomialSyntax.class);

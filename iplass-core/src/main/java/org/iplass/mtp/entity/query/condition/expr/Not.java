@@ -35,14 +35,14 @@ public class Not extends Condition {
 	private static final long serialVersionUID = -3705365114363556102L;
 
 	private Condition nestedExpression;
-	
+
 	public Not() {
 	}
-	
+
 	public Not(Condition nestedExpression) {
 		setNestedExpression(nestedExpression);
 	}
-	
+
 	public void setNestedExpression(Condition nestedExpression) {
 		if (nestedExpression instanceof Or
 				|| nestedExpression instanceof And) {
@@ -51,13 +51,13 @@ public class Not extends Condition {
 			this.nestedExpression = nestedExpression;
 		}
 	}
-	
+
 	public Condition getNestedExpression() {
 		return nestedExpression;
 	}
 
 	public void accept(ConditionVisitor visitor) {
-		if(visitor.visit(this)) {
+		if (visitor.visit(this)) {
 			if (nestedExpression != null) {
 				nestedExpression.accept(visitor);
 			}
@@ -71,6 +71,7 @@ public class Not extends Condition {
 		sb.append(nestedExpression);
 		return sb.toString();
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
@@ -101,6 +102,5 @@ public class Not extends Condition {
 			return false;
 		return true;
 	}
-	
 
 }

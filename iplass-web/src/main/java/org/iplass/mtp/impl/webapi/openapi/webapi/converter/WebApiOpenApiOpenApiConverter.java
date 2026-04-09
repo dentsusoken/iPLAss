@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
@@ -68,55 +67,74 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 			// メソッドに一致するオペレーションをコピーする
 			switch (context.getTargetMethod()) {
 			case GET:
-				pathItem.get(context.getPathItem().getGet());
+				pathItem.get(context.getPathItem()
+						.getGet());
 				break;
 			case POST:
-				pathItem.post(context.getPathItem().getPost());
+				pathItem.post(context.getPathItem()
+						.getPost());
 				break;
 			case PUT:
-				pathItem.put(context.getPathItem().getPut());
+				pathItem.put(context.getPathItem()
+						.getPut());
 				break;
 			case DELETE:
-				pathItem.delete(context.getPathItem().getDelete());
+				pathItem.delete(context.getPathItem()
+						.getDelete());
 				break;
 			case PATCH:
-				pathItem.patch(context.getPathItem().getPatch());
+				pathItem.patch(context.getPathItem()
+						.getPatch());
 				break;
 			default:
 				throw new IllegalArgumentException("Unsupported method type: " + context.getTargetMethod());
 			}
 
-			pathItem.summary(orgPathItem.getSummary()).parameters(orgPathItem.getParameters());
+			pathItem.summary(orgPathItem.getSummary())
+					.parameters(orgPathItem.getParameters());
 			openapi.path(context.getOpenApiPath(), pathItem);
 		}
 
 		// components/schemas の解決
-		for (var pathItem : openapi.getPaths().values()) {
+		for (var pathItem : openapi.getPaths()
+				.values()) {
 			// pathItem のパラメータ解決
-			nonNull(pathItem.getParameters(), parameters -> parameters.stream().forEach(p -> copyRefSchema(org, openapi, p.getSchema(), context)));
+			nonNull(pathItem.getParameters(), parameters -> parameters.stream()
+					.forEach(p -> copyRefSchema(org, openapi, p.getSchema(), context)));
 
 			for (var operation : pathItem.readOperations()) {
 				// リクエストボディのスキーマを解決
 				nonNull(operation.getRequestBody(), requestBody -> {
-					nonNull(requestBody.getContent(), content -> content.values().forEach(m -> copyRefSchema(org, openapi, m.getSchema(), context)));
+					nonNull(requestBody.getContent(), content -> content.values()
+							.forEach(m -> copyRefSchema(org, openapi, m.getSchema(), context)));
 				});
 
 				// パラメータのスキーマを解決
-				nonNull(operation.getParameters(), parameters -> parameters.stream().forEach(p -> copyRefSchema(org, openapi, p.getSchema(), context)));
+				nonNull(operation.getParameters(), parameters -> parameters.stream()
+						.forEach(p -> copyRefSchema(org, openapi, p.getSchema(), context)));
 
 				// レスポンスのスキーマを解決
-				nonNull(operation.getResponses(), responses -> responses.values().forEach(response -> {
-					nonNull(response.getContent(), content -> content.values().forEach(m -> copyRefSchema(org, openapi, m.getSchema(), context)));
-				}));
+				nonNull(operation.getResponses(), responses -> responses.values()
+						.forEach(response -> {
+							nonNull(response.getContent(), content -> content.values()
+									.forEach(m -> copyRefSchema(org, openapi, m.getSchema(), context)));
+						}));
 			}
 		}
 
-		var resolver = ServiceRegistry.getRegistry().getService(OpenApiService.class).getOpenApiResolver();
+		var resolver = ServiceRegistry.getRegistry()
+				.getService(OpenApiService.class)
+				.getOpenApiResolver();
 		var writer = resolver.getObjectWriter(context.getFileType(), context.getVersion());
 		try {
-			context.getWebApiDefinition().setOpenApi(writer.writeValueAsString(openapi));
-			context.getWebApiDefinition().setOpenApiFileType(context.getFileType().name());
-			context.getWebApiDefinition().setOpenApiVersion(context.getVersion().getSeriesVersion());
+			context.getWebApiDefinition()
+					.setOpenApi(writer.writeValueAsString(openapi));
+			context.getWebApiDefinition()
+					.setOpenApiFileType(context.getFileType()
+							.name());
+			context.getWebApiDefinition()
+					.setOpenApiVersion(context.getVersion()
+							.getSeriesVersion());
 
 		} catch (JsonProcessingException e) {
 			// OpenAPIの文字列化に失敗
@@ -141,19 +159,27 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 		if (StringUtil.isNotEmpty(schema.get$ref())) {
 			// スキーマに参照が設定されている場合
 
-			var schemaKey = schema.get$ref().substring(OpenApiComponentReusableSchemaFactory.REUSABLE_SCHEMA_PREFIX.length());
+			var schemaKey = schema.get$ref()
+					.substring(OpenApiComponentReusableSchemaFactory.REUSABLE_SCHEMA_PREFIX.length());
 
 			// コピー先の componentns にインスタンス設定
 			if (null == to.getComponents()) {
 				to.setComponents(new Components());
 			}
 
-			if (null == to.getComponents().getSchemas() || !to.getComponents().getSchemas().containsKey(schemaKey)) {
+			if (null == to.getComponents()
+					.getSchemas()
+					|| !to.getComponents()
+							.getSchemas()
+							.containsKey(schemaKey)) {
 				// コピー先の components.schemas にスキーマが存在しない場合は、コピーする
 
-				var fromSchema = from.getComponents().getSchemas().get(schemaKey);
+				var fromSchema = from.getComponents()
+						.getSchemas()
+						.get(schemaKey);
 				if (null != fromSchema) {
-					to.getComponents().addSchemas(schemaKey, fromSchema);
+					to.getComponents()
+							.addSchemas(schemaKey, fromSchema);
 
 					// コピースキーマ定義も調査する
 					copyRefSchema(from, to, fromSchema, context);
@@ -169,9 +195,11 @@ public class WebApiOpenApiOpenApiConverter implements WebApiOpenApiConverter {
 			// 配列スキーマの場合、配列のスキーマを再帰調査
 			copyRefSchema(from, to, schema.getItems(), context);
 
-		} else if (null != schema.getProperties() && !schema.getProperties().isEmpty()) {
+		} else if (null != schema.getProperties() && !schema.getProperties()
+				.isEmpty()) {
 			// プロパティスキーマの場合、プロパティのスキーマを再帰調査
-			for (var propertySchema : schema.getProperties().values()) {
+			for (var propertySchema : schema.getProperties()
+					.values()) {
 				copyRefSchema(from, to, (Schema) propertySchema, context);
 
 			}

@@ -41,7 +41,7 @@ class WebApiGroovyTemplateBinding extends GroovyTemplateBinding {
 			setVariable("session", new LazySessionContext(request));
 		}
 	}
-	
+
 	@Override
 	public Object getVariable(String name) {
 		try {
@@ -52,7 +52,8 @@ class WebApiGroovyTemplateBinding extends GroovyTemplateBinding {
 			}
 			Object val = request.getAttribute(name);
 			if (val == null && request.getSession(false) != null) {
-				val = request.getSession(false).getAttribute(name);
+				val = request.getSession(false)
+						.getAttribute(name);
 			}
 			if (val == null) {
 				throw e;
@@ -67,12 +68,13 @@ class WebApiGroovyTemplateBinding extends GroovyTemplateBinding {
 		if (request == null) {
 			return ret;
 		}
-		
+
 		if (!ret) {
 			ret = request.getAttribute(name) != null;
 		}
 		if (!ret && request.getSession(false) != null) {
-			ret = request.getSession(false).getAttribute(name) != null;
+			ret = request.getSession(false)
+					.getAttribute(name) != null;
 		}
 		return ret;
 	}
@@ -83,7 +85,7 @@ class WebApiGroovyTemplateBinding extends GroovyTemplateBinding {
 		//TODO ラップ必要？？
 		return super.getVariables();
 	}
-	
+
 	private static class LazySessionContext implements SessionContext {
 
 		private final RequestContext req;

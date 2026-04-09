@@ -20,10 +20,6 @@
 
 package org.iplass.mtp.view.generic.element;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.Refrectable;
@@ -32,13 +28,17 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.property.PropertyBase;
 import org.iplass.mtp.view.generic.element.section.Section;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 /**
  * 画面を構成する要素
  * @author lis3wg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({Section.class, PropertyBase.class, Button.class,
-	TemplateElement.class, ScriptingElement.class, Link.class, BlankSpace.class, VirtualPropertyItem.class})
+@XmlSeeAlso({ Section.class, PropertyBase.class, Button.class,
+		TemplateElement.class, ScriptingElement.class, Link.class, BlankSpace.class, VirtualPropertyItem.class })
 public abstract class Element implements Refrectable {
 
 	public enum EditDisplayType {
@@ -52,42 +52,42 @@ public abstract class Element implements Refrectable {
 
 	/** 表示フラグ */
 	@MetaFieldInfo(
-			displayName="表示/非表示",
-			displayNameKey="generic_element_Element_dispFlagDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=10,
-			description="画面に表示するかを設定します。",
-			descriptionKey="generic_element_Element_dispFlagDescriptionKey"
+			displayName = "表示/非表示",
+			displayNameKey = "generic_element_Element_dispFlagDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 10,
+			description = "画面に表示するかを設定します。",
+			descriptionKey = "generic_element_Element_dispFlagDescriptionKey"
 	)
 	private boolean dispFlag;
 
 	/** 表示判定スクリプト */
 	@MetaFieldInfo(
-			displayName="表示判定スクリプト",
-			displayNameKey="generic_element_Element_displayScriptDisplayNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovy_script",
-			displayOrder=20,
-			description="表示可否を判定するスクリプトを設定します。",
-			descriptionKey="generic_element_Element_displayScriptDescriptionKey"
+			displayName = "表示判定スクリプト",
+			displayNameKey = "generic_element_Element_displayScriptDisplayNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 20,
+			description = "表示可否を判定するスクリプトを設定します。",
+			descriptionKey = "generic_element_Element_displayScriptDescriptionKey"
 	)
-	@EntityViewField(referenceTypes=FieldReferenceType.ALL)
+	@EntityViewField(referenceTypes = FieldReferenceType.ALL)
 	private String displayScript;
 
 	/** 編集時の表示タイプ */
 	@MetaFieldInfo(
-			displayName="新規/編集時の表示可否",
-			displayNameKey="generic_element_Element_editDisplayTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=EditDisplayType.class,
-			displayOrder=30,
-			description="新規登録または編集時に項目を表示するかを設定します。<br>" +
+			displayName = "新規/編集時の表示可否",
+			displayNameKey = "generic_element_Element_editDisplayTypeDisplaNameKey",
+			inputType = InputType.ENUM,
+			enumClass = EditDisplayType.class,
+			displayOrder = 30,
+			description = "新規登録または編集時に項目を表示するかを設定します。<br>" +
 					"INSERT:新規登録時のみ表示します。<br>" +
 					"UPDATE:編集時のみ表示します。<br>" +
 					"BOTH  :常に表示します、未選択時もBOTHと同様になります。",
-			descriptionKey="generic_element_Element_editDisplayTypeDescriptionKey"
+			descriptionKey = "generic_element_Element_editDisplayTypeDescriptionKey"
 	)
-	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
+	@EntityViewField(referenceTypes = FieldReferenceType.DETAIL)
 	private EditDisplayType editDisplayType;
 
 	/** ElementのRuntimeId */
@@ -131,7 +131,7 @@ public abstract class Element implements Refrectable {
 	 * @return 編集時の表示タイプ
 	 */
 	public EditDisplayType getEditDisplayType() {
-	    return editDisplayType;
+		return editDisplayType;
 	}
 
 	/**
@@ -139,7 +139,7 @@ public abstract class Element implements Refrectable {
 	 * @param editDisplayType 編集時の表示タイプ
 	 */
 	public void setEditDisplayType(EditDisplayType editDisplayType) {
-	    this.editDisplayType = editDisplayType;
+		this.editDisplayType = editDisplayType;
 	}
 
 	/**

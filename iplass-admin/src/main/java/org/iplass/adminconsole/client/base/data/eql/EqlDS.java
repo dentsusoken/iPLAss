@@ -53,30 +53,32 @@ public class EqlDS extends AbstractAdminDataSource {
 		List<String> cols = result.getColumns();
 
 		List<DataSourceField> fields = new ArrayList<DataSourceField>(cols.size());
-		for (int i = 0; i < cols.size() ; i++) {
+		for (int i = 0; i < cols.size(); i++) {
 			DataSourceField field = new DataSourceTextField("col_" + i, SafeHtmlUtils.htmlEscape(cols.get(i)));
 			fields.add(field);
 		}
-		setFields(fields.toArray(new DataSourceField[]{}));
+		setFields(fields.toArray(new DataSourceField[] {}));
 	}
 
 	@Override
 	protected void executeFetch(String requestId, DSRequest request,
 			DSResponse response) {
 
-		GWT.log("EqlDS DEBUG AllCount    -> " + result.getRecords().size());
+		GWT.log("EqlDS DEBUG AllCount    -> " + result.getRecords()
+				.size());
 		GWT.log("EqlDS DEBUG getStartRow -> " + request.getStartRow());
 		GWT.log("EqlDS DEBUG getEndRow   -> " + request.getEndRow());
 
 		int start = request.getStartRow() != null ? request.getStartRow() : 0;
 		int end = request.getEndRow() != null ? request.getEndRow() : -1;
 
-		int size = result.getRecords().size();
+		int size = result.getRecords()
+				.size();
 		if (end >= 0) {
 			//指定されている場合
 			if (end < start) {
 				size = 0;
-			} else if (end > size){
+			} else if (end > size) {
 				//size = size;
 			} else {
 				size = end;
@@ -91,7 +93,7 @@ public class EqlDS extends AbstractAdminDataSource {
 
 			for (String[] fields : datas) {
 				ListGridRecord record = new ListGridRecord();
-				for (int j = 0; j < cols.size() ; j++) {
+				for (int j = 0; j < cols.size(); j++) {
 					//同一のフィールドがSelect指定されてもいいようにnameに列番号を付加
 					record.setAttribute("col_" + j, SafeHtmlUtils.htmlEscape(fields[j]));
 				}
@@ -99,8 +101,9 @@ public class EqlDS extends AbstractAdminDataSource {
 			}
 		}
 
-		response.setData(list.toArray(new ListGridRecord[]{}));
-		response.setTotalRows(result.getRecords().size ());
+		response.setData(list.toArray(new ListGridRecord[] {}));
+		response.setTotalRows(result.getRecords()
+				.size());
 
 		processResponse(requestId, response);
 

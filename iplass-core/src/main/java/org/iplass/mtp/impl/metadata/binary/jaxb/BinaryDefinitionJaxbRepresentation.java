@@ -21,18 +21,18 @@ package org.iplass.mtp.impl.metadata.binary.jaxb;
 
 import java.io.InputStream;
 
+import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
+
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 
-import org.iplass.mtp.definition.binary.ArchiveBinaryDefinition;
-
-@XmlType(name="binaryDefinition", namespace="http://mtp.iplass.org/xml/definition/binary")
+@XmlType(name = "binaryDefinition", namespace = "http://mtp.iplass.org/xml/definition/binary")
 public class BinaryDefinitionJaxbRepresentation implements ArchiveBinaryDefinition {
 	private static final long serialVersionUID = 5419587740677970289L;
 
 	private String name;
 	private long size;
-	
+
 	public BinaryDefinitionJaxbRepresentation() {
 	}
 
@@ -40,7 +40,7 @@ public class BinaryDefinitionJaxbRepresentation implements ArchiveBinaryDefiniti
 		this.name = name;
 		this.size = size;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
@@ -50,7 +50,7 @@ public class BinaryDefinitionJaxbRepresentation implements ArchiveBinaryDefiniti
 	public long getSize() {
 		return size;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}

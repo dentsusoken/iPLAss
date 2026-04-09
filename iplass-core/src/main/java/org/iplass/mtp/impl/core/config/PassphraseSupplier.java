@@ -22,12 +22,12 @@ package org.iplass.mtp.impl.core.config;
 import java.util.Properties;
 
 public interface PassphraseSupplier extends AutoCloseable {
-	
+
 	public char[] getPassphrase();
-	
+
 	public default void open(Properties prop) {
 	};
-	
+
 	public default void close() {
 	};
 

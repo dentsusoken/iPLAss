@@ -104,10 +104,15 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 //	private static final String USER_ENTITY = "mtp.auth.User";
 
 	private EntityManager em = AdminEntityManager.getInstance();
-	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
-	private FulltextSearchManager fsm = ManagerLocator.getInstance().getManager(FulltextSearchManager.class);
-	private RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
+	private EntityService ehs = ServiceRegistry.getRegistry()
+			.getService(EntityService.class);
+	private FulltextSearchManager fsm = ManagerLocator.getInstance()
+			.getManager(FulltextSearchManager.class);
+	private RdbAdapter rdb = ServiceRegistry.getRegistry()
+			.getService(RdbAdapterService.class)
+			.getRdbAdapter();
 
 	@Override
 	public EntityDataTransferTypeList entityDataTypeWhiteList(EntityDataTransferTypeList param) {
@@ -117,163 +122,181 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	@Override
 	public List<SimpleEntityInfo> getSimpleEntityList(final int tenantId, final boolean isGetDataCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<SimpleEntityInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<SimpleEntityInfo>>() {
 
-			@Override
-			public List<SimpleEntityInfo> call() {
+					@Override
+					public List<SimpleEntityInfo> call() {
 
-				//DefinitionのList取得
-				List<MetaDataEntryInfo> entityList = ehs.list();
+						//DefinitionのList取得
+						List<MetaDataEntryInfo> entityList = ehs.list();
 
-				EntityContext ec = EntityContext.getCurrentContext();
+						EntityContext ec = EntityContext.getCurrentContext();
 
-				List<SimpleEntityInfo> infoList = new ArrayList<>();
-				for (MetaDataEntryInfo entryInfo : entityList) {
+						List<SimpleEntityInfo> infoList = new ArrayList<>();
+						for (MetaDataEntryInfo entryInfo : entityList) {
 
-					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
-					EntityDefinition definition = null;
-					int listenerCount = 0;
-					int totalCount = -1;
-					boolean isError = false;
-					String errorMessage = null;
-					try {
-						//Definition取得
-						definition = ehs.getRuntimeById(entryInfo.getId()).getMetaData().currentConfig(ec);
+							//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
+							EntityDefinition definition = null;
+							int listenerCount = 0;
+							int totalCount = -1;
+							boolean isError = false;
+							String errorMessage = null;
+							try {
+								//Definition取得
+								definition = ehs.getRuntimeById(entryInfo.getId())
+										.getMetaData()
+										.currentConfig(ec);
 
-						//件数取得
-						if (isGetDataCount) {
-							Query query = new Query().select(Entity.OID).from(definition.getName());
-							totalCount = em.count(query);
+								//件数取得
+								if (isGetDataCount) {
+									Query query = new Query().select(Entity.OID)
+											.from(definition.getName());
+									totalCount = em.count(query);
+								}
+							} catch (Exception e) {
+								logger.error(resourceString("errGetEntityInfo"), e);
+								isError = true;
+								errorMessage = (e.getMessage() != null ? e.getMessage()
+										: e.getClass()
+												.getName());
+							}
+
+							SimpleEntityInfo info = new SimpleEntityInfo();
+							if (definition != null) {
+								info.setName(definition.getName());
+								//Definitionが取得できた場合は、多言語を考慮した表示名の取得
+								info.setDisplayName(I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList()));
+
+								if (definition.getEventListenerList() != null) {
+									//Listner件数取得
+									listenerCount = definition.getEventListenerList()
+											.size();
+								}
+								if (definition.getVersionControlType() != VersionControlType.NONE) {
+									info.setVersionControlType(definition.getVersionControlType()
+											.name());
+								}
+							} else {
+								//Definitionが取得できなかったらとりあえずPathをセット
+								info.setName(entryInfo.getPath());
+								info.setDisplayName(entryInfo.getDisplayName());
+							}
+							info.setListenerCount(listenerCount);
+							info.setCount(totalCount);
+							info.setRepository(entryInfo.getRepository());
+							info.setError(isError);
+							if (isError) {
+								info.setErrorMessage(errorMessage);
+							}
+							infoList.add(info);
 						}
-					} catch (Exception e) {
-						logger.error(resourceString("errGetEntityInfo"), e);
-						isError = true;
-						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
+
+						return infoList;
 					}
 
-					SimpleEntityInfo info = new SimpleEntityInfo();
-					if (definition != null) {
-						info.setName(definition.getName());
-						//Definitionが取得できた場合は、多言語を考慮した表示名の取得
-						info.setDisplayName(I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList()));
-
-						if (definition.getEventListenerList() != null) {
-							//Listner件数取得
-							listenerCount = definition.getEventListenerList().size();
-						}
-						if (definition.getVersionControlType() != VersionControlType.NONE) {
-							info.setVersionControlType(definition.getVersionControlType().name());
-						}
-					} else {
-						//Definitionが取得できなかったらとりあえずPathをセット
-						info.setName(entryInfo.getPath());
-						info.setDisplayName(entryInfo.getDisplayName());
-					}
-					info.setListenerCount(listenerCount);
-					info.setCount(totalCount);
-					info.setRepository(entryInfo.getRepository());
-					info.setError(isError);
-					if (isError) {
-						info.setErrorMessage(errorMessage);
-					}
-					infoList.add(info);
-				}
-
-				return infoList;
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public List<EntityViewInfo> getEntityViewList(final int tenantId, final boolean isGetDataCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<EntityViewInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<EntityViewInfo>>() {
 
-			@Override
-			public List<EntityViewInfo> call() {
+					@Override
+					public List<EntityViewInfo> call() {
 
-				//DefinitionのList取得
-				List<MetaDataEntryInfo> entityList = ehs.list();
+						//DefinitionのList取得
+						List<MetaDataEntryInfo> entityList = ehs.list();
 
-				EntityContext ec = EntityContext.getCurrentContext();
-				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+						EntityContext ec = EntityContext.getCurrentContext();
+						EntityViewManager evm = ManagerLocator.getInstance()
+								.getManager(EntityViewManager.class);
 
-				List<EntityViewInfo> infoList = new ArrayList<>();
-				for (MetaDataEntryInfo entryInfo : entityList) {
+						List<EntityViewInfo> infoList = new ArrayList<>();
+						for (MetaDataEntryInfo entryInfo : entityList) {
 
-					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
-					EntityDefinition definition = null;
-					EntityView view = null;
-					int totalCount = -1;
-					boolean isError = false;
-					String errorMessage = null;
-					try {
-						definition = ehs.getRuntimeById(entryInfo.getId()).getMetaData().currentConfig(ec);
+							//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
+							EntityDefinition definition = null;
+							EntityView view = null;
+							int totalCount = -1;
+							boolean isError = false;
+							String errorMessage = null;
+							try {
+								definition = ehs.getRuntimeById(entryInfo.getId())
+										.getMetaData()
+										.currentConfig(ec);
 
-						//View取得
-						view = evm.get(definition.getName());
+								//View取得
+								view = evm.get(definition.getName());
 
-						//件数取得
-						if (isGetDataCount) {
-							Query query = new Query().select(Entity.OID).from(definition.getName());
-							totalCount = em.count(query);
+								//件数取得
+								if (isGetDataCount) {
+									Query query = new Query().select(Entity.OID)
+											.from(definition.getName());
+									totalCount = em.count(query);
+								}
+							} catch (Exception e) {
+								logger.error(resourceString("errGetEntityInfo"), e);
+								isError = true;
+								errorMessage = (e.getMessage() != null ? e.getMessage()
+										: e.getClass()
+												.getName());
+							}
+
+							EntityViewInfo info = new EntityViewInfo();
+							//Definitionが取得できなかったらとりあえずPathをセット
+							if (definition != null) {
+								info.setName(definition.getName());
+							} else {
+								info.setName(entryInfo.getPath());
+							}
+							info.setDisplayName(entryInfo.getDisplayName());
+							info.setCount(totalCount);
+							if (view != null) {
+								info.setDetailFormViewCount(view.getDetailFormViewNames() != null ? view.getDetailFormViewNames().length : 0);
+								info.setSearchFormViewCount(view.getSearchFormViewNames() != null ? view.getSearchFormViewNames().length : 0);
+								info.setBulkFormViewCount(view.getBulkFormViewNames() != null ? view.getBulkFormViewNames().length : 0);
+								info.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings()
+										.size() > 0 ? "*" : "");
+							}
+							info.setError(isError);
+							if (isError) {
+								info.setErrorMessage(errorMessage);
+							}
+							infoList.add(info);
 						}
-					} catch (Exception e) {
-						logger.error(resourceString("errGetEntityInfo"), e);
-						isError = true;
-						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
+
+						return infoList;
 					}
 
-					EntityViewInfo info = new EntityViewInfo();
-					//Definitionが取得できなかったらとりあえずPathをセット
-					if (definition != null) {
-						info.setName(definition.getName());
-					} else {
-						info.setName(entryInfo.getPath());
-					}
-					info.setDisplayName(entryInfo.getDisplayName());
-					info.setCount(totalCount);
-					if (view != null) {
-						info.setDetailFormViewCount(view.getDetailFormViewNames() != null ? view.getDetailFormViewNames().length : 0);
-						info.setSearchFormViewCount(view.getSearchFormViewNames() != null ? view.getSearchFormViewNames().length : 0);
-						info.setBulkFormViewCount(view.getBulkFormViewNames() != null ? view.getBulkFormViewNames().length : 0);
-						info.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings().size() > 0 ? "*" : "");
-					}
-					info.setError(isError);
-					if (isError) {
-						info.setErrorMessage(errorMessage);
-					}
-					infoList.add(info);
-				}
-
-				return infoList;
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public SimpleEntityTreeNode getSimpleEntityTree(final int tenantId, final boolean isGetDataCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<SimpleEntityTreeNode>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<SimpleEntityTreeNode>() {
 
-			@Override
-			public SimpleEntityTreeNode call() {
+					@Override
+					public SimpleEntityTreeNode call() {
 
-				MetaTreeNode metaRoot = new MetaDataTreeBuilder().type(EntityDefinition.class).build();
+						MetaTreeNode metaRoot = new MetaDataTreeBuilder().type(EntityDefinition.class)
+								.build();
 
-				SimpleEntityTreeNode pathRoot = convertNode(metaRoot, isGetDataCount);
+						SimpleEntityTreeNode pathRoot = convertNode(metaRoot, isGetDataCount);
 
-				SimpleEntityTreeNode root = new SimpleEntityTreeNode();
-				root.setName("EntityList");
-				root.setChildren(pathRoot.getChildren());
-				root.setItems(pathRoot.getItems());
+						SimpleEntityTreeNode root = new SimpleEntityTreeNode();
+						root.setName("EntityList");
+						root.setChildren(pathRoot.getChildren());
+						root.setItems(pathRoot.getItems());
 
-				return root;
-			}
+						return root;
+					}
 
-		});
+				});
 	}
 
 	private SimpleEntityTreeNode convertNode(MetaTreeNode metaRoot, boolean isGetDataCount) {
@@ -284,7 +307,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	private void convertNode(SimpleEntityTreeNode entityNode, MetaTreeNode metaNode, boolean isGetDataCount) {
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		EntityViewManager evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 
 		entityNode.setPath(metaNode.getPath());
 		entityNode.setName(metaNode.getName());
@@ -302,7 +326,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 		if (metaNode.getItems() != null) {
 			List<SimpleEntityTreeNode> items = new ArrayList<>();
 			for (MetaTreeNode metaItem : metaNode.getItems()) {
-				if (metaItem.getName().equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
+				if (metaItem.getName()
+						.equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
 					continue;
 				}
 
@@ -334,10 +359,12 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 							if (definition.getEventListenerList() != null) {
 								//Listner件数取得
-								listenerCount = definition.getEventListenerList().size();
+								listenerCount = definition.getEventListenerList()
+										.size();
 							}
 							if (definition.getVersionControlType() != VersionControlType.NONE) {
-								item.setVersionControlType(definition.getVersionControlType().name());
+								item.setVersionControlType(definition.getVersionControlType()
+										.name());
 							}
 						}
 						//View取得
@@ -345,13 +372,16 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 						//件数取得
 						if (isGetDataCount) {
-							Query query = new Query().select(Entity.OID).from(metaItem.getName());
+							Query query = new Query().select(Entity.OID)
+									.from(metaItem.getName());
 							totalCount = em.count(query);
 						}
 					} catch (Exception e) {
 						logger.error(resourceString("errGetEntityInfo"), e);
 						isError = true;
-						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
+						errorMessage = (e.getMessage() != null ? e.getMessage()
+								: e.getClass()
+										.getName());
 					}
 					item.setCount(totalCount);
 					item.setListenerCount(listenerCount);
@@ -359,7 +389,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 						item.setDetailFormViewCount(view.getDetailFormViewNames() != null ? view.getDetailFormViewNames().length : 0);
 						item.setSearchFormViewCount(view.getSearchFormViewNames() != null ? view.getSearchFormViewNames().length : 0);
 						item.setBulkFormViewCount(view.getBulkFormViewNames() != null ? view.getBulkFormViewNames().length : 0);
-						item.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings().size() > 0 ? "*" : "");
+						item.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings()
+								.size() > 0 ? "*" : "");
 					}
 					item.setError(isError);
 					if (isError) {
@@ -373,241 +404,256 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 		}
 	}
 
-
 	@Override
-	public EntityDataListResultInfo search(int tenantId, final String defName, final String whereClause, final String orderByClause, final boolean isSearcgAllVersion, final int limit, final int offset) {
+	public EntityDataListResultInfo search(int tenantId, final String defName, final String whereClause, final String orderByClause,
+			final boolean isSearcgAllVersion, final int limit, final int offset) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataListResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataListResultInfo>() {
 
-			@Override
-			public EntityDataListResultInfo call() {
+					@Override
+					public EntityDataListResultInfo call() {
 
-				EntityDataListResultInfo result = new EntityDataListResultInfo();
-				result.setDefinitionName(defName);
+						EntityDataListResultInfo result = new EntityDataListResultInfo();
+						result.setDefinitionName(defName);
 
-				EntityDefinition definition = getEntityDefinition(defName);
-				result.setDefinition(definition);
+						EntityDefinition definition = getEntityDefinition(defName);
+						result.setDefinition(definition);
 
-				//データの取得
-				Query query = null;
-				try {
-					query = new Query();
-					query.select(getListSelectColumns(definition, result)).from(defName);
+						//データの取得
+						Query query = null;
+						try {
+							query = new Query();
+							query.select(getListSelectColumns(definition, result))
+									.from(defName);
 
-					if (whereClause != null && !whereClause.isEmpty()) {
-						query.where(whereClause);
-						result.addLogMessage("Where : " + whereClause);
-					} else {
-						result.addLogMessage("Where : ");
+							if (whereClause != null && !whereClause.isEmpty()) {
+								query.where(whereClause);
+								result.addLogMessage("Where : " + whereClause);
+							} else {
+								result.addLogMessage("Where : ");
+							}
+
+							if (orderByClause != null && !orderByClause.isEmpty()) {
+								OrderBy orderBy = QueryServiceHolder.getInstance()
+										.getQueryParser()
+										.parse("order by " + orderByClause, OrderBySyntax.class);
+								query.setOrderBy(orderBy);
+								result.addLogMessage("Order By : " + orderByClause);
+							} else {
+								query.order(new SortSpec(Entity.OID, SortType.ASC), new SortSpec(Entity.VERSION, SortType.ASC));
+								result.addLogMessage(
+										"Order By : oid asc, version asc (order by is not specified, so added [oid asc, version asc] for paging control.)");
+							}
+
+							query.limit(limit, offset);
+							result.addLogMessage("Limit : limit = " + limit + ", offset = " + offset);
+
+							if (isSearcgAllVersion) {
+								query.setVersioned(isSearcgAllVersion);
+								result.addLogMessage("Versioned : versioned");
+							}
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addLogMessage(defName + resourceString("errEqlAnalysis"));
+							result.addLogMessage(e.getMessage());
+							return result;
+						}
+
+						long start = System.nanoTime();
+						List<Entity> searchList = null;
+						try {
+							searchList = searchEntity(definition, query);
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addLogMessage(defName + resourceString("errGetData"));
+							result.addLogMessage(e.getMessage());
+							return result;
+						}
+						result.setRecords(searchList);
+
+						long total = System.nanoTime() - start;
+						result.addLogMessage("search exec time：" + toStringExecuteTime(total));
+
+						if (searchList == null || searchList.isEmpty()) {
+							result.addLogMessage("Count ：" + "not found data.");
+						} else {
+							result.addLogMessage("Count ：" + searchList.size());
+						}
+
+						return result;
 					}
 
-					if (orderByClause != null && !orderByClause.isEmpty()) {
-						OrderBy orderBy = QueryServiceHolder.getInstance().getQueryParser().parse("order by " + orderByClause, OrderBySyntax.class);
-						query.setOrderBy(orderBy);
-						result.addLogMessage("Order By : " + orderByClause);
-					} else {
-						query.order(new SortSpec(Entity.OID, SortType.ASC), new SortSpec(Entity.VERSION, SortType.ASC));
-						result.addLogMessage("Order By : oid asc, version asc (order by is not specified, so added [oid asc, version asc] for paging control.)");
-					}
-
-					query.limit(limit, offset);
-					result.addLogMessage("Limit : limit = " + limit + ", offset = " + offset);
-
-					if (isSearcgAllVersion) {
-						query.setVersioned(isSearcgAllVersion);
-						result.addLogMessage("Versioned : versioned");
-					}
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addLogMessage(defName + resourceString("errEqlAnalysis"));
-					result.addLogMessage(e.getMessage());
-					return result;
-				}
-
-				long start = System.nanoTime();
-				List<Entity> searchList = null;
-				try {
-					searchList = searchEntity(definition, query);
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addLogMessage(defName + resourceString("errGetData"));
-					result.addLogMessage(e.getMessage());
-					return result;
-				}
-				result.setRecords(searchList);
-
-				long total = System.nanoTime() - start;
-				result.addLogMessage("search exec time：" + toStringExecuteTime(total));
-
-				if (searchList == null || searchList.isEmpty()) {
-					result.addLogMessage("Count ：" + "not found data.");
-				} else {
-					result.addLogMessage("Count ：" + searchList.size());
-				}
-
-				return result;
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public EntityDataListResultInfo count(int tenantId, final String defName, final String whereClause, final boolean isSearcgAllVersion) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataListResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataListResultInfo>() {
 
-			@Override
-			public EntityDataListResultInfo call() {
+					@Override
+					public EntityDataListResultInfo call() {
 
-				EntityDataListResultInfo result = new EntityDataListResultInfo();
-				result.setDefinitionName(defName);
+						EntityDataListResultInfo result = new EntityDataListResultInfo();
+						result.setDefinitionName(defName);
 
-				//件数の取得
-				Query counter = null;
-				try {
-					counter = new Query().select(Entity.OID).from(defName);
-					if (whereClause != null && !whereClause.isEmpty()) {
-						counter.where(whereClause);
-						result.addLogMessage("Where : " + whereClause);
-					} else {
-						result.addLogMessage("Where : ");
+						//件数の取得
+						Query counter = null;
+						try {
+							counter = new Query().select(Entity.OID)
+									.from(defName);
+							if (whereClause != null && !whereClause.isEmpty()) {
+								counter.where(whereClause);
+								result.addLogMessage("Where : " + whereClause);
+							} else {
+								result.addLogMessage("Where : ");
+							}
+
+							if (isSearcgAllVersion) {
+								counter.setVersioned(isSearcgAllVersion);
+								result.addLogMessage("Versioned : versioned");
+							}
+
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addLogMessage(defName + resourceString("errEqlAnalysis"));
+							result.addLogMessage(e.getMessage());
+							return result;
+						}
+
+						long start = System.nanoTime();
+						int count = -1;
+						try {
+							count = em.count(counter);
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addLogMessage(defName + resourceString("errGetData"));
+							result.addLogMessage(e.getMessage());
+							return result;
+						}
+
+						long total = System.nanoTime() - start;
+						result.addLogMessage("search exec time：" + toStringExecuteTime(total));
+
+						result.addLogMessage("Count ：" + count);
+
+						return result;
 					}
-
-					if (isSearcgAllVersion) {
-						counter.setVersioned(isSearcgAllVersion);
-						result.addLogMessage("Versioned : versioned");
-					}
-
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addLogMessage(defName + resourceString("errEqlAnalysis"));
-					result.addLogMessage(e.getMessage());
-					return result;
-				}
-
-				long start = System.nanoTime();
-				int count = -1;
-				try {
-					count = em.count(counter);
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addLogMessage(defName + resourceString("errGetData"));
-					result.addLogMessage(e.getMessage());
-					return result;
-				}
-
-				long total = System.nanoTime() - start;
-				result.addLogMessage("search exec time：" + toStringExecuteTime(total));
-
-				result.addLogMessage("Count ：" + count);
-
-				return result;
-			}
-		});
+				});
 	}
 
-
 	@Override
-	public EntityDataListResultInfo validateCriteria(int tenantId, final String defName, final String whereClause, final String orderByClause, final boolean isSearcgAllVersion) {
+	public EntityDataListResultInfo validateCriteria(int tenantId, final String defName, final String whereClause, final String orderByClause,
+			final boolean isSearcgAllVersion) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataListResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataListResultInfo>() {
 
-			@Override
-			public EntityDataListResultInfo call() {
+					@Override
+					public EntityDataListResultInfo call() {
 
-				EntityDataListResultInfo result = new EntityDataListResultInfo();
-				result.setDefinitionName(defName);
+						EntityDataListResultInfo result = new EntityDataListResultInfo();
+						result.setDefinitionName(defName);
 
-				//件数の取得
-				Query counter = null;
-				try {
-					counter = new Query().select(Entity.OID).from(defName);
-					if (whereClause != null && !whereClause.isEmpty()) {
-						//counter.where(whereClause);
-						result.addLogMessage("Where : " + whereClause);
-					} else {
-						result.addLogMessage("Where : ");
+						//件数の取得
+						Query counter = null;
+						try {
+							counter = new Query().select(Entity.OID)
+									.from(defName);
+							if (whereClause != null && !whereClause.isEmpty()) {
+								//counter.where(whereClause);
+								result.addLogMessage("Where : " + whereClause);
+							} else {
+								result.addLogMessage("Where : ");
+							}
+							//EQLの検証が目的なのでOrderByも指定
+							if (orderByClause != null && !orderByClause.isEmpty()) {
+								OrderBy orderBy = QueryServiceHolder.getInstance()
+										.getQueryParser()
+										.parse("order by " + orderByClause, OrderBySyntax.class);
+								counter.setOrderBy(orderBy);
+								result.addLogMessage("Order By : " + orderByClause);
+							} else {
+								result.addLogMessage("Order By : ");
+							}
+
+							if (isSearcgAllVersion) {
+								counter.setVersioned(isSearcgAllVersion);
+							}
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addLogMessage(defName + resourceString("errEqlAnalysis"));
+							result.addLogMessage(e.getMessage());
+							return result;
+						}
+
+						try {
+							//あくまでも検証目的なので、大量件数を考慮して条件にOIDを付加
+							String execWhereClause = null;
+							if (StringUtil.isEmpty(whereClause)) {
+								execWhereClause = Entity.OID + " = 'xxx'";
+							} else {
+								execWhereClause = whereClause + " and " + Entity.OID + " = 'xxx'";
+							}
+							counter.where(execWhereClause);
+
+							em.count(counter);
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addLogMessage(defName + resourceString("errGetData"));
+							result.addLogMessage(e.getMessage());
+							return result;
+						}
+						result.addLogMessage("EQL is validate.");
+
+						return result;
 					}
-					//EQLの検証が目的なのでOrderByも指定
-					if (orderByClause != null && !orderByClause.isEmpty()) {
-						OrderBy orderBy = QueryServiceHolder.getInstance().getQueryParser().parse("order by " + orderByClause, OrderBySyntax.class);
-						counter.setOrderBy(orderBy);
-						result.addLogMessage("Order By : " + orderByClause);
-					} else {
-						result.addLogMessage("Order By : ");
-					}
-
-					if (isSearcgAllVersion) {
-						counter.setVersioned(isSearcgAllVersion);
-					}
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addLogMessage(defName + resourceString("errEqlAnalysis"));
-					result.addLogMessage(e.getMessage());
-					return result;
-				}
-
-				try {
-					//あくまでも検証目的なので、大量件数を考慮して条件にOIDを付加
-					String execWhereClause = null;
-					if (StringUtil.isEmpty(whereClause)) {
-						execWhereClause = Entity.OID + " = 'xxx'";
-					} else {
-						execWhereClause = whereClause + " and " + Entity.OID + " = 'xxx'";
-					}
-					counter.where(execWhereClause);
-
-					em.count(counter);
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addLogMessage(defName + resourceString("errGetData"));
-					result.addLogMessage(e.getMessage());
-					return result;
-				}
-				result.addLogMessage("EQL is validate.");
-
-				return result;
-			}
-		});
+				});
 	}
 
 	@Override
 	public EntityUpdateAllResultInfo updateAll(final int tenantId, final EntityUpdateAllCondition cond) {
-		EntityToolService entityService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityUpdateAllResultInfo>() {
+		EntityToolService entityService = ServiceRegistry.getRegistry()
+				.getService(EntityToolService.class);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityUpdateAllResultInfo>() {
 
-			@Override
-			public EntityUpdateAllResultInfo call() {
-				return entityService.updateAll(cond);
-			}
+					@Override
+					public EntityUpdateAllResultInfo call() {
+						return entityService.updateAll(cond);
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public List<Entity> searchReferenceEntity(int tenantId, final String defName, final String refName, final String oid, final Long version) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Entity>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Entity>>() {
 
-			@Override
-			public List<Entity> call() {
-				Query query = new Query();
-				query.select(refName + "." + Entity.OID, refName + "." + Entity.NAME, refName + "." + Entity.VERSION)
-					.from(defName)
-					.where(new And(
-							new Equals(Entity.OID, oid),
-							new Equals(Entity.VERSION, version)))
-					.order(new SortSpec(refName + "." + Entity.OID, SortType.ASC), new SortSpec(refName + "." + Entity.VERSION, SortType.ASC));
+					@Override
+					public List<Entity> call() {
+						Query query = new Query();
+						query.select(refName + "." + Entity.OID, refName + "." + Entity.NAME, refName + "." + Entity.VERSION)
+								.from(defName)
+								.where(new And(
+										new Equals(Entity.OID, oid),
+										new Equals(Entity.VERSION, version)))
+								.order(new SortSpec(refName + "." + Entity.OID, SortType.ASC),
+										new SortSpec(refName + "." + Entity.VERSION, SortType.ASC));
 
-				return searchEntity(defName, query);
-			}
-		});
+						return searchEntity(defName, query);
+					}
+				});
 	}
 
 	private EntityDefinition getEntityDefinition(final String defName) {
@@ -618,13 +664,15 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 		//EntityManager#searchEntityで検索した場合に、oidに対して複数のレコードが返る項目を除外する。
 
 		List<String> columns = new ArrayList<>();
-		for (PropertyDefinition property: definition.getPropertyList()) {
+		for (PropertyDefinition property : definition.getPropertyList()) {
 			if (property instanceof ReferenceProperty) {
-				ReferenceProperty reference = (ReferenceProperty)property;
-				if (reference.getMappedBy() != null && !reference.getMappedBy().isEmpty()) {
+				ReferenceProperty reference = (ReferenceProperty) property;
+				if (reference.getMappedBy() != null && !reference.getMappedBy()
+						.isEmpty()) {
 
 					//検索対象外(多重度が1でも複数の可能性あり。ex.出版社情報#雑誌情報)
-					result.addLogMessage(resourceString("notSearchspeRefced", property.getDisplayName(), property.getName(), reference.getObjectDefinitionName(), reference.getMappedBy()));
+					result.addLogMessage(resourceString("notSearchspeRefced", property.getDisplayName(), property.getName(),
+							reference.getObjectDefinitionName(), reference.getMappedBy()));
 				} else if (property.getMultiplicity() != 1) {
 
 					//検索対象外
@@ -638,7 +686,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				columns.add(property.getName());
 			}
 		}
-		return columns.toArray(new String[]{});
+		return columns.toArray(new String[] {});
 	}
 
 	/**
@@ -662,24 +710,25 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 		//Referenceプロパティでかつ多重度１の場合も画面表示時にエラーとなるため、
 		//em.searchEntity方式での検索から、em.search方式に全面移行
 //		if (definition.getMapping() != null) {
-			SearchResult<Object[]> searchResult = em.search(query);
-			List<Object[]> resultObjectList = searchResult.getList();
-			if (resultObjectList == null) {
-				return Collections.emptyList();
-			}
+		SearchResult<Object[]> searchResult = em.search(query);
+		List<Object[]> resultObjectList = searchResult.getList();
+		if (resultObjectList == null) {
+			return Collections.emptyList();
+		}
 
-			List<Entity> resultList = new ArrayList<>(resultObjectList.size());
+		List<Entity> resultList = new ArrayList<>(resultObjectList.size());
 
-			List<ValueExpression> colValues = query.getSelect().getSelectValues();
-			for (Object[] record : resultObjectList) {
-				GenericEntity entity = new GenericEntity(definition.getName());
-				int i = 0;
-				for (ValueExpression colValue : colValues) {
-					setValue(definition, entity, colValue, record[i++]);
-				}
-				resultList.add(entity);
+		List<ValueExpression> colValues = query.getSelect()
+				.getSelectValues();
+		for (Object[] record : resultObjectList) {
+			GenericEntity entity = new GenericEntity(definition.getName());
+			int i = 0;
+			for (ValueExpression colValue : colValues) {
+				setValue(definition, entity, colValue, record[i++]);
 			}
-			return resultList;
+			resultList.add(entity);
+		}
+		return resultList;
 //		} else {
 //			SearchResult<Entity> searchResult = em.searchEntity(query, true);
 //			return searchResult.getList();
@@ -692,8 +741,12 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 			return;
 		}
 		if (isReferenceProperty(definition, colValue)) {
-			String refName = colValue.toString().substring(0, colValue.toString().lastIndexOf("."));
-			String propertyName = colValue.toString().substring(colValue.toString().lastIndexOf(".") + 1);
+			String refName = colValue.toString()
+					.substring(0, colValue.toString()
+							.lastIndexOf("."));
+			String propertyName = colValue.toString()
+					.substring(colValue.toString()
+							.lastIndexOf(".") + 1);
 			GenericEntity refEntity = entity.getValue(refName);
 			if (refEntity == null) {
 				refEntity = createReferenceEntity(definition, refName);
@@ -707,99 +760,108 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	private boolean isReferenceProperty(EntityDefinition definition, ValueExpression colValue) {
 		//後ろに「.oid」「.name」「.version」が付いていたらReferencePropertyの検索
-		return colValue.toString().endsWith("." + Entity.OID)
-				|| colValue.toString().endsWith("." + Entity.NAME)
-				|| colValue.toString().endsWith("." + Entity.VERSION);
+		return colValue.toString()
+				.endsWith("." + Entity.OID)
+				|| colValue.toString()
+						.endsWith("." + Entity.NAME)
+				|| colValue.toString()
+						.endsWith("." + Entity.VERSION);
 	}
 
 	private GenericEntity createReferenceEntity(EntityDefinition definition, String refName) {
-		ReferenceProperty property = (ReferenceProperty)definition.getProperty(refName);
+		ReferenceProperty property = (ReferenceProperty) definition.getProperty(refName);
 		return new GenericEntity(property.getObjectDefinitionName());
 	}
 
 	@Override
 	public Entity load(final int tenantId, final String defName, final String oid, final Long version) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Entity>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Entity>() {
 
-			@Override
-			public Entity call() {
+					@Override
+					public Entity call() {
 
-				GenericEntity returnEntity = null;
+						GenericEntity returnEntity = null;
 
-				//検索（MappedByは対象外）
-				LoadOption option = new LoadOption(true, false);
-				Entity loadEntity = em.load(oid, version, defName, option);
-				if (loadEntity != null) {
-					//このままだとMapping指定されている場合にGWTでエラーになるので置き換え
+						//検索（MappedByは対象外）
+						LoadOption option = new LoadOption(true, false);
+						Entity loadEntity = em.load(oid, version, defName, option);
+						if (loadEntity != null) {
+							//このままだとMapping指定されている場合にGWTでエラーになるので置き換え
 
-					returnEntity = new GenericEntity(defName);
-					EntityDefinition definition = getEntityDefinition(defName);
+							returnEntity = new GenericEntity(defName);
+							EntityDefinition definition = getEntityDefinition(defName);
 
-					List<PropertyDefinition> propertyList = definition.getPropertyList();
-					for (PropertyDefinition pd: propertyList) {
-						if (pd instanceof ReferenceProperty) {
-							ReferenceProperty rp = (ReferenceProperty)pd;
-							if (rp.getMappedBy() == null) {
-								Object refLoadEntityValue = loadEntity.getValue(pd.getName());
-								if (refLoadEntityValue != null) {
-									if (refLoadEntityValue.getClass().isArray()) {
-										//複数
-										Entity[] refLoadEntities = (Entity[])refLoadEntityValue;
-										Entity[] refEntities = new GenericEntity[refLoadEntities.length];
-										for (int i = 0; i < refLoadEntities.length; i++) {
-											Entity refLoadEntity = refLoadEntities[i];
-											refEntities[i] = new GenericEntity(rp.getObjectDefinitionName());
-											refEntities[i].setOid(refLoadEntity.getOid());
-											refEntities[i].setName(refLoadEntity.getName());
-											refEntities[i].setVersion(refLoadEntity.getVersion());
+							List<PropertyDefinition> propertyList = definition.getPropertyList();
+							for (PropertyDefinition pd : propertyList) {
+								if (pd instanceof ReferenceProperty) {
+									ReferenceProperty rp = (ReferenceProperty) pd;
+									if (rp.getMappedBy() == null) {
+										Object refLoadEntityValue = loadEntity.getValue(pd.getName());
+										if (refLoadEntityValue != null) {
+											if (refLoadEntityValue.getClass()
+													.isArray()) {
+												//複数
+												Entity[] refLoadEntities = (Entity[]) refLoadEntityValue;
+												Entity[] refEntities = new GenericEntity[refLoadEntities.length];
+												for (int i = 0; i < refLoadEntities.length; i++) {
+													Entity refLoadEntity = refLoadEntities[i];
+													refEntities[i] = new GenericEntity(rp.getObjectDefinitionName());
+													refEntities[i].setOid(refLoadEntity.getOid());
+													refEntities[i].setName(refLoadEntity.getName());
+													refEntities[i].setVersion(refLoadEntity.getVersion());
+												}
+												returnEntity.setValue(pd.getName(), refEntities);
+											} else {
+												//単発
+												Entity refLoadEntity = (Entity) refLoadEntityValue;
+												GenericEntity refEntity = new GenericEntity(rp.getObjectDefinitionName());
+												refEntity.setOid(refLoadEntity.getOid());
+												refEntity.setName(refLoadEntity.getName());
+												refEntity.setVersion(refLoadEntity.getVersion());
+												returnEntity.setValue(pd.getName(), refEntity);
+											}
 										}
-										returnEntity.setValue(pd.getName(), refEntities);
-									} else {
-										//単発
-										Entity refLoadEntity = (Entity)refLoadEntityValue;
-										GenericEntity refEntity = new GenericEntity(rp.getObjectDefinitionName());
-										refEntity.setOid(refLoadEntity.getOid());
-										refEntity.setName(refLoadEntity.getName());
-										refEntity.setVersion(refLoadEntity.getVersion());
-										returnEntity.setValue(pd.getName(), refEntity);
 									}
+								} else {
+									returnEntity.setValue(pd.getName(), loadEntity.getValue(pd.getName()));
 								}
 							}
-						} else {
-							returnEntity.setValue(pd.getName(), loadEntity.getValue(pd.getName()));
 						}
+
+						return returnEntity;
 					}
-				}
 
-				return returnEntity;
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public EntityDataDeleteResultInfo deleteAll(final int tenantId, final String defName, final String whereClause, final boolean deleteSpecificVersion,
 			final boolean isNotifyListeners, final int commitLimit) {
-		EntityToolService entityService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
-			@Override
-			public EntityDataDeleteResultInfo call() {
-				return entityService.deleteAll(tenantId, defName, whereClause, deleteSpecificVersion, isNotifyListeners, commitLimit);
-			}
-		});
+		EntityToolService entityService = ServiceRegistry.getRegistry()
+				.getService(EntityToolService.class);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
+					@Override
+					public EntityDataDeleteResultInfo call() {
+						return entityService.deleteAll(tenantId, defName, whereClause, deleteSpecificVersion, isNotifyListeners, commitLimit);
+					}
+				});
 	}
 
 	@Override
 	public EntityDataDeleteResultInfo deleteAllByOid(final int tenantId, final String defName, final List<String> oids, final boolean isNotifyListeners,
 			final int commitLimit) {
-		EntityToolService entityService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
-			@Override
-			public EntityDataDeleteResultInfo call() {
-				return entityService.deleteAllByOid(tenantId, defName, oids, isNotifyListeners, commitLimit);
-			}
-		});
+		EntityToolService entityService = ServiceRegistry.getRegistry()
+				.getService(EntityToolService.class);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataDeleteResultInfo>() {
+					@Override
+					public EntityDataDeleteResultInfo call() {
+						return entityService.deleteAllByOid(tenantId, defName, oids, isNotifyListeners, commitLimit);
+					}
+				});
 	}
 
 	@Override
@@ -819,151 +881,163 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	@Override
 	public EntityDataCountResultInfo getConditionDataCount(final int tenantId, final String defName, final String whereClause,
 			final boolean searchAllVersion) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDataCountResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDataCountResultInfo>() {
 
-			@Override
-			public EntityDataCountResultInfo call() {
+					@Override
+					public EntityDataCountResultInfo call() {
 
-				final EntityDataCountResultInfo result = new EntityDataCountResultInfo();
+						final EntityDataCountResultInfo result = new EntityDataCountResultInfo();
 
-				try {
-					Object[] selectValues = searchAllVersion
-							? new Object[] { Entity.OID, Entity.VERSION }
-							: new Object[] { Entity.OID };
+						try {
+							Object[] selectValues = searchAllVersion
+									? new Object[] { Entity.OID, Entity.VERSION }
+									: new Object[] { Entity.OID };
 
-					Query cond = new Query().select(selectValues)
-							.from(defName)
-							.versioned(searchAllVersion);
-					int allCount = em.count(cond);
+							Query cond = new Query().select(selectValues)
+									.from(defName)
+									.versioned(searchAllVersion);
+							int allCount = em.count(cond);
 
-					int targetCount = 0;
-					if (whereClause != null && !whereClause.isEmpty()) {
-						cond.where(whereClause);
-						result.addMessages("Condition : " + whereClause);
+							int targetCount = 0;
+							if (whereClause != null && !whereClause.isEmpty()) {
+								cond.where(whereClause);
+								result.addMessages("Condition : " + whereClause);
 
-						targetCount = em.count(cond);
-					} else {
-						result.addMessages("Condition : " + "none");
+								targetCount = em.count(cond);
+							} else {
+								result.addMessages("Condition : " + "none");
 
-						targetCount = allCount;
+								targetCount = allCount;
+							}
+
+							result.setAllCount(allCount);
+							result.setTargetCount(targetCount);
+
+							result.setError(false);
+							result.addMessages("Result : SUCCESS");
+							result.addMessages("Target Count : " + targetCount + " / " + allCount);
+							return result;
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							result.setError(true);
+							result.addMessages("Result : FAILURE");
+							result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage()
+									: e.getClass()
+											.getName()));
+							return result;
+						}
 					}
 
-					result.setAllCount(allCount);
-					result.setTargetCount(targetCount);
-
-					result.setError(false);
-					result.addMessages("Result : SUCCESS");
-					result.addMessages("Target Count : " + targetCount + " / " + allCount);
-					return result;
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					result.setError(true);
-					result.addMessages("Result : FAILURE");
-					result.addMessages("Cause : " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()));
-					return result;
-				}
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public List<DefragEntityInfo> getDefragEntityList(final int tenantId, final boolean isGetDataCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<DefragEntityInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<DefragEntityInfo>>() {
 
-			@Override
-			public List<DefragEntityInfo> call() {
+					@Override
+					public List<DefragEntityInfo> call() {
 
-				//DefinitionのList取得
-				List<MetaDataEntryInfo> entityList = ehs.list();
+						//DefinitionのList取得
+						List<MetaDataEntryInfo> entityList = ehs.list();
 
-				EntityContext ec = EntityContext.getCurrentContext();
+						EntityContext ec = EntityContext.getCurrentContext();
 
-				List<DefragEntityInfo> infoList = new ArrayList<>();
-				for (MetaDataEntryInfo entryInfo : entityList) {
+						List<DefragEntityInfo> infoList = new ArrayList<>();
+						for (MetaDataEntryInfo entryInfo : entityList) {
 
-					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
-					EntityDefinition definition = null;
-					int totalCount = -1;
-					boolean isError = false;
-					String errorMessage = null;
-					try {
-						//Definition取得
-						definition = ehs.getRuntimeById(entryInfo.getId()).getMetaData().currentConfig(ec);
+							//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
+							EntityDefinition definition = null;
+							int totalCount = -1;
+							boolean isError = false;
+							String errorMessage = null;
+							try {
+								//Definition取得
+								definition = ehs.getRuntimeById(entryInfo.getId())
+										.getMetaData()
+										.currentConfig(ec);
 
-						//件数取得
-						if (isGetDataCount) {
-							Query query = new Query().select(Entity.OID).from(definition.getName());
-							totalCount = em.count(query);
+								//件数取得
+								if (isGetDataCount) {
+									Query query = new Query().select(Entity.OID)
+											.from(definition.getName());
+									totalCount = em.count(query);
+								}
+							} catch (Exception e) {
+								logger.error("Error getting the defrag target entity list.", e);
+								isError = true;
+								errorMessage = (e.getMessage() != null ? e.getMessage()
+										: e.getClass()
+												.getName());
+							}
+
+							DefragEntityInfo info = new DefragEntityInfo();
+							if (definition != null) {
+								info.setName(definition.getName());
+								//Definitionが取得できた場合は、多言語を考慮した表示名の取得
+								info.setDisplayName(I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList()));
+							} else {
+								//Definitionが取得できなかったらとりあえずPathをセット
+								info.setName(entryInfo.getPath());
+								info.setDisplayName(entryInfo.getDisplayName());
+							}
+							info.setCurrentVersion(entryInfo.getVersion());
+							info.setUpdateDate(entryInfo.getUpdateDate());
+							info.setCount(totalCount);
+							info.setError(isError);
+							if (isError) {
+								info.setErrorMessage(errorMessage);
+							}
+							infoList.add(info);
 						}
-					} catch (Exception e) {
-						logger.error("Error getting the defrag target entity list.", e);
-						isError = true;
-						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
+
+						return infoList;
 					}
 
-					DefragEntityInfo info = new DefragEntityInfo();
-					if (definition != null) {
-						info.setName(definition.getName());
-						//Definitionが取得できた場合は、多言語を考慮した表示名の取得
-						info.setDisplayName(I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList()));
-					} else {
-						//Definitionが取得できなかったらとりあえずPathをセット
-						info.setName(entryInfo.getPath());
-						info.setDisplayName(entryInfo.getDisplayName());
-					}
-					info.setCurrentVersion(entryInfo.getVersion());
-					info.setUpdateDate(entryInfo.getUpdateDate());
-					info.setCount(totalCount);
-					info.setError(isError);
-					if (isError) {
-						info.setErrorMessage(errorMessage);
-					}
-					infoList.add(info);
-				}
-
-				return infoList;
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public List<String> defragEntity(final int tenantId, final String defName) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
 
-			@Override
-			public List<String> call() {
+					@Override
+					public List<String> call() {
 
-				List<String> messages = new ArrayList<>();
+						List<String> messages = new ArrayList<>();
 
-				//非同期で実行する
-				try {
-					AsyncTaskService asyncService = ServiceRegistry.getRegistry().getService(AsyncTaskService.class);
-					asyncService.execute(new Callable<Void>() {
+						//非同期で実行する
+						try {
+							AsyncTaskService asyncService = ServiceRegistry.getRegistry()
+									.getService(AsyncTaskService.class);
+							asyncService.execute(new Callable<Void>() {
 
-						@Override
-						public Void call() throws Exception {
-							doDefragEntity(defName);
-							return null;
+								@Override
+								public Void call() throws Exception {
+									doDefragEntity(defName);
+									return null;
+								}
+							});
+
+							messages.add("start defrag. name = " + defName);
+						} catch (Throwable e) {
+							logger.error(e.getMessage(), e);
+							messages.add("error start defrag. name = " + defName);
 						}
-					});
 
-					messages.add("start defrag. name = " + defName);
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					messages.add("error start defrag. name = " + defName);
-				}
-
-				return messages;
-			}
-		});
+						return messages;
+					}
+				});
 	}
 
 	private void doDefragEntity(final String defName) {
-		EntityService service = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityService service = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		service.defragByName(defName);
 	}
 
@@ -978,120 +1052,128 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public void execCrawlEntity(int tenantId, String[] defNames) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				for (String defName : defNames) {
-					fsm.crawlEntity(defName);
-				}
-				// 手動Crawlの場合、自動Refresh
-				fsm.refresh();
-				return null;
-			}
+					@Override
+					public Void call() {
+						for (String defName : defNames) {
+							fsm.crawlEntity(defName);
+						}
+						// 手動Crawlの場合、自動Refresh
+						fsm.refresh();
+						return null;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public void execReCrawlEntity(int tenantId) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				fsm.recrawlAllEntity();
-				// 手動Crawlの場合、自動Refresh
-				fsm.refresh();
-				return null;
-			}
-		});
+					@Override
+					public Void call() {
+						fsm.recrawlAllEntity();
+						// 手動Crawlの場合、自動Refresh
+						fsm.refresh();
+						return null;
+					}
+				});
 
 	}
 
-
 	@Override
 	public void execRefresh(int tenantId) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				fsm.refresh();
-				return null;
-			}
-		});
+					@Override
+					public Void call() {
+						fsm.refresh();
+						return null;
+					}
+				});
 
 	}
 
 	@Override
 	public List<CrawlEntityInfo> getCrawlEntityList(final int tenantId, final boolean isGetDataCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<CrawlEntityInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<CrawlEntityInfo>>() {
 
-			@Override
-			public List<CrawlEntityInfo> call() {
-				Map<String, Timestamp> map = getLastCrawlTimestamp(tenantId);
+					@Override
+					public List<CrawlEntityInfo> call() {
+						Map<String, Timestamp> map = getLastCrawlTimestamp(tenantId);
 
-				//Entity定義の取得
-				List<MetaDataEntryInfo> entityList = ehs.list();
+						//Entity定義の取得
+						List<MetaDataEntryInfo> entityList = ehs.list();
 
-				EntityContext ctx = EntityContext.getCurrentContext();
+						EntityContext ctx = EntityContext.getCurrentContext();
 
-				List<CrawlEntityInfo> infoList = new ArrayList<>();
-				for (MetaDataEntryInfo entryInfo : entityList) {
+						List<CrawlEntityInfo> infoList = new ArrayList<>();
+						for (MetaDataEntryInfo entryInfo : entityList) {
 
-					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
-					EntityDefinition definition = null;
-					int totalCount = -1;
-					boolean isError = false;
-					String errorMessage = null;
-					try {
-						//Definition取得
-						definition = ehs.getRuntimeById(entryInfo.getId()).getMetaData().currentConfig(ctx);
+							//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
+							EntityDefinition definition = null;
+							int totalCount = -1;
+							boolean isError = false;
+							String errorMessage = null;
+							try {
+								//Definition取得
+								definition = ehs.getRuntimeById(entryInfo.getId())
+										.getMetaData()
+										.currentConfig(ctx);
 
-						// クロール対象ではない場合はリストに表示しない
-						if (!definition.isCrawl()) {
-							continue;
+								// クロール対象ではない場合はリストに表示しない
+								if (!definition.isCrawl()) {
+									continue;
+								}
+
+								//件数取得
+								if (isGetDataCount) {
+									Query query = new Query().select(Entity.OID)
+											.from(definition.getName());
+									totalCount = em.count(query);
+								}
+							} catch (Exception e) {
+								logger.error(resourceString("errGetEntityInfo"), e);
+								isError = true;
+								errorMessage = (e.getMessage() != null ? e.getMessage()
+										: e.getClass()
+												.getName());
+							}
+
+							CrawlEntityInfo info = new CrawlEntityInfo();
+							if (definition != null) {
+								info.setName(definition.getName());
+								//Definitionが取得できた場合は、多言語を考慮した表示名の取得
+								info.setDisplayName(I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList()));
+							} else {
+								//Definitionが取得できなかったらとりあえずPathをセット
+								info.setName(entryInfo.getPath());
+								info.setDisplayName(entryInfo.getDisplayName());
+							}
+							info.setCount(totalCount);
+							info.setError(isError);
+							if (isError) {
+								info.setErrorMessage(errorMessage);
+							}
+
+							info.setUpdateDate(entryInfo.getUpdateDate());
+
+							if (map.containsKey(entryInfo.getId())) {
+								info.setLastCrawlDate(map.get(entryInfo.getId()));
+							}
+							infoList.add(info);
 						}
 
-						//件数取得
-						if (isGetDataCount) {
-							Query query = new Query().select(Entity.OID).from(definition.getName());
-							totalCount = em.count(query);
-						}
-					} catch (Exception e) {
-						logger.error(resourceString("errGetEntityInfo"), e);
-						isError = true;
-						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
+						return infoList;
 					}
 
-					CrawlEntityInfo info = new CrawlEntityInfo();
-					if (definition != null) {
-						info.setName(definition.getName());
-						//Definitionが取得できた場合は、多言語を考慮した表示名の取得
-						info.setDisplayName(I18nUtil.stringDef(definition.getDisplayName(), definition.getLocalizedDisplayNameList()));
-					} else {
-						//Definitionが取得できなかったらとりあえずPathをセット
-						info.setName(entryInfo.getPath());
-						info.setDisplayName(entryInfo.getDisplayName());
-					}
-					info.setCount(totalCount);
-					info.setError(isError);
-					if (isError) {
-						info.setErrorMessage(errorMessage);
-					}
-
-					info.setUpdateDate(entryInfo.getUpdateDate());
-
-					if (map.containsKey(entryInfo.getId())) {
-						info.setLastCrawlDate(map.get(entryInfo.getId()));
-					}
-					infoList.add(info);
-				}
-
-				return infoList;
-			}
-
-		});
+				});
 	}
 
 	private Map<String, Timestamp> getLastCrawlTimestamp(int tenantId) {
@@ -1105,7 +1187,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				ResultSet rs = getStatement().executeQuery(sql);
 				Map<String, Timestamp> map = new LinkedHashMap<>();
 				try {
-					while(rs.next()) {
+					while (rs.next()) {
 						map.put(rs.getString(1), rs.getTimestamp(2, rdb.rdbCalendar()));
 					}
 				} finally {
@@ -1120,107 +1202,111 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public boolean isUseFulltextSearch(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Boolean>() {
-			@Override
-			public Boolean call() {
-				return fsm.isUseFulltextSearch();
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Boolean>() {
+					@Override
+					public Boolean call() {
+						return fsm.isUseFulltextSearch();
+					}
+				});
 	}
 
 	@Override
 	public List<RecycleBinEntityInfo> getRecycleBinInfoList(int tenantId, Timestamp ts, boolean isGetCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<RecycleBinEntityInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<RecycleBinEntityInfo>>() {
 
-			@Override
-			public List<RecycleBinEntityInfo> call() {
+					@Override
+					public List<RecycleBinEntityInfo> call() {
 
-				//Definitionのlist取得
-				List<MetaDataEntryInfo> entityList = ehs.list();
+						//Definitionのlist取得
+						List<MetaDataEntryInfo> entityList = ehs.list();
 
-				EntityContext ctx = EntityContext.getCurrentContext();
+						EntityContext ctx = EntityContext.getCurrentContext();
 
-				List<RecycleBinEntityInfo> infoList = new ArrayList<>();
-				for(MetaDataEntryInfo entryInfo: entityList) {
+						List<RecycleBinEntityInfo> infoList = new ArrayList<>();
+						for (MetaDataEntryInfo entryInfo : entityList) {
 
-					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
-					EntityDefinition definition = null;
-					EntityHandler handler = null;
-					int totalCount = 0;
-					boolean isError = false;
-					String errorMessage = null;
+							//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
+							EntityDefinition definition = null;
+							EntityHandler handler = null;
+							int totalCount = 0;
+							boolean isError = false;
+							String errorMessage = null;
 
-					try {
-						handler = ehs.getRuntimeById(entryInfo.getId());
-						definition = handler.getMetaData().currentConfig(ctx);
+							try {
+								handler = ehs.getRuntimeById(entryInfo.getId());
+								definition = handler.getMetaData()
+										.currentConfig(ctx);
 
-						// 件数取得
-						if (isGetCount) {
-							totalCount = handler.countRecycleBin(ts);
+								// 件数取得
+								if (isGetCount) {
+									totalCount = handler.countRecycleBin(ts);
+								}
+							} catch (Exception e) {
+								logger.error("Error getting the recycle bin list.", e);
+								isError = true;
+								errorMessage = (e.getMessage() != null ? e.getMessage()
+										: e.getClass()
+												.getName());
+							}
+
+							RecycleBinEntityInfo info = new RecycleBinEntityInfo();
+							if (definition != null) {
+								info.setName(definition.getName());
+								info.setDisplayName(definition.getDisplayName());
+							} else {
+								//Definitionが取得できなかったらとりあえずPathをセット
+								info.setName(entryInfo.getPath());
+								info.setDisplayName(entryInfo.getDisplayName());
+							}
+							info.setCount(totalCount);
+							info.setError(isError);
+							if (isError) {
+								info.setErrorMessage(errorMessage);
+							}
+							infoList.add(info);
 						}
-					}  catch (Exception e) {
-						logger.error("Error getting the recycle bin list.", e);
-						isError = true;
-						errorMessage = (e.getMessage() != null ? e.getMessage() : e.getClass().getName());
-					}
 
-					RecycleBinEntityInfo info = new RecycleBinEntityInfo();
-					if (definition != null) {
-						info.setName(definition.getName());
-						info.setDisplayName(definition.getDisplayName());
-					} else {
-						//Definitionが取得できなかったらとりあえずPathをセット
-						info.setName(entryInfo.getPath());
-						info.setDisplayName(entryInfo.getDisplayName());
+						return infoList;
 					}
-					info.setCount(totalCount);
-					info.setError(isError);
-					if (isError) {
-						info.setErrorMessage(errorMessage);
-					}
-					infoList.add(info);
-				}
-
-				return infoList;
-			}
-		});
+				});
 	}
-
-
 
 	@Override
 	public List<String> cleanRecycleBin(int tenantId, String defName, Timestamp ts) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), getThreadLocalRequest(), getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
-			@Override
-			public List<String> call() {
-				List<String> messages = new ArrayList<>();
-				AsyncTaskService asyncService = ServiceRegistry.getRegistry().getService(AsyncTaskService.class);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), getThreadLocalRequest(), getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
+					@Override
+					public List<String> call() {
+						List<String> messages = new ArrayList<>();
+						AsyncTaskService asyncService = ServiceRegistry.getRegistry()
+								.getService(AsyncTaskService.class);
 
-				try {
-					asyncService.execute(new Callable<Void>() {
-						@Override
-						public Void call() throws Exception {
-							doCleanRecycleBinInfoList(defName, ts);
-							return null;
+						try {
+							asyncService.execute(new Callable<Void>() {
+								@Override
+								public Void call() throws Exception {
+									doCleanRecycleBinInfoList(defName, ts);
+									return null;
+								}
+							});
+							messages.add("start clean recycle bin. defName = " + defName);
+						} catch (Exception e) {
+							logger.error(e.getMessage(), e);
+							messages.add("error start clean recycle bin. defName = " + defName);
 						}
-					});
-					messages.add("start clean recycle bin. defName = " + defName);
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-					messages.add("error start clean recycle bin. defName = " + defName);
-				}
-				return messages;
-			}
-		});
+						return messages;
+					}
+				});
 	}
 
 	private void doCleanRecycleBinInfoList(String defName, Timestamp ts) {
-		RecycleBinCleanService rbcs = ServiceRegistry.getRegistry().getService(RecycleBinCleanService.class);
+		RecycleBinCleanService rbcs = ServiceRegistry.getRegistry()
+				.getService(RecycleBinCleanService.class);
 		rbcs.clean(ts, new String[] { defName });
 	}
-
-
 
 	private static String resourceString(String suffix, Object... arguments) {
 		return AdminResourceBundleUtil.resourceString("tools.entityexplorer.EntityExplorerServiceImpl." + suffix, arguments);

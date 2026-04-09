@@ -47,57 +47,86 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 	@Override
 	public String insert(EntityInsertInvocation invocation) {
 		String ret = super.insert(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), ret);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), ContentCacheContext.HOLE_ENTITY);
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(), ret);
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(), ContentCacheContext.HOLE_ENTITY);
 		return ret;
 	}
 
 	@Override
 	public void update(EntityUpdateInvocation invocation) {
 		super.update(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), invocation.getEntity().getOid());
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), ContentCacheContext.HOLE_ENTITY);
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(),
+						invocation.getEntity()
+								.getOid());
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(), ContentCacheContext.HOLE_ENTITY);
 	}
 
 	@Override
 	public void delete(EntityDeleteInvocation invocation) {
 		super.delete(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), invocation.getEntity().getOid());
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), ContentCacheContext.HOLE_ENTITY);
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(),
+						invocation.getEntity()
+								.getOid());
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(), ContentCacheContext.HOLE_ENTITY);
 	}
 
 	@Override
 	public int updateAll(EntityUpdateAllInvocation invocation) {
 		int ret = super.updateAll(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityName(invocation.getUpdateCondition().getDefinitionName());
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityName(invocation.getUpdateCondition()
+						.getDefinitionName());
 		return ret;
 	}
 
 	@Override
 	public void bulkUpdate(EntityBulkUpdateInvocation invocation) {
 		super.bulkUpdate(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityName(invocation.getBulkUpdatable().getDefinitionName());
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityName(invocation.getBulkUpdatable()
+						.getDefinitionName());
 	}
 
 	@Override
 	public int deleteAll(EntityDeleteAllInvocation invocation) {
 		int ret = super.deleteAll(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityName(invocation.getDeleteCondition().getDefinitionName());
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityName(invocation.getDeleteCondition()
+						.getDefinitionName());
 		return ret;
 	}
 
 	@Override
 	public Entity load(EntityLoadInvocation invocation) {
 		Entity ret = super.load(invocation);
-		if (invocation.getEntityDefinition().getVersionControlType() == VersionControlType.TIMEBASE
-				|| invocation.getEntityDefinition().getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE) {
+		if (invocation.getEntityDefinition()
+				.getVersionControlType() == VersionControlType.TIMEBASE
+				|| invocation.getEntityDefinition()
+						.getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE) {
 			Long expires = null;
 			if (ret != null && ret.getEndDate() != null) {
-				expires = ret.getEndDate().getTime() + 1;//ミリ秒以下を切り上げ
+				expires = ret.getEndDate()
+						.getTime() + 1;//ミリ秒以下を切り上げ
 			}
-			ContentCacheContext.getContentCacheContext().record(invocation.getEntityDefinition().getName(), invocation.getOid(), expires);
+			ContentCacheContext.getContentCacheContext()
+					.record(invocation.getEntityDefinition()
+							.getName(), invocation.getOid(), expires);
 		} else {
-			ContentCacheContext.getContentCacheContext().record(invocation.getEntityDefinition().getName(), invocation.getOid(), null);
+			ContentCacheContext.getContentCacheContext()
+					.record(invocation.getEntityDefinition()
+							.getName(), invocation.getOid(), null);
 		}
 		return ret;
 	}
@@ -106,15 +135,20 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 	@Override
 	public void query(final EntityQueryInvocation invocation) {
 		final ContentCacheContext ccc = ContentCacheContext.getContentCacheContext();
-		boolean isRecordEntity = ccc.isRecordEntity(invocation.getEntityDefinition().getName());
+		boolean isRecordEntity = ccc.isRecordEntity(invocation.getEntityDefinition()
+				.getName());
 		if (isRecordEntity) {
-			final boolean isTimebase = invocation.getEntityDefinition().getVersionControlType() == VersionControlType.TIMEBASE
-					|| invocation.getEntityDefinition().getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE;
+			final boolean isTimebase = invocation.getEntityDefinition()
+					.getVersionControlType() == VersionControlType.TIMEBASE
+					|| invocation.getEntityDefinition()
+							.getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE;
 			final boolean isSearchEntity = invocation.getType() == InvocationType.SEARCH_ENTITY;
 			final Predicate<Object> real = (Predicate<Object>) invocation.getPredicate();
-			final int[] indexes = new int[]{-1, -1};//Object[]の場合のoid、endDateのindex
+			final int[] indexes = new int[] { -1, -1 };//Object[]の場合のoid、endDateのindex
 			if (!isSearchEntity) {
-				List<ValueExpression> vl = invocation.getQuery().getSelect().getSelectValues();
+				List<ValueExpression> vl = invocation.getQuery()
+						.getSelect()
+						.getSelectValues();
 				for (int i = 0; i < vl.size(); i++) {
 					ValueExpression v = vl.get(i);
 					if (v instanceof EntityField) {
@@ -139,9 +173,11 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 						if (e.getOid() != null) {
 							Long expires = null;
 							if (isTimebase && e.getEndDate() != null) {
-								expires = e.getEndDate().getTime() + 1;//ミリ秒以下を切り上げ
+								expires = e.getEndDate()
+										.getTime() + 1;//ミリ秒以下を切り上げ
 							}
-							ccc.record(invocation.getEntityDefinition().getName(), e.getOid(), expires);
+							ccc.record(invocation.getEntityDefinition()
+									.getName(), e.getOid(), expires);
 						}
 					} else {
 						Object[] o = (Object[]) dataModel;
@@ -154,7 +190,8 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 							expires = ((Timestamp) o[indexes[1]]).getTime() + 1;
 						}
 						if (oid != null) {
-							ccc.record(invocation.getEntityDefinition().getName(), oid, expires);
+							ccc.record(invocation.getEntityDefinition()
+									.getName(), oid, expires);
 						}
 					}
 
@@ -165,22 +202,29 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 		}
 		super.query(invocation);
 		if (isRecordEntity) {
-			ccc.record(invocation.getEntityDefinition().getName(), ContentCacheContext.HOLE_ENTITY, null);
+			ccc.record(invocation.getEntityDefinition()
+					.getName(), ContentCacheContext.HOLE_ENTITY, null);
 		}
 	}
 
 	@Override
 	public int count(EntityCountInvocation invocation) {
 		int ret = super.count(invocation);
-		ContentCacheContext.getContentCacheContext().record(invocation.getEntityDefinition().getName(), ContentCacheContext.HOLE_ENTITY, null);
+		ContentCacheContext.getContentCacheContext()
+				.record(invocation.getEntityDefinition()
+						.getName(), ContentCacheContext.HOLE_ENTITY, null);
 		return ret;
 	}
 
 	@Override
 	public Entity restore(EntityRestoreInvocation invocation) {
 		Entity ret = super.restore(invocation);
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), ret.getOid());
-		ContentCacheContext.getContentCacheContext().invalidateByEntityNameAndOid(invocation.getEntityDefinition().getName(), ContentCacheContext.HOLE_ENTITY);
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(), ret.getOid());
+		ContentCacheContext.getContentCacheContext()
+				.invalidateByEntityNameAndOid(invocation.getEntityDefinition()
+						.getName(), ContentCacheContext.HOLE_ENTITY);
 		return ret;
 	}
 

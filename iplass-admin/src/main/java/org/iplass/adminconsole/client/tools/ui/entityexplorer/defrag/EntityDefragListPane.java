@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.defrag;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,12 +137,12 @@ public class EntityDefragListPane extends VLayout {
 		});
 		toolStrip.addButton(refreshButton);
 
-		grid = new MtpListGrid(){
+		grid = new MtpListGrid() {
 			@Override
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				final String fieldName = this.getFieldName(colNum);
 				if ("explorerButton".equals(fieldName)) {
-					if (!record.getAttributeAsBoolean(DefragEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
+					if (!record.getAttributeAsBoolean(DefragEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
 						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(
 								AdminClientMessageUtil.getString(RESOURCE_PREFIX + "showMetaDataEditScreen")));
@@ -156,7 +155,7 @@ public class EntityDefragListPane extends VLayout {
 						return button;
 					}
 				} else if ("error".equals(fieldName)) {
-					if (record.getAttributeAsBoolean(DefragEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
+					if (record.getAttributeAsBoolean(DefragEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						record.setEnabled(false);
 						GridActionImgButton recordCanvas = new GridActionImgButton();
 						recordCanvas.setActionButtonSrc(ERROR_ICON);
@@ -196,8 +195,8 @@ public class EntityDefragListPane extends VLayout {
 				finishExecute();
 			}
 		});
-		grid.setShowResizeBar(true);		//リサイズ可能
-		grid.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		grid.setShowResizeBar(true); //リサイズ可能
+		grid.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、下を収縮
 
 		messageTabSet = new MessageTabSet();
 		messageTabSet.setHeight(120);
@@ -248,15 +247,15 @@ public class EntityDefragListPane extends VLayout {
 		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"),
 				AdminClientMessageUtil.getString(RESOURCE_PREFIX + "execConfirm"), new BooleanCallback() {
 
-			@Override
-			public void execute(Boolean value) {
+					@Override
+					public void execute(Boolean value) {
 
-				if (value) {
-					EntityDefragProgressDialog dialog = new EntityDefragProgressDialog(EntityDefragListPane.this, defNames);
-					dialog.show();
-				}
-			}
-		});
+						if (value) {
+							EntityDefragProgressDialog dialog = new EntityDefragProgressDialog(EntityDefragListPane.this, defNames);
+							dialog.show();
+						}
+					}
+				});
 
 //		EntityConfigDownloadDialog dialog = new EntityConfigDownloadDialog(defNames);
 //		dialog.show();

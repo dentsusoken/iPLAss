@@ -45,19 +45,19 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
-		name=GetNestTableDataCommand.WEBAPI_NAME,
-		displayName="Entityデータ取得",
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={Constants.DATA},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/detail/GetNestTableDataCommand", displayName="NestTableデータ取得")
+		name = GetNestTableDataCommand.WEBAPI_NAME,
+		displayName = "Entityデータ取得",
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { Constants.DATA },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/detail/GetNestTableDataCommand", displayName = "NestTableデータ取得")
 public final class GetNestTableDataCommand implements Command {
 
 	public static final String WEBAPI_NAME = "gem/generic/detail/getNestTableData";
@@ -67,9 +67,12 @@ public final class GetNestTableDataCommand implements Command {
 	private EntityManager em;
 
 	public GetNestTableDataCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	@Override
@@ -106,7 +109,8 @@ public final class GetNestTableDataCommand implements Command {
 				.from(targetDefName)
 				.where(new Equals(Entity.OID, oid));
 
-		Entity entity = em.searchEntity(query).getFirst();
+		Entity entity = em.searchEntity(query)
+				.getFirst();
 		replaceNestPropOutputName(entity, nestDispLabelProps);
 		request.setAttribute(Constants.DATA, entity);
 		return Constants.CMD_EXEC_SUCCESS;
@@ -123,7 +127,8 @@ public final class GetNestTableDataCommand implements Command {
 			return null;
 		}
 
-		if (rpe.getNestProperties().isEmpty()) {
+		if (rpe.getNestProperties()
+				.isEmpty()) {
 			// NestPropety未定義
 			return null;
 		}
@@ -131,43 +136,49 @@ public final class GetNestTableDataCommand implements Command {
 		final List<String> propNames = new ArrayList<String>();
 		propNames.add(Entity.OID);
 		propNames.add(Entity.VERSION);
-		rpe.getNestProperties().stream().filter(np -> isDispProperty(context, rp, np)).forEach(np -> {
-			if (np.getEditor() instanceof ReferencePropertyEditor) {
-				if (!propNames.contains(np.getPropertyName() + "." + Entity.OID)) {
-					propNames.add(np.getPropertyName() + "." + Entity.OID);
-				}
-				if (!propNames.contains(np.getPropertyName() + "." + Entity.NAME)) {
-					propNames.add(np.getPropertyName() + "." + Entity.NAME);
-				}
-				if (!propNames.contains(np.getPropertyName() + "." + Entity.VERSION)) {
-					propNames.add(np.getPropertyName() + "." + Entity.VERSION);
-				}
-				String displayLabelProp = ((ReferencePropertyEditor) np.getEditor()).getDisplayLabelItem();
-				if (displayLabelProp != null && !propNames.contains(np.getPropertyName() + "." + displayLabelProp)) {
-					propNames.add(np.getPropertyName() + "." + displayLabelProp);
-					nestDispLabelProps.add(np.getPropertyName() + "." + displayLabelProp);
-				}
-			} else if (np.getEditor() instanceof DateRangePropertyEditor) {
-				DateRangePropertyEditor editor = (DateRangePropertyEditor) np.getEditor();
-				if (!propNames.contains(np.getPropertyName())) {
-					propNames.add(np.getPropertyName());
-				}
-				if (!propNames.contains(editor.getToPropertyName())) {
-					propNames.add(editor.getToPropertyName());
-				}
-			} else {
-				if (!propNames.contains(np.getPropertyName())) {
-					propNames.add(np.getPropertyName());
-				}
-			}
-		});
+		rpe.getNestProperties()
+				.stream()
+				.filter(np -> isDispProperty(context, rp, np))
+				.forEach(np -> {
+					if (np.getEditor() instanceof ReferencePropertyEditor) {
+						if (!propNames.contains(np.getPropertyName() + "." + Entity.OID)) {
+							propNames.add(np.getPropertyName() + "." + Entity.OID);
+						}
+						if (!propNames.contains(np.getPropertyName() + "." + Entity.NAME)) {
+							propNames.add(np.getPropertyName() + "." + Entity.NAME);
+						}
+						if (!propNames.contains(np.getPropertyName() + "." + Entity.VERSION)) {
+							propNames.add(np.getPropertyName() + "." + Entity.VERSION);
+						}
+						String displayLabelProp = ((ReferencePropertyEditor) np.getEditor()).getDisplayLabelItem();
+						if (displayLabelProp != null && !propNames.contains(np.getPropertyName() + "." + displayLabelProp)) {
+							propNames.add(np.getPropertyName() + "." + displayLabelProp);
+							nestDispLabelProps.add(np.getPropertyName() + "." + displayLabelProp);
+						}
+					} else if (np.getEditor() instanceof DateRangePropertyEditor) {
+						DateRangePropertyEditor editor = (DateRangePropertyEditor) np.getEditor();
+						if (!propNames.contains(np.getPropertyName())) {
+							propNames.add(np.getPropertyName());
+						}
+						if (!propNames.contains(editor.getToPropertyName())) {
+							propNames.add(editor.getToPropertyName());
+						}
+					} else {
+						if (!propNames.contains(np.getPropertyName())) {
+							propNames.add(np.getPropertyName());
+						}
+					}
+				});
 
 		return propNames;
 	}
 
 	private PropertyItem getProperty(DetailCommandContext context, String propName) {
-		Optional<PropertyItem> property = context.getProperty().stream().filter(
-				pi -> propName.equals(pi.getPropertyName())).findFirst();
+		Optional<PropertyItem> property = context.getProperty()
+				.stream()
+				.filter(
+						pi -> propName.equals(pi.getPropertyName()))
+				.findFirst();
 
 		if (property.isPresent()) {
 			return property.get();
@@ -176,21 +187,28 @@ public final class GetNestTableDataCommand implements Command {
 	}
 
 	private boolean isDispProperty(DetailCommandContext context, ReferenceProperty rp, NestProperty np) {
-		if (np.isHideDetail()) return false;
-		if (np.getEditor() == null) return false;
+		if (np.isHideDetail())
+			return false;
+		if (np.getEditor() == null)
+			return false;
 
 		String propName = rp.getName() + "." + np.getPropertyName();
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, context.getEntityDefinition());
-		if (pd == null) return false;
-		if (pd.getMultiplicity() != 1) return false;
+		if (pd == null)
+			return false;
+		if (pd.getMultiplicity() != 1)
+			return false;
 		if (pd instanceof ReferenceProperty) {
-			if (rp.getMappedBy() != null && pd.getName().equals(rp.getMappedBy())) return false;//逆参照が本体の場合
+			if (rp.getMappedBy() != null && pd.getName()
+					.equals(rp.getMappedBy()))
+				return false;//逆参照が本体の場合
 		}
 		return true;
 	}
 
 	private void replaceNestPropOutputName(Entity entity, List<String> nestDisplayLabelProps) {
-		if (entity == null || nestDisplayLabelProps == null || nestDisplayLabelProps.isEmpty()) return;
+		if (entity == null || nestDisplayLabelProps == null || nestDisplayLabelProps.isEmpty())
+			return;
 
 		for (String displayLabelProp : nestDisplayLabelProps) {
 			String currentPropName = displayLabelProp.substring(0, displayLabelProp.indexOf("."));

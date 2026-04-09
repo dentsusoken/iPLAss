@@ -82,7 +82,8 @@ public class EntityWebApiEditPanelImpl extends VLayout implements EntityWebApiEd
 				} else {
 					int version = record.getAttributeAsInt("version");
 					String definitionId = record.getAttributeAsString("definitionId");
-					MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(EntityWebApiDefinition.class.getName(), definitionId, version);
+					MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(EntityWebApiDefinition.class.getName(), definitionId,
+							version);
 					metaDataHistoryDialog.show();
 				}
 			}
@@ -111,15 +112,16 @@ public class EntityWebApiEditPanelImpl extends VLayout implements EntityWebApiEd
 				SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_noChange"));
 			} else {
 				SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_saveConfirm"),
-						AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_saveEntityWebApiDef") , new BooleanCallback() {
+						AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_saveEntityWebApiDef"),
+						new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							updateEntityWebApiDefinition(entryList, true);
-						}
-					}
-				});
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									updateEntityWebApiDefinition(entryList, true);
+								}
+							}
+						});
 			}
 		}
 	}
@@ -133,20 +135,22 @@ public class EntityWebApiEditPanelImpl extends VLayout implements EntityWebApiEd
 				SmartGWTUtil.hideProgress();
 				if (caught instanceof MetaVersionCheckException) {
 					SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_overwriteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_overwriteConfirmComment"), new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_overwriteConfirmComment"),
+							new BooleanCallback() {
 
-						@Override
-						public void execute(Boolean value) {
+								@Override
+								public void execute(Boolean value) {
 
-							if (value) {
-								updateEntityWebApiDefinition(entryList, false);
-							}
-						}
-					});
+									if (value) {
+										updateEntityWebApiDefinition(entryList, false);
+									}
+								}
+							});
 				} else {
 					// 失敗時
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_failed"),
-							AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_failedSaveEntityWebApiDef"));
+							AdminClientMessageUtil
+									.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_failedSaveEntityWebApiDef"));
 
 					GWT.log(caught.toString(), caught);
 				}
@@ -172,16 +176,15 @@ public class EntityWebApiEditPanelImpl extends VLayout implements EntityWebApiEd
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_entity_entitywebapi_EntityWebApiDefinitionMainPane_cancelConfirmComment"),
+					new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+							}
+						}
+					});
 		}
 	}
 }
-

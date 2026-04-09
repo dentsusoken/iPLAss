@@ -68,7 +68,6 @@ public class MetaDataCheckResultInfo implements Serializable {
 		this.message = message;
 	}
 
-
 	/**
 	 * チェック結果メタデータパスを取得します
 	 * 

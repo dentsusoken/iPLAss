@@ -188,7 +188,8 @@ public class HttpClientConfig implements ServiceInitListener<Service> {
 	@Override
 	public void inited(Service service, Config config) {
 		if (httpClientBuilderFactory != null) {
-			instance = httpClientBuilderFactory.create(service, config, this).build();
+			instance = httpClientBuilderFactory.create(service, config, this)
+					.build();
 
 		} else {
 			// --------------------------------------------------------------

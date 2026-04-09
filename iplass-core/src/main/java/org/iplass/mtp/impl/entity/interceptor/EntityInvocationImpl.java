@@ -31,7 +31,6 @@ import org.iplass.mtp.entity.interceptor.EntityInvocation;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
-
 public abstract class EntityInvocationImpl<R> implements EntityInvocation<R> {
 
 	public static EntityInterceptor[] NULL_ENTITY_INTERCEPTOR = new EntityInterceptor[0];
@@ -70,7 +69,8 @@ public abstract class EntityInvocationImpl<R> implements EntityInvocation<R> {
 
 	@Override
 	public EntityDefinition getEntityDefinition() {
-		return entityHandler.getMetaData().currentConfig(EntityContext.getCurrentContext());
+		return entityHandler.getMetaData()
+				.currentConfig(EntityContext.getCurrentContext());
 	}
 
 	public EntityHandler getEntityHandler() {
@@ -90,13 +90,14 @@ public abstract class EntityInvocationImpl<R> implements EntityInvocation<R> {
 		}
 		return invocationContextAttributes.get(name);
 	}
+
 	public Iterator<String> getAttributeNames() {
 		if (invocationContextAttributes == null) {
 			List<String> l = Collections.emptyList();
 			return l.iterator();
 		}
-		return invocationContextAttributes.keySet().iterator();
+		return invocationContextAttributes.keySet()
+				.iterator();
 	}
-
 
 }

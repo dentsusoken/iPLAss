@@ -43,11 +43,13 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 3) {
 			throw new QueryException(function.getName() + " must have 3 arguments.");
 		}
 
-		String unit = ((String) ((Literal) function.getArguments().get(0)).getValue()).toUpperCase();
+		String unit = ((String) ((Literal) function.getArguments()
+				.get(0)).getValue()).toUpperCase();
 
 		context.append("(");
 
@@ -58,9 +60,11 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			context.append("(");
 			context.append(YEAR);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(")");
 			break;
 		case MONTH:
@@ -69,9 +73,11 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			context.append("(");
 			context.append(MONTH);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(")");
 			break;
 		case DAY:
@@ -80,9 +86,11 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			context.append("(");
 			context.append(SECOND);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(")/60/60/24");
 			break;
 		case HOUR:
@@ -91,9 +99,11 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			context.append("(");
 			context.append(SECOND);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(")/60/60");
 			break;
 		case MINUTE:
@@ -102,9 +112,11 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			context.append("(");
 			context.append(SECOND);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(")/60");
 			break;
 		case SECOND:
@@ -113,9 +125,11 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			context.append("(");
 			context.append(SECOND);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(")");
 			break;
 		default:
@@ -132,7 +146,9 @@ public class SqlServerDateDiffFunctionAdapter implements FunctionAdapter<Functio
 			throw new QueryException(getFunctionName() + " must have 3 arguments.");
 		}
 
-		String unit = args.get(0).toString().toUpperCase();
+		String unit = args.get(0)
+				.toString()
+				.toUpperCase();
 
 		context.append("(");
 

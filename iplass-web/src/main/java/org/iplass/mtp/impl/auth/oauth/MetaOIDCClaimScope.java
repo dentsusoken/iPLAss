@@ -39,21 +39,22 @@ public class MetaOIDCClaimScope extends MetaScope {
 	private static final long serialVersionUID = 4677632824181886235L;
 
 	private List<MetaClaimMapping> claims;
-	
+
 	public List<MetaClaimMapping> getClaims() {
 		return claims;
 	}
+
 	public void setClaims(List<MetaClaimMapping> claims) {
 		this.claims = claims;
 	}
-	
+
 	@Override
 	public void applyConfig(ScopeDefinition def) {
 		super.applyConfig(def);
 		OIDCClaimScopeDefinition odef = (OIDCClaimScopeDefinition) def;
 		if (odef.getClaims() != null) {
 			claims = new ArrayList<>();
-			for (ClaimMappingDefinition cmd: odef.getClaims()) {
+			for (ClaimMappingDefinition cmd : odef.getClaims()) {
 				MetaClaimMapping mcm = new MetaClaimMapping();
 				mcm.applyConfig(cmd);
 				claims.add(mcm);
@@ -62,42 +63,42 @@ public class MetaOIDCClaimScope extends MetaScope {
 			claims = null;
 		}
 	}
-	
+
 	@Override
 	public OIDCClaimScopeDefinition currentConfig() {
 		OIDCClaimScopeDefinition def = new OIDCClaimScopeDefinition();
 		fill(def);
 		if (claims != null) {
 			ArrayList<ClaimMappingDefinition> list = new ArrayList<>();
-			for (MetaClaimMapping mcm: claims) {
+			for (MetaClaimMapping mcm : claims) {
 				list.add(mcm.currentConfig());
 			}
 			def.setClaims(list);
 		}
-		
+
 		return def;
 	}
-	
+
 	public OIDCClaimScopeRuntime createRuntime(String defName) {
 		return new OIDCClaimScopeRuntime(defName);
 	}
-	
+
 	public class OIDCClaimScopeRuntime {
-		
+
 		private List<ClaimMappingRuntime> claimRuntimes;
-		
+
 		private OIDCClaimScopeRuntime(String defName) {
 			if (claims != null) {
 				claimRuntimes = new ArrayList<>();
-				for (MetaClaimMapping m: claims) {
+				for (MetaClaimMapping m : claims) {
 					claimRuntimes.add(m.createRuntime(defName, getName()));
 				}
 			}
 		}
-		
+
 		public void map(User user, Map<String, Object> claimMap) {
 			if (claimRuntimes != null) {
-				for (ClaimMappingRuntime cmr: claimRuntimes) {
+				for (ClaimMappingRuntime cmr : claimRuntimes) {
 					Object val = cmr.value(user);
 					if (val != null) {
 						claimMap.put(cmr.name(), val);

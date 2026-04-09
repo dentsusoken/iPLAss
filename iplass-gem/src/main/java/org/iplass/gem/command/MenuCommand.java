@@ -58,83 +58,89 @@ import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.web.template.TemplateUtil;
 
 @ActionMappings({
-	@ActionMapping(
-		name=Constants.LAYOUT_NORMAL_ACTION,
-		displayName="標準レイアウト",
-		localizedDisplayName={
-			@LocalizedString(localeName="ja", stringValue="標準レイアウト"),
-			@LocalizedString(localeName="en", stringValue="Default Layout")
-		},
-		result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_JSP_DEFAULT, templateName="gem/layout/layout")
-	),
-	@ActionMapping(
-			name=Constants.LAYOUT_POPOUT_ACTION,
-			displayName="ポップアップレイアウト",
-			localizedDisplayName={
-				@LocalizedString(localeName="ja", stringValue="ポップアップレイアウト"),
-				@LocalizedString(localeName="en", stringValue="Popup Layout")
-			},
-			result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_JSP_DIALOG, templateName="gem/layout/dialog")
+		@ActionMapping(
+				name = Constants.LAYOUT_NORMAL_ACTION,
+				displayName = "標準レイアウト",
+				localizedDisplayName = {
+						@LocalizedString(localeName = "ja", stringValue = "標準レイアウト"),
+						@LocalizedString(localeName = "en", stringValue = "Default Layout")
+				},
+				result = @Result(type = Type.JSP, value = Constants.CMD_RSLT_JSP_DEFAULT, templateName = "gem/layout/layout")
 		),
-	@ActionMapping(
-		name=MenuCommand.ACTION_NAME,
-		displayName="TOP画面",
-		localizedDisplayName={
-			@LocalizedString(localeName="ja", stringValue="TOP画面"),
-			@LocalizedString(localeName="en", stringValue="Top View")
-		},
-		clientCacheType=ClientCacheType.CACHE,
-		clientCacheMaxAge=0,
-		command={},//遷移先で標準レイアウト呼び出すので不要
-		result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_JSP_INDEX, templateName="gem/layout/index", layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-	),
-	@ActionMapping(
-		name="gem/logout",
-		displayName="ログアウト",
-		localizedDisplayName={
-			@LocalizedString(localeName="ja", stringValue="ログアウト"),
-			@LocalizedString(localeName="en", stringValue="Logout")
-		},
-		command={},
-		result=@Result(type=Type.REDIRECT, value=".")
-	)
+		@ActionMapping(
+				name = Constants.LAYOUT_POPOUT_ACTION,
+				displayName = "ポップアップレイアウト",
+				localizedDisplayName = {
+						@LocalizedString(localeName = "ja", stringValue = "ポップアップレイアウト"),
+						@LocalizedString(localeName = "en", stringValue = "Popup Layout")
+				},
+				result = @Result(type = Type.JSP, value = Constants.CMD_RSLT_JSP_DIALOG, templateName = "gem/layout/dialog")
+		),
+		@ActionMapping(
+				name = MenuCommand.ACTION_NAME,
+				displayName = "TOP画面",
+				localizedDisplayName = {
+						@LocalizedString(localeName = "ja", stringValue = "TOP画面"),
+						@LocalizedString(localeName = "en", stringValue = "Top View")
+				},
+				clientCacheType = ClientCacheType.CACHE,
+				clientCacheMaxAge = 0,
+				command = {}, //遷移先で標準レイアウト呼び出すので不要
+				result = @Result(
+						type = Type.JSP,
+						value = Constants.CMD_RSLT_JSP_INDEX,
+						templateName = "gem/layout/index",
+						layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+		),
+		@ActionMapping(
+				name = "gem/logout",
+				displayName = "ログアウト",
+				localizedDisplayName = {
+						@LocalizedString(localeName = "ja", stringValue = "ログアウト"),
+						@LocalizedString(localeName = "en", stringValue = "Logout")
+				},
+				command = {},
+				result = @Result(type = Type.REDIRECT, value = ".")
+		)
 })
 @Templates({
-	@Template(name="gem/layout/header", displayName="ヘッダー", path="/jsp/gem/layout/header.jsp"),
-	@Template(name="gem/layout/footer", displayName="フッター", path="/jsp/gem/layout/footer.jsp"),
-	@Template(name="gem/layout/navi", displayName="ナビ", path="/jsp/gem/layout/navi.jsp"),
-	@Template(name="gem/menu/menu", displayName="メニュー", path="/jsp/gem/menu/menu.jsp"),
+		@Template(name = "gem/layout/header", displayName = "ヘッダー", path = "/jsp/gem/layout/header.jsp"),
+		@Template(name = "gem/layout/footer", displayName = "フッター", path = "/jsp/gem/layout/footer.jsp"),
+		@Template(name = "gem/layout/navi", displayName = "ナビ", path = "/jsp/gem/layout/navi.jsp"),
+		@Template(name = "gem/menu/menu", displayName = "メニュー", path = "/jsp/gem/menu/menu.jsp"),
 
-	//FIXME TEMPLATE_ERRORと同等のため、統合
-	@Template(
-			name=Constants.TEMPLATE_COMMON_ERROR,
-			displayName="エラー画面",
-			path=Constants.CMD_RSLT_JSP_ERROR,
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+		//FIXME TEMPLATE_ERRORと同等のため、統合
+		@Template(
+				name = Constants.TEMPLATE_COMMON_ERROR,
+				displayName = "エラー画面",
+				path = Constants.CMD_RSLT_JSP_ERROR,
+				layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
 
-	//GemErrorUrlSelector用設定
-	@Template(
-			name=Constants.TEMPLATE_ERROR,
-			displayName="エラー画面（通常）",
-			path=Constants.CMD_RSLT_JSP_ERROR,
-			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-	@Template(
-			name=Constants.TEMPLATE_SYSTEM_ERROR,
-			displayName="エラー画面（システムエラー）",
-			path=Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
-			contentType="text/html; charset=utf-8"),
-	@Template(
-			name=Constants.TEMPLATE_PERMISSION_ERROR,
-			displayName="権限エラー",
-			path=Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
-			contentType="text/html; charset=utf-8")
+		//GemErrorUrlSelector用設定
+		@Template(
+				name = Constants.TEMPLATE_ERROR,
+				displayName = "エラー画面（通常）",
+				path = Constants.CMD_RSLT_JSP_ERROR,
+				layoutActionName = Constants.LAYOUT_NORMAL_ACTION),
+		@Template(
+				name = Constants.TEMPLATE_SYSTEM_ERROR,
+				displayName = "エラー画面（システムエラー）",
+				path = Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
+				contentType = "text/html; charset=utf-8"),
+		@Template(
+				name = Constants.TEMPLATE_PERMISSION_ERROR,
+				displayName = "権限エラー",
+				path = Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
+				contentType = "text/html; charset=utf-8")
 })
-@CommandClass(name="gem/MenuCommand", displayName="メニュー",
-	localizedDisplayName={
-		@LocalizedString(localeName="ja", stringValue="メニュー"),
-		@LocalizedString(localeName="en", stringValue="Menu")
-	},
-	readOnly=true
+@CommandClass(
+		name = "gem/MenuCommand",
+		displayName = "メニュー",
+		localizedDisplayName = {
+				@LocalizedString(localeName = "ja", stringValue = "メニュー"),
+				@LocalizedString(localeName = "en", stringValue = "Menu")
+		},
+		readOnly = true
 )
 public final class MenuCommand implements Command {
 
@@ -152,10 +158,14 @@ public final class MenuCommand implements Command {
 	 * コンストラクタ
 	 */
 	public MenuCommand() {
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
-		tm = ManagerLocator.getInstance().getManager(TopViewDefinitionManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		mtm = ManagerLocator.getInstance()
+				.getManager(MenuTreeManager.class);
+		tm = ManagerLocator.getInstance()
+				.getManager(TopViewDefinitionManager.class);
 	}
 
 	@Override
@@ -171,7 +181,8 @@ public final class MenuCommand implements Command {
 		List<String> allTopNames = tm.definitionList();
 		List<String> permitTopNames = checkRole(authContext, allTopNames);
 
-		String selectRoleName = (String) request.getSession().getAttribute(Constants.ROLE_NAME);
+		String selectRoleName = (String) request.getSession()
+				.getAttribute(Constants.ROLE_NAME);
 		MenuTree selectTree = null;
 		LinkedHashMap<String, String> sortedRoleMap = null;
 		if (permitMenuNames.isEmpty() && permitTopNames.isEmpty()) {
@@ -190,17 +201,22 @@ public final class MenuCommand implements Command {
 			//ロール名称取得（ロール優先度で並び変え）
 			sortedRoleMap = getRoleNames(permitMenuNames, permitTopNames);
 
-			if (authContext.getUser().isAdmin()) {
+			if (authContext.getUser()
+					.isAdmin()) {
 				//Adminの場合だけデフォルトメニューも追加
 				if (allMenuNames.contains(DEFAULT)) {
-					sortedRoleMap.put(DEFAULT, mtm.get(DEFAULT).getName());
+					sortedRoleMap.put(DEFAULT, mtm.get(DEFAULT)
+							.getName());
 				}
 			}
 
 			//ロールが未指定の場合は先頭を選択
 			if (StringUtil.isEmpty(selectRoleName)) {
-				selectRoleName = sortedRoleMap.keySet().iterator().next();
-				request.getSession().setAttribute(Constants.ROLE_NAME, selectRoleName);
+				selectRoleName = sortedRoleMap.keySet()
+						.iterator()
+						.next();
+				request.getSession()
+						.setAttribute(Constants.ROLE_NAME, selectRoleName);
 			}
 			selectTree = mtm.get(selectRoleName);
 		}
@@ -219,7 +235,8 @@ public final class MenuCommand implements Command {
 		request.setAttribute(Constants.ROLE, sortedRoleMap);
 		request.setAttribute(Constants.ROLE_NAME, selectRoleName);
 		request.setAttribute(Constants.MENU_TREE, selectTree);
-		request.setAttribute(LangSelector.LANG_ATTRIBUTE_NAME, ExecuteContext.getCurrentContext().getLanguage());
+		request.setAttribute(LangSelector.LANG_ATTRIBUTE_NAME, ExecuteContext.getCurrentContext()
+				.getLanguage());
 
 		return Constants.CMD_EXEC_SUCCESS;
 	}
@@ -231,12 +248,12 @@ public final class MenuCommand implements Command {
 	 */
 	private List<String> checkRole(final AuthContext authContext, final List<String> defNames) {
 
-		if(defNames != null && !defNames.isEmpty()) {
+		if (defNames != null && !defNames.isEmpty()) {
 			//DEFAULTは一旦無視
 			return defNames.stream()
-				.filter(name -> !DEFAULT.equals(name))
-				.filter(name -> authContext.userInRole(name))
-				.collect(Collectors.toList());
+					.filter(name -> !DEFAULT.equals(name))
+					.filter(name -> authContext.userInRole(name))
+					.collect(Collectors.toList());
 		} else {
 			return Collections.emptyList();
 		}
@@ -252,34 +269,37 @@ public final class MenuCommand implements Command {
 		}
 
 		Query query = (new Query())
-			.hint(new CacheHint())
-			.select("code", Entity.NAME, "priority").from("mtp.auth.Role")
-			.where(new In("code", roleNames.toArray()));
+				.hint(new CacheHint())
+				.select("code", Entity.NAME, "priority")
+				.from("mtp.auth.Role")
+				.where(new In("code", roleNames.toArray()));
 
-		List<Entity> roleList = em.searchEntity(query).getList();
+		List<Entity> roleList = em.searchEntity(query)
+				.getList();
 
 		LinkedHashMap<String, String> ret = roleList.stream()
-			.map(entity -> {
-				//Menu定義の表示順を取得
-				MenuTree mt = mtm.get(entity.getValue("code"));
-				if (mt != null) {
-					//フラグがONの場合は、デフォルトをロール名じゃなくて、Menu定義名に表示する。
-					if (mt.isShowMenuDisplayName()) {
-						String displayName = TemplateUtil.getMultilingualString(mt.getDisplayName(), mt.getLocalizedDisplayNameList());
-						if (StringUtil.isNotEmpty(displayName)) entity.setName(displayName);
+				.map(entity -> {
+					//Menu定義の表示順を取得
+					MenuTree mt = mtm.get(entity.getValue("code"));
+					if (mt != null) {
+						//フラグがONの場合は、デフォルトをロール名じゃなくて、Menu定義名に表示する。
+						if (mt.isShowMenuDisplayName()) {
+							String displayName = TemplateUtil.getMultilingualString(mt.getDisplayName(), mt.getLocalizedDisplayNameList());
+							if (StringUtil.isNotEmpty(displayName))
+								entity.setName(displayName);
+						}
+						return new RoleInfo(entity, mt.getDisplayOrder());
+					} else {
+						return new RoleInfo(entity, Integer.MAX_VALUE);
 					}
-					return new RoleInfo(entity, mt.getDisplayOrder());
-				} else {
-					return new RoleInfo(entity, Integer.MAX_VALUE);
-				}
-			})
-			.sorted(
-					//Tree定義の表示順(昇順) -> ロール優先度(降順) -> ロール名(昇順)
-					Comparator.comparing(RoleInfo::getDisplayOrder)
-					.thenComparing(Comparator.comparing(RoleInfo::getPriority).reversed())
-					.thenComparing(Comparator.comparing(RoleInfo::getName))
-			)
-			.collect(Collectors.toMap(RoleInfo::getCode, RoleInfo::getName, (a, b) -> a, LinkedHashMap::new));
+				})
+				.sorted(
+						//Tree定義の表示順(昇順) -> ロール優先度(降順) -> ロール名(昇順)
+						Comparator.comparing(RoleInfo::getDisplayOrder)
+								.thenComparing(Comparator.comparing(RoleInfo::getPriority)
+										.reversed())
+								.thenComparing(Comparator.comparing(RoleInfo::getName)))
+				.collect(Collectors.toMap(RoleInfo::getCode, RoleInfo::getName, (a, b) -> a, LinkedHashMap::new));
 
 		return ret;
 	}
@@ -289,14 +309,14 @@ public final class MenuCommand implements Command {
 		List<String> defList = edm.definitionList();
 
 		List<MenuItem> items = defList.stream()
-			.sorted((name1, name2) -> name1.compareTo(name2))
-			.map(name -> {
-				EntityMenuItem item = new EntityMenuItem();
-				item.setName(name);
-				item.setEntityDefinitionName(name);
-				return item;
-			})
-			.collect(Collectors.toList());
+				.sorted((name1, name2) -> name1.compareTo(name2))
+				.map(name -> {
+					EntityMenuItem item = new EntityMenuItem();
+					item.setName(name);
+					item.setEntityDefinitionName(name);
+					return item;
+				})
+				.collect(Collectors.toList());
 
 		return items;
 	}
@@ -310,15 +330,19 @@ public final class MenuCommand implements Command {
 			this.role = role;
 			this.displayOrder = dispOrder != null ? dispOrder : Integer.MAX_VALUE;
 		}
+
 		public Integer getDisplayOrder() {
 			return displayOrder;
 		}
+
 		public Long getPriority() {
 			return role.getValue("priority") != null ? role.getValue("priority") : Long.MIN_VALUE;
 		}
+
 		public String getName() {
 			return role.getName();
 		}
+
 		public String getCode() {
 			return role.getValue("code");
 		}

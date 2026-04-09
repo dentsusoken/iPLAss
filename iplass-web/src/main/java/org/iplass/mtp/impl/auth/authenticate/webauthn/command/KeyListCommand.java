@@ -40,7 +40,8 @@ import org.iplass.mtp.webapi.definition.MethodType;
 
 import jakarta.ws.rs.core.MediaType;
 
-@WebApi(name=KeyListCommand.WEBAPI_NAME,
+@WebApi(
+		name = KeyListCommand.WEBAPI_NAME,
 		methods = MethodType.GET,
 		cacheControlType = CacheControlType.NO_CACHE,
 		responseType = MediaType.APPLICATION_JSON,
@@ -56,11 +57,15 @@ public class KeyListCommand implements Command {
 	public static final String RESULT_LIST = "list";
 	public static final String RESULT_RGISTRATION_LIMIT = "registrationLimit";
 
-	private WebAuthnService webAuthnService = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
+	private WebAuthnService webAuthnService = ServiceRegistry.getRegistry()
+			.getService(WebAuthnService.class);
 
 	@Override
 	public String execute(RequestContext request) {
-		if (!ExecuteContext.getCurrentContext().getCurrentTenant().getTenantConfig(TenantAuthInfo.class).isUseWebAuthn()) {
+		if (!ExecuteContext.getCurrentContext()
+				.getCurrentTenant()
+				.getTenantConfig(TenantAuthInfo.class)
+				.isUseWebAuthn()) {
 			throw new WebAuthnRuntimeException("WebAuthn is not enabled");
 		}
 
@@ -68,8 +73,11 @@ public class KeyListCommand implements Command {
 		if (!authContext.isAuthenticated()) {
 			throw new WebAuthnRuntimeException("not authenticated");
 		}
-		List<AuthTokenInfo> authTokenInfoList = authContext.getAuthTokenInfos().getList(CredentialRecordHandler.TYPE_WEBAUTHN_CREDENTIAL_DEFAULT);
-		List<WebAuthnAuthenticatorInfoResponse> list = authTokenInfoList.stream().map(WebAuthnAuthenticatorInfoResponse::new).toList();
+		List<AuthTokenInfo> authTokenInfoList = authContext.getAuthTokenInfos()
+				.getList(CredentialRecordHandler.TYPE_WEBAUTHN_CREDENTIAL_DEFAULT);
+		List<WebAuthnAuthenticatorInfoResponse> list = authTokenInfoList.stream()
+				.map(WebAuthnAuthenticatorInfoResponse::new)
+				.toList();
 
 		request.setAttribute(RESULT_LIST, list);
 		request.setAttribute(RESULT_RGISTRATION_LIMIT, webAuthnService.getRegistrationLimitOfAuthenticatorPerUser());

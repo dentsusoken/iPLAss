@@ -24,18 +24,18 @@ import org.iplass.mtp.impl.metadata.MetaData;
 
 public class ParameterName implements MetaData {
 	private static final long serialVersionUID = 3824101446841770094L;
-	
+
 	private String name;
 	private String displayName;
-	
+
 	public ParameterName() {
 	}
-	
+
 	public ParameterName(String name, String displayName) {
 		this.name = name;
 		this.displayName = displayName;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

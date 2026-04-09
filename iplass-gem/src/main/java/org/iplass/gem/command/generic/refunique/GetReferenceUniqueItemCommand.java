@@ -51,9 +51,9 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		accepts = RequestType.REST_JSON,
 		methods = MethodType.POST,
 		restJson = @RestJson(parameterName = "param"),
-		results = {Constants.DATA},
+		results = { Constants.DATA },
 		checkXRequestedWithHeader = true
-	)
+)
 @CommandClass(name = "gem/generic/refunique/ReferenceUniqueCommand", displayName = "参照ユニークキーコマンド")
 public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptBindings {
 
@@ -64,9 +64,12 @@ public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptB
 	private EntityViewManager evm = null;
 
 	public GetReferenceUniqueItemCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -100,7 +103,8 @@ public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptB
 
 	private boolean isUniqueProp(ReferencePropertyEditor editor) {
 		// OIDをユニークキーフィールドとして使えるように
-		if (Entity.OID.equals(editor.getUniqueItem())) return true;
+		if (Entity.OID.equals(editor.getUniqueItem()))
+			return true;
 
 		EntityDefinition ed = edm.get(editor.getObjectName());
 		PropertyDefinition pd = ed.getProperty(editor.getUniqueItem());
@@ -111,9 +115,11 @@ public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptB
 		Query q = new Query();
 		q.select(Entity.OID, Entity.VERSION, editor.getUniqueItem());
 		if (editor.getDisplayLabelItem() != null) {
-			q.select().add(editor.getDisplayLabelItem());
+			q.select()
+					.add(editor.getDisplayLabelItem());
 		} else {
-			q.select().add(Entity.NAME);
+			q.select()
+					.add(Entity.NAME);
 		}
 		q.from(editor.getObjectName());
 		if (uniqueValue == null) {
@@ -132,7 +138,7 @@ public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptB
 				if (editor.getDisplayLabelItem() != null) {
 					String displayLabelItem = editor.getDisplayLabelItem();
 					// 表示ラベルとして扱うプロパティをNameに設定
-					data.setName((String)dataModel.getValue(displayLabelItem));
+					data.setName((String) dataModel.getValue(displayLabelItem));
 				} else {
 					data.setName(dataModel.getName());
 				}
@@ -155,7 +161,7 @@ public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptB
 		private String name;
 		private Long version;
 		private String uniqueValue;
-		
+
 		public SimpleEntity() {
 		}
 

@@ -43,7 +43,6 @@ public class PreferenceSet extends Preference {
 
 	private transient Map<String, Preference[]> map;
 
-
 	public PreferenceSet() {
 	}
 
@@ -61,7 +60,7 @@ public class PreferenceSet extends Preference {
 		setRuntimeClassName(runtimeClassName);
 		subSet = new ArrayList<>();
 		if (prefs != null) {
-			for (Preference p: prefs) {
+			for (Preference p : prefs) {
 				subSet.add(p);
 			}
 		}
@@ -104,10 +103,10 @@ public class PreferenceSet extends Preference {
 				map = Collections.emptyMap();
 			} else {
 				map = new HashMap<>();
-				for (Preference p: subSet) {
+				for (Preference p : subSet) {
 					Preference[] pre = map.get(p.getName());
 					if (pre == null) {
-						map.put(p.getName(), new Preference[]{p});
+						map.put(p.getName(), new Preference[] { p });
 					} else {
 						Preference[] newPre = new Preference[pre.length + 1];
 						System.arraycopy(pre, 0, newPre, 0, pre.length);
@@ -180,7 +179,7 @@ public class PreferenceSet extends Preference {
 			return new Preference[0];
 		}
 		if (p instanceof Preference) {
-			return new Preference[]{(Preference) p};
+			return new Preference[] { (Preference) p };
 		}
 		return (Preference[]) p;
 	}

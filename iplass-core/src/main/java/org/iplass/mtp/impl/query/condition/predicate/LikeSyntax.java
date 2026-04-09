@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.value.primary.LiteralSyntax;
 
 public class LikeSyntax implements Syntax<Like>, QueryConstants {
-	
+
 	private LiteralSyntax literalSyntax;
 
 	public void init(SyntaxContext context) {
@@ -43,17 +43,17 @@ public class LikeSyntax implements Syntax<Like>, QueryConstants {
 		if (!str.equalsNextToken(LIKE, ParseContext.TOKEN_DELIMITERS)) {
 			throw new ParseException(new EvalError("like expected.", this, str));
 		}
-		
+
 		str.consumeChars(LIKE.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		Literal pattern = literalSyntax.parse(str);
 		if (!(pattern.getValue() instanceof String)) {
 			throw new ParseException(new EvalError("string expression expected.", this, str));
 		}
-		
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		CaseType ct = CaseType.CI;
 		if (str.equalsNextToken(CI, ParseContext.TOKEN_DELIMITERS)) {
 			ct = CaseType.CI;
@@ -64,7 +64,7 @@ public class LikeSyntax implements Syntax<Like>, QueryConstants {
 			str.consumeChars(CS.length());
 			str.consumeChars(ParseContext.WHITE_SPACES);
 		}
-		
+
 		Like like = new Like();
 		like.setPatternAsLiteral(pattern);
 		like.setCaseType(ct);

@@ -47,7 +47,9 @@ public class EntityViewDDLWriter implements Closeable {
 
 	private static final String DEFAULT_LOB_ID_SUFFIX = "_LOBID";
 
-	private RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+	private RdbAdapter rdb = ServiceRegistry.getRegistry()
+			.getService(RdbAdapterService.class)
+			.getRdbAdapter();
 
 	// 作成した短縮名と最大個数を保持(重複チェック及び連番生成用)
 	private Map<String, Integer> shrinkedEntityNameMap = new HashMap<>();
@@ -114,7 +116,8 @@ public class EntityViewDDLWriter implements Closeable {
 
 	private String shrinkEntityName(String entityName) {
 		int maxLength = rdb.getMaxViewNameLength();
-		if (maxLength < 0) return entityName;
+		if (maxLength < 0)
+			return entityName;
 
 		String shrinkedEntityName = entityName;
 
@@ -149,7 +152,8 @@ public class EntityViewDDLWriter implements Closeable {
 		}
 
 		if (shrinkedEntityNameMap.containsKey(shrinkedEntityName)) {
-			int cnt = shrinkedEntityNameMap.get(shrinkedEntityName).intValue() + 1;
+			int cnt = shrinkedEntityNameMap.get(shrinkedEntityName)
+					.intValue() + 1;
 			shrinkedEntityNameMap.put(shrinkedEntityName, Integer.valueOf(cnt));
 			String suffix = String.format("#%d", cnt);
 			shrinkedEntityName = shrinkedEntityName.substring(0, shrinkedEntityName.length() - suffix.length()) + suffix;
@@ -169,7 +173,7 @@ public class EntityViewDDLWriter implements Closeable {
 	}
 
 	private void addColumn(StringBuilder sb, String column) {
-		if(sb.length() > 0) {
+		if (sb.length() > 0) {
 			sb.append(",");
 		}
 		sb.append(column);
@@ -222,14 +226,15 @@ public class EntityViewDDLWriter implements Closeable {
 				}
 				break;
 			}
-		};
+		} ;
 
 		EntityContext ec = EntityContext.getCurrentContext();
 		SqlQueryContext sqc = new SqlQueryContext(ec.getHandlerByName(ed.getName()), ec, rdb);
 		SqlConverter sc = new SqlConverter(sqc, false);
 
 		String eql = String.format("SELECT %s FROM %s", sbProperty.toString(), ed.getName());
-		Query.newQuery(eql).accept(sc);
+		Query.newQuery(eql)
+				.accept(sc);
 
 		return toCreateViewDDL(ed.getName(), sbColumn.toString(), sqc.toSelectSql());
 	}
@@ -251,7 +256,8 @@ public class EntityViewDDLWriter implements Closeable {
 		SqlQueryContext sqc = new SqlQueryContext(ec.getHandlerByName(ed.getName()), ec, rdb);
 		SqlConverter sc = new SqlConverter(sqc, false);
 
-		Query.newQuery(eql).accept(sc);
+		Query.newQuery(eql)
+				.accept(sc);
 
 		StringBuilder sbCol = new StringBuilder();
 		addColumn(sbCol, createViewColumn(1, "oid", PropertyDefinitionType.STRING));
@@ -263,9 +269,11 @@ public class EntityViewDDLWriter implements Closeable {
 	}
 
 	private void writeReferenceViewDDL(EntityDefinition ed) throws IOException {
-		List<PropertyDefinition> pdList =
-				ed.getPropertyList().stream().filter(
-						pd -> pd.getType() == PropertyDefinitionType.REFERENCE).collect(Collectors.toList());
+		List<PropertyDefinition> pdList = ed.getPropertyList()
+				.stream()
+				.filter(
+						pd -> pd.getType() == PropertyDefinitionType.REFERENCE)
+				.collect(Collectors.toList());
 		for (PropertyDefinition pd : pdList) {
 			String ddl = generateReferenceViewDDL(ed, pd);
 

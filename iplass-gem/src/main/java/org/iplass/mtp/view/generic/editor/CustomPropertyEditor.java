@@ -25,7 +25,8 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({DateRangePropertyEditor.class, NumericRangePropertyEditor.class, JoinPropertyEditor.class, TemplatePropertyEditor.class, UserPropertyEditor.class})
+@XmlSeeAlso({ DateRangePropertyEditor.class, NumericRangePropertyEditor.class, JoinPropertyEditor.class, TemplatePropertyEditor.class,
+		UserPropertyEditor.class })
 public abstract class CustomPropertyEditor extends PropertyEditor {
 
 	/** SerialVersionUID */

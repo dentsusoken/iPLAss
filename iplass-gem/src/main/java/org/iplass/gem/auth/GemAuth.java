@@ -93,8 +93,8 @@ public class GemAuth {
 
 		if (actionName.startsWith("gem/generic/")) {
 			//汎用画面
-			String definitionName = (String)param.getValue(Constants.DEF_NAME);
-			String viewName = (String)param.getValue(Constants.VIEW_NAME);
+			String definitionName = (String) param.getValue(Constants.DEF_NAME);
+			String viewName = (String) param.getValue(Constants.VIEW_NAME);
 			return isPermitEntityView(definitionName, viewName);
 		} else if (actionName.startsWith("gem/")) {
 			//その他のgem
@@ -120,8 +120,8 @@ public class GemAuth {
 
 			Object paramValue = param.getValue("params");
 			if (paramValue == null) {
-				definitionName = (String)param.getValue(Constants.DEF_NAME);
-				viewName = (String)param.getValue(Constants.VIEW_NAME);
+				definitionName = (String) param.getValue(Constants.DEF_NAME);
+				viewName = (String) param.getValue(Constants.VIEW_NAME);
 			} else if (paramValue instanceof GemWebApiParameter) {
 				GemWebApiParameter gemParam = (GemWebApiParameter) paramValue;
 				definitionName = gemParam.getDefName();
@@ -151,14 +151,16 @@ public class GemAuth {
 	 */
 	public static boolean isPermitEntityView(String definitionName, String viewName) {
 
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		EntityViewManager evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 
 		//許可ロールを取得
 		List<String> permitRoles = evm.getPermitRoles(definitionName, viewName);
 
 		if (permitRoles == null) {
 			//許可ロールがない場合（自動生成）は、指定されているロールのみ許可
-			GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			GemConfigService service = ServiceRegistry.getRegistry()
+					.getService(GemConfigService.class);
 			permitRoles = service.getPermitRolesToNoView();
 		}
 
@@ -167,7 +169,8 @@ public class GemAuth {
 			return true;
 		} else {
 			final AuthContext authContext = AuthContext.getCurrentContext();
-			return permitRoles.stream().anyMatch(role -> authContext.userInRole(role));
+			return permitRoles.stream()
+					.anyMatch(role -> authContext.userInRole(role));
 		}
 	}
 
@@ -180,11 +183,14 @@ public class GemAuth {
 		final AuthContext authContext = AuthContext.getCurrentContext();
 
 		//指定されているロールのみ許可
-		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		GemConfigService service = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 		if (service.getPermitRolesToGem() == null) {
 			return true;
 		}
-		return service.getPermitRolesToGem().stream().anyMatch(role -> authContext.userInRole(role));
+		return service.getPermitRolesToGem()
+				.stream()
+				.anyMatch(role -> authContext.userInRole(role));
 	}
 
 }

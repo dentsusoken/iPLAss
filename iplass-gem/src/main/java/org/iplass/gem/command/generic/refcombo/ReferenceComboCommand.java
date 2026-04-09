@@ -61,14 +61,14 @@ import org.iplass.mtp.webapi.definition.RequestType;
  * @author lis3wg
  */
 @WebApi(
-		name=ReferenceComboCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		methods=MethodType.POST,
-		restJson=@RestJson(parameterName="param"),
-		results={"selName", "data"},
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/generic/refcombo/ReferenceComboCommand", displayName="参照コンボ選択リスト取得")
+		name = ReferenceComboCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		methods = MethodType.POST,
+		restJson = @RestJson(parameterName = "param"),
+		results = { "selName", "data" },
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/generic/refcombo/ReferenceComboCommand", displayName = "参照コンボ選択リスト取得")
 public final class ReferenceComboCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/referenceCombo";
@@ -81,9 +81,12 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 	 * コンストラクタ
 	 */
 	public ReferenceComboCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
 	}
 
 	@Override
@@ -99,7 +102,7 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
-			rpe = (ReferencePropertyEditor)editor;
+			rpe = (ReferencePropertyEditor) editor;
 		}
 
 		if (rpe != null) {
@@ -149,11 +152,14 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 			q.select(Entity.OID);
 			if (editor.getDisplayLabelItem() != null) {
 				// 表示ラベルとして扱うプロパティ
-				q.select().add(editor.getDisplayLabelItem());
+				q.select()
+						.add(editor.getDisplayLabelItem());
 			} else {
-				q.select().add(Entity.NAME);
+				q.select()
+						.add(Entity.NAME);
 			}
-			q.from(defName).where(new And(conditions));
+			q.from(defName)
+					.where(new And(conditions));
 
 			String sortItem = editor.getSortItem();
 			if (sortItem == null || sortItem.isEmpty()) {
@@ -220,9 +226,11 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 				query.select(Entity.OID);
 				if (setting.getDisplayLabelItem() != null) {
 					// 表示ラベルとして扱うプロパティ
-					query.select().add(setting.getDisplayLabelItem());
+					query.select()
+							.add(setting.getDisplayLabelItem());
 				} else {
-					query.select().add(Entity.NAME);
+					query.select()
+							.add(Entity.NAME);
 				}
 				query.from(red.getName());
 
@@ -280,6 +288,7 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 	class SimpleEntity {
 		private String oid;
 		private String name;
+
 		/**
 		 * コンストラクタ
 		 */
@@ -300,6 +309,7 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 		public String getOid() {
 			return oid;
 		}
+
 		/**
 		 * oidを設定します。
 		 * @param oid oid
@@ -307,6 +317,7 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 		public void setOid(String oid) {
 			this.oid = oid;
 		}
+
 		/**
 		 * nameを取得します。
 		 * @return name
@@ -314,6 +325,7 @@ public final class ReferenceComboCommand implements Command, HasDisplayScriptBin
 		public String getName() {
 			return name;
 		}
+
 		/**
 		 * nameを設定します。
 		 * @param name name

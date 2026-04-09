@@ -38,9 +38,12 @@ public class CommandInvokerImpl implements CommandInvoker {
 	public static final String COMMAND_META_META_PATH = "/commandClass/";
 	public static final String INVOKER_INTERCEPTOR_NAME = "invoker";
 
-	CommandService service = ServiceRegistry.getRegistry().getService(CommandService.class);
-	InterceptorService interceptorService = ServiceRegistry.getRegistry().getService(InterceptorService.class);
-	AsyncCommandService acs = ServiceRegistry.getRegistry().getService(AsyncCommandService.class);
+	CommandService service = ServiceRegistry.getRegistry()
+			.getService(CommandService.class);
+	InterceptorService interceptorService = ServiceRegistry.getRegistry()
+			.getService(InterceptorService.class);
+	AsyncCommandService acs = ServiceRegistry.getRegistry()
+			.getService(AsyncCommandService.class);
 
 	@Override
 	public String execute(String cmdName, RequestContext request) {
@@ -50,7 +53,8 @@ public class CommandInvokerImpl implements CommandInvoker {
 	@Override
 	public String execute(String cmdName, RequestContext request, TransactionOption transactionOption) {
 		MetaCommandRuntime handler = service.getRuntimeByName(cmdName);
-		InvocationImpl invocation = new InvocationImpl(interceptorService.getInterceptors(INVOKER_INTERCEPTOR_NAME), handler, request, transactionOption);
+		InvocationImpl invocation = new InvocationImpl(interceptorService.getInterceptors(INVOKER_INTERCEPTOR_NAME), handler, request,
+				transactionOption);
 		return invocation.proceedCommand();
 	}
 
@@ -61,19 +65,21 @@ public class CommandInvokerImpl implements CommandInvoker {
 
 	@Override
 	public String execute(Command cmd, RequestContext request, TransactionOption transactionOption) {
-		
-		CommandClass cc = cmd.getClass().getAnnotation(CommandClass.class);
+
+		CommandClass cc = cmd.getClass()
+				.getAnnotation(CommandClass.class);
 		String cmdName;
 		if (cc != null) {
 			cmdName = cc.name();
 		} else {
-			cmdName = cmd.getClass().getName();
+			cmdName = cmd.getClass()
+					.getName();
 		}
 
-		InvocationImpl invocation = new InvocationImpl(interceptorService.getInterceptors(INVOKER_INTERCEPTOR_NAME), cmd, request, transactionOption, cmdName);
+		InvocationImpl invocation = new InvocationImpl(interceptorService.getInterceptors(INVOKER_INTERCEPTOR_NAME), cmd, request, transactionOption,
+				cmdName);
 		return invocation.proceedCommand();
 	}
-
 
 	@Override
 	public Command getCommandInstance(String cmdName) {

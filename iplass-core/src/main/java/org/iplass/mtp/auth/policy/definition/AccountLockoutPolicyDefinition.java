@@ -30,14 +30,14 @@ import java.io.Serializable;
  */
 public class AccountLockoutPolicyDefinition implements Serializable {
 	private static final long serialVersionUID = -5956695743833838501L;
-	
+
 	/** アカウントロックアウトするまでの失敗回数。0はロックアウトしない */
 	private int lockoutFailureCount = 10;
 	/** ロックアウトしている期間（分）。0は無制限 */
 	private int lockoutDuration;
 	/** 失敗回数を記憶しておく期間（分） 。0は無制限*/
 	private int lockoutFailureExpirationInterval;
-	
+
 	/**
 	 *  アカウントロックアウトするまでの失敗回数。0はロックアウトしない。
 	 *  設定可能な最大値は99。
@@ -47,6 +47,7 @@ public class AccountLockoutPolicyDefinition implements Serializable {
 	public int getLockoutFailureCount() {
 		return lockoutFailureCount;
 	}
+
 	/**
 	 * see {@link #getLockoutFailureCount()}
 	 * @param lockoutFailureCount
@@ -54,6 +55,7 @@ public class AccountLockoutPolicyDefinition implements Serializable {
 	public void setLockoutFailureCount(int lockoutFailureCount) {
 		this.lockoutFailureCount = lockoutFailureCount;
 	}
+
 	/**
 	 * ロックアウトしている期間（分）。0は無制限。
 	 * 
@@ -62,6 +64,7 @@ public class AccountLockoutPolicyDefinition implements Serializable {
 	public int getLockoutDuration() {
 		return lockoutDuration;
 	}
+
 	/**
 	 * see {@link #getLockoutDuration()}
 	 * @param lockoutDuration
@@ -69,6 +72,7 @@ public class AccountLockoutPolicyDefinition implements Serializable {
 	public void setLockoutDuration(int lockoutDuration) {
 		this.lockoutDuration = lockoutDuration;
 	}
+
 	/**
 	 * 失敗回数（{@link #getLockoutFailureCount() lockoutFailureCount}）を記憶しておく期間（分） 。
 	 * 0は無制限。
@@ -78,6 +82,7 @@ public class AccountLockoutPolicyDefinition implements Serializable {
 	public int getLockoutFailureExpirationInterval() {
 		return lockoutFailureExpirationInterval;
 	}
+
 	/**
 	 * see {@link #getLockoutFailureExpirationInterval()}
 	 * @param lockoutFailureExpirationInterval

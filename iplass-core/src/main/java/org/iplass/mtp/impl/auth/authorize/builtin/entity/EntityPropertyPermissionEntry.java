@@ -23,32 +23,32 @@ package org.iplass.mtp.impl.auth.authorize.builtin.entity;
 import java.util.HashSet;
 
 class EntityPropertyPermissionEntry {
-	
+
 	private String role;
 	private boolean isDefinePermit;//許可を定義しているか、否許可を定義しているか
 	private HashSet<String> propertyNameSet;
-	
+
 	EntityPropertyPermissionEntry(String role, boolean isDefinePermit, HashSet<String> propertyNameSet) {
 		this.role = role;
 		this.isDefinePermit = isDefinePermit;
 		this.propertyNameSet = propertyNameSet;
 	}
-	
+
 	EntityPropertyPermissionEntry(String role, boolean isDefinePermit, String[] propertyNames) {
 		this.role = role;
 		this.isDefinePermit = isDefinePermit;
 		if (propertyNames != null) {
 			this.propertyNameSet = new HashSet<String>();
-			for (String pn: propertyNames) {
+			for (String pn : propertyNames) {
 				this.propertyNameSet.add(pn);
 			}
 		}
 	}
-	
+
 	public String getRole() {
 		return role;
 	}
-	
+
 	public boolean isPermit(String propName) {
 		boolean contains = false;
 		if (propertyNameSet != null) {
@@ -60,5 +60,5 @@ class EntityPropertyPermissionEntry {
 			return !contains;
 		}
 	}
-	
+
 }

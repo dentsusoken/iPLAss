@@ -138,6 +138,7 @@ public class LocalizedScriptSettingDialog extends MtpDialog {
 									}
 									grid.refreshRow(selectRow);
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -213,7 +214,7 @@ public class LocalizedScriptSettingDialog extends MtpDialog {
 						}
 						records.add(record);
 					}
-					grid.setData(records.toArray(new ListGridRecord[]{}));
+					grid.setData(records.toArray(new ListGridRecord[] {}));
 
 				}
 			});

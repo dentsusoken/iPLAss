@@ -32,12 +32,15 @@ import org.iplass.mtp.view.generic.EntityView;
 public interface SearchContext {
 
 	public RequestContext getRequest();
+
 	public void setRequest(RequestContext request);
 
 	public EntityDefinition getEntityDefinition();
+
 	public void setEntityDefinition(EntityDefinition definition);
 
 	public EntityView getEntityView();
+
 	public void setEntityView(EntityView view);
 
 	public String getDefName();

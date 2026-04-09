@@ -33,15 +33,19 @@ public class RoundRobinTableAllocator implements TableAllocator {
 	@Override
 	public int allocate(int tenantId, String metaId, StorageSpaceMap storage) {
 		//tenant内のEntityでのラウンドロビン
-		
+
 		int[] counts = new int[storage.getTableCount()];
-		
-		EntityService es = ServiceRegistry.getRegistry().getService(EntityService.class);
-		for (MetaDataEntryInfo minfo: es.list()) {
-			if (!minfo.getId().equals(metaId)) {
+
+		EntityService es = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
+		for (MetaDataEntryInfo minfo : es.list()) {
+			if (!minfo.getId()
+					.equals(metaId)) {
 				EntityHandler eh = es.getRuntimeById(minfo.getId());
-				if (eh.getMetaData().getEntityStoreDefinition() instanceof MetaGRdbEntityStore) {
-					MetaGRdbEntityStore estore = (MetaGRdbEntityStore) eh.getMetaData().getEntityStoreDefinition();
+				if (eh.getMetaData()
+						.getEntityStoreDefinition() instanceof MetaGRdbEntityStore) {
+					MetaGRdbEntityStore estore = (MetaGRdbEntityStore) eh.getMetaData()
+							.getEntityStoreDefinition();
 					int no = storage.tableNo(estore.getTableNamePostfix());
 					if (no >= 0 && no < counts.length) {
 						counts[no]++;
@@ -49,14 +53,14 @@ public class RoundRobinTableAllocator implements TableAllocator {
 				}
 			}
 		}
-		
+
 		int minIndex = 0;
 		for (int i = 1; i < counts.length; i++) {
 			if (counts[minIndex] > counts[i]) {
 				minIndex = i;
 			}
 		}
-		
+
 		return minIndex;
 	}
 }

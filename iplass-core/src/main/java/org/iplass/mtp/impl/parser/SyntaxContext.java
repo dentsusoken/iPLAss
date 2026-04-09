@@ -24,25 +24,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SyntaxContext {
-	
+
 	private Map<Class<?>, Syntax<?>> map = new HashMap<>();
-	
+
 	public SyntaxContext(Syntax<?>... syntax) {
 		if (syntax != null) {
-			for (Syntax<?> s: syntax) {
+			for (Syntax<?> s : syntax) {
 				map.put(s.getClass(), s);
 			}
-			
-			for (Syntax<?> s: syntax) {
+
+			for (Syntax<?> s : syntax) {
 				s.init(this);
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T extends Syntax<?>> T getSyntax(Class<T> type) {
 		return (T) map.get(type);
 	}
-	
-	
+
 }

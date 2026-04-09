@@ -68,7 +68,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	private static final String VER = "VER";
 	private static final String CRE_TIME = "CRE_TIME";
 	private static final String INVALID_TIME = "INV_TIME";
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(RdbCacheStoreFactory.class);
 
 	private CacheKeyResolver cacheKeyResolver;
@@ -78,12 +78,12 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	/** RdbAdapter名 */
 	private String rdbArapterName;
 	private String tableName = DEFAULT_TABLE_NAME;
-	
+
 	private int retryCount;
 	private long timeToLive = -1;
-	
+
 	private TimeToLiveCalculator timeToLiveCalculator = new DefaultTimeToLiveCalculator();
-	
+
 	public TimeToLiveCalculator getTimeToLiveCalculator() {
 		return timeToLiveCalculator;
 	}
@@ -99,7 +99,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-	
+
 	public long getTimeToLive() {
 		return timeToLive;
 	}
@@ -170,13 +170,14 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 	public CacheHandler createCacheHandler(CacheStore store) {
 		return new SimpleLocalCacheHandler(store, getConcurrencyLevelOfCacheHandler());
 	}
-	
+
 	public static void deleteInvalidRecord() {
-		
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		List<CacheStoreFactory> list = cs.getFactories();
 		Set<Target> tlist = new HashSet<>();
-		for (CacheStoreFactory csf: list) {
+		for (CacheStoreFactory csf : list) {
 			CacheStoreFactory target = csf;
 			while (target.getLowerLevel() != null) {
 				target = target.getLowerLevel();
@@ -186,12 +187,13 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				tlist.add(new Target(t.connectionFactoryName, t.rdbArapterName, t.tableName));
 			}
 		}
-		
+
 		//transaction制御しない。途中でこけてもロールバックしない。
-		
-		RdbAdapterService ras = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+
+		RdbAdapterService ras = ServiceRegistry.getRegistry()
+				.getService(RdbAdapterService.class);
 		if (tlist.size() > 0) {
-			for (Target t: tlist) {
+			for (Target t : tlist) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("delete invalid cache record of " + t);
 				}
@@ -207,21 +209,23 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 		}
 	}
-	
+
 	private static String delInvalidSql(String tableName) {
 		return "DELETE FROM " + tableName + " WHERE " + INVALID_TIME + "<=" + System.currentTimeMillis();
 	}
-	
+
 	private static class Target {
 		private String connectionFactoryName;
 		private String rdbArapterName;
 		private String tableName;
+
 		private Target(String connectionFactoryName, String rdbArapterName,
 				String tableName) {
 			this.connectionFactoryName = connectionFactoryName;
 			this.rdbArapterName = rdbArapterName;
 			this.tableName = tableName;
 		}
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -237,6 +241,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					+ ((tableName == null) ? 0 : tableName.hashCode());
 			return result;
 		}
+
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -264,6 +269,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return false;
 			return true;
 		}
+
 		@Override
 		public String toString() {
 			return "Target [connectionFactoryName=" + connectionFactoryName
@@ -271,14 +277,13 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					+ tableName + "]";
 		}
 	}
-	
-	
+
 	public class RdbCacheStore implements CacheStore {
-		
+
 		private String namespace;
 		private List<CacheEventListener> listeners;
 		private RdbAdapter rdb;
-		
+
 		private String getSql;
 		private String getSqlWithCheckInvalidDate;
 		private String delSql = "DELETE FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + KEY + "=?";
@@ -288,19 +293,22 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		private String insertSql;
 		private String delAllSql = "DELETE FROM " + tableName + " WHERE " + NAMESPACE + "=?";
 		private String keySetSql = "SELECT " + KEY + "," + CRE_TIME + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
-		private String countSqlWithCheckInvalidDate = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
-		
+		private String countSqlWithCheckInvalidDate = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME
+				+ ">?";
+
 		RdbCacheStore(String namespace) {
 			this.namespace = namespace;
 			listeners = new CopyOnWriteArrayList<CacheEventListener>();
-			rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter(rdbArapterName);
+			rdb = ServiceRegistry.getRegistry()
+					.getService(RdbAdapterService.class)
+					.getRdbAdapter(rdbArapterName);
 			getSql = getSql(false);
 			getSqlWithCheckInvalidDate = getSql(true);
 			updateSql = updateSql(false);
 			updateSqlWithVersionCheck = updateSql(true);
 			insertSql = insertSql();
 		}
-		
+
 		private String getSql(boolean checkInvalidDate) {
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT " + VAL + "," + VER + "," + CRE_TIME);
@@ -310,14 +318,15 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					sql.append(i);
 				}
 			}
-			sql.append(" FROM ").append(tableName);
+			sql.append(" FROM ")
+					.append(tableName);
 			sql.append(" WHERE " + NAMESPACE + "=? AND " + KEY + "=?");
 			if (checkInvalidDate) {
 				sql.append(" AND " + INVALID_TIME + ">?");
 			}
 			return sql.toString();
 		}
-		
+
 		private String getByIndexSql(int indexKey) {
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT " + KEY + "," + VAL + "," + VER + "," + CRE_TIME);
@@ -327,14 +336,16 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					sql.append(i);
 				}
 			}
-			sql.append(" FROM ").append(tableName);
+			sql.append(" FROM ")
+					.append(tableName);
 			sql.append(" WHERE " + NAMESPACE + "=? AND " + INDEX + indexKey + "=? AND " + INVALID_TIME + ">?");
 			return sql.toString();
 		}
 
 		private String updateSql(boolean withVersionCheck) {
 			StringBuilder sql = new StringBuilder();
-			sql.append("UPDATE ").append(tableName);
+			sql.append("UPDATE ")
+					.append(tableName);
 			sql.append(" SET ");
 			sql.append(VAL + "=?," + VER + "=?," + CRE_TIME + "=?," + INVALID_TIME + "=?");
 			if (getIndexCount() > 0) {
@@ -353,8 +364,9 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		private String insertSql() {
 			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO ").append(tableName);
-			sql.append("(" + NAMESPACE + ","  + KEY + "," +  VAL + "," + VER + "," + CRE_TIME + "," + INVALID_TIME);
+			sql.append("INSERT INTO ")
+					.append(tableName);
+			sql.append("(" + NAMESPACE + "," + KEY + "," + VAL + "," + VER + "," + CRE_TIME + "," + INVALID_TIME);
 			if (getIndexCount() > 0) {
 				for (int i = 0; i < getIndexCount(); i++) {
 					sql.append("," + INDEX);
@@ -370,7 +382,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			sql.append(")");
 			return sql.toString();
 		}
-		
+
 		@Override
 		public CacheStoreFactory getFactory() {
 			return RdbCacheStoreFactory.this;
@@ -384,7 +396,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		protected void notifyRemoved(CacheEntry entry) {
 			if (listeners != null) {
 				CacheRemoveEvent e = new CacheRemoveEvent(entry);
-				for (CacheEventListener l: listeners) {
+				for (CacheEventListener l : listeners) {
 					l.removed(e);
 				}
 			}
@@ -393,7 +405,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		protected void notifyPut(CacheEntry entry) {
 			if (listeners != null) {
 				CacheCreateEvent e = new CacheCreateEvent(entry);
-				for (CacheEventListener l: listeners) {
+				for (CacheEventListener l : listeners) {
 					l.created(e);
 				}
 			}
@@ -402,7 +414,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		protected void notifyUpdated(CacheEntry preEntry, CacheEntry entry) {
 			if (listeners != null) {
 				CacheUpdateEvent e = new CacheUpdateEvent(preEntry, entry);
-				for (CacheEventListener l: listeners) {
+				for (CacheEventListener l : listeners) {
 					l.updated(e);
 				}
 			}
@@ -411,12 +423,12 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		protected void notifyInvalidated(CacheEntry entry) {
 			if (listeners != null) {
 				CacheInvalidateEvent e = new CacheInvalidateEvent(entry);
-				for (CacheEventListener l: listeners) {
+				for (CacheEventListener l : listeners) {
 					l.invalidated(e);
 				}
 			}
 		}
-		
+
 		@Override
 		public void addCacheEventListenner(CacheEventListener listener) {
 			listeners.add(listener);
@@ -426,12 +438,11 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public void removeCacheEventListenner(CacheEventListener listener) {
 			listeners.remove(listener);
 		}
-		
+
 		@Override
 		public List<CacheEventListener> getListeners() {
 			return listeners;
 		}
-
 
 		private boolean isStillAliveOrNull(CacheEntry e) {
 			if (e == null) {
@@ -439,10 +450,10 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 			return System.currentTimeMillis() < e.getExpirationTime();
 		}
-		
+
 		@Override
 		public CacheEntry put(CacheEntry entry, boolean clean) {
-			
+
 			for (int count = 0; count <= retryCount; count++) {
 				try (Connection con = rdb.getConnection(connectionFactoryName)) {
 					CacheEntry pre = getInternal(entry.getKey(), false, con);
@@ -450,7 +461,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (insertInternal(entry, con)) {
 							notifyPut(entry);
 							return pre;
-						};
+						} ;
 					} else {
 						if (updateInternal(entry, true, pre.getVersion(), con)) {
 							if (isStillAliveOrNull(pre)) {
@@ -464,14 +475,14 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					}
 				} catch (SQLException e) {
 					if (!rdb.isDuplicateValueException(e)) {
-						throw new SystemException("cant put CacheEntry to RDB:"+ entry, e);
+						throw new SystemException("cant put CacheEntry to RDB:" + entry, e);
 					}
 				}
 			}
-			
+
 			throw new SystemException("cant put CacheEntry cause retry count over:" + entry);
 		}
-		
+
 		private CacheEntry getInternal(Object key, boolean checkInvalidDate, Connection con) throws SQLException {
 			String sql;
 			if (checkInvalidDate) {
@@ -490,17 +501,18 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				if (checkInvalidDate) {
 					ps.setLong(3, now);
 				}
-				
+
 				try (ResultSet rs = ps.executeQuery()) {
 					if (rs.next()) {
 						Object[] index = null;
 						if (getIndexCount() > 0) {
 							index = new Object[getIndexCount()];
 							for (int i = 0; i < getIndexCount(); i++) {
-								index[i] = cacheIndexResolver.get(i).toCacheKey(rs.getString(INDEX + i));
+								index[i] = cacheIndexResolver.get(i)
+										.toCacheKey(rs.getString(INDEX + i));
 							}
 						}
-						
+
 						byte[] valByte = rs.getBytes(VAL);
 						Object value = null;
 						if (valByte != null && valByte.length > 0) {
@@ -512,7 +524,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 								throw new SystemException(e);
 							}
 						}
-						
+
 						CacheEntry ce = new CacheEntry(key, value, rs.getLong(VER), rs.getLong(CRE_TIME), index);
 						timeToLiveCalculator.set(ce);
 						if (checkInvalidDate && now >= ce.getExpirationTime()) {
@@ -525,7 +537,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 			}
 		}
-		
+
 		private byte[] toBytes(Object val) {
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			try {
@@ -536,7 +548,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 			return byteOut.toByteArray();
 		}
-		
+
 		private boolean updateInternal(CacheEntry entry, boolean checkVersion, long preVersion, Connection con) throws SQLException {
 			String sql;
 			if (checkVersion) {
@@ -545,7 +557,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				sql = updateSql;
 			}
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
-				
+
 				if (entry.getValue() == null) {
 					ps.setNull(1, Types.BLOB);
 				} else {
@@ -555,7 +567,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				ps.setLong(3, entry.getCreationTime());
 				timeToLiveCalculator.set(entry);
 				ps.setLong(4, entry.getExpirationTime());
-				
+
 				int cnt = 4;
 				if (getIndexCount() > 0) {
 					for (int i = 0; i < getIndexCount(); i++) {
@@ -564,7 +576,8 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (ival == null) {
 							ps.setNull(cnt, Types.VARCHAR);
 						} else {
-							ps.setString(cnt, cacheIndexResolver.get(i).toString(ival));
+							ps.setString(cnt, cacheIndexResolver.get(i)
+									.toString(ival));
 						}
 					}
 				}
@@ -572,7 +585,8 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				ps.setString(cnt, getNamespace());
 				cnt++;
 				if (entry.getKey() instanceof NullKey) {
-					ps.setString(cnt, entry.getKey().toString());
+					ps.setString(cnt, entry.getKey()
+							.toString());
 				} else {
 					ps.setString(cnt, cacheKeyResolver.toString(entry.getKey()));
 				}
@@ -580,7 +594,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					cnt++;
 					ps.setLong(cnt, preVersion);
 				}
-				
+
 				int ret = ps.executeUpdate();
 				if (ret > 0) {
 					return true;
@@ -589,12 +603,13 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 			}
 		}
-		
+
 		private boolean insertInternal(CacheEntry entry, Connection con) throws SQLException {
 			try (PreparedStatement ps = con.prepareStatement(insertSql)) {
 				ps.setString(1, getNamespace());
 				if (entry.getKey() instanceof NullKey) {
-					ps.setString(2, entry.getKey().toString());
+					ps.setString(2, entry.getKey()
+							.toString());
 				} else {
 					ps.setString(2, cacheKeyResolver.toString(entry.getKey()));
 				}
@@ -616,7 +631,8 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (ival == null) {
 							ps.setNull(cnt, Types.VARCHAR);
 						} else {
-							ps.setString(cnt, cacheIndexResolver.get(i).toString(ival));
+							ps.setString(cnt, cacheIndexResolver.get(i)
+									.toString(ival));
 						}
 					}
 				}
@@ -629,7 +645,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 			}
 		}
-		
+
 		private boolean deleteInternal(Object key, boolean checkVersion, long preVersion, Connection con) throws SQLException {
 			String sql;
 			if (checkVersion) {
@@ -641,7 +657,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return deleteInternal(key, checkVersion, preVersion, ps);
 			}
 		}
-		
+
 		private boolean deleteInternal(Object key, boolean checkVersion, long preVersion, PreparedStatement ps) throws SQLException {
 			ps.setString(1, getNamespace());
 			if (key instanceof NullKey) {
@@ -652,7 +668,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			if (checkVersion) {
 				ps.setLong(3, preVersion);
 			}
-			
+
 			int ret = ps.executeUpdate();
 			if (ret > 0) {
 				return true;
@@ -660,10 +676,10 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return false;
 			}
 		}
-		
+
 		@Override
 		public CacheEntry putIfAbsent(CacheEntry entry) {
-			
+
 			for (int count = 0; count <= retryCount; count++) {
 				try (Connection con = rdb.getConnection(connectionFactoryName)) {
 					CacheEntry pre = getInternal(entry.getKey(), false, con);
@@ -671,7 +687,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (insertInternal(entry, con)) {
 							notifyPut(entry);
 							return null;
-						};
+						} ;
 					} else {
 						if (isStillAliveOrNull(pre)) {
 							return pre;
@@ -688,7 +704,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					}
 				}
 			}
-			
+
 			throw new SystemException("cant putIfAbsent CacheEntry cause retry count over:" + entry);
 		}
 
@@ -702,7 +718,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (insertInternal(entry, con)) {
 							notifyPut(entry);
 							return entry;
-						};
+						} ;
 					} else {
 						if (isStillAliveOrNull(pre)) {
 							return pre;
@@ -720,7 +736,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					}
 				}
 			}
-			
+
 			throw new SystemException("cant computeIfAbsent CacheEntry cause retry count over:" + key);
 		}
 
@@ -735,7 +751,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 							if (insertInternal(entry, con)) {
 								notifyPut(entry);
 								return entry;
-							};
+							} ;
 						} else {
 							return null;
 						}
@@ -772,7 +788,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					}
 				}
 			}
-			
+
 			throw new SystemException("cant computeIfAbsent CacheEntry cause retry count over:" + key);
 		}
 
@@ -859,14 +875,14 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					}
 				}
 			}
-			
+
 			throw new SystemException("cant replace CacheEntry cause retry count over:" + entry);
 		}
 
 		@Override
 		public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
 			try (Connection con = rdb.getConnection(connectionFactoryName)) {
-				
+
 				CacheEntry pre = getInternal(oldEntry.getKey(), false, con);
 				if (pre == null) {
 					return false;
@@ -889,7 +905,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				throw new SystemException("cant replace CacheEntry to RDB:" + newEntry, e);
 			}
 		}
-		
+
 		protected boolean hasListener() {
 			if (listeners == null) {
 				return false;
@@ -900,7 +916,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		@Override
 		public void removeAll() {
 			if (hasListener()) {
-				for (Object k: keySet()) {
+				for (Object k : keySet()) {
 					remove(k);
 				}
 			} else {
@@ -913,9 +929,9 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					throw new SystemException("cant removeAll CacheEntry from RDB", e);
 				}
 			}
-			
+
 		}
-		
+
 		private Object toKey(String keyStr) {
 			if (keyStr == null) {
 				return null;
@@ -944,19 +960,19 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				throw new SystemException("cant keySet from RDB", e);
 			}
 		}
-		
-		
+
 		private List<CacheEntry> getByIndexInternal(int indexKey, Object indexValue, boolean onlyFirst, Connection con) throws SQLException {
 			if (indexValue == null) {
 				return Collections.emptyList();
 			}
-			
+
 			try (PreparedStatement ps = con.prepareStatement(getByIndexSql(indexKey))) {
 				long now = System.currentTimeMillis();
 				ps.setString(1, getNamespace());
-				ps.setString(2, cacheIndexResolver.get(indexKey).toString(indexValue));
+				ps.setString(2, cacheIndexResolver.get(indexKey)
+						.toString(indexValue));
 				ps.setLong(3, now);
-				
+
 				try (ResultSet rs = ps.executeQuery()) {
 					List<CacheEntry> ret = new ArrayList<>();
 					while (rs.next()) {
@@ -965,10 +981,11 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (getIndexCount() > 0) {
 							index = new Object[getIndexCount()];
 							for (int i = 0; i < getIndexCount(); i++) {
-								index[i] = cacheIndexResolver.get(i).toCacheKey(rs.getString(INDEX + i));
+								index[i] = cacheIndexResolver.get(i)
+										.toCacheKey(rs.getString(INDEX + i));
 							}
 						}
-						
+
 						byte[] valByte = rs.getBytes(VAL);
 						Object value = null;
 						if (valByte != null && valByte.length > 0) {
@@ -985,7 +1002,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						if (now < ce.getExpirationTime()) {
 							ret.add(ce);
 						}
-						
+
 						if (onlyFirst && ret.size() > 0) {
 							return ret;
 						}
@@ -994,7 +1011,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				}
 			}
 		}
-		
+
 		@Override
 		public CacheEntry getByIndex(int indexKey, Object indexValue) {
 			try (Connection con = rdb.getConnection(connectionFactoryName)) {
@@ -1024,7 +1041,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				List<CacheEntry> ret = getByIndexInternal(indexKey, indexValue, false, con);
 				if (ret.size() > 0) {
 					try (PreparedStatement ps = con.prepareStatement(delSqlWithVersionCheck)) {
-						for (CacheEntry ce: ret) {
+						for (CacheEntry ce : ret) {
 							deleteInternal(ce.getKey(), true, ce.getVersion(), ps);
 						}
 					}
@@ -1034,7 +1051,7 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				throw new SystemException("cant removeByIndex from RDB:indexKey=" + indexKey + ",indexValue=" + indexValue, e);
 			}
 		}
-		
+
 		@Override
 		public int getSize() {
 			try (Connection con = rdb.getConnection(connectionFactoryName)) {
@@ -1043,13 +1060,13 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				throw new SystemException("cant getSize from RDB", e);
 			}
 		}
-		
+
 		public int getSizeInternal(Connection con) throws SQLException {
 
 			try (PreparedStatement ps = con.prepareStatement(countSqlWithCheckInvalidDate)) {
 				ps.setString(1, getNamespace());
 				ps.setLong(2, System.currentTimeMillis());
-				
+
 				try (ResultSet rs = ps.executeQuery()) {
 					rs.next();
 					return rs.getInt(1);
@@ -1074,10 +1091,9 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 	}
 
-
 	@Override
 	public CacheStoreFactory getLowerLevel() {
 		return null;
 	}
-	
+
 }

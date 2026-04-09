@@ -59,17 +59,17 @@ public class MessageItemCsvWriter extends AdminCsvWriter {
 		recordMap.put(header[1], item.getMessage());
 
 		if (item.getLocalizedMessageList() != null) {
-			for (LocalizedStringDefinition lsd: item.getLocalizedMessageList()) {
+			for (LocalizedStringDefinition lsd : item.getLocalizedMessageList()) {
 				String localeName = lsd.getLocaleName();
 				String localeValue = lsd.getStringValue();
 
 				int cnt = 0;
 				for (String key : header) {
 					if (key.equals(localeName)) {
-						recordMap.put(header[cnt],localeValue);
+						recordMap.put(header[cnt], localeValue);
 						break;
 					}
-					cnt ++;
+					cnt++;
 				}
 			}
 		}
@@ -79,15 +79,17 @@ public class MessageItemCsvWriter extends AdminCsvWriter {
 
 	private void createCellHeader() {
 
-		I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
+		I18nService i18nService = ServiceRegistry.getRegistry()
+				.getService(I18nService.class);
 		List<EnableLanguages> enableLanguages = i18nService.getEnableLanguages();
 
 		header = new String[enableLanguages.size() + 2];
 		header[0] = "id";
 		header[1] = "defaultMessage";
 
-		for (int cnt = 0; cnt < enableLanguages.size(); cnt ++) {
-			header[cnt + 2] = enableLanguages.get(cnt).getLanguageKey();
+		for (int cnt = 0; cnt < enableLanguages.size(); cnt++) {
+			header[cnt + 2] = enableLanguages.get(cnt)
+					.getLanguageKey();
 		}
 
 	}

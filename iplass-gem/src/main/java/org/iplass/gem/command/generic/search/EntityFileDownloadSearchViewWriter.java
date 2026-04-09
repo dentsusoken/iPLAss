@@ -76,7 +76,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 	public EntityFileDownloadSearchViewWriter(EntityFileDownloadSearchContext context) {
 		this.context = context;
 
-		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		gcs = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
 	}
 
 	@Override
@@ -126,25 +127,25 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 	protected abstract void beforeWriteData();
 
 	/**
-     * データ行の出力を開始します。
-     */
+	 * データ行の出力を開始します。
+	 */
 	protected abstract void startRow();
 
 	/**
-     * 値の列を出力します。
-     *
-     * @param columnIndex 列番号
-     * @param fileColumn 列情報
-     * @param value 値
-     */
+	 * 値の列を出力します。
+	 *
+	 * @param columnIndex 列番号
+	 * @param fileColumn 列情報
+	 * @param value 値
+	 */
 	protected abstract void writeValueColumn(int columnIndex, FileColumn fileColumn, Object value);
 
 	/**
-     * 多重度複数値を纏めて出力する際の個々の文字列値を返します。
-     * 各値はカンマで連結します。
-     *
-     * @param value 値
-     */
+	 * 多重度複数値を纏めて出力する際の個々の文字列値を返します。
+	 * 各値はカンマで連結します。
+	 *
+	 * @param value 値
+	 */
 	protected abstract String valueToUnSplitMultipleValueString(Object value);
 
 	/**
@@ -153,13 +154,13 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 	protected abstract void nextColumn();
 
 	/**
-     * 行の終了を出力します。
-     */
+	 * 行の終了を出力します。
+	 */
 	protected abstract void endRow();
 
 	/**
-     * データ出力を終了します。
-     */
+	 * データ出力を終了します。
+	 */
 	protected abstract void endData() throws IOException;
 
 	/**
@@ -229,7 +230,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 
 		SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler();
 		MultipleFormat multipleFormat = context.getMultipleFormat();
-		boolean isShowUserNameWithPrivilegedValue = ((SearchContextBase) context).getForm().isShowUserNameWithPrivilegedValue();
+		boolean isShowUserNameWithPrivilegedValue = ((SearchContextBase) context).getForm()
+				.isShowUserNameWithPrivilegedValue();
 
 		new CsvDownloadSearchImpl(handler, columns, cacheLimit, isShowUserNameWithPrivilegedValue).execute(
 				query, new EntityViewTypeFormatter(this, columns, multipleFormat));
@@ -249,17 +251,19 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 		}
 
 		if (obj instanceof Entity) {
-			Entity ge = (Entity)obj;
+			Entity ge = (Entity) obj;
 			return ge.getOid();
 		}
 		if (obj instanceof BigDecimal) {
-			return ((BigDecimal)obj).toPlainString();
+			return ((BigDecimal) obj).toPlainString();
 		}
 		if (obj instanceof Float) {
-			return BigDecimal.valueOf((Float)obj).toPlainString();
+			return BigDecimal.valueOf((Float) obj)
+					.toPlainString();
 		}
 		if (obj instanceof Double) {
-			return BigDecimal.valueOf((Double)obj).toPlainString();
+			return BigDecimal.valueOf((Double) obj)
+					.toPlainString();
 		}
 		if (obj instanceof SelectValue) {
 			if (context.isOutputCodeValue()) {
@@ -272,11 +276,17 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 			return ((BinaryReference) obj).getName();
 		}
 		if (obj instanceof Timestamp) {
-			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true).format(obj);
+			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDatetimeSecFormat(), true)
+					.format(obj);
 		} else if (obj instanceof Date) {
-			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false).format(obj);
+			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDateFormat(), false)
+					.format(obj);
 		} else if (obj instanceof Time) {
-			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false).format(obj);
+			return DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputTimeSecFormat(), false)
+					.format(obj);
 		}
 
 		return obj.toString();
@@ -350,9 +360,9 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 		private void checkUserPropertyEditor() {
 
 			userProperties = columns.stream()
-				.filter(column -> column.getEditor() instanceof UserPropertyEditor)
-				.map(column -> column.getPropertyName())
-				.collect(Collectors.toSet());
+					.filter(column -> column.getEditor() instanceof UserPropertyEditor)
+					.map(column -> column.getPropertyName())
+					.collect(Collectors.toSet());
 		}
 
 		/**
@@ -431,8 +441,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 			final Map<String, String> userMap = new HashMap<>();
 
 			Query q = new Query().select(Entity.OID, Entity.NAME)
-					 .from(User.DEFINITION_NAME)
-					 .where(new In(Entity.OID, userOides.toArray()));
+					.from(User.DEFINITION_NAME)
+					.where(new In(Entity.OID, userOides.toArray()));
 
 			if (isShowUserNameWithPrivilegedValue) {
 				AuthContext.doPrivileged(() -> {
@@ -517,7 +527,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 
 					columnIndex = formatMultipleValue(columnIndex, fileColumn, multiple, values);
 
-				} else if (value != null && value.toString().length() != 0) {
+				} else if (value != null && value.toString()
+						.length() != 0) {
 
 					writer.writeValueColumn(columnIndex, fileColumn, value);
 
@@ -559,7 +570,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 			if (pd != null && pd instanceof SelectProperty
 					&& fileItem != null && fileItem.getEditor() instanceof SelectPropertyEditor) {
 				//SelectPropertyEditorによるソートの可能性があるため別制御
-				return formatMultipleSelectValue(columnIndex, fileColumn, (SelectProperty)pd, (SelectPropertyEditor)fileItem.getEditor(), multiple, values);
+				return formatMultipleSelectValue(columnIndex, fileColumn, (SelectProperty) pd, (SelectPropertyEditor) fileItem.getEditor(), multiple,
+						values);
 			} else {
 				if (multipleFormat == MultipleFormat.EACH_COLUMN) {
 					return formatSplitMultipleValue(columnIndex, fileColumn, multiple, values);
@@ -646,7 +658,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 		 * @param values 値
 		 * @return 列番号
 		 */
-		private int formatMultipleSelectValue(int columnIndex, FileColumn fileColumn, SelectProperty sp, SelectPropertyEditor spe, int multiple, Object[] values) {
+		private int formatMultipleSelectValue(int columnIndex, FileColumn fileColumn, SelectProperty sp, SelectPropertyEditor spe, int multiple,
+				Object[] values) {
 
 			//Editor設定から出力方式を取得
 			Object[] outputValues = values;
@@ -666,7 +679,8 @@ public abstract class EntityFileDownloadSearchViewWriter implements ResultStream
 					SelectValue targetValue = selectableValues.get(i);
 					boolean exist = false;
 					for (Object storeValue : values) {
-						if (storeValue != null && ((SelectValue)storeValue).getValue().equals(targetValue.getValue())) {
+						if (storeValue != null && ((SelectValue) storeValue).getValue()
+								.equals(targetValue.getValue())) {
 							exist = true;
 							break;
 						}

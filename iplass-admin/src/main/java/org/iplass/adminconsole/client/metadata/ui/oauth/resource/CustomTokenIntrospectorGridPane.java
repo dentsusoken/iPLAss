@@ -127,18 +127,18 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+			setCanReorderRecords(true); //Dragによる並び替えを可能にする
 
 			ListGridField clientTypeField = new ListGridField(FIELD_NAME.TYPE.name(), "Type");
 
@@ -149,7 +149,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editCustomTokenIntrospector((ListGridRecord)event.getRecord());
+					editCustomTokenIntrospector((ListGridRecord) event.getRecord());
 
 				}
 			});
@@ -159,14 +159,14 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 		@Override
 		public void setDefinition(OAuthResourceServerDefinition definition) {
 
-			setData(new ListGridRecord[]{});
+			setData(new ListGridRecord[] {});
 
 			if (definition.getCustomTokenIntrospectors() != null) {
 				List<ListGridRecord> records = new ArrayList<ListGridRecord>();
 				for (CustomTokenIntrospectorDefinition introspector : definition.getCustomTokenIntrospectors()) {
 					records.add(createRecord(introspector, null));
 				}
-				setData(records.toArray(new ListGridRecord[]{}));
+				setData(records.toArray(new ListGridRecord[] {}));
 			}
 		}
 
@@ -179,7 +179,8 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			} else {
 				List<CustomTokenIntrospectorDefinition> introspectors = new ArrayList<CustomTokenIntrospectorDefinition>(records.length);
 				for (ListGridRecord record : records) {
-					CustomTokenIntrospectorDefinition introspector = (CustomTokenIntrospectorDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+					CustomTokenIntrospectorDefinition introspector = (CustomTokenIntrospectorDefinition) record
+							.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 					introspectors.add(introspector);
 				}
 				definition.setCustomTokenIntrospectors(introspectors);
@@ -223,7 +224,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			});
 
 			if (record != null) {
-				dialog.setDefinition((CustomTokenIntrospectorDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+				dialog.setDefinition((CustomTokenIntrospectorDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 			}
 			dialog.show();
 		}
@@ -296,7 +297,8 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			txtClassName.setTitle("Java ClassName");
 			txtClassName.setStartRow(true);
 			SmartGWTUtil.addHoverToFormItem(txtClassName,
-					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerAttributePane_introspectorJavaClassName")));
+					SmartGWTUtil.getHoverString(
+							AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerAttributePane_introspectorJavaClassName")));
 
 			javaForm.setItems(txtClassName);
 
@@ -332,6 +334,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 								public void onSave(String text) {
 									txaScript.setValue(text);
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -347,7 +350,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			IButton btnOK = new IButton("OK");
 			btnOK.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					if (form.validate()){
+					if (form.validate()) {
 						createEditDefinition();
 					}
 				}
@@ -367,11 +370,11 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 			if (definition != null) {
 				if (definition instanceof JavaClassCustomTokenIntrospectorDefinition) {
-					JavaClassCustomTokenIntrospectorDefinition javaIntrospector = (JavaClassCustomTokenIntrospectorDefinition)definition;
+					JavaClassCustomTokenIntrospectorDefinition javaIntrospector = (JavaClassCustomTokenIntrospectorDefinition) definition;
 					selType.setValue("Java");
 					txtClassName.setValue(javaIntrospector.getClassName());
 				} else if (definition instanceof ScriptingCustomTokenIntrospectorDefinition) {
-					ScriptingCustomTokenIntrospectorDefinition scriptIntrospector = (ScriptingCustomTokenIntrospectorDefinition)definition;
+					ScriptingCustomTokenIntrospectorDefinition scriptIntrospector = (ScriptingCustomTokenIntrospectorDefinition) definition;
 					selType.setValue("Script");
 					txaScript.setValue(scriptIntrospector.getScript());
 				}

@@ -126,7 +126,8 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -171,16 +172,16 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_prefs_PrefsEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_prefs_PrefsEditPane_savePreferenceComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						Preference definition = grid.getEditPreference();
-						commonSection.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								Preference definition = grid.getEditPreference();
+								commonSection.getEditDefinition(definition);
 
-						updatePreference(definition, true);
-					}
-				}
-			});
+								updatePreference(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -214,16 +215,15 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_prefs_PrefsEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_prefs_PrefsEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_prefs_PrefsEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 
@@ -275,8 +275,10 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (Preference) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 
@@ -343,7 +345,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 
 							TreeNode[] allTreeNode = tree.getAllNodes();
 
-							for (TreeNode treeNode :allTreeNode) {
+							for (TreeNode treeNode : allTreeNode) {
 								if (targetNode.equals(treeNode)) {
 
 									TreeNode empty = new TreeNode();
@@ -359,10 +361,9 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 						@Override
 						public void onClick(MenuItemClickEvent event) {
 
-
 							TreeNode[] allTreeNode = tree.getAllNodes();
 							int index = 0;
-							for (TreeNode treeNode :allTreeNode) {
+							for (TreeNode treeNode : allTreeNode) {
 								if (targetNode.equals(treeNode)) {
 									if (tree.getLevel(treeNode) == 1) {
 										SC.say("Can't delete root preference.");
@@ -375,7 +376,6 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 							}
 						}
 					});
-
 
 					contextMenu.setItems(addPrefs, delPrefs);
 				}
@@ -399,7 +399,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 
 						TreeNode[] allTreeNode = tree.getAllNodes();
 
-						for (TreeNode treeNode :allTreeNode) {
+						for (TreeNode treeNode : allTreeNode) {
 							if (tree.getLevel(treeNode) == 1) {
 								treeNode.setAttribute("prefsName", oldPrefsName);
 							}
@@ -419,10 +419,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 			});
 		}
 
-
-
 		public void refreshGrid(String defName) {
-
 
 			service.getDefinition(TenantInfoHolder.getId(), Preference.class.getName(), defName, new AsyncCallback<Preference>() {
 
@@ -452,8 +449,8 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 					setFields(name, description, value, runtimeClassName);
 					setFixedRecordHeights(true);
 
-					tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
-					tree.setData(treeNodeList.toArray(new TreeNode[]{}));
+					tree = new Tree(); //Treeをnewしなおさないと階層がうまく表示されない
+					tree.setData(treeNodeList.toArray(new TreeNode[] {}));
 					tree.setModelType(TreeModelType.CHILDREN);
 
 					setCanEdit(true);
@@ -483,7 +480,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 						TreeNode child = createNodeTree(sub);
 						childList.add(child);
 					}
-					treeNode.setChildren(childList.toArray(new TreeNode[]{}));
+					treeNode.setChildren(childList.toArray(new TreeNode[] {}));
 				}
 			} else {
 				treeNode.setAttribute("prefsName", preference.getName());

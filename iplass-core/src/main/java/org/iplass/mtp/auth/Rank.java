@@ -32,11 +32,11 @@ import org.iplass.mtp.entity.GenericEntity;
  */
 public class Rank extends GenericEntity {
 	private static final long serialVersionUID = -5867931536450600419L;
-	
+
 	public static final String ENTITY_DEFINITION_NAME = "mtp.auth.Rank";
 	public static final String CODE = "code";
 	public static final String LEVEL = "level";
-	
+
 	public Rank() {
 		setDefinitionName(ENTITY_DEFINITION_NAME);
 	}

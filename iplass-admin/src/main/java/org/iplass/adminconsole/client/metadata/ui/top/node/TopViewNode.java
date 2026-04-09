@@ -34,6 +34,7 @@ public class TopViewNode extends TreeNode {
 		this(displayName, null, null, false, false, false);
 		setIcon(null);
 	}
+
 	public TopViewNode(String displayName, String type, String defName, boolean isParts, boolean isWidget, boolean isUnique) {
 //		setName(displayName);
 		setIcon(PARTS_ICON);
@@ -42,7 +43,8 @@ public class TopViewNode extends TreeNode {
 		setParts(isParts);
 		setWidget(isWidget);
 		setUnique(isUnique);
-		if (isUnique) setKey(type + "_" + defName);
+		if (isUnique)
+			setKey(type + "_" + defName);
 
 		String titleInfo = "";
 		if (isWidget) {
@@ -64,6 +66,7 @@ public class TopViewNode extends TreeNode {
 	public void setType(String type) {
 		setAttribute("type", type);
 	}
+
 	public String getType() {
 		return getAttributeAsString("type");
 	}
@@ -71,6 +74,7 @@ public class TopViewNode extends TreeNode {
 	public void setDefName(String defName) {
 		setAttribute("defName", defName);
 	}
+
 	public String getDefName() {
 		return getAttributeAsString("defName");
 	}
@@ -82,6 +86,7 @@ public class TopViewNode extends TreeNode {
 	public void setWidget(boolean isWidget) {
 		setAttribute("isWidget", isWidget);
 	}
+
 	public boolean isWidget() {
 		return getAttributeAsBoolean("isWidget");
 	}
@@ -89,6 +94,7 @@ public class TopViewNode extends TreeNode {
 	public void setParts(boolean isParts) {
 		setAttribute("isParts", isParts);
 	}
+
 	public boolean isParts() {
 		return getAttributeAsBoolean("isParts");
 	}
@@ -96,6 +102,7 @@ public class TopViewNode extends TreeNode {
 	public void setUnique(boolean isUnique) {
 		setAttribute("isUnique", isUnique);
 	}
+
 	public boolean isUnique() {
 		return getAttributeAsBoolean("isUnique");
 	}
@@ -103,6 +110,7 @@ public class TopViewNode extends TreeNode {
 	public void setKey(String key) {
 		setAttribute("key", key);
 	}
+
 	public String getKey() {
 		return getAttributeAsString("key");
 	}

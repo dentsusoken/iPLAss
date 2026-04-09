@@ -20,24 +20,25 @@
 
 package org.iplass.mtp.impl.entity;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.StoreDefinition;
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 import org.iplass.mtp.impl.metadata.MetaData;
 
-@XmlSeeAlso(value={MetaSchemalessRdbStoreMapping.class})
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
+@XmlSeeAlso(value = { MetaSchemalessRdbStoreMapping.class })
 public abstract class MetaStoreMapping implements MetaData {
 	private static final long serialVersionUID = 8801893617236966214L;
-	
+
 	public static MetaStoreMapping newInstance(StoreDefinition def) {
 		if (def instanceof SchemalessRdbStore) {
 			return new MetaSchemalessRdbStoreMapping();
 		}
 		return null;
 	}
-	
+
 	public abstract StoreDefinition currentConfig(MetaEntity metaEntity);
+
 	public abstract void applyConfig(StoreDefinition def, MetaEntity metaEntity);
 
 }

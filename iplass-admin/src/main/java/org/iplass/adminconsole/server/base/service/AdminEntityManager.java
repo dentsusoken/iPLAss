@@ -68,8 +68,10 @@ public class AdminEntityManager implements EntityManager {
 	private AdminAuditLoggingService aals;
 
 	private AdminEntityManager() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		aals = ServiceRegistry.getRegistry()
+				.getService(AdminAuditLoggingService.class);
 	}
 
 	public static EntityManager getInstance() {

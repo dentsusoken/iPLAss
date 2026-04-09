@@ -32,19 +32,18 @@ import org.iplass.mtp.impl.web.RequestPath;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
 
-
 public class WebApiVariableParameterValueMap implements ParameterValueMap {
 
 	private ParameterValueMap wrapped;
 	private WebApiRuntime webApi;
 	private RequestPath reqPath;
-	
+
 	private boolean noSubPath;
 	private String subPath;
 	private String rawSubPath;//encoded path
 	private String[] fullPaths;
 	private String[] subPaths;
-	
+
 	private Map<String, Object> paramMap;
 
 	public WebApiVariableParameterValueMap(ParameterValueMap wrapped, RequestPath reqPath, WebApiRuntime webApi) {
@@ -52,25 +51,25 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 		this.wrapped = wrapped;
 		this.webApi = webApi;
 	}
-	
+
 	ParameterValueMap getWrapped() {
 		return wrapped;
 	}
-	
+
 	String getSubPath() {
 		initRawSubPath();
-		
+
 		if (noSubPath) {
 			return null;
 		}
-		
+
 		if (subPath == null) {
 			subPath = decodePath(rawSubPath);
 		}
-		
+
 		return subPath;
 	}
-	
+
 	private String decodePath(String path) {
 		try {
 			//pathは+は空白にしない
@@ -78,9 +77,9 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 	}
-	
+
 	private void initRawSubPath() {
 		if (noSubPath == false && rawSubPath == null) {
 			String path = reqPath.getTargetPath(true);
@@ -120,7 +119,6 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 		}
 		return subPaths;
 	}
-	
 
 	@Override
 	public void cleanTempResource() {
@@ -133,31 +131,31 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 		if (map != null) {
 			List<WebApiParamMapRuntime> pmrList = map.get(name);
 			if (pmrList != null) {
-				for (WebApiParamMapRuntime pmr: pmrList) {
+				for (WebApiParamMapRuntime pmr : pmrList) {
 					if (pmr.isTarget(this)) {
 						return pmr.getParam(this);
 					}
 				}
 			}
 		}
-		
+
 		return wrapped.getParam(name);
 	}
-	
+
 	@Override
 	public Object[] getParams(String name) {
 		Map<String, List<WebApiParamMapRuntime>> map = webApi.getWebApiParamMapRuntimes();
 		if (map != null) {
 			List<WebApiParamMapRuntime> pmrList = map.get(name);
 			if (pmrList != null) {
-				for (WebApiParamMapRuntime pmr: pmrList) {
+				for (WebApiParamMapRuntime pmr : pmrList) {
 					if (pmr.isTarget(this)) {
 						return pmr.getParams(this);
 					}
 				}
 			}
 		}
-		
+
 		return wrapped.getParams(name);
 	}
 
@@ -169,8 +167,8 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 				paramMap = wrapped.getParamMap();
 			} else {
 				paramMap = new HashMap<String, Object>(wrapped.getParamMap());
-				for (Map.Entry<String, List<WebApiParamMapRuntime>> e: map.entrySet()) {
-					for (WebApiParamMapRuntime pmr: e.getValue()) {
+				for (Map.Entry<String, List<WebApiParamMapRuntime>> e : map.entrySet()) {
+					for (WebApiParamMapRuntime pmr : e.getValue()) {
 						if (pmr.isTarget(this)) {
 							Object[] vals = pmr.getParams(this);
 							if (vals != null) {
@@ -182,15 +180,16 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 				}
 			}
 		}
-		
+
 		return paramMap;
 	}
 
 	@Override
 	public Iterator<String> getParamNames() {
-		return getParamMap().keySet().iterator();
+		return getParamMap().keySet()
+				.iterator();
 	}
-	
+
 	public boolean hasParamMapDefs() {
 		return webApi.getWebApiParamMapRuntimes() != null;
 	}

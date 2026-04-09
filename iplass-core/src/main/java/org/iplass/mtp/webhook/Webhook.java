@@ -35,7 +35,7 @@ import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
  * <%}%>
  * 
  */
-public class Webhook  {
+public class Webhook {
 
 	private String contentType;
 	private String payloadContent;
@@ -115,6 +115,7 @@ public class Webhook  {
 	public String getContentType() {
 		return contentType;
 	}
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 送る内容のタイプを設定する。

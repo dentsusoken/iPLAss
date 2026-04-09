@@ -20,11 +20,12 @@
 package org.iplass.mtp.webhook;
 
 import java.util.Map;
+
 import org.iplass.mtp.Manager;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 
 public interface WebhookManager extends Manager {
-	
+
 	/**
 	 * <% if (doclang == "ja") {%>
 	 * 定義からWebhookを作る。

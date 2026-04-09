@@ -91,11 +91,11 @@ public abstract class AbstractMetaDataDropHandler implements DropOverHandler, Dr
 	public void setTarget(Canvas owner) {
 		this.owner = owner;
 
-		owner.setDropTypes(new String[]{MetaDataConstants.METADATA_DRAG_DROP_TYPE});
+		owner.setDropTypes(new String[] { MetaDataConstants.METADATA_DRAG_DROP_TYPE });
 		owner.setCanAcceptDrop(true);
 
 		if (owner instanceof Layout) {
-			((Layout)owner).setShowDropLines(false);
+			((Layout) owner).setShowDropLines(false);
 		}
 
 		owner.addDropOverHandler(this);
@@ -125,8 +125,8 @@ public abstract class AbstractMetaDataDropHandler implements DropOverHandler, Dr
 	private MetaDataItemMenuTreeNode getItemNode() {
 		Canvas dragTarget = EventHandler.getDragTarget();
 		if (dragTarget instanceof MetaDataPluginTreeGrid) {
-			TreeNode node = ((MetaDataPluginTreeGrid)dragTarget).getSelectedRecord();
-			return (MetaDataItemMenuTreeNode)node;
+			TreeNode node = ((MetaDataPluginTreeGrid) dragTarget).getSelectedRecord();
+			return (MetaDataItemMenuTreeNode) node;
 		}
 		return null;
 	}

@@ -27,12 +27,14 @@ public class MtpHttpSessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent event) {
-		event.getSession().setAttribute(HttpSessionService.MUTEX_OBJECT_NAME, new HttpSessionService.MutexObject());
+		event.getSession()
+				.setAttribute(HttpSessionService.MUTEX_OBJECT_NAME, new HttpSessionService.MutexObject());
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent event) {
-		event.getSession().removeAttribute(HttpSessionService.MUTEX_OBJECT_NAME);
+		event.getSession()
+				.removeAttribute(HttpSessionService.MUTEX_OBJECT_NAME);
 	}
 
 }

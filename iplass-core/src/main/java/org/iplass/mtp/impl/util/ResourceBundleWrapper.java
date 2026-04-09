@@ -31,7 +31,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class ResourceBundleWrapper {
 
 	private static final String RESOURCE_FILE_NAME = "Application";
-	private static MessageService ms = ServiceRegistry.getRegistry().getService(MessageService.class);
+	private static MessageService ms = ServiceRegistry.getRegistry()
+			.getService(MessageService.class);
 	private static UTF8ResourceBundleControl utf8ctrl = new UTF8ResourceBundleControl();
 
 	public static String getString(String key) {
@@ -46,7 +47,8 @@ public class ResourceBundleWrapper {
 	 * @return
 	 */
 	public static String getString(String key, Object... arguments) {
-		return getString(ExecuteContext.getCurrentContext().getLangLocale(), key, arguments);
+		return getString(ExecuteContext.getCurrentContext()
+				.getLangLocale(), key, arguments);
 	}
 
 	/**
@@ -79,7 +81,8 @@ public class ResourceBundleWrapper {
 	}
 
 	public static ResourceBundle getResourceBundle(String baseName) {
-		return getResourceBundle(baseName, ExecuteContext.getCurrentContext().getLangLocale());
+		return getResourceBundle(baseName, ExecuteContext.getCurrentContext()
+				.getLangLocale());
 	}
 
 	public static ResourceBundle getResourceBundle(String baseName, Locale langLocale) {

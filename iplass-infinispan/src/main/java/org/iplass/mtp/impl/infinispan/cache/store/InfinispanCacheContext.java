@@ -25,9 +25,9 @@ import org.iplass.mtp.impl.cache.store.CacheContext;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 
 public class InfinispanCacheContext<K, V> implements CacheContext<K, V> {
-	
+
 	private Cache<Object, CacheEntry> cache;
-	
+
 	public InfinispanCacheContext(Cache<Object, CacheEntry> cache) {
 		this.cache = cache;
 	}
@@ -42,6 +42,5 @@ public class InfinispanCacheContext<K, V> implements CacheContext<K, V> {
 			return (V) ce.getValue();
 		}
 	}
-	
 
 }

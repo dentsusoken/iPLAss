@@ -92,12 +92,13 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 //	private static final long DATE_MIN = -30609824400000L;//1000-01-01 00:00:00.000
 //	private static final long DATE_MAX = 253402268399999L;//9999-12-31 23:59:59.999
 
-	private static MysqlTimeRdbTypeAdapter mysqlTimeRdbTypeAdapter =
-			new MysqlTimeRdbTypeAdapter(ServiceRegistry.getRegistry().getService(PropertyService.class).getPropertyType(java.sql.Time.class));
+	private static MysqlTimeRdbTypeAdapter mysqlTimeRdbTypeAdapter = new MysqlTimeRdbTypeAdapter(ServiceRegistry.getRegistry()
+			.getService(PropertyService.class)
+			.getPropertyType(java.sql.Time.class));
 
 	private static final String DATE_MIN = "10000101000000000";
 	private static final String DATE_MAX = "99991231235959999";
-	private static final String[] optimizerHintBracket = {"/*+", "*/"};
+	private static final String[] optimizerHintBracket = { "/*+", "*/" };
 
 	private boolean optimizeCountQuery;
 	private boolean useFractionalSecondsOnTimestamp = true;
@@ -123,16 +124,17 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 	long dateMin;
 	long dateMax;
+
 	public MysqlRdbAdaptor() {
 		addFunction(new StaticTypedFunctionAdapter("CHAR_LENGTH", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("INSTR", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("CONCAT", String.class));
 		addFunction(new StaticTypedFunctionAdapter("SUBSTR", String.class));
 		addFunction(new StaticTypedFunctionAdapter("REPLACE", String.class));
-		addFunction(new DynamicTypedFunctionAdapter("MOD", new int[]{0,1}));
+		addFunction(new DynamicTypedFunctionAdapter("MOD", new int[] { 0, 1 }));
 		addFunction(new StaticTypedFunctionAdapter("SQRT", Double.class));
-		addFunction(new DynamicTypedFunctionAdapter("POWER", new int[]{0,1}));
-		addFunction(new DynamicTypedFunctionAdapter("ABS", new int[]{0}));
+		addFunction(new DynamicTypedFunctionAdapter("POWER", new int[] { 0, 1 }));
+		addFunction(new DynamicTypedFunctionAdapter("ABS", new int[] { 0 }));
 		addFunction(new StaticTypedFunctionAdapter("CEIL", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("FLOOR", Long.class));
 		addFunction(new RoundTruncFunctionAdapter("ROUND", "ROUND"));
@@ -172,13 +174,16 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		addAggregateFunction(VarSamp.class, new AggregateFunctionAdapter<VarSamp>("VAR_SAMP", Double.class));
 		addAggregateFunction(Listagg.class, new MySqlListaggFunctionAdapter());
 
-		I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
+		I18nService i18n = ServiceRegistry.getRegistry()
+				.getService(I18nService.class);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		sdf.setTimeZone(i18n.getTimezone());
 
 		try {
-			dateMin = sdf.parse(DATE_MIN).getTime();
-			dateMax = sdf.parse(DATE_MAX).getTime();
+			dateMin = sdf.parse(DATE_MIN)
+					.getTime();
+			dateMax = sdf.parse(DATE_MAX)
+					.getTime();
 		} catch (ParseException e) {
 			throw new UnsupportedDataTypeException(e);
 		}
@@ -188,9 +193,11 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	public Connection getConnection(String connectionFactoryName) throws SQLException {
 		ConnectionFactory cf = null;
 		if (connectionFactoryName == null) {
-			cf =  ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
+			cf = ServiceRegistry.getRegistry()
+					.getService(ConnectionFactory.class);
 		} else {
-			cf = ServiceRegistry.getRegistry().<ConnectionFactory>getService(connectionFactoryName);
+			cf = ServiceRegistry.getRegistry()
+					.<ConnectionFactory> getService(connectionFactoryName);
 		}
 
 		if (localTemporaryTableManageOutsideTransaction && !localTemporaryTableCreatedByDataSource) {
@@ -204,7 +211,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 					try (Statement stmt = con.createStatement()) {
 						stmt.executeUpdate(createLocalTemporaryTableInternal(
-							ObjStoreTable.TABLE_NAME_TMP, ObjStoreTable.TABLE_NAME, new String[]{ObjStoreTable.OBJ_ID, ObjStoreTable.OBJ_VER}));
+								ObjStoreTable.TABLE_NAME_TMP, ObjStoreTable.TABLE_NAME, new String[] { ObjStoreTable.OBJ_ID, ObjStoreTable.OBJ_VER }));
 					}
 
 					con.setAutoCommit(isAutoCommit);
@@ -260,7 +267,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	 * @return timestampMethod
 	 */
 	public String getTimestampMethod() {
-	    return timestampMethod;
+		return timestampMethod;
 	}
 
 	/**
@@ -268,7 +275,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	 * @param timestampMethod timestampMethod
 	 */
 	public void setTimestampMethod(String timestampMethod) {
-	    this.timestampMethod = timestampMethod;
+		this.timestampMethod = timestampMethod;
 	}
 
 	@Override
@@ -323,7 +330,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public String rowLockExpression() {
 		// MysqlはNoWaitは対応していない。For updateのタイムアウトによる検知のみ。
@@ -347,6 +354,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 			}
 		}
 	}
+
 	@Override
 	public String toDateExpression(Date date) {
 		checkDateRange(date);
@@ -398,7 +406,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	@Override
 	public Object[] toLimitSqlBindValue(int limitCount,
 			int offset) {
-		return new Integer[]{Integer.valueOf(offset), Integer.valueOf(limitCount)};
+		return new Integer[] { Integer.valueOf(offset), Integer.valueOf(limitCount) };
 	}
 
 	@Override
@@ -409,8 +417,10 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 			if (e instanceof BatchUpdateException) {
 				//FIXME 現状、バッチ更新でユニークキー違反かどうかをエラーコードで知ることができない。。。エラーメッセージにDuplicate entryが含まれているかどうかで判断するしかない。。。
 				if (e.getMessage() != null
-						&& (e.getMessage().contains("Duplicate entry")
-								|| e.getMessage().contains("Can't write; duplicate key in table"))) {
+						&& (e.getMessage()
+								.contains("Duplicate entry")
+								|| e.getMessage()
+										.contains("Can't write; duplicate key in table"))) {
 					return true;
 				}
 			}
@@ -442,10 +452,9 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 //		}
 	}
 
-
 	@Override
 	public String addDate(String dateExpression, int day) {
-		return "DATE_ADD("+ dateExpression + ", INTERVAL '" + day + "' DAY )";
+		return "DATE_ADD(" + dateExpression + ", INTERVAL '" + day + "' DAY )";
 	}
 
 	@Override
@@ -463,7 +472,6 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		return "ESCAPE '\\\\'";
 	}
 
-
 	@Override
 	public String sanitize(String str) {
 		// \もエスケープ対象
@@ -474,7 +482,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		boolean containsQuote = false;
 		for (int i = 0; i < str.length(); i++) {
 			if (str.charAt(i) == '\''
-				|| str.charAt(i) == '\\') {
+					|| str.charAt(i) == '\\') {
 				containsQuote = true;
 				break;
 			}
@@ -498,17 +506,18 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		}
 	}
 
-	private static final String[] CAST_VARCHAR = {"CAST(", " AS CHAR)"};
-	private static final String[] CAST_BIGINT = {"CAST(", " AS SIGNED)"};
+	private static final String[] CAST_VARCHAR = { "CAST(", " AS CHAR)" };
+	private static final String[] CAST_BIGINT = { "CAST(", " AS SIGNED)" };
 	//MySQLは、負のスケールを設定できないため、取り得る最大桁数を設定し、ROUND関数で切り捨てる。
-	private static final String[] CAST_DECIMAL = {"CAST(", " AS DECIMAL(65,30))"};
-	private static final String[] CAST_DATE = {"CAST(", " AS DATE)"};
+	private static final String[] CAST_DECIMAL = { "CAST(", " AS DECIMAL(65,30))" };
+	private static final String[] CAST_DATE = { "CAST(", " AS DATE)" };
 	//MySQLでは、DOUBLE（浮動小数点）への明示的なキャストができないので、最大桁数の固定小数点で代用する
-	private static final String[] CAST_DOUBLE = {"CAST(", " AS DECIMAL(65,30))"};
-	private static final String[] CAST_TIME = {"STR_TO_DATE(CONCAT('1970-01-01 ',TIME_FORMAT(CAST(", " AS TIME),'%H:%i:%s')),'%Y-%m-%d %H:%i:%s')"};
-	private static final String[] CAST_TIME_WITH_FS = {"STR_TO_DATE(CONCAT('1970-01-01 ',TIME_FORMAT(CAST(", " AS TIME),'%H:%i:%s')),'%Y-%m-%d %H:%i:%s.%f')"};
-	private static final String[] CAST_TIMESTAMP = {"CAST(", " AS DATETIME)"};
-	private static final String[] CAST_TIMESTAMP_WITH_FS = {"CAST(", " AS DATETIME(3))"};
+	private static final String[] CAST_DOUBLE = { "CAST(", " AS DECIMAL(65,30))" };
+	private static final String[] CAST_TIME = { "STR_TO_DATE(CONCAT('1970-01-01 ',TIME_FORMAT(CAST(", " AS TIME),'%H:%i:%s')),'%Y-%m-%d %H:%i:%s')" };
+	private static final String[] CAST_TIME_WITH_FS = { "STR_TO_DATE(CONCAT('1970-01-01 ',TIME_FORMAT(CAST(",
+			" AS TIME),'%H:%i:%s')),'%Y-%m-%d %H:%i:%s.%f')" };
+	private static final String[] CAST_TIMESTAMP = { "CAST(", " AS DATETIME)" };
+	private static final String[] CAST_TIMESTAMP_WITH_FS = { "CAST(", " AS DATETIME(3))" };
 
 	@Override
 	public String[] castExp(int sqlType, Integer lengthOrPrecision, Integer scale) {
@@ -516,7 +525,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		switch (sqlType) {
 		case Types.VARCHAR:
 			if (lengthOrPrecision != null) {
-				return new String[]{"CAST(", " AS CHAR(" + lengthOrPrecision + "))"};
+				return new String[] { "CAST(", " AS CHAR(" + lengthOrPrecision + "))" };
 			} else {
 				return CAST_VARCHAR;
 			}
@@ -529,20 +538,20 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 				} else {
 					if (scale < 0) {
 						//MySQLは、負のスケールを設定できないため、取り得る最大桁数を設定し、ROUND関数で切り捨てる。
-						return new String[]{"ROUND(CAST(",  " AS DECIMAL(65,0))," + scale + ")"};
+						return new String[] { "ROUND(CAST(", " AS DECIMAL(65,0))," + scale + ")" };
 					} else {
-						return new String[]{"CAST(", " AS DECIMAL(65," + scale + "))"};
+						return new String[] { "CAST(", " AS DECIMAL(65," + scale + "))" };
 					}
 				}
 			} else {
 				if (scale == null) {
-					return new String[]{"CAST(", " AS DECIMAL(" + lengthOrPrecision + ",0))"};
+					return new String[] { "CAST(", " AS DECIMAL(" + lengthOrPrecision + ",0))" };
 				} else {
 					if (scale < 0) {
 						//MySQLは、負のスケールを設定できないため、取り得る最大桁数を設定し、ROUND関数で切り捨てる。
-						return new String[]{"ROUND(CAST(",  " AS DECIMAL(" + lengthOrPrecision + -scale + ",0))," + scale + ")"};
+						return new String[] { "ROUND(CAST(", " AS DECIMAL(" + lengthOrPrecision + -scale + ",0))," + scale + ")" };
 					} else {
-						return new String[]{"CAST(",  " AS DECIMAL(" + lengthOrPrecision + "," + scale + "))"};
+						return new String[] { "CAST(", " AS DECIMAL(" + lengthOrPrecision + "," + scale + "))" };
 					}
 				}
 			}
@@ -574,12 +583,12 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 			CharSequence castString = super.cast(fromSqlType, toSqlType, valExpr, lengthOrPrecision, 0);
 			return "ROUND(" + castString + "," + scale + ")";
 		}
-		
+
 		return super.cast(fromSqlType, toSqlType, valExpr, lengthOrPrecision, scale);
 	}
 
 	@Override
-	public String tableAlias( String selectSql ) {
+	public String tableAlias(String selectSql) {
 		// MySQLの場合、UPDATE文でサブクエリ FROM 節と更新対象の両方に同じテーブルを使用することはできない。
 		// そのため、テーブル別名をつける事で対応する。
 		return "SELECT X.* FROM (" + selectSql + ") AS X";
@@ -698,7 +707,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	public String[] convertTZ(String to) {
 		String[] ret = {
 				"CONVERT_TZ(",
-				",(SELECT @@session.time_zone),'" + to + "')"};
+				",(SELECT @@session.time_zone),'" + to + "')" };
 		return ret;
 	}
 
@@ -730,7 +739,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	public String createLocalTemporaryTable(String tableName,
 			String baseTableName, String[] baseColumnName) {
 		if (localTemporaryTableManageOutsideTransaction || localTemporaryTableCreatedByDataSource) {
-			return "DELETE FROM " + tableName + " WHERE 1=2";	// 何もしないため。但しテーブルがある前提なのでなければエラーとする。
+			return "DELETE FROM " + tableName + " WHERE 1=2"; // 何もしないため。但しテーブルがある前提なのでなければエラーとする。
 		} else {
 			return createLocalTemporaryTableInternal(tableName, baseTableName, baseColumnName);
 		}
@@ -895,7 +904,8 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		StringBuilder sb = new StringBuilder();
 
 		// LobID
-		sb.append(String.format("TRIM(SUBSTR(c%d, 3, 16)) AS `%s%s`", colNo, colName, lobIdSuffix)).append(",");
+		sb.append(String.format("TRIM(SUBSTR(c%d, 3, 16)) AS `%s%s`", colNo, colName, lobIdSuffix))
+				.append(",");
 		// Text
 		sb.append(String.format("SUBSTR(c%d, 22) AS `%s`", colNo, colName));
 
@@ -910,13 +920,22 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 		// ビュー削除DDL
 		if (withDropView) {
-			sb.append("DROP VIEW IF EXISTS `").append(viewName.toLowerCase()).append("`;");
-			sb.append(lf).append(lf);
+			sb.append("DROP VIEW IF EXISTS `")
+					.append(viewName.toLowerCase())
+					.append("`;");
+			sb.append(lf)
+					.append(lf);
 		}
 
 		// ビュー作成DDL
-		sb.append("CREATE VIEW `").append(viewName.toLowerCase()).append("` AS").append(lf);
-		sb.append(selectSql).append(";").append(lf).append(lf);
+		sb.append("CREATE VIEW `")
+				.append(viewName.toLowerCase())
+				.append("` AS")
+				.append(lf);
+		sb.append(selectSql)
+				.append(";")
+				.append(lf)
+				.append(lf);
 
 		return sb.toString();
 	}
@@ -946,7 +965,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	public void setOptimizeCountQuery(boolean optimizeCountQuery) {
 		this.optimizeCountQuery = optimizeCountQuery;
 	}
-	
+
 	@Override
 	public UnaryOperator<CharSequence> countQuery(Query q) {
 		//導出テーブルのマージ最適化が行われた場合、クエリーブロックのヒント句が適切にマージされないので、
@@ -954,24 +973,28 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		if (!isOptimizeCountQuery() || !isSupportOptimizerHint() || !hasNativeHint(q)) {
 			return super.countQuery(q);
 		}
-		
+
 		OptimizeCountQueryChecker checker = new OptimizeCountQueryChecker();
 		q.accept(checker);
 		if (checker.possible) {
 			List<ValueExpression> sl = new ArrayList<>();
 			sl.add(new Count());
-			q.getSelect().setSelectValues(sl);
+			q.getSelect()
+					.setSelectValues(sl);
 			return sql -> sql;
 		} else {
 			return super.countQuery(q);
 		}
 	}
-	
+
 	private boolean hasNativeHint(Query q) {
-		if (q.getSelect().getHintComment() != null) {
-			List<Hint> hl = q.getSelect().getHintComment().getHintList();
+		if (q.getSelect()
+				.getHintComment() != null) {
+			List<Hint> hl = q.getSelect()
+					.getHintComment()
+					.getHintList();
 			if (hl != null) {
-				for (Hint h: hl) {
+				for (Hint h : hl) {
 					if (h instanceof NativeHint) {
 						return true;
 					}

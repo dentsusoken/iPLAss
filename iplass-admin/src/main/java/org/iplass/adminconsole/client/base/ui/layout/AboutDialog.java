@@ -129,7 +129,8 @@ public class AboutDialog extends MtpDialog {
 
 			List<ListGridRecord> versionRecords = new ArrayList<ListGridRecord>();
 			if (result.getPlatformInfomations() != null) {
-				for (Entry<String, String> info : result.getPlatformInfomations().entrySet()) {
+				for (Entry<String, String> info : result.getPlatformInfomations()
+						.entrySet()) {
 					ListGridRecord record = new ListGridRecord();
 					record.setAttribute("key", info.getKey());
 					record.setAttribute("value", info.getValue());
@@ -183,7 +184,8 @@ public class AboutDialog extends MtpDialog {
 
 			List<ListGridRecord> serverRecords = new ArrayList<ListGridRecord>();
 			if (result.getSeverInfomations() != null) {
-				for (Entry<String, String> info : result.getSeverInfomations().entrySet()) {
+				for (Entry<String, String> info : result.getSeverInfomations()
+						.entrySet()) {
 					ListGridRecord record = new ListGridRecord();
 					record.setAttribute("key", info.getKey());
 					record.setAttribute("value", info.getValue());
@@ -217,7 +219,9 @@ public class AboutDialog extends MtpDialog {
 
 			StringBuilder contents = new StringBuilder();
 			for (String line : lines) {
-				contents.append("<p>").append(line).append("</p>");
+				contents.append("<p>")
+						.append(line)
+						.append("</p>");
 			}
 			contentCanvas.setContents(contents.toString());
 

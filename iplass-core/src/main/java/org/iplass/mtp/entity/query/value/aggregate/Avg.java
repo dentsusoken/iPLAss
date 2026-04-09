@@ -37,11 +37,11 @@ public class Avg extends Aggregate {
 
 	public Avg() {
 	}
-	
+
 	public Avg(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public Avg(ValueExpression value) {
 		setValue(value);
 	}

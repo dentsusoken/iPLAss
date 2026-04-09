@@ -89,7 +89,8 @@ public class AsyncCommandAttributePane extends HLayout {
 	public void setDefinition(AsyncCommandDefinition definition) {
 
 		if (definition.getExceptionHandlingMode() != null) {
-			exceptionHandlingModeField.setValue(definition.getExceptionHandlingMode().name());
+			exceptionHandlingModeField.setValue(definition.getExceptionHandlingMode()
+					.name());
 		} else {
 			exceptionHandlingModeField.setValue("");
 		}
@@ -112,17 +113,20 @@ public class AsyncCommandAttributePane extends HLayout {
 	 */
 	public AsyncCommandDefinition getEditDefinition(AsyncCommandDefinition definition) {
 
-		if (exceptionHandlingModeField.getValue() != null && !exceptionHandlingModeField.getValueAsString().isEmpty()) {
+		if (exceptionHandlingModeField.getValue() != null && !exceptionHandlingModeField.getValueAsString()
+				.isEmpty()) {
 			definition.setExceptionHandlingMode(ExceptionHandlingMode.valueOf(SmartGWTUtil.getStringValue(exceptionHandlingModeField)));
 		} else {
 			definition.setExceptionHandlingMode(null);
 		}
-		if (queueNameField.getValue() != null && !queueNameField.getValueAsString().isEmpty()) {
+		if (queueNameField.getValue() != null && !queueNameField.getValueAsString()
+				.isEmpty()) {
 			definition.setQueue(SmartGWTUtil.getStringValue(queueNameField));
 		} else {
 			definition.setQueue(null);
 		}
-		if (groupingKeyAttributeNameField.getValue() != null && !groupingKeyAttributeNameField.getValueAsString().isEmpty()) {
+		if (groupingKeyAttributeNameField.getValue() != null && !groupingKeyAttributeNameField.getValueAsString()
+				.isEmpty()) {
 			definition.setGroupingKeyAttributeName(SmartGWTUtil.getStringValue(groupingKeyAttributeNameField));
 		} else {
 			definition.setGroupingKeyAttributeName(null);

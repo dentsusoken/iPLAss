@@ -100,22 +100,19 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 	private IButton update;
 
 	public static void showFullScreen(
-			final EntityDefinition definition
-			, final String whereClause) {
+			final EntityDefinition definition, final String whereClause) {
 
 		SmartGWTUtil.showAnimationFullScreen(new AnimationFullScreenCallback() {
 			@Override
 			public void execute(boolean earlyFinish) {
-              animateOutline.hide();
-              EntityUpdateAllDialog dialog = new EntityUpdateAllDialog(width, height, definition, whereClause);
-              dialog.show();
+				animateOutline.hide();
+				EntityUpdateAllDialog dialog = new EntityUpdateAllDialog(width, height, definition, whereClause);
+				dialog.show();
 			}
 		});
 	}
 
-	private EntityUpdateAllDialog(int width, int height
-			, final EntityDefinition definition
-			, final String whereClause) {
+	private EntityUpdateAllDialog(int width, int height, final EntityDefinition definition, final String whereClause) {
 
 		this.definition = definition;
 
@@ -160,15 +157,15 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 				SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityUpdateAllDialog_confirm"),
 						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityUpdateAllDialog_updateConf"), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						if (!value) {
-							return;
-						}
+							@Override
+							public void execute(Boolean value) {
+								if (!value) {
+									return;
+								}
 
-						updateAll();
-					}
-				});
+								updateAll();
+							}
+						});
 			}
 		});
 
@@ -227,20 +224,20 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 	}
 
 	private void checkDataCount(final EntityUpdateAllCondition cond) {
-		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
+		EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 		service.getConditionDataCount(TenantInfoHolder.getId(), cond.getDefinitionName(), cond.getWhere(), false,
 				new AsyncCallback<EntityDataCountResultInfo>() {
 
-			@Override
-			public void onSuccess(EntityDataCountResultInfo result) {
-				checkDataCountComplete(result, cond);
-			}
+					@Override
+					public void onSuccess(EntityDataCountResultInfo result) {
+						checkDataCountComplete(result, cond);
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				updateError(caught);
-			}
-		});
+					@Override
+					public void onFailure(Throwable caught) {
+						updateError(caught);
+					}
+				});
 	}
 
 	private void checkDataCountComplete(EntityDataCountResultInfo result, final EntityUpdateAllCondition cond) {
@@ -265,18 +262,20 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			//確認
 			SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityUpdateAllDialog_confirm"),
-					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityUpdateAllDialog_targetDataCountConf", Integer.toString(result.getTargetCount()), Integer.toString(result.getAllCount())), new BooleanCallback() {
+					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityUpdateAllDialog_targetDataCountConf",
+							Integer.toString(result.getTargetCount()), Integer.toString(result.getAllCount())),
+					new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						executeAllUpdate(cond);
-					} else {
-						disableComponent(false);
-						messageTabSet.setTabTitleNormal();
-					}
-				}
-			});
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								executeAllUpdate(cond);
+							} else {
+								disableComponent(false);
+								messageTabSet.setTabTitleNormal();
+							}
+						}
+					});
 		} else {
 			disableComponent(false);
 			messageTabSet.setTabTitleNormal();
@@ -330,7 +329,8 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 		if (caught.getMessage() != null) {
 			messageTabSet.addErrorMessage(caught.getMessage());
 		} else {
-			messageTabSet.addErrorMessage(caught.getClass().getName());
+			messageTabSet.addErrorMessage(caught.getClass()
+					.getName());
 		}
 
 		disableComponent(false);
@@ -383,15 +383,15 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			grid.setShowAllRecords(true);
 
-			grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-			grid.setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+			grid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
+			grid.setCanDragSelectText(true); //セルの値をドラッグで選択可能（コピー用）にする
 
-			grid.setCanSort(false);				//ソート不可
-			grid.setCanGroupBy(false);			//Group化不可
-			grid.setCanPickFields(false);		//列の選択不可
+			grid.setCanSort(false); //ソート不可
+			grid.setCanGroupBy(false); //Group化不可
+			grid.setCanPickFields(false); //列の選択不可
 
-			grid.setCanAutoFitFields(false);	//自動サイズ調整不可
-			grid.setCanFreezeFields(false);		//列固定不可
+			grid.setCanAutoFitFields(false); //自動サイズ調整不可
+			grid.setCanFreezeFields(false); //列固定不可
 
 			createGridField();
 			createGridRecord();
@@ -410,7 +410,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					UpdateValueGridRecord record = (UpdateValueGridRecord)event.getRecord();
+					UpdateValueGridRecord record = (UpdateValueGridRecord) event.getRecord();
 					editValue(record);
 				}
 
@@ -465,7 +465,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 				UpdateValueGridRecord record = new UpdateValueGridRecord(property, definition);
 
-				record.setValueType(UpdateAllValueType.LITERAL.name());	//初期値はLITERAL
+				record.setValueType(UpdateAllValueType.LITERAL.name()); //初期値はLITERAL
 				record.setPropertyDefinition(property);
 
 				//レコードの入力可否を設定
@@ -474,15 +474,24 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 				records.add(record);
 			}
 
-			grid.setData(records.toArray(new UpdateValueGridRecord[]{}));
+			grid.setData(records.toArray(new UpdateValueGridRecord[] {}));
 		}
 
 		private boolean isShowRecord(PropertyDefinition prop) {
 			//キー項目、audit項目は更新不可のため表示しない
 			if (prop.isInherited()) {
-				if (prop.getName().equals(Entity.OID) || prop.getName().equals(Entity.VERSION)
-						|| prop.getName().equals(Entity.CREATE_BY) || prop.getName().equals(Entity.CREATE_DATE)
-						|| prop.getName().equals(Entity.UPDATE_BY) || prop.getName().equals(Entity.UPDATE_DATE)) {
+				if (prop.getName()
+						.equals(Entity.OID)
+						|| prop.getName()
+								.equals(Entity.VERSION)
+						|| prop.getName()
+								.equals(Entity.CREATE_BY)
+						|| prop.getName()
+								.equals(Entity.CREATE_DATE)
+						|| prop.getName()
+								.equals(Entity.UPDATE_BY)
+						|| prop.getName()
+								.equals(Entity.UPDATE_DATE)) {
 					return false;
 				}
 			}
@@ -509,7 +518,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 		private void changeUpdatableTarget() {
 			for (ListGridRecord record : grid.getRecords()) {
-				UpdateValueGridRecord uvRecord = (UpdateValueGridRecord)record;
+				UpdateValueGridRecord uvRecord = (UpdateValueGridRecord) record;
 				if (!uvRecord.isUpdatable()) {
 					boolean isEnable = isEnable(uvRecord.getPropertyDefinition());
 					if (!isEnable) {
@@ -556,7 +565,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 			cond.setCheckUpdatable(!SmartGWTUtil.getBooleanValue(updateDisupdatablePropertyItem));
 
 			for (ListGridRecord record : grid.getSelectedRecords()) {
-				UpdateValueGridRecord uvRecord = (UpdateValueGridRecord)record;
+				UpdateValueGridRecord uvRecord = (UpdateValueGridRecord) record;
 
 				String strValue = uvRecord.getUpdateValue();
 				if (NULL_VALUE.equals(strValue)) {
@@ -600,7 +609,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 		}
 
 		public PropertyDefinition getPropertyDefinition() {
-			return (PropertyDefinition)getAttributeAsObject(PROPERTY_DEF);
+			return (PropertyDefinition) getAttributeAsObject(PROPERTY_DEF);
 		}
 
 		public void setPropertyDefinition(PropertyDefinition value) {

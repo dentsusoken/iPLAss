@@ -43,7 +43,7 @@ public class MetaUrlMenu extends MetaMenu {
 	 * @return 遷移先URL
 	 */
 	public String getUrl() {
-	    return url;
+		return url;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class MetaUrlMenu extends MetaMenu {
 	 * @param url 遷移先URL
 	 */
 	public void setUrl(String url) {
-	    this.url = url;
+		this.url = url;
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class MetaUrlMenu extends MetaMenu {
 	 * @return パラメータ
 	 */
 	public String getParameter() {
-	    return parameter;
+		return parameter;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class MetaUrlMenu extends MetaMenu {
 	 * @param parameter パラメータ
 	 */
 	public void setParameter(String parameter) {
-	    this.parameter = parameter;
+		this.parameter = parameter;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class MetaUrlMenu extends MetaMenu {
 	 * @return 新しいページで表示
 	 */
 	public boolean isShowNewPage() {
-	    return showNewPage;
+		return showNewPage;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class MetaUrlMenu extends MetaMenu {
 	 * @param showNewPage 新しいページで表示
 	 */
 	public void setShowNewPage(boolean showNewPage) {
-	    this.showNewPage = showNewPage;
+		this.showNewPage = showNewPage;
 	}
 
 	@Override

@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.view.top.parts;
 
-
 public class CsvDownloadSettingsParts extends TopViewParts {
 
 	/** SerialVersionUID */

@@ -42,7 +42,7 @@ public class CustomNodeManager extends ItemNodeManager {
 		TopViewNode separator = new TopViewNode("Separator", SeparatorParts.class.getName(), "", true, false, false);
 		TopViewNode script = new TopViewNode("Script", ScriptParts.class.getName(), "", true, true, false);
 		TopViewNode template = new TopViewNode("Template", TemplateParts.class.getName(), "", true, true, false);
-		tree.addList(new TopViewNode[]{script, template, separator}, parent);
+		tree.addList(new TopViewNode[] { script, template, separator }, parent);
 	}
 
 }

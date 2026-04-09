@@ -84,7 +84,8 @@ public enum OpenApiFileType {
 	 */
 	public static OpenApiFileType fromDisplayName(String displayName) {
 		for (OpenApiFileType type : OpenApiFileType.values()) {
-			if (type.getDisplayName().equalsIgnoreCase(displayName)) {
+			if (type.getDisplayName()
+					.equalsIgnoreCase(displayName)) {
 				return type;
 			}
 		}
@@ -102,9 +103,11 @@ public enum OpenApiFileType {
 			throw new IllegalArgumentException("File name must contain an extension: " + fileName);
 		}
 
-		String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+		String extension = fileName.substring(fileName.lastIndexOf('.') + 1)
+				.toLowerCase();
 		for (OpenApiFileType type : OpenApiFileType.values()) {
-			if (type.getExtensionList().contains(extension)) {
+			if (type.getExtensionList()
+					.contains(extension)) {
 				return type;
 			}
 		}

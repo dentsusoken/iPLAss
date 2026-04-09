@@ -30,7 +30,7 @@ import org.iplass.mtp.Manager;
  *
  */
 public interface PushNotificationManager extends Manager {
-	
+
 	/**
 	 * 指定のテンプレートを利用した形でPushNotificationのインスタンスを生成する。
 	 * 
@@ -39,7 +39,7 @@ public interface PushNotificationManager extends Manager {
 	 * @return
 	 */
 	public PushNotification createNotification(String tmplDefName, Map<String, Object> bindings);
-	
+
 	/**
 	 * プッシュ通知する。
 	 * 

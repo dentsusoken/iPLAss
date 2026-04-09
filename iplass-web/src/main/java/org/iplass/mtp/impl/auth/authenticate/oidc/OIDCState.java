@@ -31,52 +31,66 @@ public class OIDCState implements Serializable {
 	private String issuer;
 	private String redirectUri;
 	private long createTime = System.currentTimeMillis();
-	
+
 	private String backUrlAfterAuth;
 	private String errorTemplateName;
 
 	public String getErrorTemplateName() {
 		return errorTemplateName;
 	}
+
 	public void setErrorTemplateName(String errorTemplateName) {
 		this.errorTemplateName = errorTemplateName;
 	}
+
 	public long getCreateTime() {
 		return createTime;
 	}
+
 	public String getRedirectUri() {
 		return redirectUri;
 	}
+
 	public void setRedirectUri(String redirectUri) {
 		this.redirectUri = redirectUri;
 	}
+
 	public String getBackUrlAfterAuth() {
 		return backUrlAfterAuth;
 	}
+
 	public void setBackUrlAfterAuth(String backUrlAfterAuth) {
 		this.backUrlAfterAuth = backUrlAfterAuth;
 	}
+
 	public String getCodeVerifier() {
 		return codeVerifier;
 	}
+
 	public void setCodeVerifier(String codeVerifier) {
 		this.codeVerifier = codeVerifier;
 	}
+
 	public String getNonce() {
 		return nonce;
 	}
+
 	public void setNonce(String nonce) {
 		this.nonce = nonce;
 	}
+
 	public String getToken() {
 		return token;
 	}
+
 	public void setToken(String token) {
 		this.token = token;
 	}
+
 	public String getIssuer() {
 		return issuer;
 	}
+
 	public void setIssuer(String issuer) {
 		this.issuer = issuer;
 	}

@@ -102,7 +102,8 @@ public class EntityViewMenuPane extends VLayout {
 	 * @return
 	 */
 	public String getViewName() {
-		return viewSelect.getValue().toString();
+		return viewSelect.getValue()
+				.toString();
 	}
 
 	public void setValueMap(String... array) {

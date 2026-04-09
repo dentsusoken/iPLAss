@@ -119,7 +119,7 @@ public class EntityExplorerMainPane extends VLayout {
 //				if (result) {
 //					tabSet.enableTab(crawlTab);
 //				} else {
-////					SC.say("failed","Set of full-text search has become a not available.");
+	////					SC.say("failed","Set of full-text search has become a not available.");
 ////					GWT.log("Set of full-text search has become a not available.");
 //					tabSet.removeTab(crawlTab);
 //				}

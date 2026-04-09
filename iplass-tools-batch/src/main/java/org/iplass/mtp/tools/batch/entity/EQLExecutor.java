@@ -47,8 +47,10 @@ public class EQLExecutor extends MtpCuiBase {
 
 	private static final String SET_EQL_EXEC_MODE = "EQL_EXEC_MODE=";
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static EntityToolService entityToolService = ServiceRegistry.getRegistry().getService(EntityToolService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static EntityToolService entityToolService = ServiceRegistry.getRegistry()
+			.getService(EntityToolService.class);
 
 	/** テナントID */
 	private int tenantId = -1;
@@ -61,12 +63,14 @@ public class EQLExecutor extends MtpCuiBase {
 
 	/** 実行モード */
 	private ExecMode execMode = ExecMode.BATCH;
+
 	private enum ExecMode {
 		BATCH, INTERACT
 	}
 
 	/** EQL実行モード */
 	private EQLExecMode eqlExecMode = EQLExecMode.ONLY_EXEC;
+
 	private enum EQLExecMode {
 		ONLY_EXEC, ONLY_COUNT, SHOW_SEARCH_RESULT, CSV_EXPORT
 	}
@@ -216,9 +220,11 @@ public class EQLExecutor extends MtpCuiBase {
 			File outFile = new File(exportFile);
 			try {
 				if (StringUtil.isBlank(userId)) {
-					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion);
+					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql,
+							isSearchAllVersion);
 				} else {
-					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql, isSearchAllVersion, userId, password);
+					count = entityToolService.executeEQLWithAuth(new FileOutputStream(outFile), System.getProperty("file.encoding"), eql,
+							isSearchAllVersion, userId, password);
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -241,8 +247,10 @@ public class EQLExecutor extends MtpCuiBase {
 			while (true) {
 				System.out.print(isMultiLine ? "  -> " : "EQL> ");
 
-				String cmd = sc.nextLine().trim();
-				if (StringUtil.isBlank(cmd)) continue;
+				String cmd = sc.nextLine()
+						.trim();
+				if (StringUtil.isBlank(cmd))
+					continue;
 
 				if (!isMultiLine) {
 					if ("exit".equals(cmd.toLowerCase()) || "quit".equals(cmd.toLowerCase())) {
@@ -257,7 +265,8 @@ public class EQLExecutor extends MtpCuiBase {
 							} catch (Exception e) {
 								StringBuilder sbMode = new StringBuilder();
 								for (EQLExecMode eqlExecMode : EQLExecMode.values()) {
-									if (sbMode.length() > 0) sbMode.append("|");
+									if (sbMode.length() > 0)
+										sbMode.append("|");
 									sbMode.append(eqlExecMode.toString());
 								}
 								System.out.println("Usage: " + SET_EQL_EXEC_MODE + "[" + sbMode.toString() + "]");
@@ -283,7 +292,8 @@ public class EQLExecutor extends MtpCuiBase {
 					}
 					isMultiLine = false;
 				} else {
-					sb.append(cmd).append(' ');
+					sb.append(cmd)
+							.append(' ');
 					isMultiLine = true;
 				}
 			}

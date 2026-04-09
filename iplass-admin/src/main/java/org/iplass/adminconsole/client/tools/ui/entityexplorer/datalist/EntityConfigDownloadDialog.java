@@ -74,7 +74,7 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 		String title = "Export Entity Definition : ";
 		if (defName != null) {
 			title += defName;
-		} else if (defNames != null && defNames.length > 0){
+		} else if (defNames != null && defNames.length > 0) {
 			title += defNames.length + " Entities";
 		} else {
 		}
@@ -147,18 +147,20 @@ public class EntityConfigDownloadDialog extends AbstractWindow {
 //				new GetDownloadFrame(builder.toEncodedUrl());
 				PostDownloadFrame frame = new PostDownloadFrame();
 				frame.setAction(GWT.getModuleBaseURL() + "service/entityconfigdownload")
-					.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
-					.addParameter("definitionName", defName)
-					.addParameter("definitionNames", defNamesString(defNames))
-					.addParameter("fileType", FILETYPE.valueOf(SmartGWTUtil.getStringValue(fileTypeField)).name())
-					.addParameter("csvOutputTarget", TARGET.PROPERTY.name())
-					.addParameter("csvEncode", ENCODE.valueOf(SmartGWTUtil.getStringValue(csvEncodeField)).getValue())
-					.addParameter("xmlEntity", "true")
-					.addParameter("xmlEntityView", "false")
-					.addParameter("xmlEntityFilter", SmartGWTUtil.getBooleanValue(xmlEntityFilterField) + "")
-					.addParameter("xmlEntityMenuItem", SmartGWTUtil.getBooleanValue(xmlEntityMenuItemField) + "")
-					.addParameter("xmlEntityWebAPI", SmartGWTUtil.getBooleanValue(xmlEntityWebAPIField) + "")
-					.execute();
+						.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+						.addParameter("definitionName", defName)
+						.addParameter("definitionNames", defNamesString(defNames))
+						.addParameter("fileType", FILETYPE.valueOf(SmartGWTUtil.getStringValue(fileTypeField))
+								.name())
+						.addParameter("csvOutputTarget", TARGET.PROPERTY.name())
+						.addParameter("csvEncode", ENCODE.valueOf(SmartGWTUtil.getStringValue(csvEncodeField))
+								.getValue())
+						.addParameter("xmlEntity", "true")
+						.addParameter("xmlEntityView", "false")
+						.addParameter("xmlEntityFilter", SmartGWTUtil.getBooleanValue(xmlEntityFilterField) + "")
+						.addParameter("xmlEntityMenuItem", SmartGWTUtil.getBooleanValue(xmlEntityMenuItemField) + "")
+						.addParameter("xmlEntityWebAPI", SmartGWTUtil.getBooleanValue(xmlEntityWebAPIField) + "")
+						.execute();
 
 				destroy();
 			}

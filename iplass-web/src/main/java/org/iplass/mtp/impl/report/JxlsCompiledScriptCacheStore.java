@@ -28,36 +28,36 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 
 public class JxlsCompiledScriptCacheStore {
-	
+
 	private ScriptEngine se;
 	private ConcurrentHashMap<String, Script> jxlsCompiledScriptCache;
 	private String templateName;
 	private static final String SCRIPT_PREFIX = "JxlsGroovyEvaluator_script";
-	
+
 	public JxlsCompiledScriptCacheStore(String templateName) {
-		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+		TenantContext tc = ExecuteContext.getCurrentContext()
+				.getTenantContext();
 		se = tc.getScriptEngine();
 		jxlsCompiledScriptCache = new ConcurrentHashMap<String, Script>();
-		
+
 		this.templateName = templateName;
 	}
-	
+
 	/**
 	 * 引数で指定の式言語(expression)にてキャッシュの値を取得。
 	 * キャッシュにない場合、コンパイルされたScriptをキャッシュする。
 	 * @param expression
 	 * @return
 	 */
-	public Script getScript (String expression) {
+	public Script getScript(String expression) {
 		Script script = jxlsCompiledScriptCache.get(expression);
-		
+
 		if (script == null && templateName != null) {
 			script = se.createScript(expression, SCRIPT_PREFIX + "_" + templateName + "_" + GroovyTemplateCompiler.randomName());
 			jxlsCompiledScriptCache.put(expression, script);
 		}
-		
+
 		return script;
 	}
-	
-	
+
 }

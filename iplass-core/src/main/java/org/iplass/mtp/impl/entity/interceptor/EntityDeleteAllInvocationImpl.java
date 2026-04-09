@@ -27,9 +27,9 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityDeleteAllInvocationImpl extends EntityInvocationImpl<Integer> implements EntityDeleteAllInvocation {
-	
+
 	private DeleteCondition deleteCondition;
-	
+
 	public EntityDeleteAllInvocationImpl(
 			DeleteCondition deleteCondition,
 			EntityInterceptor[] entityInterceptors,
@@ -41,7 +41,7 @@ public class EntityDeleteAllInvocationImpl extends EntityInvocationImpl<Integer>
 	public DeleteCondition getDeleteCondition() {
 		return deleteCondition;
 	}
-	
+
 	public void setDeleteCondition(DeleteCondition deleteCondition) {
 		this.deleteCondition = deleteCondition;
 	}

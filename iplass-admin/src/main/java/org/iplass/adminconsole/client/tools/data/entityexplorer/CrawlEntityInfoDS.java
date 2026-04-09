@@ -59,11 +59,15 @@ public class CrawlEntityInfoDS extends AbstractAdminDataSource {
 	private CrawlEntityInfoDS(boolean isGetDataCount) {
 		this.isGetDataCount = isGetDataCount;
 
-		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_name"));
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_dispName"));
-		DataSourceField countField = new DataSourceTextField("count", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_number"));
+		DataSourceField nameField = new DataSourceTextField("name",
+				AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_name"));
+		DataSourceField displayNameField = new DataSourceTextField("displayName",
+				AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_dispName"));
+		DataSourceField countField = new DataSourceTextField("count",
+				AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_number"));
 		DataSourceField updateDateField = new DataSourceTextField("updateDate", "Update Date");
-		DataSourceField lastCrawlDateField = new DataSourceTextField("lastCrawlDate", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_lastCrawlDate"));
+		DataSourceField lastCrawlDateField = new DataSourceTextField("lastCrawlDate",
+				AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_lastCrawlDate"));
 
 		setFields(nameField, displayNameField, countField, updateDateField, lastCrawlDateField);
 	}
@@ -78,7 +82,7 @@ public class CrawlEntityInfoDS extends AbstractAdminDataSource {
 			@Override
 			public void onSuccess(List<CrawlEntityInfo> entities) {
 				List<ListGridRecord> records = createRecord(entities);
-				response.setData(records.toArray(new ListGridRecord[]{}));
+				response.setData(records.toArray(new ListGridRecord[] {}));
 				response.setTotalRows(records.size());
 				processResponse(requestId, response);
 			}
@@ -87,7 +91,8 @@ public class CrawlEntityInfoDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_failedToGetEntityList") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_CrawlEntityInfoDS_failedToGetEntityList")
+						+ caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);

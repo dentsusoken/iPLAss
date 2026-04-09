@@ -22,8 +22,9 @@ package org.iplass.mtp.entity.interceptor;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 
 public interface EntityBulkUpdateInvocation extends EntityInvocation<Void> {
-	
+
 	public BulkUpdatable getBulkUpdatable();
+
 	public void setBulkUpdatable(BulkUpdatable bulkUpdatable);
-	
+
 }

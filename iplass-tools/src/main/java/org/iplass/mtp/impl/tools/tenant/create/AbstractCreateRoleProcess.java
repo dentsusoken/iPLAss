@@ -45,7 +45,7 @@ public abstract class AbstractCreateRoleProcess implements TenantCreateProcess {
 		GenericEntity roleCond = new GenericEntity("mtp.auth.RoleCondition");
 		roleCond.setName(roleName);
 		roleCond.setValue("role", role);
-		roleCond.setValue("expression", "user.memberOf(\""+ roleName + "\")");
+		roleCond.setValue("expression", "user.memberOf(\"" + roleName + "\")");
 
 		em.insert(roleCond);
 
@@ -54,8 +54,11 @@ public abstract class AbstractCreateRoleProcess implements TenantCreateProcess {
 
 	protected Entity searchRole(String roleName, EntityManager em) {
 		Query query = new Query();
-		query.select(Entity.OID, Entity.VERSION, Entity.NAME).from("mtp.auth.Role").where(new Equals("code", roleName));
-		return em.searchEntity(query).getFirst();
+		query.select(Entity.OID, Entity.VERSION, Entity.NAME)
+				.from("mtp.auth.Role")
+				.where(new Equals("code", roleName));
+		return em.searchEntity(query)
+				.getFirst();
 	}
 
 	protected GenericEntity createActionPermission(String targetAction, Entity role) {

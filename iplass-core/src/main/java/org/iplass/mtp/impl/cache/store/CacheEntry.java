@@ -40,7 +40,7 @@ public class CacheEntry implements Serializable {
 		this.creationTime = creationTime;
 		this.indexValues = indexValues;
 	}
-	
+
 	public CacheEntry(Object key, Object value, long version, Object... indexValues) {
 		this.key = key;
 		this.value = value;

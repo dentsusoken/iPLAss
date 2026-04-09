@@ -37,7 +37,7 @@ public class MetaCompositeCommand extends MetaCommand {
 	private static final long serialVersionUID = 2767161125283111456L;
 
 	private static Logger logger = LoggerFactory.getLogger(MetaCompositeCommand.class);
-	
+
 	private MetaCommand[] commands;
 
 	private String rule;//Commandの処理フローの記述。GroovyのScript。最後にステータスをreturnするように実装。
@@ -106,7 +106,7 @@ public class MetaCompositeCommand extends MetaCommand {
 		private boolean newInstancePerRequest;
 		private CommandRuntime[] crs;
 		Script executeRule;
-		
+
 		public CompositeCommandRuntime(String identifer) {
 			super(identifer);
 		}
@@ -121,13 +121,15 @@ public class MetaCompositeCommand extends MetaCommand {
 				readOnly &= crs[i].readOnly();
 				newInstancePerRequest |= crs[i].newInstancePerRequest();
 			}
-			
+
 			if (rule != null) {
 				//TODO ScriptServiceは、すべてで共有して問題ないか？cmd、Entityなどある程度の塊で分けたほうがよいか？
 				//TODO tenantIDの決定は、このメソッドを呼び出した際のスレッドに紐付いているテナントIDとなる。これでセキュリティ的、動作的に大丈夫か？
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				KeyGenerator keyGen = new KeyGenerator();
-				executeRule = tc.getScriptEngine().createScript(rule, SCRIPT_PREFIX + "_" + identifer + "_" + keyGen.generateId());
+				executeRule = tc.getScriptEngine()
+						.createScript(rule, SCRIPT_PREFIX + "_" + identifer + "_" + keyGen.generateId());
 			}
 		}
 
@@ -143,7 +145,7 @@ public class MetaCompositeCommand extends MetaCommand {
 			initCommand(cmd);
 			return cmd;
 		}
-		
+
 		private void initCommand(CompositeCommand cmd) {
 
 			logger.debug("init CompositeCommand instance:" + cmd);
@@ -151,7 +153,8 @@ public class MetaCompositeCommand extends MetaCommand {
 			if (configScript != null) {
 
 				//TODO tenantIDの決定は、このメソッドを呼び出した際のスレッドに紐付いているテナントIDとなる。これでセキュリティ的、動作的に大丈夫か？
-				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				TenantContext tc = ExecuteContext.getCurrentContext()
+						.getTenantContext();
 				ScriptEngine ss = tc.getScriptEngine();
 
 				ScriptContext sc = ss.newScriptContext();
@@ -159,7 +162,6 @@ public class MetaCompositeCommand extends MetaCommand {
 				configScript.eval(sc);
 			}
 		}
-		
 
 		@Override
 		public boolean readOnly() {
@@ -177,6 +179,5 @@ public class MetaCompositeCommand extends MetaCommand {
 			return "CompositeCommand";
 		}
 	}
-	
 
 }

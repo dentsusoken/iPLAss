@@ -31,13 +31,13 @@ class FineGrainedLockIndex {
 	private ConcurrentMap<Object, IndexValue> indexMap;
 	private int shardSize;
 	private boolean fair;
-	
+
 	public FineGrainedLockIndex(int shardSize, boolean fair) {
 		indexMap = new ConcurrentHashMap<>();
 		this.shardSize = shardSize;
 		this.fair = fair;
 	}
-	
+
 	public IndexValue getIndexValue(Object value, boolean createIfNone) {
 		if (createIfNone) {
 			return indexMap.computeIfAbsent(value, k -> new IndexValue(shardSize, fair));
@@ -45,7 +45,7 @@ class FineGrainedLockIndex {
 			return indexMap.get(value);
 		}
 	}
-	
+
 	public int shardIndex(Object key) {
 		if (shardSize == 1) {
 			return 0;
@@ -53,33 +53,33 @@ class FineGrainedLockIndex {
 			return Math.abs(key.hashCode() % shardSize);
 		}
 	}
-	
+
 	public void destroy() {
 		indexMap.clear();
 	}
-	
+
 	static class IndexValue {
 		private final IndexValueShard[] shards;
-		
+
 		public IndexValue(int shardSize, boolean fair) {
 			shards = new IndexValueShard[shardSize];
 			for (int i = 0; i < shardSize; i++) {
 				shards[i] = new IndexValueShard(fair);
 			}
 		}
-		
+
 		public void add(int index, Object keyRef) {
 			shards[index].add(keyRef);
 		}
-		
+
 		public void remove(int index, Object keyRef) {
 			shards[index].remove(keyRef);
 		}
-		
+
 		public ReentrantLock writeLock(int index) {
 			return shards[index].lock;
 		}
-		
+
 		public int size() {
 			if (shards.length == 1) {
 				Set<Object> r = shards[0].refs;
@@ -100,7 +100,7 @@ class FineGrainedLockIndex {
 				return ret;
 			}
 		}
-		
+
 		public List<Object> refs() {
 			//NullKeyのみであったらNullKeyを返却
 			NullKey nullRef = null;
@@ -110,7 +110,7 @@ class FineGrainedLockIndex {
 				r = shards[i].refs;
 				if (r != null) {
 					if (r.size() > 0) {
-						for (Object k: r) {
+						for (Object k : r) {
 							if (k instanceof NullKey) {
 								nullRef = (NullKey) k;
 							} else {
@@ -125,7 +125,7 @@ class FineGrainedLockIndex {
 			}
 			return refsAll;
 		}
-		
+
 		public Object firstRef() {
 			//NullKeyのみであったらNullKeyを返却
 			NullKey nullRef = null;
@@ -134,7 +134,7 @@ class FineGrainedLockIndex {
 				r = shards[i].refs;
 				if (r != null) {
 					if (r.size() > 0) {
-						for (Object k: r) {
+						for (Object k : r) {
 							if (k instanceof NullKey) {
 								nullRef = (NullKey) k;
 							} else {
@@ -151,22 +151,22 @@ class FineGrainedLockIndex {
 			}
 		}
 	}
-	
+
 	private static class IndexValueShard {
 		private final ReentrantLock lock;
 		private volatile Set<Object> refs;
-		
+
 		IndexValueShard(boolean fair) {
 			lock = new ReentrantLock(fair);
 		}
-		
+
 		void add(Object keyRef) {
 			Set<Object> r = refs;
 			if (r == null) {
 				r = new HashSet<>();
 			} else {
 				HashSet<Object> newRefs = new HashSet<>();
-				for (Object ref: r) {
+				for (Object ref : r) {
 					if (!(ref instanceof NullKey)) {
 						newRefs.add(ref);
 					}
@@ -176,7 +176,7 @@ class FineGrainedLockIndex {
 			r.add(keyRef);
 			refs = r;
 		}
-		
+
 		void remove(Object keyRef) {
 			Set<Object> r = refs;
 			if (r != null) {
@@ -185,7 +185,8 @@ class FineGrainedLockIndex {
 				if (r.size() == 0) {
 					r = null;
 				} else if (r.size() == 1) {
-					if (r.iterator().next() instanceof NullKey) {
+					if (r.iterator()
+							.next() instanceof NullKey) {
 						r = null;
 					}
 				}

@@ -92,9 +92,11 @@ public class EntityJavaMappingClassWriter implements Closeable {
 		if (StringUtil.isNotBlank(directClassName)) {
 			//直接Classが指定されている場合はその値
 			classFullName = directClassName;
-		} else if (definition.getMapping() != null && StringUtil.isNotBlank(definition.getMapping().getMappingModelClass())) {
+		} else if (definition.getMapping() != null && StringUtil.isNotBlank(definition.getMapping()
+				.getMappingModelClass())) {
 			//Mappingクラスが指定されている場合はその値
-			classFullName = definition.getMapping().getMappingModelClass();
+			classFullName = definition.getMapping()
+					.getMappingModelClass();
 		} else {
 			//Mappingクラスが指定されていない場合はname
 			classFullName = definition.getName();
@@ -135,12 +137,14 @@ public class EntityJavaMappingClassWriter implements Closeable {
 
 			if (propDef instanceof ReferenceProperty) {
 				//ReferenceのMappingクラスチェック
-				property.typeFullClassName = getReferenceClassName((ReferenceProperty)propDef);
+				property.typeFullClassName = getReferenceClassName((ReferenceProperty) propDef);
 				property.typeClassName = getSimpleClassName(property.typeFullClassName);
 				property.isReference = true;
 			} else {
-				property.typeFullClassName = propDef.getJavaType().getName();
-				property.typeClassName = propDef.getJavaType().getSimpleName();
+				property.typeFullClassName = propDef.getJavaType()
+						.getName();
+				property.typeClassName = propDef.getJavaType()
+						.getSimpleName();
 				property.isReference = false;
 			}
 			//import定義用
@@ -167,13 +171,16 @@ public class EntityJavaMappingClassWriter implements Closeable {
 
 	private String getReferenceClassName(ReferenceProperty property) {
 		//参照Entity定義を取得
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 		EntityDefinition definition = edm.get(property.getObjectDefinitionName());
 		if (definition != null && definition.getMapping() != null) {
-			return definition.getMapping().getMappingModelClass();
+			return definition.getMapping()
+					.getMappingModelClass();
 		}
 		//デフォルト定義を返す
-		return property.getJavaType().getName();
+		return property.getJavaType()
+				.getName();
 	}
 
 	private void writePackage() {
@@ -187,7 +194,7 @@ public class EntityJavaMappingClassWriter implements Closeable {
 	private void writeImports() {
 		//GenericEntityとReferenceMappingClassをimport
 		Iterator<String> ite = imports.iterator();
-		while(ite.hasNext()) {
+		while (ite.hasNext()) {
 			writer.println("import " + ite.next() + ";");
 		}
 		writer.println("");
@@ -306,7 +313,6 @@ public class EntityJavaMappingClassWriter implements Closeable {
 				writer.println("");
 			}
 
-
 			//setter
 			if (property.isReadOnly) {
 				continue;
@@ -318,7 +324,8 @@ public class EntityJavaMappingClassWriter implements Closeable {
 			writer.println("\t" + " * @param " + property.propertyName + " " + property.propertyDisplayName);
 			writer.println("\t" + " */");
 
-			writer.println("\t" + "public void set" + property.methodName + "(" + property.typeClassName + typeMultiSuffix + " " + property.propertyName + ") {");
+			writer.println("\t" + "public void set" + property.methodName + "(" + property.typeClassName + typeMultiSuffix + " " + property.propertyName
+					+ ") {");
 			writer.println("\t\t" + "setValue(" + property.constName + ", " + property.propertyName + ");");
 			writer.println("\t" + "}");
 			writer.println("");

@@ -42,10 +42,11 @@ public class EntityInsertInvocationImpl extends EntityInvocationImpl<String> imp
 	public Entity getEntity() {
 		return entity;
 	}
+
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
-	
+
 	@Override
 	public InsertOption getInsertOption() {
 		return insertOption;
@@ -65,6 +66,5 @@ public class EntityInsertInvocationImpl extends EntityInvocationImpl<String> imp
 	public InvocationType getType() {
 		return InvocationType.INSERT;
 	}
-
 
 }

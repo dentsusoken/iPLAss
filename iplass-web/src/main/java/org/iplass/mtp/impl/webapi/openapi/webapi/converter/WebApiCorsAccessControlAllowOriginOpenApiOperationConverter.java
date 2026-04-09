@@ -34,7 +34,8 @@ public class WebApiCorsAccessControlAllowOriginOpenApiOperationConverter extends
 
 	@Override
 	protected boolean isMapOpenApiOperationValue(WebApiOpenApiConvertContext context) {
-		return StringUtil.isNotEmpty(context.getWebApiDefinition().getAccessControlAllowOrigin());
+		return StringUtil.isNotEmpty(context.getWebApiDefinition()
+				.getAccessControlAllowOrigin());
 	}
 
 	@Override

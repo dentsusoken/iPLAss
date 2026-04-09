@@ -41,40 +41,40 @@ public class SortSetting implements Refrectable {
 
 	/** ソート項目 */
 	@MetaFieldInfo(
-			displayName="ソート項目",
-			displayNameKey="generic_element_section_SortSetting_sortKeyDisplayNameKey",
-			inputType=InputType.PROPERTY,
-			description="検索時にデフォルトで指定するソート項目を設定します。" +
+			displayName = "ソート項目",
+			displayNameKey = "generic_element_section_SortSetting_sortKeyDisplayNameKey",
+			inputType = InputType.PROPERTY,
+			description = "検索時にデフォルトで指定するソート項目を設定します。" +
 					"未指定の場合はOIDをデフォルトで使用します。",
-			descriptionKey="generic_element_section_SortSetting_sortKeyDescriptionKey",
-			required=true
+			descriptionKey = "generic_element_section_SortSetting_sortKeyDescriptionKey",
+			required = true
 	)
 	private String sortKey;
 
 	/** ソート種別 */
 	@MetaFieldInfo(
-			displayName="ソート種別",
-			displayNameKey="generic_element_section_SortSetting_sortTypeDisplayNameKey",
-			inputType=InputType.ENUM,
-			enumClass=ConditionSortType.class,
-			description="検索時にデフォルトで指定するソート種別を設定します。" +
+			displayName = "ソート種別",
+			displayNameKey = "generic_element_section_SortSetting_sortTypeDisplayNameKey",
+			inputType = InputType.ENUM,
+			enumClass = ConditionSortType.class,
+			description = "検索時にデフォルトで指定するソート種別を設定します。" +
 					"未指定の場合には降順（DESC）をデフォルトで使用します。",
-			descriptionKey="generic_element_section_SortSetting_sortTypeDescriptionKey",
-			required=true
+			descriptionKey = "generic_element_section_SortSetting_sortTypeDescriptionKey",
+			required = true
 	)
 	private ConditionSortType sortType;
 
 	/** null項目のソート順 */
 	@MetaFieldInfo(
-			displayName="null項目のソート順",
-			displayNameKey="generic_element_section_SortSetting_nullOrderTypeDisplayNameKey",
-			inputType=InputType.ENUM,
-			enumClass=NullOrderType.class,
-			description="null項目のソート順を指定します。<br>" +
+			displayName = "null項目のソート順",
+			displayNameKey = "generic_element_section_SortSetting_nullOrderTypeDisplayNameKey",
+			inputType = InputType.ENUM,
+			enumClass = NullOrderType.class,
+			description = "null項目のソート順を指定します。<br>" +
 					"NONE:未指定、DB依存<br>" +
 					"FIRST:null項目を先頭にソート<br>" +
 					"LAST:null項目を後尾にソート",
-			descriptionKey="generic_element_section_SortSetting_nullOrderTypeDescriptionKey"
+			descriptionKey = "generic_element_section_SortSetting_nullOrderTypeDescriptionKey"
 	)
 	private NullOrderType nullOrderType;
 

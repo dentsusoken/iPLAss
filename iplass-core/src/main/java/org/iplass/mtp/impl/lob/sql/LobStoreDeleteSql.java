@@ -24,7 +24,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
 public class LobStoreDeleteSql extends UpdateSqlHandler {
-	
+
 	public String toSql(int tenantId, long lobId, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM " + LobStoreTable.TABLE_NAME
@@ -32,8 +32,8 @@ public class LobStoreDeleteSql extends UpdateSqlHandler {
 		sb.append(tenantId);
 		sb.append(" AND " + LobStoreTable.LOB_DATA_ID + "=");
 		sb.append(lobId);
-		
+
 		return sb.toString();
 	}
-	
+
 }

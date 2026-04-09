@@ -35,12 +35,14 @@ public class GemResourceBundleUtil {
 	/** Gem用リソースファイル名 */
 	public static final String RESOURCE_NAME = "mtp-gem-messages";
 
-	private GemResourceBundleUtil(){}
+	private GemResourceBundleUtil() {
+	}
 
 	public static List<LocalizedStringDefinition> resourceList(String key, Object... arguments) {
 		if (TemplateUtil.getEnableLanguages() != null) {
 			List<LocalizedStringDefinition> list = new ArrayList<LocalizedStringDefinition>();
-			for (String lang : TemplateUtil.getEnableLanguages().keySet()) {
+			for (String lang : TemplateUtil.getEnableLanguages()
+					.keySet()) {
 				String msg = resourceString(lang, key, arguments);
 				if (StringUtil.isNotEmpty(msg)) {
 					LocalizedStringDefinition trueDef = new LocalizedStringDefinition();
@@ -64,7 +66,8 @@ public class GemResourceBundleUtil {
 		if (StringUtil.isNotEmpty(lang)) {
 			langLocale = Locale.forLanguageTag(lang);
 		} else {
-			langLocale = ExecuteContext.getCurrentContext().getLangLocale();
+			langLocale = ExecuteContext.getCurrentContext()
+					.getLangLocale();
 		}
 
 		return ResourceBundleUtil.resourceString(RESOURCE_NAME, langLocale, key, arguments);

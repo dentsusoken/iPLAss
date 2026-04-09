@@ -23,9 +23,6 @@ package org.iplass.mtp.impl.view.generic.element.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -33,6 +30,9 @@ import org.iplass.mtp.impl.view.generic.element.property.validation.MetaViewVali
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * プロパティレイアウト情報のメタデータ
@@ -156,7 +156,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @return 詳細編集非表示設定
 	 */
 	public boolean isHideDetail() {
-	    return hideDetail;
+		return hideDetail;
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @param hideDetail 詳細編集非表示設定
 	 */
 	public void setHideDetail(boolean hideDetail) {
-	    this.hideDetail = hideDetail;
+		this.hideDetail = hideDetail;
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @return 詳細表示非表示設定
 	 */
 	public boolean isHideView() {
-	    return hideView;
+		return hideView;
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @param hideView 詳細表示非表示設定
 	 */
 	public void setHideView(boolean hideView) {
-	    this.hideView = hideView;
+		this.hideView = hideView;
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @return 通常検索で必須条件にする
 	 */
 	public boolean isRequiredNormal() {
-	    return requiredNormal;
+		return requiredNormal;
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @param requiredNormal 通常検索で必須条件にする
 	 */
 	public void setRequiredNormal(boolean requiredNormal) {
-	    this.requiredNormal = requiredNormal;
+		this.requiredNormal = requiredNormal;
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @return 詳細検索で必須条件にする
 	 */
 	public boolean isRequiredDetail() {
-	    return requiredDetail;
+		return requiredDetail;
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @param requiredDetail 詳細検索で必須条件にする
 	 */
 	public void setRequiredDetail(boolean requiredDetail) {
-	    this.requiredDetail = requiredDetail;
+		this.requiredDetail = requiredDetail;
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @return 入力チェック
 	 */
 	public MetaViewValidator getValidator() {
-	    return validator;
+		return validator;
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 	 * @param validator 入力チェック
 	 */
 	public void setValidator(MetaViewValidator validator) {
-	    this.validator = validator;
+		this.validator = validator;
 	}
 
 	/**

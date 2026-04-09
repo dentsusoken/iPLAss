@@ -22,18 +22,19 @@ package org.iplass.mtp.webhook.template.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class WebhookTemplateDefinition implements Definition {
 
 	private static final long serialVersionUID = 4835431145639526016L;
-	
+
 	private String name;
 	private String displayName;
 	private String description;
-	
+
 	/** webhook 内容部分 */
 	private String contentType;
 	private String webhookContent;
@@ -42,7 +43,7 @@ public class WebhookTemplateDefinition implements Definition {
 	private String httpMethod;
 
 	private List<WebhookHeaderDefinition> headers;
-	
+
 	public WebhookTemplateDefinition() {
 	}
 
@@ -77,7 +78,7 @@ public class WebhookTemplateDefinition implements Definition {
 	}
 
 	public List<WebhookHeaderDefinition> getHeaders() {
-		if (headers==null) {
+		if (headers == null) {
 			this.headers = new ArrayList<WebhookHeaderDefinition>();
 		}
 		return headers;
@@ -86,14 +87,14 @@ public class WebhookTemplateDefinition implements Definition {
 	public void setHeaders(List<WebhookHeaderDefinition> headers) {
 		this.headers = headers;
 	}
-	
+
 	public void addHeaders(WebhookHeaderDefinition entry) {
 		if (headers == null) {
 			headers = new ArrayList<WebhookHeaderDefinition>();
 		}
 		this.headers.add(entry);
 	}
-	
+
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -102,7 +103,6 @@ public class WebhookTemplateDefinition implements Definition {
 		this.httpMethod = httpMethod;
 	}
 
-	
 	public String getContentType() {
 		if (contentType == null) {
 			contentType = "";
@@ -124,7 +124,7 @@ public class WebhookTemplateDefinition implements Definition {
 	public void setWebhookContent(String webhookContent) {
 		this.webhookContent = webhookContent;
 	}
-	
+
 	public String getPathAndQuery() {
 		return pathAndQuery;
 	}
@@ -134,4 +134,3 @@ public class WebhookTemplateDefinition implements Definition {
 	}
 
 }
-

@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-
 /**
  * Infinispan タスク実行機能
  *
@@ -221,25 +220,27 @@ public class InfinispanTaskExecutor {
 		final Map<Address, Future<Void>> taskFuture = new HashMap<>();
 
 		// 各ノードへ実行依頼をかける
-		cacheKeysPerNode.keySet().forEach(node -> {
-			var executor = cacheManager.executor().filterTargets(t -> t == node);
-			var keyList = cacheKeysPerNode.get(node);
-			var task = taskFactory.apply(keyList);
-			var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, mdcTraceId);
+		cacheKeysPerNode.keySet()
+				.forEach(node -> {
+					var executor = cacheManager.executor()
+							.filterTargets(t -> t == node);
+					var keyList = cacheKeysPerNode.get(node);
+					var task = taskFactory.apply(keyList);
+					var managedTask = new InfinispanManagedTask<T>(task, requestNode, requestId, mdcTraceId);
 
-			LOG.debug("Submit task {}({}) to {}, keyList={}.", managedTask.getTaskName(), requestId, node, keyList);
-			taskFuture.put(node, submitInner(executor, managedTask, taskResultParNode));
-		});
+					LOG.debug("Submit task {}({}) to {}, keyList={}.", managedTask.getTaskName(), requestId, node, keyList);
+					taskFuture.put(node, submitInner(executor, managedTask, taskResultParNode));
+				});
 
 		// 実行ノード毎に呼び出し元へ返却用の Future を管理する。
 		final List<Future<T>> resultFuture = new ArrayList<>(taskFuture.size());
 
 		// 実行結果を収集する
-		taskFuture.keySet().forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(taskFuture.get(node), taskResultParNode, node, requestId)));
+		taskFuture.keySet()
+				.forEach(node -> resultFuture.add(new InfinispanTaskFuture<>(taskFuture.get(node), taskResultParNode, node, requestId)));
 
 		return new InfinispanTaskState<T>(requestId, resultFuture);
 	}
-
 
 	/**
 	 * ノード毎に実行するキャッシュキーを選別する
@@ -256,10 +257,13 @@ public class InfinispanTaskExecutor {
 	 */
 	private static <K> Map<Address, List<K>> screeningCacheKeys(Cache<?, ?> cache, List<K> cacheKeys) {
 		Map<Address, List<K>> result = new HashMap<Address, List<K>>();
-		LocalizedCacheTopology cacheTopology = cache.getAdvancedCache().getDistributionManager().getCacheTopology();
+		LocalizedCacheTopology cacheTopology = cache.getAdvancedCache()
+				.getDistributionManager()
+				.getCacheTopology();
 		for (K cacheKey : cacheKeys) {
 			var distributionInfo = cacheTopology.getDistribution(cacheKey);
-			var primaryNode = distributionInfo.writeOwners().get(0);
+			var primaryNode = distributionInfo.writeOwners()
+					.get(0);
 			var distParams = result.get(primaryNode);
 			if (null == distParams) {
 				distParams = new ArrayList<>();
@@ -281,8 +285,11 @@ public class InfinispanTaskExecutor {
 	 * @return 要求ID
 	 */
 	private static String generateInfinispanRequestId() {
-		String id = UUID.randomUUID().toString();
-		return HYPHEN_PATTERN.matcher(id).replaceAll(HYPHEN_REPLACED).toUpperCase();
+		String id = UUID.randomUUID()
+				.toString();
+		return HYPHEN_PATTERN.matcher(id)
+				.replaceAll(HYPHEN_REPLACED)
+				.toUpperCase();
 	}
 
 	/**
@@ -308,7 +315,8 @@ public class InfinispanTaskExecutor {
 
 		// 実行ノードを決定
 		List<Address> executionNodeList = pattern.getTargetNode(getCacheManager());
-		ClusterExecutor executor = getCacheManager().executor().filterTargets(a -> executionNodeList.contains(a));
+		ClusterExecutor executor = getCacheManager().executor()
+				.filterTargets(a -> executionNodeList.contains(a));
 
 		LOG.debug("Submit task {}({}) to {}.", managedTask.getTaskName(), managedTask.getInfinispanRequestId(), executionNodeList);
 
@@ -352,6 +360,8 @@ public class InfinispanTaskExecutor {
 	 * @return キャッシュマネージャー
 	 */
 	private static EmbeddedCacheManager getCacheManager() {
-		return ServiceRegistry.getRegistry().getService(InfinispanService.class).getCacheManager();
+		return ServiceRegistry.getRegistry()
+				.getService(InfinispanService.class)
+				.getCacheManager();
 	}
 }

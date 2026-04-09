@@ -22,8 +22,6 @@ package org.iplass.mtp.impl.web.actionmapping;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.impl.command.InvocationImpl;
@@ -40,6 +38,8 @@ import org.iplass.mtp.web.interceptor.RequestInterceptor;
 import org.iplass.mtp.web.interceptor.RequestInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
 
 public class WebInvocationImpl extends InvocationImpl implements RequestInvocation {
 
@@ -59,7 +59,8 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 
 	private WebRequestStack requestStack;
 
-	public WebInvocationImpl(RequestInterceptor[] requestInterceptors, CommandInterceptor[] commandInterceptors, CommandRuntime cmd, RequestContext request, WebRequestStack requestStack, ActionMappingRuntime action) {
+	public WebInvocationImpl(RequestInterceptor[] requestInterceptors, CommandInterceptor[] commandInterceptors, CommandRuntime cmd,
+			RequestContext request, WebRequestStack requestStack, ActionMappingRuntime action) {
 		super(commandInterceptors, cmd, request);
 		if (requestInterceptors != null) {
 			this.requestInterceptors = requestInterceptors;
@@ -82,7 +83,8 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 	}
 
 	private void doAction() {
-		requestStack.setAttribute(WebRequestConstants.ACTION_NAME, action.getMetaData().getName());
+		requestStack.setAttribute(WebRequestConstants.ACTION_NAME, action.getMetaData()
+				.getName());
 		// Command未設定の場合はCommand実行せず、デフォルトのテンプレートを表示
 		//Command実行
 		if (getCommand() != null) {
@@ -92,12 +94,13 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 				//exception = t;
 			}
 		}
-		
+
 		proceedResult();
 	}
-	
+
 	private void doResult() {
-		requestStack.setAttribute(WebRequestConstants.ACTION_NAME, action.getMetaData().getName());
+		requestStack.setAttribute(WebRequestConstants.ACTION_NAME, action.getMetaData()
+				.getName());
 		ResultRuntime result = null;
 		//Resultマッピング
 		if (exception == null) {
@@ -113,7 +116,7 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 
 			requestStack.setAttribute(WebRequestConstants.EXECUTED_COMMAND, getCommand());
 			requestStack.setAttribute(WebRequestConstants.COMMAND_RESULT, status);
-			
+
 		} else {
 			result = action.getResult(exception);
 			if (result == null) {
@@ -127,19 +130,21 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 				//それ以外はありえない
 				throw new RuntimeException(exception);
 			}
-			
+
 			if (logger.isDebugEnabled()) {
 				if (result instanceof TemplateResultRuntime) {
-					logger.debug("commandResultException:" + exception.getClass().getName() + " -> Template:" + ((TemplateResultRuntime) result).getTemplateName());
+					logger.debug("commandResultException:" + exception.getClass()
+							.getName() + " -> Template:" + ((TemplateResultRuntime) result).getTemplateName());
 				} else {
-					logger.debug("commandResultException:" + exception.getClass().getName() + " -> Result:" + result.getMetaData());
+					logger.debug("commandResultException:" + exception.getClass()
+							.getName() + " -> Result:" + result.getMetaData());
 				}
 			}
 
 			requestStack.setAttribute(WebRequestConstants.EXECUTED_COMMAND, getCommand());
 			requestStack.setAttribute(WebRequestConstants.EXCEPTION, exception);
 		}
-		
+
 		try {
 			result.handle(requestStack);
 		} catch (ServletException | IOException e) {
@@ -150,7 +155,6 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 			}
 		}
 	}
-	
 
 	@Override
 	public void proceedRequest() {
@@ -177,7 +181,7 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 			throw e;
 		}
 	}
-	
+
 	@Override
 	public void proceedResult() {
 		resIndex++;
@@ -196,7 +200,7 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 	public String getStatus() {
 		return status;
 	}
-	
+
 	@Override
 	public Throwable getException() {
 		return exception;
@@ -225,15 +229,18 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 
 	@Override
 	public String getActionName() {
-		return action.getMetaData().getName();
+		return action.getMetaData()
+				.getName();
 	}
 
 	@Override
 	public void redirectAction(String actionName, RequestContext requestContext) {
-		ActionMappingService amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		ActionMappingService amService = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
 		ActionMappingRuntime am = amService.getByPathHierarchy(actionName);
 		if (am != null) {
-			WebRequestStack wrs = new WebRequestStack(new RequestPath(actionName, requestStack.getRequestPath()), requestContext, requestStack.getServletContext(), requestStack.getRequest(), requestStack.getResponse(), requestStack.getPageContext());
+			WebRequestStack wrs = new WebRequestStack(new RequestPath(actionName, requestStack.getRequestPath()), requestContext,
+					requestStack.getServletContext(), requestStack.getRequest(), requestStack.getResponse(), requestStack.getPageContext());
 			try {
 				am.executeCommand(wrs);
 			} catch (IOException | ServletException e) {

@@ -28,6 +28,7 @@ public class WebhookException extends SystemException {
 	public WebhookException() {
 		super();
 	}
+
 	/**
 	 * @param message
 	 * @param cause

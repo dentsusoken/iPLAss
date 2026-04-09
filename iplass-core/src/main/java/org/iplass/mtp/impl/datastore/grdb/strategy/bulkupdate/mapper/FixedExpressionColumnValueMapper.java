@@ -28,10 +28,10 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.FixedExpressionColumnValue;
 import org.iplass.mtp.impl.rdb.adapter.bulk.FixedValueExpression;
 
 public class FixedExpressionColumnValueMapper implements ColumnValueMapper {
-	
+
 	private String colName;
 	private String valueExpression;
-	
+
 	public FixedExpressionColumnValueMapper(String colName, String valueExpression) {
 		this.colName = colName;
 		this.valueExpression = valueExpression;

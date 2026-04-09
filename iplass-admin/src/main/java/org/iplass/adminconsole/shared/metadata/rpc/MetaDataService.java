@@ -61,9 +61,9 @@ import com.google.gwt.user.client.rpc.XsrfProtectedService;
 @RemoteServiceRelativePath("service/metaData")
 public interface MetaDataService extends XsrfProtectedService {
 
-	/* ---------------------------------------
-	 * 共通
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- 共通 ---------------------------------------
+	 */
 
 	public List<String> getAllMetaDataPath(final int tenantId);
 
@@ -232,7 +232,8 @@ public interface MetaDataService extends XsrfProtectedService {
 	 * @return 更新結果
 	 * @throws MetaVersionCheckException
 	 */
-	public <D extends Definition> AdminDefinitionModifyResult updateDefinition(int tenantId, D definition, int currentVersion, boolean checkVersion) throws MetaVersionCheckException;
+	public <D extends Definition> AdminDefinitionModifyResult updateDefinition(int tenantId, D definition, int currentVersion, boolean checkVersion)
+			throws MetaVersionCheckException;
 
 	/**
 	 * Definitionを削除します。
@@ -253,11 +254,12 @@ public interface MetaDataService extends XsrfProtectedService {
 	 * @param description 概要
 	 * @return 更新結果
 	 */
-	public <D extends Definition> AdminDefinitionModifyResult copyDefinition(int tenantId, String className, String sourceName, String newName, String displayName, String description);
+	public <D extends Definition> AdminDefinitionModifyResult copyDefinition(int tenantId, String className, String sourceName, String newName,
+			String displayName, String description);
 
-	/* ---------------------------------------
-	 * Entity
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Entity ---------------------------------------
+	 */
 
 	public List<Name> getEntityDefinitionNameList(int tenantId);
 
@@ -267,9 +269,11 @@ public interface MetaDataService extends XsrfProtectedService {
 
 	public AdminDefinitionModifyResult createEntityDefinition(int tenantId, EntityDefinition definition);
 
-	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, boolean checkVersion) throws MetaVersionCheckException, EntitySchemaLockedException;
+	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, boolean checkVersion)
+			throws MetaVersionCheckException, EntitySchemaLockedException;
 
-	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion, Map<String, String> renamePropertyMap, boolean checkVersion) throws MetaVersionCheckException, EntitySchemaLockedException;
+	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, EntityDefinition definition, int currentVersion,
+			Map<String, String> renamePropertyMap, boolean checkVersion) throws MetaVersionCheckException, EntitySchemaLockedException;
 
 	public boolean checkLockEntityDefinition(int tenantId, String defName);
 
@@ -299,9 +303,9 @@ public interface MetaDataService extends XsrfProtectedService {
 
 	public Map<String, List<String>> getCrawlTargetEntityViewMap(int tenantId);
 
-	/* ---------------------------------------
-	 * EntityView
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- EntityView ---------------------------------------
+	 */
 
 	public SearchFormView createDefaultSearchFormView(int tenantId, String name);
 
@@ -311,9 +315,9 @@ public interface MetaDataService extends XsrfProtectedService {
 
 	public List<Entity> getRoles(int tenantId);
 
-	/* ---------------------------------------
-	 * Menu Item
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Menu Item ---------------------------------------
+	 */
 
 	/**
 	 * メニューアイテムを全件取得します。
@@ -341,9 +345,9 @@ public interface MetaDataService extends XsrfProtectedService {
 	 */
 	public AdminDefinitionModifyResult updateMenuItem(int tenantId, MenuItem definition);
 
-	/* ---------------------------------------
-	 * Template
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Template ---------------------------------------
+	 */
 
 	public DefinitionEntry getTemplateDefinitionEntry(int tenantId, String name);
 
@@ -354,7 +358,8 @@ public interface MetaDataService extends XsrfProtectedService {
 	 * @param definition Template定義
 	 * @return 更新結果
 	 */
-	public AdminDefinitionModifyResult updateTemplateDefinition(int tenantId, TemplateDefinition definition, int currentVersion, boolean checkVersion) throws MetaVersionCheckException;
+	public AdminDefinitionModifyResult updateTemplateDefinition(int tenantId, TemplateDefinition definition, int currentVersion, boolean checkVersion)
+			throws MetaVersionCheckException;
 
 	public List<Name> getReportTemplateDefinitionNameList(int tenantId);
 
@@ -373,11 +378,11 @@ public interface MetaDataService extends XsrfProtectedService {
 	 * @return List<Name>
 	 * @param tenantId テナントID
 	 */
-	public List<Name> getReportTypeList( int tenantId );
+	public List<Name> getReportTypeList(int tenantId);
 
-	/* ---------------------------------------
-	 * StaticResource
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- StaticResource ---------------------------------------
+	 */
 
 	/**
 	 * 静的リソースの名前リストを取得します。
@@ -417,9 +422,9 @@ public interface MetaDataService extends XsrfProtectedService {
 	 */
 	public AdminDefinitionModifyResult copyStaticResourceDefinition(int tenantId, String sourceName, DefinitionSummary newDefinitionName);
 
-	/* ---------------------------------------
-	 * EntityWebApi
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- EntityWebApi ---------------------------------------
+	 */
 
 	/**
 	 * EntityWebApiDefinitionの一覧を取得します。
@@ -438,9 +443,9 @@ public interface MetaDataService extends XsrfProtectedService {
 	 */
 	public boolean registEntityWebApiDefinition(int tenantId, List<DefinitionEntry> ec, final boolean checkVersion) throws MetaVersionCheckException;
 
-	/* ---------------------------------------
-	 * AuthenticationPolicy
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- AuthenticationPolicy ---------------------------------------
+	 */
 
 	/**
 	 * AuthenticationPolicyDefinitionで選択可能なAuthProviderの名前を返します。
@@ -450,9 +455,9 @@ public interface MetaDataService extends XsrfProtectedService {
 	 */
 	public List<String> getSelectableAuthProviderNameList(int tenantId);
 
-	/* ---------------------------------------
-	 * Queue
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Queue ---------------------------------------
+	 */
 
 	/**
 	 * ServiceConfigに設定されているQueueNameListを取得します。
@@ -469,9 +474,9 @@ public interface MetaDataService extends XsrfProtectedService {
 
 	public TaskForceDeleteResultInfo forceDeleteAsyncTask(final int tenantId, final String queueName, final List<Long> taskIds);
 
-	/* ---------------------------------------
-	 * Menu item
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Menu item ---------------------------------------
+	 */
 
 	/**
 	 * ServiceConfigに設定されているイメージカラーを取得します。
@@ -480,9 +485,9 @@ public interface MetaDataService extends XsrfProtectedService {
 	 */
 	public List<String> getImageColorList(int tenantId);
 
-	/* ---------------------------------------
-	 * OAuth
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- OAuth ---------------------------------------
+	 */
 
 	public String generateCredentialOAuthClient(final int tenantId, final String definitionName);
 
@@ -491,17 +496,16 @@ public interface MetaDataService extends XsrfProtectedService {
 	public String generateCredentialOAuthResourceServer(final int tenantId, final String definitionName);
 
 	public void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName);
-	
 
-	/* ---------------------------------------
-	 * OpenIDConnect
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- OpenIDConnect ---------------------------------------
+	 */
 
 	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret);
 
-	/* ---------------------------------------
-	 * Webhook Endpoint Security Info
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Webhook Endpoint Security Info ---------------------------------------
+	 */
 	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType);
 
 	public String getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType);

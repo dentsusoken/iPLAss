@@ -107,20 +107,20 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 		//setAutoFetchData(true);
 		setDragDataAction(DragDataAction.MOVE);
-		setSelectionType(SelectionStyle.SINGLE);	//単一行選択
+		setSelectionType(SelectionStyle.SINGLE); //単一行選択
 //		setBorder("none");					//外のSectionと線がかぶるので消す
 
-		setLeaveScrollbarGap(false);		//←falseで縦スクロールバーの領域が自動表示
+		setLeaveScrollbarGap(false); //←falseで縦スクロールバーの領域が自動表示
 //		setShowHeader(true);  				//←trueで上に列タイトルが表示される（Default true）
-		setEmptyMessage("No Menu Data");	//←空の場合のメッセージ
+		setEmptyMessage("No Menu Data"); //←空の場合のメッセージ
 //		//setManyItemsImage("cubes_all.png");
-		setCanReorderRecords(true);			//←Dragによるレコードの並べ替え許可指定（Default false）
-		setCanAcceptDroppedRecords(true);	//←レコードのDropの許可指定（Default false）
-		setCanDragRecordsOut(true);			//←レコードをDragして他にDropできるか（Default false）
+		setCanReorderRecords(true); //←Dragによるレコードの並べ替え許可指定（Default false）
+		setCanAcceptDroppedRecords(true); //←レコードのDropの許可指定（Default false）
+		setCanDragRecordsOut(true); //←レコードをDragして他にDropできるか（Default false）
 //		setShowEdges(false);				//←trueで周りに枠が表示される（Default false）
-		setCanSort(false);					//←ソートできるか（Default true）
-		setCanFreezeFields(false);			//←列を固定できるか（Default null）
-		setCanPickFields(false);			//←ヘッダで列を選択できるか（Default true）
+		setCanSort(false); //←ソートできるか（Default true）
+		setCanFreezeFields(false); //←列を固定できるか（Default null）
+		setCanPickFields(false); //←ヘッダで列を選択できるか（Default true）
 
 		//メッセージのカスタマイズ
 		//Drop先Nodeにすでに同じNodeが存在する場合、FolderDropEvent自体が発生しないが、
@@ -211,18 +211,18 @@ public class TreeViewGrid extends MtpTreeGrid {
 				public void onClick(ClickEvent event) {
 
 					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteCategoryConf", record.getAttribute("defName"))
-							, new BooleanCallback() {
+							AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteCategoryConf", record.getAttribute("defName")),
+							new BooleanCallback() {
 
-						@Override
-						public void execute(Boolean value) {
-							if (value) {
-								TreeNode target = Tree.nodeForRecord(record);
-								tree.remove(target);
-							}
+								@Override
+								public void execute(Boolean value) {
+									if (value) {
+										TreeNode target = Tree.nodeForRecord(record);
+										tree.remove(target);
+									}
 
-						}
-					});
+								}
+							});
 				}
 			});
 			ret = deleteBtn;
@@ -248,7 +248,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 			root.setChildren(children);
 		}
 
-		tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
+		tree = new Tree(); //Treeをnewしなおさないと階層がうまく表示されない
 		tree.setRoot(root);
 		tree.setModelType(TreeModelType.CHILDREN);
 
@@ -263,7 +263,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 		TreeNode[] children = tree.getChildren(root);
 
 		for (TreeNode child : children) {
-			TreeViewItem item = (TreeViewItem)child.getAttributeAsObject("valueObject");
+			TreeViewItem item = (TreeViewItem) child.getAttributeAsObject("valueObject");
 			item.setReferenceTreeViewItems(getReferenceTreeViewItems(child));
 			items.add(item);
 		}
@@ -279,7 +279,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 		if (children != null) {
 			for (TreeNode child : children) {
-				ReferenceTreeViewItem item = (ReferenceTreeViewItem)child.getAttributeAsObject("valueObject");
+				ReferenceTreeViewItem item = (ReferenceTreeViewItem) child.getAttributeAsObject("valueObject");
 				item.setReferenceTreeViewItems(getReferenceTreeViewItems(child));
 				items.add(item);
 			}
@@ -314,7 +314,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 		List<TreeViewNode> childList = new ArrayList<>(children.size());
 		for (ReferenceTreeViewItem child : children) {
 			TreeViewNode childNode = createReferenceTreeViewNode(child);
-			if (child.getReferenceTreeViewItems().size() > 0){
+			if (child.getReferenceTreeViewItems()
+					.size() > 0) {
 				childNode.setChildren(createReferenceTreeViewNodes(child.getReferenceTreeViewItems()));
 			}
 			childList.add(childNode);
@@ -325,13 +326,15 @@ public class TreeViewGrid extends MtpTreeGrid {
 	private TreeViewNode createTreeViewItemNode(TreeViewItem item) {
 		TreeViewNode treeNode = null;
 		if (item instanceof ReferenceTreeViewItem) {
-			treeNode = createReferenceTreeViewNode((ReferenceTreeViewItem)item);
+			treeNode = createReferenceTreeViewNode((ReferenceTreeViewItem) item);
 		} else if (item instanceof EntityTreeViewItem) {
-			treeNode = createEntityTreeViewNode((EntityTreeViewItem)item);
+			treeNode = createEntityTreeViewNode((EntityTreeViewItem) item);
 		} else {
-			GWT.log("un support tree view item type. item=" + item.getClass().getName());
+			GWT.log("un support tree view item type. item=" + item.getClass()
+					.getName());
 		}
-		if (treeNode != null && item.getReferenceTreeViewItems().size() > 0){
+		if (treeNode != null && item.getReferenceTreeViewItems()
+				.size() > 0) {
 			treeNode.setChildren(createReferenceTreeViewNodes(item.getReferenceTreeViewItems()));
 		}
 		return treeNode;
@@ -396,7 +399,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 				//ルート直下はルート直下のみ移動可能
 				//それ以外はそのノードが属する階層内のみ移動可能
 				TreeNode[] nodes = event.getNodes();
-				if (nodes != null && nodes.length ==1) {
+				if (nodes != null && nodes.length == 1) {
 					if (nodes[0] instanceof TreeViewNode) {
 						moveTargetNode = (TreeViewNode) nodes[0];
 					}
@@ -410,7 +413,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 				Canvas dragTarget = event.getSourceWidget();
 
 				//対象レコードの取得
-				ListGridRecord record = ((ListGrid)dragTarget).getSelectedRecord();
+				ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 				String name = record.getAttribute("defName");
 				EntityTreeViewItem item = new EntityTreeViewItem();
 				item.setDefName(name);
@@ -429,10 +432,12 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 			//Nodeの移動処理
 			if (dropTargetNode != null && moveTargetNode != null) {
-				if (tree.getParentPath(moveTargetNode).equals(tree.getPath(dropTargetNode))) {
+				if (tree.getParentPath(moveTargetNode)
+						.equals(tree.getPath(dropTargetNode))) {
 					int curIndex = getCurrentIndex(moveTargetNode);
 					int addIndex = event.getIndex();
-					if (addIndex > curIndex) addIndex--;
+					if (addIndex > curIndex)
+						addIndex--;
 
 					tree.remove(moveTargetNode);
 					tree.add(moveTargetNode, dropTargetNode, addIndex);
@@ -547,7 +552,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 			SmartGWTUtil.setReadOnly(defNameField);
 			items.add(defNameField);
 
-			displayPropertNameField = new MtpSelectItem("displayPropertyName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_dispItem"));
+			displayPropertNameField = new MtpSelectItem("displayPropertyName",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_dispItem"));
 			SmartGWTUtil.addHoverToFormItem(displayPropertNameField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_speItemEntityDispTreeView"));
 			SmartGWTUtil.setRequired(displayPropertNameField);
@@ -565,7 +571,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 			limitField.setValue(item.getLimit());
 			items.add(limitField);
 
-			displayDefinitionNodeField = new CheckboxItem("displayDefinitionNode", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_defHieraDispSett"));
+			displayDefinitionNodeField = new CheckboxItem("displayDefinitionNode",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_defHieraDispSett"));
 			SmartGWTUtil.addHoverToFormItem(displayDefinitionNodeField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_setDispHieraEntityDef"));
 			displayDefinitionNodeField.setValue(item.isDisplayDefinitionNode());
@@ -582,15 +589,18 @@ public class TreeViewGrid extends MtpTreeGrid {
 			SmartGWTUtil.addHoverToFormItem(sortTypeField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_speSortTypeTreeView"));
 			SmartGWTUtil.setRequired(sortTypeField);
-			sortTypeField.setValue(item.getSortType().name());
-			sortTypeField.setValueMap(new String[]{"ASC", "DESC"});
+			sortTypeField.setValue(item.getSortType()
+					.name());
+			sortTypeField.setValueMap(new String[] { "ASC", "DESC" });
 			items.add(sortTypeField);
 
-			actionField = new MetaDataSelectItem(ActionMappingDefinition.class, AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_detailDispAction"), new ItemOption(false, true));
+			actionField = new MetaDataSelectItem(ActionMappingDefinition.class,
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_detailDispAction"), new ItemOption(false, true));
 			SmartGWTUtil.addHoverToFormItem(actionField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_actionToDisplayEntity"));
 			String action = item.getAction();
-			if (action == null || action.isEmpty()) action = "#default";
+			if (action == null || action.isEmpty())
+				action = "#default";
 			actionField.setValue(action);
 			items.add(actionField);
 
@@ -602,7 +612,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 			if (item instanceof ReferenceTreeViewItem) {
 				ReferenceTreeViewItem rItem = (ReferenceTreeViewItem) item;
-				propertyNameField = new MtpTextItem("propertyName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_referencePropName"));
+				propertyNameField = new MtpTextItem("propertyName",
+						AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_referencePropName"));
 				SmartGWTUtil.setReadOnly(propertyNameField);
 				propertyNameField.setValue(rItem.getPropertyName());
 				items.add(propertyNameField);
@@ -660,19 +671,22 @@ public class TreeViewGrid extends MtpTreeGrid {
 			entityNodeIconField.setValue(item.getEntityNodeIcon());
 			items.add(entityNodeIconField);
 
-			entityNodeCssStyleField = new MtpTextItem("entityNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style1"));
+			entityNodeCssStyleField = new MtpTextItem("entityNodeCssStyle",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style1"));
 			SmartGWTUtil.addHoverToFormItem(entityNodeCssStyleField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style1Comment"));
 			entityNodeCssStyleField.setValue(item.getEntityNodeCssStyle());
 			items.add(entityNodeCssStyleField);
 
-			entityDefinitionNodeIconField = new MtpTextItem("entityDefinitionNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon2"));
+			entityDefinitionNodeIconField = new MtpTextItem("entityDefinitionNodeIcon",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon2"));
 			SmartGWTUtil.addHoverToFormItem(entityDefinitionNodeIconField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon2Comment"));
 			entityDefinitionNodeIconField.setValue(item.getEntityDefinitionNodeIcon());
 			items.add(entityDefinitionNodeIconField);
 
-			entityDefinitionNodeCssStyleField = new MtpTextItem("entityDefinitionNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style2"));
+			entityDefinitionNodeCssStyleField = new MtpTextItem("entityDefinitionNodeCssStyle",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style2"));
 			SmartGWTUtil.addHoverToFormItem(entityDefinitionNodeCssStyleField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style2Comment"));
 			entityDefinitionNodeCssStyleField.setValue(item.getEntityDefinitionNodeCssStyle());
@@ -711,7 +725,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 					item.setSortItem(SmartGWTUtil.getStringValue(sortItemField));
 					item.setSortType(TreeSortType.valueOf(SmartGWTUtil.getStringValue(sortTypeField)));
 					String action = SmartGWTUtil.getStringValue(actionField);
-					if ("#default".equals(action)) action = null;
+					if ("#default".equals(action))
+						action = null;
 					item.setAction(action);
 					item.setViewName(SmartGWTUtil.getStringValue(viewNameField));
 					item.setEntityNodeIcon(SmartGWTUtil.getStringValue(entityNodeIconField));
@@ -727,7 +742,6 @@ public class TreeViewGrid extends MtpTreeGrid {
 					if (colModelGrid != null) {
 						item.setMapping(colModelGrid.getDefinition());
 					}
-
 
 					refreshNode();
 
@@ -745,7 +759,7 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 			footer.setMembers(ok, cancel);
 
-			MetaDataServiceAsync service  = MetaDataServiceFactory.get();
+			MetaDataServiceAsync service = MetaDataServiceFactory.get();
 			service.getEntityDefinition(TenantInfoHolder.getId(), item.getDefName(), new AsyncCallback<EntityDefinition>() {
 
 				@Override
@@ -758,7 +772,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 						@Override
 						public int compare(PropertyDefinition o1, PropertyDefinition o2) {
-							return o1.getName().compareTo(o2.getName());
+							return o1.getName()
+									.compareTo(o2.getName());
 						}
 					});
 
@@ -786,11 +801,13 @@ public class TreeViewGrid extends MtpTreeGrid {
 					refField.setShowTitle(false);
 					refField.setStartRow(true);
 
-					SmartGWTUtil.addHoverToFormItem(refField, AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_setTreeViewDisp", pd.getDisplayName()));
+					SmartGWTUtil.addHoverToFormItem(refField,
+							AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_setTreeViewDisp", pd.getDisplayName()));
 					if (children != null) {
 						for (TreeNode child : children) {
 							ReferenceTreeViewItem item = (ReferenceTreeViewItem) child.getAttributeAsObject("valueObject");
-							if (item != null && item.getPropertyName().equals(pd.getName())) {
+							if (item != null && item.getPropertyName()
+									.equals(pd.getName())) {
 								refField.setValue(true);
 							}
 						}
@@ -807,7 +824,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 		private void refreshNode() {
 			FormItem[] items = refForm.getFields();
-			if (items == null || items.length == 0) return;
+			if (items == null || items.length == 0)
+				return;
 
 			List<PropertyDefinition> dispList = new ArrayList<>();
 			for (FormItem item : items) {
@@ -855,7 +873,8 @@ public class TreeViewGrid extends MtpTreeGrid {
 			if (children != null && children.length > 0) {
 				for (TreeNode child : children) {
 					ReferenceTreeViewItem item = (ReferenceTreeViewItem) child.getAttributeAsObject("valueObject");
-					if (item != null && item.getPropertyName().equals(pd.getName())) {
+					if (item != null && item.getPropertyName()
+							.equals(pd.getName())) {
 						return child;
 					}
 				}
@@ -884,8 +903,10 @@ public class TreeViewGrid extends MtpTreeGrid {
 
 			ListGridField nameField = new ListGridField("name", "name");
 			nameField.setWidth(75);
-			ListGridField displayLabelField = new ListGridField("displayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispName"));
-			ListGridField mappingItemDisplayNameField = new ListGridField("mappingItemDisplayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispNameCorre"));
+			ListGridField displayLabelField = new ListGridField("displayLabel",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispName"));
+			ListGridField mappingItemDisplayNameField = new ListGridField("mappingItemDisplayLabel",
+					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispNameCorre"));
 			ListGridField delActionField = new ListGridField("delAction", " ");
 			delActionField.setWidth(25);
 			setFields(nameField, displayLabelField, mappingItemDisplayNameField, delActionField);
@@ -949,18 +970,19 @@ public class TreeViewGrid extends MtpTreeGrid {
 					public void onClick(ClickEvent event) {
 
 						SC.confirm(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteConfirm"),
-								AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteFilterItemConf", record.getAttribute("displayLabel"))
-								, new BooleanCallback() {
+								AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteFilterItemConf",
+										record.getAttribute("displayLabel")),
+								new BooleanCallback() {
 
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									record.setAttribute("mappingItemName", (String) null);
-									record.setAttribute("mappingItemDisplayLabel", (String) null);
-									refreshFields();
-								}
-							}
-						});
+									@Override
+									public void execute(Boolean value) {
+										if (value) {
+											record.setAttribute("mappingItemName", (String) null);
+											record.setAttribute("mappingItemDisplayLabel", (String) null);
+											refreshFields();
+										}
+									}
+								});
 					}
 				});
 				ret = deleteBtn;
@@ -987,18 +1009,20 @@ public class TreeViewGrid extends MtpTreeGrid {
 					final ListGridRecord record = getRecord(cm.getName());
 					if (record != null) {
 						record.setAttribute("mappingItemName", cm.getMappingName());
-						service.getPropertyDefinition(TenantInfoHolder.getId(), item.getDefName(), cm.getMappingName(), new AsyncCallback<PropertyDefinition>() {
+						service.getPropertyDefinition(TenantInfoHolder.getId(), item.getDefName(), cm.getMappingName(),
+								new AsyncCallback<PropertyDefinition>() {
 
-							@Override
-							public void onSuccess(PropertyDefinition property) {
-								record.setAttribute("mappingItemDisplayLabel", property.getDisplayName());
-							}
+									@Override
+									public void onSuccess(PropertyDefinition property) {
+										record.setAttribute("mappingItemDisplayLabel", property.getDisplayName());
+									}
 
-							@Override
-							public void onFailure(Throwable caught) {
-								SC.warn(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_failedToGetEntityDef") + caught.getMessage());
-							}
-						});
+									@Override
+									public void onFailure(Throwable caught) {
+										SC.warn(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_failedToGetEntityDef")
+												+ caught.getMessage());
+									}
+								});
 					}
 				}
 			}

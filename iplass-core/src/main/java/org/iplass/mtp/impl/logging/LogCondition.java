@@ -21,14 +21,14 @@
 package org.iplass.mtp.impl.logging;
 
 public class LogCondition {
-	
+
 	public static String BIND_NAME_MDC = "mdc";
 	public static String BIND_NAME_REQUEST = "request";
 	public static String BIND_NAME_AUTH_CONTEXT = "auth";
-	
+
 	private String condition;
 	private long expiresAt;
-	
+
 	private String level;
 	private String loggerNamePattern;
 
@@ -63,7 +63,7 @@ public class LogCondition {
 	public void setExpiresAt(long expiresAt) {
 		this.expiresAt = expiresAt;
 	}
-	
+
 	public LogCondition copy() {
 		LogCondition copy = new LogCondition();
 		copy.level = level;

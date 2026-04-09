@@ -31,15 +31,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * 
  * @author K.Higuchi
  */
-@JsonAutoDetect(getterVisibility=Visibility.NONE, isGetterVisibility=Visibility.NONE)
-@JsonPropertyOrder({"name","size"})
-@JsonDeserialize(using=BinaryDefinitionDeserializer.class)
+@JsonAutoDetect(getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
+@JsonPropertyOrder({ "name", "size" })
+@JsonDeserialize(using = BinaryDefinitionDeserializer.class)
 public interface MixinBinaryDefinition {
-	
+
 	@JsonProperty
 	public String getName();
-	
+
 	@JsonProperty
 	public long getSize();
-	
+
 }

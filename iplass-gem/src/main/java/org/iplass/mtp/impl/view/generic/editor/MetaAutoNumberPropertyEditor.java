@@ -59,7 +59,7 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @return 表示タイプ
 	 */
 	public AutoNumberDisplayType getDisplayType() {
-	    return displayType;
+		return displayType;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @param displayType 表示タイプ
 	 */
 	public void setDisplayType(AutoNumberDisplayType displayType) {
-	    this.displayType = displayType;
+		this.displayType = displayType;
 	}
 
 	public boolean isSearchExactMatchCondition() {

@@ -39,23 +39,25 @@ import org.iplass.mtp.command.annotation.webapi.WebApiTokenCheck;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
-@ActionMapping(name=RevokeApplicationCommand.VIEW_ACTION_NAME,
-		needTrustedAuthenticate=true,
-		command={},
-		result=@Result(type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_APP_MAINTENANCE,
-				templateName="gem/auth/application",
-				layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-	)
+@ActionMapping(
+		name = RevokeApplicationCommand.VIEW_ACTION_NAME,
+		needTrustedAuthenticate = true,
+		command = {},
+		result = @Result(
+				type = Type.JSP,
+				value = Constants.CMD_RSLT_JSP_APP_MAINTENANCE,
+				templateName = "gem/auth/application",
+				layoutActionName = Constants.LAYOUT_NORMAL_ACTION)
+)
 @WebApi(
-		name=RevokeApplicationCommand.WEBAPI_NAME,
-		accepts=RequestType.REST_JSON,
-		restJson=@RestJson(parameterName="param"),
-		methods=MethodType.POST,
-		tokenCheck=@WebApiTokenCheck(useFixedToken=true),
-		checkXRequestedWithHeader=true
-	)
-@CommandClass(name="gem/auth/RevokeApplicationCommand", displayName="アプリケーション削除")
+		name = RevokeApplicationCommand.WEBAPI_NAME,
+		accepts = RequestType.REST_JSON,
+		restJson = @RestJson(parameterName = "param"),
+		methods = MethodType.POST,
+		tokenCheck = @WebApiTokenCheck(useFixedToken = true),
+		checkXRequestedWithHeader = true
+)
+@CommandClass(name = "gem/auth/RevokeApplicationCommand", displayName = "アプリケーション削除")
 public class RevokeApplicationCommand implements Command {
 
 	public static final String VIEW_ACTION_NAME = "gem/auth/application";
@@ -64,7 +66,8 @@ public class RevokeApplicationCommand implements Command {
 	@Override
 	public String execute(RequestContext request) {
 
-		AuthTokenInfoList infoList = AuthContext.getCurrentContext().getAuthTokenInfos();
+		AuthTokenInfoList infoList = AuthContext.getCurrentContext()
+				.getAuthTokenInfos();
 		if (infoList == null) {
 			return Constants.CMD_EXEC_ERROR;
 		}

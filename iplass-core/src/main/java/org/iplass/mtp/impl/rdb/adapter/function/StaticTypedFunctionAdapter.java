@@ -23,21 +23,22 @@ package org.iplass.mtp.impl.rdb.adapter.function;
 import org.iplass.mtp.entity.query.value.primary.Function;
 
 public class StaticTypedFunctionAdapter extends BaseFunctionAdapter {
-	
+
 	private Class<?> type;
-	
+
 	public StaticTypedFunctionAdapter(String functionName, Class<?> type) {
 		super(functionName);
 		this.type = type;
 	}
+
 	public StaticTypedFunctionAdapter(String functionName, String sqlFunctionName, Class<?> type) {
 		super(functionName, sqlFunctionName);
 		this.type = type;
 	}
-	
+
 	@Override
 	public Class<?> getType(Function function, ArgumentTypeResolver typeResolver) {
 		return type;
 	}
-	
+
 }

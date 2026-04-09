@@ -27,10 +27,10 @@ public class MetaJavaClassEntryPathTranslator extends MetaEntryPathTranslator {
 	private static final long serialVersionUID = -1806091437752501895L;
 
 	private String className;
-	
+
 	public MetaJavaClassEntryPathTranslator() {
 	}
-	
+
 	public MetaJavaClassEntryPathTranslator(String className) {
 		this.className = className;
 	}
@@ -42,11 +42,12 @@ public class MetaJavaClassEntryPathTranslator extends MetaEntryPathTranslator {
 	public void setClassName(String className) {
 		this.className = className;
 	}
-	
+
 	@Override
 	public EntryPathTranslator createEntryPathTranslator(String staticResourceName) {
 		try {
-			return (EntryPathTranslator) Class.forName(className).newInstance();
+			return (EntryPathTranslator) Class.forName(className)
+					.newInstance();
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException e) {
 			throw new IllegalStateException(e.getMessage(), e);

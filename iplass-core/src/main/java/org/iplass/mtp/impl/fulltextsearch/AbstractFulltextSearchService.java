@@ -99,22 +99,23 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 	private int maxRows = 0;
 	private boolean throwExceptionWhenOverLimit;
 	protected long redundantTimeMinutes;
-	
+
 	private List<BinaryReferenceParser> binaryParsers;
 	private int binaryParseLimitLength = 100000;
-	
+
 	private String scorePropertyName = "score";
 	private boolean includeMappedByReferenceIfNoPropertySpecified = false;
 
 	@Override
 	public void init(Config config) {
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		rdb = config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter();
 
 		useFulltextSearch = Boolean.valueOf(config.getValue("useFulltextSearch"));
 		maxRows = Integer.valueOf(config.getValue("maxRows"));
 		throwExceptionWhenOverLimit = Boolean.valueOf(config.getValue("throwExceptionWhenOverLimit"));
 		redundantTimeMinutes = config.getValue("redundantTimeMinutes", Long.TYPE, 10L);
-		
+
 		binaryParsers = (List<BinaryReferenceParser>) config.getValues("binaryParser", BinaryReferenceParser.class);
 		if (binaryParsers == null) {
 			//未指定の場合は、NameTypeParserを設定
@@ -129,7 +130,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 
 		scorePropertyName = config.getValue("scorePropertyName", String.class, "score");
 		includeMappedByReferenceIfNoPropertySpecified = config.getValue("includeMappedByReferenceIfNoPropertySpecified", Boolean.class, false);
-		
+
 		if (useFulltextSearch) {
 			crawlLogSearchSql = rdb.getQuerySqlCreator(CrawlLogSearchSql.class);
 			crawlLogDeleteSql = rdb.getUpdateSqlCreator(CrawlLogDeleteSql.class);
@@ -139,14 +140,15 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			deleteLogSearchSql = rdb.getQuerySqlCreator(DeleteLogSearchSql.class);
 		}
 	}
-	
+
 	@Override
 	public void initTenantContext(TenantContext tenantContext) {
 	}
+
 	@Override
 	public void destroyTenantContext(TenantContext tenantContext) {
 	}
-	
+
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
@@ -163,11 +165,13 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 	public boolean isThrowExceptionWhenOverLimit() {
 		return throwExceptionWhenOverLimit;
 	}
-	
+
 	@Override
 	public void execCrawlEntity(String... defNames) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		EntityDefinitionManager edm = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class);
 		if (defNames == null || defNames.length == 0) {
 			// 対象エンティティの取得
 			List<DefinitionSummary> defList = edm.definitionNameList();
@@ -184,12 +188,12 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 	}
 
 	protected abstract void createIndexData(final int tenantId, String defName);
-	
+
 	protected String toValue(Object val) throws IOException {
 		if (val == null) {
 			return "";
 		}
-		
+
 		if (val instanceof Timestamp) {
 			final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
 			dateTimeFormat.setLenient(false);
@@ -214,29 +218,34 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			return val.toString();
 		}
 	}
-	
+
 	private LocaleFormat getLocaleFormat() {
-		return ExecuteContext.getCurrentContext().getLocaleFormat();
+		return ExecuteContext.getCurrentContext()
+				.getLocaleFormat();
 	}
-	
+
 	private String parseBinaryReference(BinaryReference br) throws IOException {
 
 		//順番にサポートしているかをチェック
 		for (int i = 0; i < binaryParsers.size(); i++) {
-			BinaryReferenceParser support = binaryParsers.get(i).getParser(br);
+			BinaryReferenceParser support = binaryParsers.get(i)
+					.getParser(br);
 			if (support != null) {
 				try {
 					String value = support.parse(br, binaryParseLimitLength);
 
 					//EmptyParserの場合、空なのでチェック
 					if (StringUtil.isNotEmpty(value)) {
-						logger.debug("binary reference parsed on " + support.getClass().getSimpleName()
+						logger.debug("binary reference parsed on " + support.getClass()
+								.getSimpleName()
 								+ ". type=" + br.getType());
 						return value;
 					}
-				} catch(BinaryReferenceParseException e) {
+				} catch (BinaryReferenceParseException e) {
 					logger.warn("binary reference parse error. so try to parse on next paser. type="
-								+ br.getType() + ",parser=" + support.getClass().getSimpleName(), e);
+							+ br.getType() + ",parser=" + support.getClass()
+									.getSimpleName(),
+							e);
 				}
 			}
 		}
@@ -244,20 +253,22 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		//必ずNameTypeParserが設定されるのでありえない
 		throw new FulltextSearchRuntimeException("invalid service status.");
 	}
-	
+
 	protected Map<String, String> generateCrawlPropMap(MetaEntity meta) {
 		// 対象プロパティのリストを作成する
 		Map<String, String> crawlPropertyNameMap = new HashMap<String, String>();
 
-		EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
-		MetaEntity superMeta = ehs.getRuntimeById(meta.getInheritedEntityMetaDataId()).getMetaData();
+		EntityService ehs = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
+		MetaEntity superMeta = ehs.getRuntimeById(meta.getInheritedEntityMetaDataId())
+				.getMetaData();
 
 		for (String crawlId : meta.getCrawlPropertyId()) {
 			MetaProperty metaProperty = meta.getDeclaredPropertyById(crawlId);
 			if (metaProperty == null) {
 				metaProperty = superMeta.getDeclaredPropertyById(crawlId);
 			}
-			
+
 			if (metaProperty != null) {
 				String propertyName = metaProperty.getName();
 				if (metaProperty instanceof MetaReferenceProperty) {
@@ -269,7 +280,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 				logger.warn("### DefinitionName " + "[" + meta.getName() + "] ### crawlId " + crawlId + " is not found.");
 			}
 		}
-		
+
 		return crawlPropertyNameMap;
 	}
 
@@ -279,12 +290,14 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		Map<String, Timestamp> result = new HashMap<String, Timestamp>();
 		Map<String, CrawlTimestampDto> crawlData = getAllLastCrawlTimestamp();
 
-		EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
+		EntityService ehs = ServiceRegistry.getRegistry()
+				.getService(EntityService.class);
 		if (defNames.length == 0) {
 			crawlData.forEach((key, value) -> {
 				EntityHandler entity = ehs.getRuntimeById(key);
 				if (entity != null) {
-					result.put(entity.getMetaData().getName(), value.getUpDate());
+					result.put(entity.getMetaData()
+							.getName(), value.getUpDate());
 				}
 			});
 		} else {
@@ -293,9 +306,11 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 				if (entity == null) {
 					throw new FulltextSearchRuntimeException("A target entity is not exist. [Entity：" + defName + "]");
 				}
-				String key = entity.getMetaData().getId();
+				String key = entity.getMetaData()
+						.getId();
 				if (crawlData.containsKey(key)) {
-					result.put(defName, crawlData.get(key).getUpDate());
+					result.put(defName, crawlData.get(key)
+							.getUpDate());
 				}
 			}
 		}
@@ -309,11 +324,12 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Timestamp logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = crawlLogSearchSql.toGetLastCrawlTimestampSql(tenantId, defId, version, rdb);
 				ResultSet rs = getStatement().executeQuery(sql);
 				try {
-					while(rs.next()) {
+					while (rs.next()) {
 						return rs.getTimestamp(1, rdb.rdbCalendar());
 					}
 				} finally {
@@ -333,13 +349,14 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Map<String, CrawlTimestampDto> logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = crawlLogSearchSql.toGetAllLastCrawlTimestampSql(tenantId, rdb);
 				ResultSet rs = getStatement().executeQuery(sql);
 
 				Map<String, CrawlTimestampDto> data = new HashMap<String, CrawlTimestampDto>();
 				try {
-					while(rs.next()) {
+					while (rs.next()) {
 
 						CrawlTimestampDto dto = crawlLogSearchSql.toFulltextSearchCrawlTimestampDto(rs, rdb);
 						data.put(dto.getObjDefId(), dto);
@@ -353,7 +370,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		};
 		return exec.execute(rdb, true);
 	}
-	
+
 	protected interface GetScore<T> {
 		double get(T t);
 	}
@@ -370,7 +387,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		if (maxSize > 0 && size > maxSize) {
 			size = maxSize;
 		}
-		
+
 		ArrayList<T> mergeList = new ArrayList<>(size);
 		for (int i = 0, i1 = 0, i2 = 0; i < size; i++) {
 			if (i1 >= list1.size()) {
@@ -391,68 +408,80 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 				}
 			}
 		}
-		
+
 		return mergeList;
 	}
-	
+
 	protected abstract List<IndexedEntity> fulltextSearchImpl(Integer tenantId, EntityHandler eh, String fulltext, int limit);
-	
+
 	@SuppressWarnings("unchecked")
 	private <T extends Entity> SearchResult<T> entitySearchImpl(List<IndexedEntity> oidList, EntityHandler eh, FulltextSearchCondition condition) {
 		if (oidList.isEmpty()) {
 			return new SearchResult<T>(-1, null);
 		}
-		
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 		Query query = new Query();
-		
+
 		if (condition == null || condition.getProperties() == null) {
-			query.selectAll(eh.getMetaData().getName(), true, true, true, includeMappedByReferenceIfNoPropertySpecified);
+			query.selectAll(eh.getMetaData()
+					.getName(), true, true, true, includeMappedByReferenceIfNoPropertySpecified);
 		} else {
-			for (String prop: condition.getProperties()) {
-				query.select().add(prop);
+			for (String prop : condition.getProperties()) {
+				query.select()
+						.add(prop);
 			}
-			if (!condition.getProperties().contains(Entity.OID)) {
+			if (!condition.getProperties()
+					.contains(Entity.OID)) {
 				//scoreのマッピングのため最低限必要
-				query.select().add(Entity.OID);
+				query.select()
+						.add(Entity.OID);
 			}
 			//order by項目がない場合、追加
 			if (condition != null && condition.getOrder() != null) {
-				for (SortSpec sortSpec : condition.getOrder().getSortSpecList()) {
-					String sortKey = sortSpec.getSortKey().toString();
-					if (!condition.getProperties().contains(sortKey)) {
-						query.select().add(sortKey);
+				for (SortSpec sortSpec : condition.getOrder()
+						.getSortSpecList()) {
+					String sortKey = sortSpec.getSortKey()
+							.toString();
+					if (!condition.getProperties()
+							.contains(sortKey)) {
+						query.select()
+								.add(sortKey);
 					}
 				}
 			}
-			
-			query.from(eh.getMetaData().getName());
+
+			query.from(eh.getMetaData()
+					.getName());
 		}
-		
+
 		In in = new In();
 		in.setPropertyName(Entity.OID);
 		List<ValueExpression> inValues = new ArrayList<ValueExpression>(oidList.size());
-		for (IndexedEntity ie: oidList) {
+		for (IndexedEntity ie : oidList) {
 			inValues.add(new Literal(ie.getOid()));
 		}
 		in.setValue(inValues);
 		query.where(in);
-		
+
 		if (condition != null && condition.getOrder() != null) {
 			query.setOrderBy(condition.getOrder());
 		}
-		
+
 		SearchResult<T> searched = em.searchEntity(query);
-		if (searched.getList().isEmpty()) {
+		if (searched.getList()
+				.isEmpty()) {
 			return searched;
 		}
-		
+
 		if (condition == null || condition.getOrder() == null) {
 			//sort by score
 			//and set score value to each entity
-			Map<String, Object> map = new HashMap<>((int)(searched.getList().size() / 0.75f) + 1, 0.75f);
-			for (T e: searched.getList()) {
-				map.compute(e.getOid(), (k, v)-> {
+			Map<String, Object> map = new HashMap<>((int) (searched.getList()
+					.size() / 0.75f) + 1, 0.75f);
+			for (T e : searched.getList()) {
+				map.compute(e.getOid(), (k, v) -> {
 					if (v == null) {
 						return e;
 					} else if (v instanceof List) {
@@ -466,12 +495,13 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 					}
 				});
 			}
-			ArrayList<T> mergedList = new ArrayList<>(searched.getList().size());
-			for (IndexedEntity ie: oidList) {
+			ArrayList<T> mergedList = new ArrayList<>(searched.getList()
+					.size());
+			for (IndexedEntity ie : oidList) {
 				Object o = map.get(ie.getOid());
 				if (o != null) {
 					if (o instanceof List) {
-						for (T e: (List<T>) o) {
+						for (T e : (List<T>) o) {
 							e.setValue(scorePropertyName, ie.getScore());
 							mergedList.add(e);
 						}
@@ -485,18 +515,18 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			return new SearchResult<T>(searched.getTotalCount(), mergedList);
 		} else {
 			//set score value to each entity 
-			Map<String, IndexedEntity> map = new HashMap<>((int)(oidList.size() / 0.75f) + 1, 0.75f);
-			for (IndexedEntity ie: oidList) {
+			Map<String, IndexedEntity> map = new HashMap<>((int) (oidList.size() / 0.75f) + 1, 0.75f);
+			for (IndexedEntity ie : oidList) {
 				map.put(ie.getOid(), ie);
 			}
-			for (T e: searched.getList()) {
+			for (T e : searched.getList()) {
 				IndexedEntity ie = map.get(e.getOid());
 				e.setValue(scorePropertyName, ie.getScore());
 			}
 			return searched;
 		}
 	}
-	
+
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String searchDefName, String fulltext) {
 		EntityContext ec = EntityContext.getCurrentContext();
@@ -510,16 +540,21 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		FulltextSearchOption option = new FulltextSearchOption();
 		for (Map.Entry<String, List<String>> data : entityProperties.entrySet()) {
 			FulltextSearchCondition cond = new FulltextSearchCondition(data.getValue());
-			option.getConditions().put(data.getKey(), cond);
+			option.getConditions()
+					.put(data.getKey(), cond);
 		}
 		return fulltextSearchEntity(fulltext, option);
 	}
 
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String fulltext, FulltextSearchOption option) {
-		if (option.getConditions().size() <= 1) {
+		if (option.getConditions()
+				.size() <= 1) {
 			EntityContext ec = EntityContext.getCurrentContext();
-			Map.Entry<String, FulltextSearchCondition> e = option.getConditions().entrySet().iterator().next();
+			Map.Entry<String, FulltextSearchCondition> e = option.getConditions()
+					.entrySet()
+					.iterator()
+					.next();
 			EntityHandler eh = ec.getHandlerByName(e.getKey());
 			List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
 			return entitySearchImpl(fromIndexList, eh, e.getValue());
@@ -529,29 +564,32 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			List<IndexedEntity> fromIndexList = Collections.emptyList();
 			Map<String, TempEntityList> tempEntityListMap = new LinkedHashMap<>();
 			boolean hasOrderBy = false;
-			
-			for (Map.Entry<String, FulltextSearchCondition> e: option.getConditions().entrySet()) {
+
+			for (Map.Entry<String, FulltextSearchCondition> e : option.getConditions()
+					.entrySet()) {
 				EntityHandler eh = ec.getHandlerByName(e.getKey());
 				List<IndexedEntity> iel = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
 				fromIndexList = mergeSortByScore(fromIndexList, iel, getMaxRows(), t -> t.getScore());
 				tempEntityListMap.put(e.getKey(), new TempEntityList(eh, e.getValue()));
-				hasOrderBy = hasOrderBy || (e.getValue() != null && e.getValue().getOrder() != null);
+				hasOrderBy = hasOrderBy || (e.getValue() != null && e.getValue()
+						.getOrder() != null);
 			}
-			
+
 			if (fromIndexList.isEmpty()) {
 				return new SearchResult<>(-1, null);
 			}
-			
+
 			//divide by defName
-			for (IndexedEntity ie: fromIndexList) {
+			for (IndexedEntity ie : fromIndexList) {
 				TempEntityList tel = tempEntityListMap.get(ie.getDefName());
 				tel.addOids(ie);
 			}
-			
+
 			List<T> resultList = new ArrayList<>();
-			for (Map.Entry<String, TempEntityList> e: tempEntityListMap.entrySet()) {
+			for (Map.Entry<String, TempEntityList> e : tempEntityListMap.entrySet()) {
 				TempEntityList tel = e.getValue();
-				if (tel.getOids().size() > 0) {
+				if (tel.getOids()
+						.size() > 0) {
 					SearchResult<T> resPerEntity = entitySearchImpl(tel.getOids(), tel.getEh(), tel.getCond());
 					if (hasOrderBy) {
 						resultList.addAll(resPerEntity.getList());
@@ -560,7 +598,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 					}
 				}
 			}
-			
+
 			return new SearchResult<>(-1, resultList);
 		}
 	}
@@ -571,7 +609,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		EntityHandler eh = ec.getHandlerByName(searchDefName);
 		List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, -1);
 		List<String> res = new ArrayList<>(fromIndexList.size());
-		for (IndexedEntity ie: fromIndexList) {
+		for (IndexedEntity ie : fromIndexList) {
 			res.add(ie.getOid());
 		}
 		return res;
@@ -583,18 +621,18 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		EntityContext ec = EntityContext.getCurrentContext();
 		List<IndexedEntity> fromIndexList = Collections.emptyList();
 
-		for (String searchDefName: searchDefNames) {
+		for (String searchDefName : searchDefNames) {
 			resMap.put(searchDefName, new ArrayList<String>());
 			EntityHandler eh = ec.getHandlerByName(searchDefName);
 			List<IndexedEntity> iel = fulltextSearchImpl(ec.getTenantId(eh), eh, fulltext, getMaxRows());
 			fromIndexList = mergeSortByScore(fromIndexList, iel, getMaxRows(), t -> t.getScore());
 		}
 
-		for (IndexedEntity ie: fromIndexList) {
+		for (IndexedEntity ie : fromIndexList) {
 			List<String> oidList = resMap.get(ie.getDefName());
 			oidList.add(ie.getOid());
 		}
-		
+
 		return resMap;
 	}
 
@@ -604,14 +642,14 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 		EntityHandler eh = ec.getHandlerByName(searchDefName);
 		List<IndexedEntity> fromIndexList = fulltextSearchImpl(ec.getTenantId(eh), eh, keywords, getMaxRows());
 		List<FulltextSearchResult> res = new ArrayList<>(fromIndexList.size());
-		for (IndexedEntity ie: fromIndexList) {
+		for (IndexedEntity ie : fromIndexList) {
 			FulltextSearchResult r = new FulltextSearchResult();
 			r.setOid(ie.getOid());
 			res.add(r);
 		}
 		return res;
 	}
-	
+
 	protected void insertCrawlLog(String defId, int version, Timestamp sysdate) {
 
 		SqlExecuter<Void> exec = new SqlExecuter<Void>() {
@@ -619,7 +657,8 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Void logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = crawlLogInsertSql.toSql(tenantId, defId, version, sysdate, rdb);
 				logger.debug("insert crawl log sql : " + sql);
 				getStatement().executeUpdate(sql);
@@ -637,7 +676,8 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Void logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = crawlLogUpdateSql.toSql(tenantId, defId, version, sysdate, rdb);
 				logger.debug("update crawl log sql : " + sql);
 				getStatement().executeUpdate(sql);
@@ -655,13 +695,14 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public List<RestoreDto> logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = deleteLogSearchSql.toGetDeleteIndexDataSql(tenantId, defId, baseDate, rdb);
 				ResultSet rs = getStatement().executeQuery(sql);
 
 				List<RestoreDto> dtoList = new ArrayList<RestoreDto>();
 				try {
-					while(rs.next()) {
+					while (rs.next()) {
 						dtoList.add(deleteLogSearchSql.toFulltextSearchRestoreDto(rs));
 					}
 				} finally {
@@ -681,7 +722,8 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Void logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = deleteLogDeleteSql.deleteProcessedLog(tenantId, defId, baseDate, rdb);
 				getStatement().executeUpdate(sql);
 
@@ -698,7 +740,8 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Void logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = deleteLogDeleteSql.deleteAll(tenantId, rdb);
 				getStatement().executeUpdate(sql);
 
@@ -715,7 +758,8 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			@Override
 			public Void logic() throws SQLException {
 
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				String sql = crawlLogDeleteSql.deleteAll(tenantId, rdb);
 				getStatement().executeUpdate(sql);
 
@@ -742,7 +786,8 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 
 				String propertyName = metaProperty.getName();
 
-				if (metaProperty.getId().equals(crawlId)) {
+				if (metaProperty.getId()
+						.equals(crawlId)) {
 					if (metaProperty instanceof MetaReferenceProperty) {
 						crawlPropertyNameMap.put(propertyName + ".name", "R_" + refCnt);
 						refCnt += 1;
@@ -757,7 +802,7 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 						} else {
 							String columnName = "";
 							if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
-								|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
+									|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 								columnName = columnStr + columnIndex;
 								columnIndex++;
 //							} else {
@@ -782,21 +827,24 @@ public abstract class AbstractFulltextSearchService implements FulltextSearchSer
 			if (!match) {
 				//Superの検索
 				if (superProperties == null) {
-					EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
+					EntityService ehs = ServiceRegistry.getRegistry()
+							.getService(EntityService.class);
 					EntityHandler superEntity = ehs.getRuntimeById(meta.getInheritedEntityMetaDataId());
 					if (superEntity != null) {
-						superProperties = superEntity.getMetaData().getDeclaredPropertyList();
+						superProperties = superEntity.getMetaData()
+								.getDeclaredPropertyList();
 					}
 				}
 				if (superProperties != null) {
 					for (MetaProperty metaProperty : superProperties) {
-						if (metaProperty.getId().equals(crawlId)) {
+						if (metaProperty.getId()
+								.equals(crawlId)) {
 							String propertyName = metaProperty.getName();
 							//ReferencePropertyは外す
 							if (!(metaProperty instanceof MetaReferenceProperty)) {
 								String columnName = "";
 								if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
-									|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
+										|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 									columnName = columnStr + columnIndex;
 									columnIndex++;
 //								} else {

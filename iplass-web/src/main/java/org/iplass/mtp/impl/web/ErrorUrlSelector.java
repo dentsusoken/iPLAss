@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.web;
 import org.iplass.mtp.command.RequestContext;
 
 public interface ErrorUrlSelector {
-	
+
 	public String getErrorTemplateName(Throwable exception, RequestContext request, String path);
 
 }

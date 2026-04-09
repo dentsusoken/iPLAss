@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.command.IllegalParameterException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.SessionContext;
@@ -46,6 +44,8 @@ import org.iplass.mtp.impl.web.SimpleSessionContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.ResponseHeader;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * テスト時に利用可能なRequestContextの実装です。
@@ -77,16 +77,16 @@ public class TestRequestContext implements RequestContext {
 
 			ArrayList<String> buf = new ArrayList<String>();
 			while (headerNames.hasMoreElements()) {
-			    String name = (String) headerNames.nextElement();
-			    Enumeration<?> headerValues = httpReq.getHeaders(name);
-			    while (headerValues.hasMoreElements()) {
-			    	buf.add((String) headerValues.nextElement());
-			    }
-			    if (buf.size() == 1) {
-			    	header.put(name, buf.get(0));
-			    } else if (buf.size() > 1) {
-			    	header.put(name, buf.toArray(new String[buf.size()]));
-			    }
+				String name = (String) headerNames.nextElement();
+				Enumeration<?> headerValues = httpReq.getHeaders(name);
+				while (headerValues.hasMoreElements()) {
+					buf.add((String) headerValues.nextElement());
+				}
+				if (buf.size() == 1) {
+					header.put(name, buf.get(0));
+				} else if (buf.size() > 1) {
+					header.put(name, buf.toArray(new String[buf.size()]));
+				}
 				buf.clear();
 			}
 			return header;
@@ -158,7 +158,7 @@ public class TestRequestContext implements RequestContext {
 			return null;
 		}
 		if (val instanceof String) {
-			return new String[]{(String) val};
+			return new String[] { (String) val };
 		}
 		return (String[]) val;
 	}
@@ -179,7 +179,8 @@ public class TestRequestContext implements RequestContext {
 		if (vals == null) {
 			return null;
 		}
-		if (vals.getClass().getComponentType() == type) {
+		if (vals.getClass()
+				.getComponentType() == type) {
 			return (T[]) vals;
 		}
 		try {
@@ -208,7 +209,8 @@ public class TestRequestContext implements RequestContext {
 		if (vals == null) {
 			return null;
 		}
-		if (vals.getClass().getComponentType() == Date.class) {
+		if (vals.getClass()
+				.getComponentType() == Date.class) {
 			return (Date[]) vals;
 		}
 		try {
@@ -237,7 +239,8 @@ public class TestRequestContext implements RequestContext {
 		if (vals == null) {
 			return null;
 		}
-		if (vals.getClass().getComponentType() == Timestamp.class) {
+		if (vals.getClass()
+				.getComponentType() == Timestamp.class) {
 			return (Timestamp[]) vals;
 		}
 		try {
@@ -266,7 +269,8 @@ public class TestRequestContext implements RequestContext {
 		if (vals == null) {
 			return null;
 		}
-		if (vals.getClass().getComponentType() == Time.class) {
+		if (vals.getClass()
+				.getComponentType() == Time.class) {
 			return (Time[]) vals;
 		}
 		try {
@@ -339,7 +343,7 @@ public class TestRequestContext implements RequestContext {
 			return null;
 		}
 		if (val instanceof UploadFileHandle) {
-			return new UploadFileHandle[]{(UploadFileHandle) val};
+			return new UploadFileHandle[] { (UploadFileHandle) val };
 		}
 		return (UploadFileHandle[]) val;
 	}
@@ -361,7 +365,8 @@ public class TestRequestContext implements RequestContext {
 
 	@Override
 	public Iterator<String> getParamNames() {
-		return paramMap.keySet().iterator();
+		return paramMap.keySet()
+				.iterator();
 	}
 
 	public Object getAttribute(String name) {
@@ -417,7 +422,8 @@ public class TestRequestContext implements RequestContext {
 
 	@Override
 	public Iterator<String> getAttributeNames() {
-		return attribteMap.keySet().iterator();
+		return attribteMap.keySet()
+				.iterator();
 	}
 
 	@Override
@@ -428,10 +434,12 @@ public class TestRequestContext implements RequestContext {
 	@Override
 	public SessionContext getSession(boolean create) {
 		if (session == null) {
-			SessionService ss = ServiceRegistry.getRegistry().getService(SessionService.class);
+			SessionService ss = ServiceRegistry.getRegistry()
+					.getService(SessionService.class);
 			Session s = ss.getSession(create);
 			if (s != null) {
-				int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+				int tenantId = ExecuteContext.getCurrentContext()
+						.getClientTenantId();
 				session = (SimpleSessionContext) s.getAttribute("org.iplass.mtp.sessionContext." + tenantId);
 
 				if (session == null) {

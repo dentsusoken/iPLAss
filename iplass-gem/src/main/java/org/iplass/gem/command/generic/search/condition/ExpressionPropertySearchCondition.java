@@ -148,7 +148,8 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 		PropertyEditor editor = ((ExpressionPropertyEditor) getEditor()).getEditor();
 		if (type == ExpressionSearchConditionType.BOOLEAN) {
 			String value = (String) getValue();
-			if (value == null || value.trim().length() == 0)
+			if (value == null || value.trim()
+					.length() == 0)
 				return null;
 			return value;
 		} else if (type == ExpressionSearchConditionType.DATE) {
@@ -157,10 +158,12 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			Date from = null;
 			Date to = null;
 			if (value.length > 1 && value[1] != null) {
-				from = ConvertUtil.convertToDate(Date.class, value[1], TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
+				from = ConvertUtil.convertToDate(Date.class, value[1], TemplateUtil.getLocaleFormat()
+						.getServerDateFormat(), false);
 			}
 			if (value.length > 2 && value[2] != null) {
-				to = ConvertUtil.convertToDate(Date.class, value[2], TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
+				to = ConvertUtil.convertToDate(Date.class, value[2], TemplateUtil.getLocaleFormat()
+						.getServerDateFormat(), false);
 			}
 			return (from == null && to == null) ? null : new Date[] { from, to };
 		} else if (type == ExpressionSearchConditionType.DATETIME) {
@@ -169,10 +172,12 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			Timestamp from = null;
 			Timestamp to = null;
 			if (value.length > 1 && value[1] != null) {
-				from = ConvertUtil.convertToDate(Timestamp.class, value[1], TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), false);
+				from = ConvertUtil.convertToDate(Timestamp.class, value[1], TemplateUtil.getLocaleFormat()
+						.getServerDateTimeFormat(), false);
 			}
 			if (value.length > 2 && value[2] != null) {
-				to = ConvertUtil.convertToDate(Timestamp.class, value[2], TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), false);
+				to = ConvertUtil.convertToDate(Timestamp.class, value[2], TemplateUtil.getLocaleFormat()
+						.getServerDateTimeFormat(), false);
 			}
 			return (from == null && to == null) ? null : new Timestamp[] { from, to };
 		} else if (type == ExpressionSearchConditionType.DECIMAL) {
@@ -279,7 +284,8 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 				if (value.length > 0 && value[0] != null) {
 					single = value[0];
 				}
-				return (single == null || single.trim().length() == 0) ? null : new String[] { single };
+				return (single == null || single.trim()
+						.length() == 0) ? null : new String[] { single };
 			} else {
 				// 範囲検索
 				// 2番目(From)、3番目(To)を利用
@@ -292,8 +298,11 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 					to = value[2];
 				}
 				// 長さ3の配列で返す
-				return ((from == null || from.trim().length() == 0) && (to == null || to.trim().length() == 0)) ? null
-						: new String[] { null, from, to };
+				return ((from == null || from.trim()
+						.length() == 0) && (to == null
+								|| to.trim()
+										.length() == 0)) ? null
+												: new String[] { null, from, to };
 			}
 
 		} else if (type == ExpressionSearchConditionType.TIME) {
@@ -302,10 +311,12 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			Time from = null;
 			Time to = null;
 			if (value.length > 1 && value[1] != null) {
-				from = ConvertUtil.convertToDate(Time.class, value[1], TemplateUtil.getLocaleFormat().getServerTimeFormat(), false);
+				from = ConvertUtil.convertToDate(Time.class, value[1], TemplateUtil.getLocaleFormat()
+						.getServerTimeFormat(), false);
 			}
 			if (value.length > 2 && value[2] != null) {
-				to = ConvertUtil.convertToDate(Time.class, value[2], TemplateUtil.getLocaleFormat().getServerTimeFormat(), false);
+				to = ConvertUtil.convertToDate(Time.class, value[2], TemplateUtil.getLocaleFormat()
+						.getServerTimeFormat(), false);
 			}
 			return (from == null && to == null) ? null : new Time[] { from, to };
 		}

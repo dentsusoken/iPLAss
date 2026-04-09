@@ -86,7 +86,8 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -148,8 +149,10 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (AsyncCommandDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		asyncCommandAttributePane.setDefinition(curDefinition);
@@ -222,19 +225,19 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_asyncCommand_AsyncCommandEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_asyncCommand_AsyncCommandEditPane_saveConfirmComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						AsyncCommandDefinition definition = new AsyncCommandDefinition();
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								AsyncCommandDefinition definition = new AsyncCommandDefinition();
 
-						definition = commonSection.getEditDefinition(definition);
-						definition = asyncCommandAttributePane.getEditDefinition(definition);
-						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
+								definition = commonSection.getEditDefinition(definition);
+								definition = asyncCommandAttributePane.getEditDefinition(definition);
+								definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
 
-						updateDefinition(definition, true);
-					}
-				}
-			});
+								updateDefinition(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -247,16 +250,15 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_asyncCommand_AsyncCommandEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_asyncCommand_AsyncCommandEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_asyncCommand_AsyncCommandEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

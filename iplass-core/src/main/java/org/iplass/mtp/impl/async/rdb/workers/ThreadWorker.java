@@ -32,11 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ThreadWorker extends LocalWorker {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ThreadWorker.class);
-	
+
 	private ExecutorService executor;
-	
+
 	public ThreadWorker(Queue queue, int workerId) {
 		super(queue, workerId);
 	}
@@ -44,13 +44,15 @@ public class ThreadWorker extends LocalWorker {
 	@Override
 	protected void startImpl() {
 		SecurityManager s = System.getSecurityManager();
-		final ThreadGroup group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		final ThreadGroup group = (s != null) ? s.getThreadGroup()
+				: Thread.currentThread()
+						.getThreadGroup();
 		executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
-	            Thread t = new Thread(group, r,
-	            		queueConfig.getName() + "-" + workerId + "-worker-" + counter.incrementAndGet(),
-                        0);
+				Thread t = new Thread(group, r,
+						queueConfig.getName() + "-" + workerId + "-worker-" + counter.incrementAndGet(),
+						0);
 				if (t.isDaemon()) {
 					t.setDaemon(false);
 				}
@@ -60,14 +62,16 @@ public class ThreadWorker extends LocalWorker {
 				return t;
 			}
 		});
-		
+
 	}
 
 	@Override
 	protected void stopImpl() {
 		executor.shutdown();
 		try {
-			boolean isOk = executor.awaitTermination((long) (queue.getConfig().getWorker().getExecutionTimeout() * 1.3), TimeUnit.MILLISECONDS);
+			boolean isOk = executor.awaitTermination((long) (queue.getConfig()
+					.getWorker()
+					.getExecutionTimeout() * 1.3), TimeUnit.MILLISECONDS);
 			if (!isOk) {
 				logger.error(queueConfig.getName() + "'s worker:" + workerId + " stop process timeout( at ThreadWorker). may be illegal state....");
 			}
@@ -80,5 +84,5 @@ public class ThreadWorker extends LocalWorker {
 	protected Future<Void> doTaskAndStatusUpdate(final Task task) {
 		return executor.submit(new WorkerCallable(task, queue, workerConfig.isTrace(), true));
 	}
-	
+
 }

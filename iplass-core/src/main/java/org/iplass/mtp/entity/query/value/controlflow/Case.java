@@ -41,20 +41,20 @@ public class Case extends PrimaryValue {
 
 	private List<When> when;
 	private Else elseClause;
-	
+
 	public Case() {
 	}
-	
+
 	public Case(List<When> when, Else elseClause) {
 		this.when = when;
 		this.elseClause = elseClause;
 	}
-	
-	public Case (Else elseClause, When... when) {
+
+	public Case(Else elseClause, When... when) {
 		this.elseClause = elseClause;
 		if (when != null) {
 			ArrayList<When> whenList = new ArrayList<When>();
-			for (When w: when) {
+			for (When w : when) {
 				whenList.add(w);
 			}
 			this.when = whenList;
@@ -76,7 +76,7 @@ public class Case extends PrimaryValue {
 	public void setElseClause(Else elseClause) {
 		this.elseClause = elseClause;
 	}
-	
+
 	public Case when(Condition condition, ValueExpression result) {
 		if (when == null) {
 			when = new ArrayList<When>();
@@ -84,12 +84,11 @@ public class Case extends PrimaryValue {
 		when.add(new When(condition, result));
 		return this;
 	}
-	
+
 	public Case elseClause(ValueExpression result) {
 		elseClause = new Else(result);
 		return this;
 	}
-	
 
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {
@@ -100,7 +99,7 @@ public class Case extends PrimaryValue {
 	public void accept(ValueExpressionVisitor visitor) {
 		if (visitor.visit(this)) {
 			if (when != null) {
-				for (When w: when) {
+				for (When w : when) {
 					w.accept(visitor);
 				}
 			}
@@ -109,13 +108,13 @@ public class Case extends PrimaryValue {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("case");
 		if (when != null) {
-			for (When w: when) {
+			for (When w : when) {
 				sb.append(" ");
 				sb.append(w);
 			}
@@ -159,6 +158,5 @@ public class Case extends PrimaryValue {
 			return false;
 		return true;
 	}
-
 
 }

@@ -35,16 +35,16 @@ public class EntityDeleteAllParameter {
 
 	// テナント名
 	private String tenantName;
-	
+
 	//Entity名
 	private String entityName;
-	
+
 	// Where条件
 	private String whereClause;
 
 	//Listnerを実行する
 	private boolean notifyListeners = true;
-	
+
 	// Commit単位(件数)
 	private Integer commitLimit = 100;
 
@@ -68,7 +68,7 @@ public class EntityDeleteAllParameter {
 	public void setTenantName(String tenantName) {
 		this.tenantName = tenantName;
 	}
-	
+
 	public String getEntityName() {
 		return entityName;
 	}
@@ -76,7 +76,7 @@ public class EntityDeleteAllParameter {
 	public void setEntityName(String entityName) {
 		this.entityName = entityName;
 	}
-	
+
 	public String getWhereClause() {
 		return whereClause;
 	}
@@ -88,13 +88,15 @@ public class EntityDeleteAllParameter {
 	public boolean isNotifyListeners() {
 		return notifyListeners;
 	}
+
 	public void setNotifyListeners(boolean notifyListeners) {
 		this.notifyListeners = notifyListeners;
 	}
-	
+
 	public Integer getCommitLimit() {
 		return commitLimit;
 	}
+
 	public void setCommitLimit(Integer commitLimit) {
 		this.commitLimit = commitLimit;
 	}

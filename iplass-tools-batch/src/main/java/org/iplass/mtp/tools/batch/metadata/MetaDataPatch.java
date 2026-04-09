@@ -12,8 +12,8 @@ import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.PatchEntityDataParameter;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.MtpBatchResourceDisposer;
+import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +32,10 @@ public class MetaDataPatch extends MtpCuiBase {
 	private String userId;
 	private String password;
 
-	private TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private MetaDataPortingService service = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
+	private TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private MetaDataPortingService service = ServiceRegistry.getRegistry()
+			.getService(MetaDataPortingService.class);
 
 	/**
 	 * コンストラクタ
@@ -125,7 +127,7 @@ public class MetaDataPatch extends MtpCuiBase {
 			switchLog(false, true);
 
 			return proceed(silent());
-		default :
+		default:
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
@@ -239,7 +241,8 @@ public class MetaDataPatch extends MtpCuiBase {
 	}
 
 	private boolean proceed(PatchEntityDataParameter param) {
-		if (param == null) return false;
+		if (param == null)
+			return false;
 
 		if (ExecMode.WIZARD == execMode) {
 			// 実行確認
@@ -251,7 +254,8 @@ public class MetaDataPatch extends MtpCuiBase {
 				if (!validExecute) {
 					// もう一度設定し直しますか？
 					boolean retry = readConsoleBoolean(rs("Wizard.confirmRetryMsg"), true);
-					if (retry) wizard();
+					if (retry)
+						wizard();
 				}
 			} while (!validExecute);
 		}

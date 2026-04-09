@@ -51,7 +51,8 @@ public class HashingUserHandleSupplier implements UserHandleSupplier {
 	public byte[] get(User user) {
 		try {
 			MessageDigest md = MessageDigest.getInstance(algorithm);
-			String msg = user.getOid() + "-" + ExecuteContext.getCurrentContext().getClientTenantId() + "-" + salt;
+			String msg = user.getOid() + "-" + ExecuteContext.getCurrentContext()
+					.getClientTenantId() + "-" + salt;
 			return md.digest(msg.getBytes("UTF-8"));
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			throw new RuntimeException(e);

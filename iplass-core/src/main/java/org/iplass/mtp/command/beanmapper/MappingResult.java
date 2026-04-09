@@ -25,16 +25,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.impl.command.beanmapper.jackson.MappingResultSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
-
-import org.iplass.mtp.impl.command.beanmapper.jackson.MappingResultSerializer;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Beanへのマッピング結果を表現するクラスです。
@@ -43,7 +42,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  */
 @XmlSeeAlso({
-	MappingError.class
+		MappingError.class
 })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -55,14 +54,14 @@ public class MappingResult {
 	private Map<String, MappingError> errorMap;
 	@XmlTransient
 	private List<MappingError> errorList;
-	
+
 	public MappingResult() {
 	}
 
 	public MappingResult(Object bean) {
 		this.bean = bean;
 	}
-	
+
 	public Object getBean() {
 		return bean;
 	}
@@ -74,14 +73,14 @@ public class MappingResult {
 		}
 		return Collections.unmodifiableList(errorList);
 	}
-	
+
 	public MappingError getError(String propertyPath) {
 		if (errorMap == null) {
 			return null;
 		}
 		return errorMap.get(propertyPath);
 	}
-	
+
 	public void addError(MappingError error) {
 		if (errorMap == null) {
 			errorMap = new HashMap<>();
@@ -93,7 +92,7 @@ public class MappingResult {
 		}
 		errorList.add(error);
 	}
-	
+
 	public MappingError removeError(String propertyPath) {
 		if (errorMap == null) {
 			return null;
@@ -104,11 +103,11 @@ public class MappingResult {
 		}
 		return err;
 	}
-	
+
 	public boolean hasError() {
 		return errorMap != null && errorMap.size() != 0;
 	}
-	
+
 	/**
 	 * 指定のerrorsをすべて追加します。
 	 * propertyPathが等しいMappingErrorが既に存在した場合は、マージされます。
@@ -117,19 +116,19 @@ public class MappingResult {
 	 */
 	@SuppressWarnings("unchecked")
 	public void addErrors(List<MappingError> errors) {
-		for (MappingError me: errors) {
+		for (MappingError me : errors) {
 			MappingError pre = getError(me.getPropertyPath());
 			if (pre == null) {
 				addError(me);
 			} else {
-				for (String msg: me.getErrorMessages()) {
+				for (String msg : me.getErrorMessages()) {
 					pre.addMessage(msg);
 				}
 				if (me.getCause() != null) {
 					LinkedList<Object> merged = new LinkedList<>();
 					Object preCause = pre.getCause();
 					if (preCause instanceof List) {
-						for (Object o: ((List<Object>) preCause)) {
+						for (Object o : ((List<Object>) preCause)) {
 							merged.add(o);
 						}
 					} else if (preCause != null) {
@@ -137,7 +136,7 @@ public class MappingResult {
 					}
 					Object addCause = me.getCause();
 					if (addCause instanceof List) {
-						for (Object o: ((List<Object>) addCause)) {
+						for (Object o : ((List<Object>) addCause)) {
 							merged.add(o);
 						}
 					} else if (addCause != null) {
@@ -152,5 +151,5 @@ public class MappingResult {
 			}
 		}
 	}
-	
+
 }

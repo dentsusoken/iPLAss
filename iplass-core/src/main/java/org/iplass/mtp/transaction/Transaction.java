@@ -57,7 +57,7 @@ import java.util.function.Function;
  *
  */
 public interface Transaction {
-	
+
 	/**
 	 * トランザクションがない状態を表すTransactionのインスタンスです。
 	 * トランザクションがまだ開始されていない状態、もしくはトランザクションがサスペンドされている場合に当インスタンスが返却されます。<br>
@@ -65,7 +65,7 @@ public interface Transaction {
 	 * {@link #setAttribute(Object, Object)}などのその他のトランザクション制御メソッドはなにも処理しません。
 	 */
 	public static final Transaction NO_TRANSACTION = new NoTransaction();
-	
+
 	/**
 	 * 現在の実行コンテキストに関連しているトランザクションのインスタンスを取得します。
 	 * もし、トランザクションが開始されていない場合は、{@link #NO_TRANSACTION}が返却されます。
@@ -80,47 +80,47 @@ public interface Transaction {
 			return t;
 		}
 	}
-	
+
 	/**
 	 * トランザクションをコミットします。
 	 * 
 	 */
 	public void commit();
-	
+
 	/**
 	 * トランザクションをロールバックします。
 	 * 
 	 */
 	public void rollback();
-	
+
 	/**
 	 * このトランザクションをロールバックするものとしてマークします。
 	 * setRollbackOnlyされたトランザクションは最終的にはロールバックされます。
 	 * 
 	 */
 	public void setRollbackOnly();
-	
+
 	/**
 	 * このトランザクションがsetRollbackOnlyされているかどうかを取得します。
 	 * 
 	 * @return setRollbackOnlyの場合true
 	 */
 	public boolean isRollbackOnly();
-	
+
 	/**
 	 * このトランザクションがReadOnlyとしてマークされているかどうかを取得します。
 	 * 
 	 * @return
 	 */
 	public boolean isReadOnly();
-	
+
 	/**
 	 * トランザクションの状態を取得します。
 	 * 
 	 * @return
 	 */
 	public TransactionStatus getStatus();
-	
+
 	/**
 	 * このトランザクションのコンテキストに特定の属性を紐づけます。
 	 * 
@@ -128,7 +128,7 @@ public interface Transaction {
 	 * @param value 属性の値
 	 */
 	public void setAttribute(Object key, Object value);
-	
+
 	/**
 	 * このトランザクションコンテキストに紐づけられている特定の属性を取得します。
 	 * 同一トランザクション内でsetAttribute()したものがあれば、その値が取得できます。
@@ -137,7 +137,7 @@ public interface Transaction {
 	 * @return 属性の値
 	 */
 	public Object getAttribute(Object key);
-	
+
 	/**
 	 * このトランザクションコンテキストに紐づけられている特定の属性を削除します。
 	 * 
@@ -145,15 +145,14 @@ public interface Transaction {
 	 * @return 削除された値
 	 */
 	public Object removeAttribute(Object key);
-	
+
 	/**
 	 * このトランザクションのcommit、rollbackを監視するリスナーを登録します。
 	 * 
 	 * @param listener
 	 */
 	public void addTransactionListener(TransactionListener listener);
-	
-	
+
 	/**
 	 * このトランザクションがcommitされた場合、funcを実行します。
 	 * funcの引数にはこのトランザクションが渡されます。
@@ -167,7 +166,7 @@ public interface Transaction {
 			}
 		});
 	}
-	
+
 	/**
 	 * このトランザクションがrollbackされた場合、funcを実行します。
 	 * funcの引数にはこのトランザクションが渡されます。
@@ -191,7 +190,7 @@ public interface Transaction {
 	public static void required(Consumer<Transaction> func) {
 		with(new TransactionOption(), func);
 	}
-	
+
 	/**
 	 * トランザクションが開始していない場合はトランザクションを起動し、funcを実行します。
 	 * トランザクション制御方法は、{@link TransactionOption}のデフォルトが適用されます。
@@ -202,7 +201,7 @@ public interface Transaction {
 	public static <R> R required(Function<Transaction, R> func) {
 		return with(new TransactionOption(), func);
 	}
-	
+
 	/**
 	 * 新規にトランザクションを起動し、funcを実行します。
 	 * トランザクション制御方法は、{@link TransactionOption}のデフォルトが適用されます。
@@ -212,7 +211,7 @@ public interface Transaction {
 	public static void requiresNew(Consumer<Transaction> func) {
 		with(new TransactionOption(Propagation.REQUIRES_NEW), func);
 	}
-	
+
 	/**
 	 * 新規にトランザクションを起動し、funcを実行します。
 	 * トランザクション制御方法は、{@link TransactionOption}のデフォルトが適用されます。
@@ -223,7 +222,7 @@ public interface Transaction {
 	public static <R> R requiresNew(Function<Transaction, R> func) {
 		return with(new TransactionOption(Propagation.REQUIRES_NEW), func);
 	}
-	
+
 	/**
 	 * トランザクションをreadOnlyモードで起動します。
 	 * ただし、すでにトランザクションが開始されている場合、
@@ -240,7 +239,7 @@ public interface Transaction {
 	public static void readOnly(Consumer<Transaction> func) {
 		with(new TransactionOption().readOnly(), func);
 	}
-	
+
 	/**
 	 * トランザクションをreadOnlyモードで起動します。
 	 * ただし、すでにトランザクションが開始されている場合、
@@ -258,7 +257,7 @@ public interface Transaction {
 	public static <R> R readOnly(Function<Transaction, R> func) {
 		return with(new TransactionOption().readOnly(), func);
 	}
-	
+
 	/**
 	 * トランザクションをreadOnlyモードで新規に起動します。
 	 * これは、<br>
@@ -273,7 +272,7 @@ public interface Transaction {
 	public static void requiresNewReadOnly(Consumer<Transaction> func) {
 		with(new TransactionOption(Propagation.REQUIRES_NEW).readOnly(), func);
 	}
-	
+
 	/**
 	 * トランザクションをreadOnlyモードで新規に起動します。
 	 * これは、<br>
@@ -299,7 +298,7 @@ public interface Transaction {
 	public static void with(Propagation propagation, Consumer<Transaction> func) {
 		with(new TransactionOption(propagation), func);
 	}
-	
+
 	/**
 	 * 指定のpropagationで、トランザクションを起動しfuncを実行します。
 	 * 
@@ -310,7 +309,7 @@ public interface Transaction {
 	public static <R> R with(Propagation propagation, Function<Transaction, R> func) {
 		return with(new TransactionOption(propagation), func);
 	}
-	
+
 	/**
 	 * 指定のoptionで、トランザクションを起動しfuncを実行します。
 	 * 
@@ -326,7 +325,7 @@ public interface Transaction {
 			}
 		});
 	}
-	
+
 	/**
 	 * 指定のoptionで、トランザクションを起動しfuncを実行します。
 	 * 

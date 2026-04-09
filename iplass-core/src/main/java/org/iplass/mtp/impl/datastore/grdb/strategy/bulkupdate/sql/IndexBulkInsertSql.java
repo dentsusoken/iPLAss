@@ -40,20 +40,27 @@ public class IndexBulkInsertSql {
 	private static final Long LONG_ZERO = Long.valueOf(0);
 
 	public static String indexTableName(EntityHandler eh, GRdbPropertyStoreHandler colDef) {
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
 		if (type == IndexType.NON_UNIQUE) {
-			return ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
+			return ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colDef.getSingleColumnRdbTypeAdapter()
+					.getColOfIndex());
 		} else {
-			return ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
+			return ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colDef.getSingleColumnRdbTypeAdapter()
+					.getColOfIndex());
 		}
 	}
-	
+
 	public static BulkInsertContext insert(final GRdbPropertyStoreHandler colDef, Connection con, final RdbAdapter rdb) throws SQLException {
-		
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
+
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
 		String indexTableName = indexTableName(eh, colDef);
-		
+
 		BulkInsertContext bic = rdb.createBulkInsertContext();
 		List<ColumnValue> columnValue = new ArrayList<>();
 		columnValue.add(new DynamicColumnValue(ObjIndexTable.TENANT_ID, rdb));
@@ -65,15 +72,19 @@ public class IndexBulkInsertSql {
 		}
 		columnValue.add(new PropertyColumnValue(ObjIndexTable.VAL, colDef.getSingleColumnRdbTypeAdapter(), false, null, rdb));
 		bic.setContext(indexTableName, columnValue, con);
-		
+
 		return bic;
 	}
-	
-	public static void addValueForInsert(BulkInsertContext bic, int tenantId, final GRdbPropertyStoreHandler colDef, String oid, Long version, final Object value) throws SQLException {
-		
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
-		
+
+	public static void addValueForInsert(BulkInsertContext bic, int tenantId, final GRdbPropertyStoreHandler colDef, String oid, Long version,
+			final Object value) throws SQLException {
+
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
+
 		List<Object> values;
 		if (type == IndexType.NON_UNIQUE) {
 			values = new ArrayList<>(6);
@@ -81,7 +92,8 @@ public class IndexBulkInsertSql {
 			values = new ArrayList<>(5);
 		}
 		values.add(tenantId);
-		values.add(eh.getMetaData().getId());
+		values.add(eh.getMetaData()
+				.getId());
 		values.add(colDef.getExternalIndexColName());
 		values.add(oid);
 		if (type == IndexType.NON_UNIQUE) {
@@ -93,27 +105,38 @@ public class IndexBulkInsertSql {
 		values.add(value);
 		bic.add(values);
 	}
-	
-	
+
 	public static String searchByOid(int tenantId, final GRdbPropertyStoreHandler colDef, String oid, RdbAdapter rdbAdaptor) {
-		EntityHandler eh = colDef.getPropertyRuntime().getParent();
-		String objDefId = eh.getMetaData().getId();
-		IndexType type = colDef.getPropertyRuntime().getMetaData().getIndexType();
+		EntityHandler eh = colDef.getPropertyRuntime()
+				.getParent();
+		String objDefId = eh.getMetaData()
+				.getId();
+		IndexType type = colDef.getPropertyRuntime()
+				.getMetaData()
+				.getIndexType();
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT " + ObjIndexTable.VAL + " FROM ");
 //		sb.append("SELECT 1 FROM ");
 		if (type == IndexType.NON_UNIQUE) {
-			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colDef.getSingleColumnRdbTypeAdapter().getColOfIndex()));
+			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_INDEX(colDef.getSingleColumnRdbTypeAdapter()
+					.getColOfIndex()));
 		} else {
-			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colDef.getSingleColumnRdbTypeAdapter().getColOfIndex()));
+			sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_UNIQUE(colDef.getSingleColumnRdbTypeAdapter()
+					.getColOfIndex()));
 		}
-		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='").append(rdbAdaptor.sanitize(objDefId)).append("'");
-		sb.append(" AND " + ObjIndexTable.OBJ_ID + "='").append(rdbAdaptor.sanitize(oid)).append("'");
-		sb.append(" AND " + ObjIndexTable.COL_NAME + "='").append(rdbAdaptor.sanitize(colDef.getExternalIndexColName())).append("'");
-		
+		sb.append(" WHERE " + ObjIndexTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjIndexTable.OBJ_DEF_ID + "='")
+				.append(rdbAdaptor.sanitize(objDefId))
+				.append("'");
+		sb.append(" AND " + ObjIndexTable.OBJ_ID + "='")
+				.append(rdbAdaptor.sanitize(oid))
+				.append("'");
+		sb.append(" AND " + ObjIndexTable.COL_NAME + "='")
+				.append(rdbAdaptor.sanitize(colDef.getExternalIndexColName()))
+				.append("'");
+
 		return sb.toString();
 	}
 
-	
 }

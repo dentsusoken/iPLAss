@@ -28,7 +28,9 @@ public interface UserHandleSupplier {
 	byte[] get(User user);
 
 	default String getAsBase64UrlSafe(User user) {
-		return Base64.getUrlEncoder().withoutPadding().encodeToString(get(user));
+		return Base64.getUrlEncoder()
+				.withoutPadding()
+				.encodeToString(get(user));
 	}
 
 }

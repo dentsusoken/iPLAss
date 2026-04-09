@@ -40,7 +40,6 @@ public class EntityDataImportResult implements Serializable {
 	private long errorCount = 0;
 	private long mergeCount = 0;
 
-
 	/**
 	 * コンストラクタ
 	 */

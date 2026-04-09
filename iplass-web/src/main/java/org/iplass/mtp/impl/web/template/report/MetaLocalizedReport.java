@@ -116,11 +116,10 @@ public class MetaLocalizedReport implements MetaData {
 		definition.setLocaleName(getLocaleName());
 		definition.setFileName(getFileName());
 		definition.setBinary(getBinary());
-		if(reportType != null){
+		if (reportType != null) {
 			definition.setReportType(reportType.currentConfig());
 		}
 		return definition;
 	}
-
 
 }

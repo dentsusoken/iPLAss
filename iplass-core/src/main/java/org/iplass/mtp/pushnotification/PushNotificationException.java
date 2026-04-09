@@ -39,5 +39,5 @@ public class PushNotificationException extends SystemException {
 	public PushNotificationException(Throwable cause) {
 		super(cause);
 	}
-	
+
 }

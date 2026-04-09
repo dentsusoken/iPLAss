@@ -22,10 +22,6 @@ package org.iplass.mtp.impl.view.generic.parser;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.jsp.PageContext;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -34,6 +30,10 @@ import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.parser.Token;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 public class PropertyToken implements Token {
 
@@ -45,12 +45,14 @@ public class PropertyToken implements Token {
 
 	@Override
 	public void printOut(PageContext page) throws ServletException, IOException {
-		if (property.getEditor() == null) return;
+		if (property.getEditor() == null)
+			return;
 
 		ServletRequest request = page.getRequest();
 
 		String designType = (String) request.getAttribute(ViewConst.DESIGN_TYPE);
-		if (designType == null) designType = "";
+		if (designType == null)
+			designType = "";
 
 		String path = EntityViewUtil.getJspPath(property.getEditor(), designType);
 		if (path != null) {
@@ -61,12 +63,14 @@ public class PropertyToken implements Token {
 			//ネストテーブルからの出力かどうかでデータを変える
 			if (nest == null || !nest) {
 				entity = (Entity) request.getAttribute(Constants.ENTITY_DATA);
-				property.getEditor().setPropertyName(property.getPropertyName());
+				property.getEditor()
+						.setPropertyName(property.getPropertyName());
 			} else {
 				//NestTable
 				entity = (Entity) request.getAttribute(Constants.EDITOR_REF_NEST_VALUE);
 				String prefix = (String) request.getAttribute(Constants.EDITOR_JOIN_NEST_PREFIX);
-				property.getEditor().setPropertyName(prefix + "." + property.getPropertyName());
+				property.getEditor()
+						.setPropertyName(prefix + "." + property.getPropertyName());
 			}
 
 			PropertyDefinition pd = ed.getProperty(property.getPropertyName());

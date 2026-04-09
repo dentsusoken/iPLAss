@@ -29,14 +29,21 @@ import org.iplass.mtp.impl.entity.property.PrimitivePropertyHandler;
 import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 
 public interface GRdbPropertyStoreRuntime {
-	
+
 	public BaseRdbTypeAdapter getSingleColumnRdbTypeAdapter();
+
 	public int getColCount();
+
 	public boolean isNative();
+
 	public boolean isExternalIndex();
+
 	public PrimitivePropertyHandler getPropertyRuntime();
+
 	public Object fromDataStore(ResultSet rs, int colNum) throws SQLException;
+
 	public boolean isMulti();
+
 	public List<GRdbPropertyStoreHandler> asList();
 
 }

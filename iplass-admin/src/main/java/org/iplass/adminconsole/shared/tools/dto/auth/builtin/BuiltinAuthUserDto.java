@@ -63,24 +63,29 @@ public class BuiltinAuthUserDto implements Serializable {
 	public String getOid() {
 		return oid;
 	}
+
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
+
 	/**
 	 * @return accountId
 	 */
 	public String getAccountId() {
 		return accountId;
 	}
+
 	/**
 	 * @param accountId セットする accountId
 	 */
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 	}
+
 	public String getPolicyName() {
 		return policyName;
 	}
+
 	public void setPolicyName(String policyName) {
 		this.policyName = policyName;
 	}
@@ -91,108 +96,127 @@ public class BuiltinAuthUserDto implements Serializable {
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @param name セットする name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * @return mail
 	 */
 	public String getMail() {
 		return mail;
 	}
+
 	/**
 	 * @param mail セットする mail
 	 */
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
+
 	/**
 	 * @return admin
 	 */
 	public boolean isAdmin() {
 		return admin;
 	}
+
 	/**
 	 * @param admin セットする admin
 	 */
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
+
 	/**
 	 * @return startDate
 	 */
 	public Timestamp getStartDate() {
 		return startDate;
 	}
+
 	/**
 	 * @param startDate セットする startDate
 	 */
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
+
 	/**
 	 * @return endDate
 	 */
 	public Timestamp getEndDate() {
 		return endDate;
 	}
+
 	/**
 	 * @param endDate セットする endDate
 	 */
 	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
 	}
+
 	/**
 	 * @return lastLoginOn
 	 */
 	public Timestamp getLastLoginOn() {
 		return lastLoginOn;
 	}
+
 	/**
 	 * @param lastLoginOn セットする lastLoginOn
 	 */
 	public void setLastLoginOn(Timestamp lastLoginOn) {
 		this.lastLoginOn = lastLoginOn;
 	}
+
 	/**
 	 * @return loginErrorCnt
 	 */
 	public int getLoginErrorCnt() {
 		return loginErrorCnt;
 	}
+
 	/**
 	 * @param loginErrorCnt セットする loginErrorCnt
 	 */
 	public void setLoginErrorCnt(int loginErrorCnt) {
 		this.loginErrorCnt = loginErrorCnt;
 	}
+
 	public Timestamp getLoginErrorDate() {
 		return loginErrorDate;
 	}
+
 	public void setLoginErrorDate(Timestamp loginErrorDate) {
 		this.loginErrorDate = loginErrorDate;
 	}
+
 	/**
 	 * @return lastPasswordChange
 	 */
 	public Date getLastPasswordChange() {
 		return lastPasswordChange;
 	}
+
 	/**
 	 * @param lastPasswordChange セットする lastPasswordChange
 	 */
 	public void setLastPasswordChange(Date lastPasswordChange) {
 		this.lastPasswordChange = lastPasswordChange;
 	}
+
 	/**
 	 * @return passwordRemainDays
 	 */
 	public Integer getPasswordRemainDays() {
 		return passwordRemainDays;
 	}
+
 	/**
 	 * @param passwordRemainDays セットする passwordRemainDays
 	 */
@@ -203,12 +227,15 @@ public class BuiltinAuthUserDto implements Serializable {
 	public boolean isUserExist() {
 		return isUserExist;
 	}
+
 	public void setUserExist(boolean isUserExist) {
 		this.isUserExist = isUserExist;
 	}
+
 	public boolean isAccountExist() {
 		return isAccountExist;
 	}
+
 	public void setAccountExist(boolean isAccountExist) {
 		this.isAccountExist = isAccountExist;
 	}

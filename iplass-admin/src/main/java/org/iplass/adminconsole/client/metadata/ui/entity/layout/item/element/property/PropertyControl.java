@@ -116,7 +116,8 @@ public class PropertyControl extends ItemControl {
 		property.setDispFlag(true);
 		property.setPropertyName((String) getValue("name"));
 		property.setEditor((PropertyEditor) getValue("propertyEditor"));
-		setClassName(property.getClass().getName());
+		setClassName(property.getClass()
+				.getName());
 		setValueObject(property);
 
 		//Dropされた段階ではラベルはnull
@@ -138,7 +139,8 @@ public class PropertyControl extends ItemControl {
 
 		setValue("name", property.getPropertyName());
 		setValue("propertyEditor", property.getEditor());
-		setClassName(property.getClass().getName());
+		setClassName(property.getClass()
+				.getName());
 		setValueObject(property);
 
 		//プロパティ定義を取得
@@ -160,7 +162,8 @@ public class PropertyControl extends ItemControl {
 
 		setValue("name", property.getPropertyName());
 		setValue("propertyEditor", property.getEditor());
-		setClassName(property.getClass().getName());
+		setClassName(property.getClass()
+				.getName());
 		setValueObject(property);
 
 		//プロパティ定義を取得
@@ -184,10 +187,14 @@ public class PropertyControl extends ItemControl {
 			@Override
 			public void execute(MetaFieldUpdateEvent event) {
 				String displayName = null;
-				if (event.getValueMap().containsKey("displayLabel")) {
-					displayName = (String) event.getValueMap().get("displayLabel");
-				} else if (event.getValueMap().containsKey("title")) {
-					displayName = (String) event.getValueMap().get("title");
+				if (event.getValueMap()
+						.containsKey("displayLabel")) {
+					displayName = (String) event.getValueMap()
+							.get("displayLabel");
+				} else if (event.getValueMap()
+						.containsKey("title")) {
+					displayName = (String) event.getValueMap()
+							.get("title");
 				}
 				createTitle(displayName);
 			}
@@ -209,7 +216,7 @@ public class PropertyControl extends ItemControl {
 		if (pd != null) {
 			entityPropertyDisplayName = pd.getDisplayName();
 			if (pd instanceof ReferenceProperty) {
-				refDefName = ((ReferenceProperty)pd).getObjectDefinitionName();
+				refDefName = ((ReferenceProperty) pd).getObjectDefinitionName();
 			} else {
 				refDefName = null;
 			}
@@ -221,8 +228,8 @@ public class PropertyControl extends ItemControl {
 	}
 
 	private void createTitle(String itemDisplayName) {
-		String title = itemDisplayName != null ? itemDisplayName + " ": "";
-		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
+		String title = itemDisplayName != null ? itemDisplayName + " " : "";
+		title = title + "(" + entityPropertyDisplayName + "[" + (String) getValue("name") + "])";
 		setTitle(title);
 		SmartGWTUtil.addHoverToCanvas(this, getTitle());
 	}
@@ -322,7 +329,7 @@ public class PropertyControl extends ItemControl {
 		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 
 		// ダイアログのタイトルに対象のプロパティ名を表示
-		dialog.setTitlePropertyInfo(new PropertyInfo((String)getValue("name"), entityPropertyDisplayName));
+		dialog.setTitlePropertyInfo(new PropertyInfo((String) getValue("name"), entityPropertyDisplayName));
 		return dialog;
 	}
 }

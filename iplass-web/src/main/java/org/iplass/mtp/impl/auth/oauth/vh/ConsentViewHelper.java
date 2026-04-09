@@ -32,69 +32,81 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class ConsentViewHelper {
-	
-	private static OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-	private static OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
-	
+
+	private static OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry()
+			.getService(OAuthAuthorizationService.class);
+	private static OAuthClientService clientService = ServiceRegistry.getRegistry()
+			.getService(OAuthClientService.class);
+
 	private AuthorizationRequest authRequest;
 	private OAuthAuthorizationRuntime server;
 	private OAuthClientRuntime client;
 	private List<ScopeItem> scopes;
-	
+
 	public ConsentViewHelper(AuthorizationRequest authRequest) {
 		this.authRequest = authRequest;
 		server = authorizationService.getRuntimeByName(authRequest.getAuthorizationServerId());
 		client = clientService.getRuntimeByName(authRequest.getClientId());
 		scopes = new ArrayList<>();
-		
+
 		List<MetaScope> msList = server.getScopeByName(authRequest.getScopes());
-		for (MetaScope ms: msList) {
+		for (MetaScope ms : msList) {
 			scopes.add(new ScopeItem(ms));
 		}
 	}
-	
+
 	public String getClientName() {
-		String name = I18nUtil.stringMeta(client.getMetaData().getDisplayName(), client.getMetaData().getLocalizedDisplayNameList());
+		String name = I18nUtil.stringMeta(client.getMetaData()
+				.getDisplayName(),
+				client.getMetaData()
+						.getLocalizedDisplayNameList());
 		if (name == null) {
-			name = client.getMetaData().getName();
+			name = client.getMetaData()
+					.getName();
 		}
 		return name;
 	}
-	
+
 	public String getClientUri() {
-		return client.getMetaData().getClientUri();
+		return client.getMetaData()
+				.getClientUri();
 	}
-	
+
 	public String getLogoUri() {
-		return client.getMetaData().getLogoUri();
+		return client.getMetaData()
+				.getLogoUri();
 	}
-	
+
 	public List<String> getContacts() {
-		return client.getMetaData().getContacts();
+		return client.getMetaData()
+				.getContacts();
 	}
-	
+
 	public String getTosUri() {
-		return client.getMetaData().getTosUri();
+		return client.getMetaData()
+				.getTosUri();
 	}
-	
+
 	public String getPolicyUri() {
-		return client.getMetaData().getPolicyUri();
+		return client.getMetaData()
+				.getPolicyUri();
 	}
-	
+
 	public String getRequestId() {
 		return authRequest.getRequestId();
 	}
-	
+
 	public List<ScopeItem> getScopes() {
 		return scopes;
 	}
-	
+
 	public static class ScopeItem {
 		private MetaScope scope;
+
 		public ScopeItem(MetaScope scope) {
 			this.scope = scope;
 		}
-		
+
 		public String getName() {
 			String str = I18nUtil.stringMeta(scope.getDisplayName(), scope.getLocalizedDisplayNameList());
 			if (str == null) {
@@ -102,7 +114,7 @@ public class ConsentViewHelper {
 			}
 			return str;
 		}
-		
+
 		public String getDescription() {
 			return I18nUtil.stringMeta(scope.getDescription(), scope.getLocalizedDescriptionList());
 		}

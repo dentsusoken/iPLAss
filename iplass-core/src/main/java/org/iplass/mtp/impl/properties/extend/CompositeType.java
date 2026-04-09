@@ -23,16 +23,16 @@ package org.iplass.mtp.impl.properties.extend;
 import org.iplass.mtp.impl.entity.property.PropertyType;
 
 public abstract class CompositeType extends ExtendType {
-	
+
 	//TODO 実装
 	private static final long serialVersionUID = -360288591367002480L;
 
 	public abstract String[] fieldNames();
-	
+
 	public abstract PropertyType[] actualType();
-	
+
 	public abstract Object composite(Object[] values);
-	
+
 	public abstract Object[] extract(Object value);
 
 }

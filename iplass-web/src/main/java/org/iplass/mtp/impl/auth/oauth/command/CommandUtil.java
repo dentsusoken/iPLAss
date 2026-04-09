@@ -19,9 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.oauth.command;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.authenticate.builtin.web.BasicAuthUtil;
@@ -35,15 +32,18 @@ import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+
 class CommandUtil {
 	//TODO 以下そのうち対応
 	//client_assertion
 	//client_assertion_type
-	
 
 	private static Logger logger = LoggerFactory.getLogger(CommandUtil.class);
-	private static OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
-	
+	private static OAuthClientService clientService = ServiceRegistry.getRegistry()
+			.getService(OAuthClientService.class);
+
 	static IdPasswordCredential clientCredential(RequestContext request) {
 		String clientId = StringUtil.stripToNull(request.getParam(OAuthEndpointConstants.PARAM_CLIENT_ID));
 		String clientSecret = null;
@@ -54,7 +54,7 @@ class CommandUtil {
 			clientSecret = StringUtil.stripToNull(request.getParam(OAuthEndpointConstants.PARAM_CLIENT_SECRET));
 			return new IdPasswordCredential(clientId, clientSecret);
 		}
-		
+
 		//from header
 		IdPasswordCredential cre = BasicAuthUtil.decodeFromHeader(request);
 		if (cre != null) {
@@ -65,13 +65,13 @@ class CommandUtil {
 		cre.setAuthenticationFactor(BasicAuthUtil.AUTH_SCHEME_BASIC, true);
 		return cre;
 	}
-	
+
 	static OAuthClientRuntime validateClient(RequestContext request, boolean allowPublicClient) {
 		IdPasswordCredential clientCredential = clientCredential(request);
 		if (clientCredential == null) {
 			throw new WebApplicationException(buildErrorResponse(OAuthConstants.ERROR_INVALID_CLIENT, null, null));
 		}
-		
+
 		OAuthClientRuntime clientRuntime = clientService.getRuntimeByName(clientCredential.getId());
 		if (clientRuntime == null
 				|| clientRuntime.getAuthorizationServer() == null
@@ -82,7 +82,7 @@ class CommandUtil {
 				throw new WebApplicationException(buildErrorResponse(OAuthConstants.ERROR_INVALID_CLIENT, null, null));
 			}
 		}
-		
+
 		return clientRuntime;
 
 	}
@@ -91,23 +91,32 @@ class CommandUtil {
 		Object msg = errorMsg(error, errorDescription, errorUri);
 		int statCode = 400;
 		if (OAuthConstants.ERROR_INVALID_CLIENT.equals(error)) {
-			statCode= 401;
+			statCode = 401;
 		}
-		
-		return Response.status(statCode).header("Content-Type", "application/json").entity(msg).build();
+
+		return Response.status(statCode)
+				.header("Content-Type", "application/json")
+				.entity(msg)
+				.build();
 	}
-	
+
 	static String errorMsg(String error, String errorDescription, String errorUri) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\"error\":");
-		sb.append("\"").append(StringUtil.escapeJavaScript(error)).append("\"");
+		sb.append("\"")
+				.append(StringUtil.escapeJavaScript(error))
+				.append("\"");
 		if (errorDescription != null) {
 			sb.append(",\"error_description\":");
-			sb.append("\"").append(StringUtil.escapeJavaScript(errorDescription)).append("\"");
+			sb.append("\"")
+					.append(StringUtil.escapeJavaScript(errorDescription))
+					.append("\"");
 		}
 		if (errorUri != null) {
 			sb.append(",\"errorUri\":");
-			sb.append("\"").append(StringUtil.escapeJavaScript(errorUri)).append("\"");
+			sb.append("\"")
+					.append(StringUtil.escapeJavaScript(errorUri))
+					.append("\"");
 		}
 		sb.append("}");
 		return sb.toString();

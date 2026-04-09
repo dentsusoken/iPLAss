@@ -35,19 +35,20 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class ObjStoreDeleteSql extends UpdateSqlHandler {
 
 	private static final String TMP_TABLE_ALIAS = "tt";
 
-	public String deleteMainPageByOid(int tenantId, EntityHandler eh, String objId, Long version, boolean withOptimisticLock, Timestamp timestamp, RdbAdapter adapter) {
+	public String deleteMainPageByOid(int tenantId, EntityHandler eh, String objId, Long version, boolean withOptimisticLock, Timestamp timestamp,
+			RdbAdapter adapter) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(adapter.sanitize(eh.getMetaData().getId()));
+		sb.append(adapter.sanitize(eh.getMetaData()
+				.getId()));
 		sb.append("' AND " + ObjStoreTable.OBJ_ID + "='");
 		sb.append(adapter.sanitize(objId));
 		sb.append("' AND " + ObjStoreTable.OBJ_VER + "=");
@@ -75,7 +76,8 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(adapter.sanitize(eh.getMetaData().getId()));
+		sb.append(adapter.sanitize(eh.getMetaData()
+				.getId()));
 		sb.append("' AND " + ObjStoreTable.OBJ_ID + "='");
 		sb.append(adapter.sanitize(objId));
 		sb.append("' AND " + ObjStoreTable.OBJ_VER + "=");
@@ -103,7 +105,8 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(rdb.sanitize(eh.getMetaData().getId()));
+		sb.append(rdb.sanitize(eh.getMetaData()
+				.getId()));
 		if (rdb.isSupportRowValueConstructor()) {
 			sb.append("' AND (" + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + ") in(");
 		} else {
@@ -114,8 +117,9 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 
 		Query q = new Query();
 		q.select(Entity.OID, Entity.VERSION)
-			.from(eh.getMetaData().getName())
-			.setWhere(cond.getWhere());
+				.from(eh.getMetaData()
+						.getName())
+				.setWhere(cond.getWhere());
 		SqlQueryContext qc = new SqlQueryContext(eh, entityContext, rdb);
 		SqlConverter conv = new SqlConverter(qc, false);
 		q.accept(conv);
@@ -128,14 +132,24 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 
 			StringBuilder sbJoin = new StringBuilder();
 			if (prefix != null) {
-				sbJoin.append(prefix).append(".");
+				sbJoin.append(prefix)
+						.append(".");
 			}
-			sbJoin.append(ObjStoreTable.OBJ_ID).append("=").append(objStoreTable).append(".").append(ObjStoreTable.OBJ_ID);
+			sbJoin.append(ObjStoreTable.OBJ_ID)
+					.append("=")
+					.append(objStoreTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_ID);
 			sbJoin.append(" AND ");
 			if (prefix != null) {
-				sbJoin.append(prefix).append(".");
+				sbJoin.append(prefix)
+						.append(".");
 			}
-			sbJoin.append(ObjStoreTable.OBJ_VER).append("=").append(objStoreTable).append(".").append(ObjStoreTable.OBJ_VER);
+			sbJoin.append(ObjStoreTable.OBJ_VER)
+					.append("=")
+					.append(objStoreTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_VER);
 
 			sb.append(rdb.tableAlias(qc.toSelectSql(sbJoin.toString())));
 		}
@@ -175,16 +189,37 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(rdb.sanitize(eh.getMetaData().getId())).append("'");
+		sb.append(rdb.sanitize(eh.getMetaData()
+				.getId()))
+				.append("'");
 		if (rdb.isSupportRowValueConstructor()) {
 			sb.append(" AND (" + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + ") IN("
-					+ "SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdb.getTemplaryTablePrefix() + ObjStoreTable.TABLE_NAME_TMP + ")");
+					+ "SELECT " + ObjStoreTable.OBJ_ID + "," + ObjStoreTable.OBJ_VER + " FROM " + rdb.getTemplaryTablePrefix()
+					+ ObjStoreTable.TABLE_NAME_TMP + ")");
 		} else {
 			String objStoreTable = ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE();
 			sb.append(" AND EXISTS (");
-			sb.append("SELECT 1 FROM ").append(rdb.getTemplaryTablePrefix()).append(ObjStoreTable.TABLE_NAME_TMP ).append(" ").append(TMP_TABLE_ALIAS);
-			sb.append(" WHERE ").append(TMP_TABLE_ALIAS).append(".").append(ObjStoreTable.OBJ_ID ).append("=").append(objStoreTable).append(".").append(ObjStoreTable.OBJ_ID);
-			sb.append(" AND ").append(TMP_TABLE_ALIAS).append(".").append(ObjStoreTable.OBJ_VER ).append("=").append(objStoreTable).append(".").append(ObjStoreTable.OBJ_VER);
+			sb.append("SELECT 1 FROM ")
+					.append(rdb.getTemplaryTablePrefix())
+					.append(ObjStoreTable.TABLE_NAME_TMP)
+					.append(" ")
+					.append(TMP_TABLE_ALIAS);
+			sb.append(" WHERE ")
+					.append(TMP_TABLE_ALIAS)
+					.append(".")
+					.append(ObjStoreTable.OBJ_ID)
+					.append("=")
+					.append(objStoreTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_ID);
+			sb.append(" AND ")
+					.append(TMP_TABLE_ALIAS)
+					.append(".")
+					.append(ObjStoreTable.OBJ_VER)
+					.append("=")
+					.append(objStoreTable)
+					.append(".")
+					.append(ObjStoreTable.OBJ_VER);
 			sb.append(")");
 		}
 
@@ -210,7 +245,8 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
-		sb.append(rdb.sanitize(defId)).append("'");
+		sb.append(rdb.sanitize(defId))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -219,10 +255,17 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT COUNT(*) FROM ");
 		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
-		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=").append(tenantId);
-		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='").append(rdb.sanitize(eh.getMetaData().getId())).append("'");
-		sb.append(" AND " + ObjStoreTable.OBJ_ID + "='").append(rdb.sanitize(oid)).append("'");
-		sb.append(" AND " + ObjStoreTable.OBJ_VER + "!=").append(version);
+		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=")
+				.append(tenantId);
+		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='")
+				.append(rdb.sanitize(eh.getMetaData()
+						.getId()))
+				.append("'");
+		sb.append(" AND " + ObjStoreTable.OBJ_ID + "='")
+				.append(rdb.sanitize(oid))
+				.append("'");
+		sb.append(" AND " + ObjStoreTable.OBJ_VER + "!=")
+				.append(version);
 		sb.append(" AND " + ObjStoreTable.PG_NO + "=0");
 		return sb.toString();
 	}

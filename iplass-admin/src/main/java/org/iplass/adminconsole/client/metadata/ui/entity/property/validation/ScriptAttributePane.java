@@ -68,6 +68,7 @@ public class ScriptAttributePane extends ValidationAttributePane {
 							public void onSave(String text) {
 								scriptItem.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}

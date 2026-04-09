@@ -21,12 +21,12 @@ package org.iplass.mtp.web.template.tags;
 
 import java.io.IOException;
 
+import org.iplass.mtp.web.template.TemplateUtil;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
-
-import org.iplass.mtp.web.template.TemplateUtil;
 
 /**
  * <p>
@@ -64,24 +64,28 @@ import org.iplass.mtp.web.template.TemplateUtil;
  *
  */
 public class IncludeTag extends SimpleTagSupport {
-	
+
 	private String action;
 	private String template;
-	
+
 	public String getAction() {
 		return action;
 	}
+
 	public void setAction(String action) {
 		this.action = action;
 		this.template = null;
 	}
+
 	public String getTemplate() {
 		return template;
 	}
+
 	public void setTemplate(String template) {
 		this.template = template;
 		this.action = null;
 	}
+
 	@Override
 	public void doTag() throws JspException, IOException {
 		try {

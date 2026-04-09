@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.tools.pack;
 
-
 /**
  * Package Entity定義
  */

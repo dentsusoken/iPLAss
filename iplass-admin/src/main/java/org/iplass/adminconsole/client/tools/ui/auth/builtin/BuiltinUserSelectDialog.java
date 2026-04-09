@@ -144,6 +144,7 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 		public void setTabTitleProgress() {
 			attributeTab.setTitle("<span>" + Canvas.imgHTML(PROGRESS_ICON) + "&nbsp;Execute...</span>");
 		}
+
 		public void setTabTitleNormal() {
 			attributeTab.setTitle("User Search");
 		}
@@ -342,23 +343,23 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 
 			grid.setWidth100();
 			grid.setHeight100();
-			grid.setShowAllRecords(false);		//データ件数が多い場合を考慮し、false
-			grid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
+			grid.setShowAllRecords(false); //データ件数が多い場合を考慮し、false
+			grid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
 
-			grid.setAutoFitFieldWidths(true);							//データにより幅自動調節
-			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//幅の調節をタイトルとデータに設定
+			grid.setAutoFitFieldWidths(true); //データにより幅自動調節
+			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //幅の調節をタイトルとデータに設定
 //			grid.setAutoFitWidthApproach(AutoFitWidthApproach.TITLE);	//幅の調節をタイトルとデータに設定
-			grid.setAutoFitFieldsFillViewport(false);					//幅が足りないときに先頭行の自動的に伸ばさない
+			grid.setAutoFitFieldsFillViewport(false); //幅が足りないときに先頭行の自動的に伸ばさない
 
-			grid.setShowRowNumbers(true);		//行番号表示
-			grid.setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+			grid.setShowRowNumbers(true); //行番号表示
+			grid.setCanDragSelectText(true); //セルの値をドラッグで選択可能（コピー用）にする
 
 			grid.setCanSort(false);
 			grid.setCanGroupBy(false);
 			grid.setCanPickFields(false);
 			grid.setCanFreezeFields(false);
 
-			grid.setSelectionType(SelectionStyle.SINGLE);	//単一選択
+			grid.setSelectionType(SelectionStyle.SINGLE); //単一選択
 
 			grid.addDataArrivedHandler(new DataArrivedHandler() {
 
@@ -372,7 +373,8 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 
 				@Override
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					BuiltinAuthUserDto user = (BuiltinAuthUserDto)((ListGridRecord)event.getRecord()).getAttributeAsObject(SelectBuiltinUserDS.VALUE_OBJECT);
+					BuiltinAuthUserDto user = (BuiltinAuthUserDto) ((ListGridRecord) event.getRecord())
+							.getAttributeAsObject(SelectBuiltinUserDS.VALUE_OBJECT);
 					handler.selected(user);
 					cancel();
 				}
@@ -416,7 +418,7 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 			ds.setCondition(newCondition);
 
 			Criteria criteria = new Criteria();
-			criteria.addCriteria("dummy", System.currentTimeMillis() + "");	//同じ条件だとDSに飛ばないので
+			criteria.addCriteria("dummy", System.currentTimeMillis() + ""); //同じ条件だとDSに飛ばないので
 
 			//fetch
 			grid.fetchData(criteria);
@@ -461,7 +463,7 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 		}
 
 		private int getOffset() {
-			return (getPageNum() - 1) * LIMIT ;
+			return (getPageNum() - 1) * LIMIT;
 		}
 
 		private void setLimit(BuiltinAuthUserSearchConditionDto condition) {
@@ -477,10 +479,11 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 			int offset = 0;
 			if (result == null) {
 			} else if (result.isError()) {
-				SC.warn(result.getLogMessages().get(0));	//とりあえず先頭を表示
+				SC.warn(result.getLogMessages()
+						.get(0)); //とりあえず先頭を表示
 			} else {
 				totalCount = result.getTotalCount();
-				offset = result.getExecuteOffset();	//実行時に変更される可能性がある
+				offset = result.getExecuteOffset(); //実行時に変更される可能性がある
 			}
 
 			createPagePane(totalCount, offset);

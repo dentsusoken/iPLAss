@@ -45,16 +45,21 @@ public interface PermissionExplorerService extends XsrfProtectedService, EntityD
 	 * @return Roleの全リスト
 	 */
 	List<Entity> getRoleList(int tenantId);
+
 	Entity loadRoleData(int tenantId, final String oid);
+
 	void updateRoleData(int tenantId, final UpdateRoleInfo storeInfo);
 
 	PermissionSearchResult getAllEntityPermissionData(int tenantId);
+
 	void updateEntityPermissionData(int tenantId, List<PermissionInfo> permissionList);
 
 	PermissionSearchResult getAllActionPermissionData(int tenantId);
+
 	void updateActionPermissionData(int tenantId, List<PermissionInfo> permissionList);
 
 	PermissionSearchResult getAllWebApiPermissionData(int tenantId);
+
 	void updateWebApiPermissionData(int tenantId, List<PermissionInfo> permissionList);
 
 	void dummyConnect(int tenantId);

@@ -38,7 +38,6 @@ public final class HashUtil {
 	private HashUtil() {
 	}
 
-
 	/**
 	 * 指定の文字列のHashを取得する。<br>
 	 * Hashを作成するには、String -> byte[]に変換する必要がある。本メソッドではデフォルトのエンコーディングを利用しているので、
@@ -68,7 +67,6 @@ public final class HashUtil {
 		return digest(target.getBytes(charsetName), algorithm);
 	}
 
-
 	/**
 	 * 指定のByte配列のHashを取得する。<br>
 	 * 本メソッドでは、大きなデータに対してのHash作成には対応していない。もし大きいファイル当のHashを作成するときは、独自の実装をしてください。
@@ -87,7 +85,7 @@ public final class HashUtil {
 
 	public static String hexToString(StringBuilder sb, byte[] data) {
 		for (int i = 0; i < data.length; i++) {
-			hexDigit(sb,data[i]);
+			hexDigit(sb, data[i]);
 		}
 		String buf = sb.toString();
 		sb.delete(0, sb.length());

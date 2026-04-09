@@ -68,6 +68,7 @@ public class ScriptingNormalizerAttributePane extends NormalizerAttributePane {
 							public void onSave(String text) {
 								txaScript.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -96,8 +97,8 @@ public class ScriptingNormalizerAttributePane extends NormalizerAttributePane {
 	@Override
 	public void setDefinition(NormalizerDefinition definition) {
 		if (definition instanceof ScriptingNormalizer) {
-			txaScript.setValue(((ScriptingNormalizer)definition).getScript());
-			chkBindAsArray.setValue(((ScriptingNormalizer)definition).isAsArray());
+			txaScript.setValue(((ScriptingNormalizer) definition).getScript());
+			chkBindAsArray.setValue(((ScriptingNormalizer) definition).isAsArray());
 		} else {
 			form.clearValues();
 		}

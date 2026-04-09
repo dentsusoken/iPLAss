@@ -23,21 +23,21 @@ package org.iplass.mtp.impl.auth.authenticate.trust;
 import org.iplass.mtp.auth.login.Credential;
 
 public class TrustedAuthValidateResult {
-	
+
 	private final boolean isTrusted;
 	private final Class<? extends Credential> credentialTypeForTrust;
-	
+
 	public TrustedAuthValidateResult(boolean isTrusted, Class<? extends Credential> credentialTypeForTrust) {
 		this.isTrusted = isTrusted;
 		this.credentialTypeForTrust = credentialTypeForTrust;
 	}
-	
+
 	public boolean isTrusted() {
 		return isTrusted;
 	}
+
 	public Class<? extends Credential> getCredentialTypeForTrust() {
 		return credentialTypeForTrust;
 	}
-	
 
 }

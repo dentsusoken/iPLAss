@@ -87,13 +87,15 @@ public class SelectValueEditDialog extends MtpDialog {
 					return;
 				}
 
-				String value = _valueItem.getValue().toString();
+				String value = _valueItem.getValue()
+						.toString();
 
 				//重複チェック
 				if (_isNewRow && _parentGrid.getRecords() != null && _parentGrid.getRecords().length > 0) {
 					for (ListGridRecord record : _parentGrid.getRecords()) {
 						SelectValueListGridRecord sRecord = (SelectValueListGridRecord) record;
-						if (sRecord.getSelectValue().equals(value)) {
+						if (sRecord.getSelectValue()
+								.equals(value)) {
 							SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_PropertyListGrid_sameValueExists") + "[" + value + "]");
 							return;
 						}

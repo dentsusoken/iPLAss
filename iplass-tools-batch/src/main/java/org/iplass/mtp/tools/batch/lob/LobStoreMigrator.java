@@ -41,7 +41,8 @@ public class LobStoreMigrator extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(LobStoreMigrator.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
 
 	private int tenantId;
 
@@ -79,7 +80,7 @@ public class LobStoreMigrator extends MtpSilentBatch {
 			} else {
 				List<TenantInfo> tenants = getValidTenantInfoList();
 				if (tenants != null) {
-					for (TenantInfo t: tenants) {
+					for (TenantInfo t : tenants) {
 						(new LobStoreMigrator(mode, target, rootDir, t.getId())).execute();
 					}
 				}
@@ -116,55 +117,56 @@ public class LobStoreMigrator extends MtpSilentBatch {
 				logArguments();
 
 				Transaction.required(t -> {
-						ServiceRegistry sr = ServiceRegistry.getRegistry();
-						LobStoreService lobStoreService = sr.getService(LobStoreService.class);
+					ServiceRegistry sr = ServiceRegistry.getRegistry();
+					LobStoreService lobStoreService = sr.getService(LobStoreService.class);
 
-						ConfigImpl config = new ConfigImpl("lobStoreMigrator", null, null);
-						config.addDependentService(RdbAdapterService.class.getName(), sr.getService(RdbAdapterService.class));
+					ConfigImpl config = new ConfigImpl("lobStoreMigrator", null, null);
+					config.addDependentService(RdbAdapterService.class.getName(), sr.getService(RdbAdapterService.class));
 
-						RdbLobStore rdbLobStore = new RdbLobStore();
-						FileLobStore fileLobStore = new FileLobStore();
-						fileLobStore.setRootDir(rootDir);
+					RdbLobStore rdbLobStore = new RdbLobStore();
+					FileLobStore fileLobStore = new FileLobStore();
+					fileLobStore.setRootDir(rootDir);
 
-						rdbLobStore.inited(lobStoreService, config);
-						fileLobStore.inited(lobStoreService, config);
+					rdbLobStore.inited(lobStoreService, config);
+					fileLobStore.inited(lobStoreService, config);
 
-						LobStore lobStore = MigrateMode.F2R.equals(migrateMode) ? fileLobStore : rdbLobStore;
+					LobStore lobStore = MigrateMode.F2R.equals(migrateMode) ? fileLobStore : rdbLobStore;
 
-						RdbAdapter rdb = sr.getService(RdbAdapterService.class).getRdbAdapter();
+					RdbAdapter rdb = sr.getService(RdbAdapterService.class)
+							.getRdbAdapter();
 
-						SqlExecuter<Void> exec = new SqlExecuter<Void>() {
-							@Override
-							public Void logic() throws SQLException {
-								BlobSearchSql sqlCreator = rdb.getQuerySqlCreator(BlobSearchSql.class);
-								String sql = sqlCreator.toSqlForMigrate(rdb, tenantId);
+					SqlExecuter<Void> exec = new SqlExecuter<Void>() {
+						@Override
+						public Void logic() throws SQLException {
+							BlobSearchSql sqlCreator = rdb.getQuerySqlCreator(BlobSearchSql.class);
+							String sql = sqlCreator.toSqlForMigrate(rdb, tenantId);
 
-								try (ResultSet rs = getStatement().executeQuery(sql)) {
-									while (rs.next()) {
-										Lob lob = sqlCreator.toBinaryData(rs, lobStore, lobStoreService);
+							try (ResultSet rs = getStatement().executeQuery(sql)) {
+								while (rs.next()) {
+									Lob lob = sqlCreator.toBinaryData(rs, lobStore, lobStoreService);
 
-										if ((MigrateTarget.BINARY.equals(migrateTarget) && LongTextType.LOB_NAME.equals(lob.getName())) ||
-												(MigrateTarget.LONGTEXT.equals(migrateTarget) && !LongTextType.LOB_NAME.equals(lob.getName()))) {
-											continue;
-										}
-
-										// 移行処理
-										switch (migrateMode) {
-										case R2F:	// RDB to File
-											migrateRdbToFile(lob, fileLobStore);
-											break;
-										case F2R:	// File to RDB
-											migrateFileToRdb(lob, rdbLobStore);
-											break;
-										}
+									if ((MigrateTarget.BINARY.equals(migrateTarget) && LongTextType.LOB_NAME.equals(lob.getName())) ||
+											(MigrateTarget.LONGTEXT.equals(migrateTarget) && !LongTextType.LOB_NAME.equals(lob.getName()))) {
+										continue;
 									}
-									return null;
-								}
-							}
-						};
-						exec.execute(rdb, true);
 
-						return null;
+									// 移行処理
+									switch (migrateMode) {
+									case R2F: // RDB to File
+										migrateRdbToFile(lob, fileLobStore);
+										break;
+									case F2R: // File to RDB
+										migrateFileToRdb(lob, rdbLobStore);
+										break;
+									}
+								}
+								return null;
+							}
+						}
+					};
+					exec.execute(rdb, true);
+
+					return null;
 				});
 
 				setSuccess(true);

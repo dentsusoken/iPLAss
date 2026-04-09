@@ -45,10 +45,11 @@ public class BinaryTypeValidation extends ValidationDefinition {
 		setErrorCode(errorCode);
 		this.acceptMimeTypesPattern = acceptMimeTypesPattern;
 	}
-	
+
 	public String getAcceptMimeTypesPattern() {
 		return acceptMimeTypesPattern;
 	}
+
 	public void setAcceptMimeTypesPattern(String acceptMimeTypesPattern) {
 		this.acceptMimeTypesPattern = acceptMimeTypesPattern;
 	}

@@ -62,7 +62,6 @@ public class CsvUploadOption {
 	/** CsvUploadInterrupterクラス名 */
 	private String interrupterClassName;
 
-
 	/**
 	 * ユニークキーを返します。
 	 * @return ユニークキー

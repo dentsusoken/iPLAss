@@ -173,9 +173,9 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 			createScriptForm(form, type, false, null);
 		} else if (TenantColType.GROOVYTEMPLATE.equals(type)) {
 			createGroovyTemplateForm(form, type, name);
- 		} else if (TenantColType.COLORSCHEME.equals(type)) {
+		} else if (TenantColType.COLORSCHEME.equals(type)) {
 			createColorSchemeForm(name, title, form);
- 		}
+		}
 
 		// 編集可否設定
 		boolean canEdit = record.getAttributeAsBoolean("canEdit");
@@ -253,7 +253,8 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 		LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
 		setMap.putAll(valueMap);
 		radioGroupItem.setValueMap(setMap);
-		radioGroupItem.setValue(record.getAttributeAsBoolean("value").toString());
+		radioGroupItem.setValue(record.getAttributeAsBoolean("value")
+				.toString());
 		valueField = radioGroupItem;
 		form.setItems(radioGroupItem);
 		// 一部タイトルが長いものがあるので設定
@@ -456,7 +457,7 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	@SuppressWarnings("unchecked")
 	protected void createColorSchemeForm(String name, String title, DynamicForm form) {
-		
+
 		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 		List<String> valueList = (List<String>) JSOHelper
 				.convertToJava((JavaScriptObject) record.getAttributeAsObject("value"));
@@ -530,7 +531,8 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	protected void setScriptOrGroovyTemplateValue() {
 		String status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_setting");
-		if (valueField.getValue() == null || valueField.getValue().equals("")) {
+		if (valueField.getValue() == null || valueField.getValue()
+				.equals("")) {
 			status = AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_noSetting");
 		}
 		record.setAttribute("value", valueField.getValue());
@@ -559,7 +561,8 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 		StringBuilder sb = new StringBuilder();
 		int cnt = 0;
 		for (FormItem item : valueFields) {
-			if (item.getValue() != null && new Boolean(item.getValue().toString())) {
+			if (item.getValue() != null && new Boolean(item.getValue()
+					.toString())) {
 				valueList.add((String) item.getName());
 				if (cnt > 0) {
 					sb.append(", ");
@@ -584,13 +587,14 @@ public abstract class BaseTenantPropertyEditDialog extends MtpDialog {
 
 	protected void setBooleanValue() {
 		// RadioGroupItemの値はString型のため、Booleanで保存
-		record.setAttribute("value", new Boolean(valueField.getValue().toString()));
+		record.setAttribute("value", new Boolean(valueField.getValue()
+				.toString()));
 
 		@SuppressWarnings("unchecked")
 		Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 		record.setAttribute("displayValue", valueMap.get(valueField.getValue()));
 	}
-	
+
 	protected void setColorSchemeValue() {
 		List<String> valueList = new ArrayList<String>();
 		for (FormItem item : valueFields) {

@@ -46,7 +46,8 @@ public class ArrayTypeConverter extends TypeConverter {
 
 		if (targetType.isArray() && !(obj instanceof Object[])) {
 			Object converted = Array.newInstance(targetType.getComponentType(), 1);
-			if (targetType.getComponentType().isAssignableFrom(obj.getClass())) {
+			if (targetType.getComponentType()
+					.isAssignableFrom(obj.getClass())) {
 				Array.set(converted, 0, obj);
 			} else {
 				Array.set(converted, 0, context.convertToType(obj, targetType.getComponentType()));

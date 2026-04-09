@@ -43,7 +43,7 @@ public class TaskQueueUpdateSql extends UpdateSqlHandler {
 				+ TaskQueueTable.VERSION + "=" + TaskQueueTable.VERSION + "+1,"
 				+ TaskQueueTable.UPDATE + "=" + rdb.systimestamp() + ","
 				+ TaskQueueTable.RESULT + "=?"
-				+" WHERE "
+				+ " WHERE "
 				+ TaskQueueTable.TENANT_ID + "=?"
 				+ " AND " + TaskQueueTable.Q_ID + "=?"
 				+ " AND " + TaskQueueTable.TASK_ID + "=?"
@@ -55,7 +55,7 @@ public class TaskQueueUpdateSql extends UpdateSqlHandler {
 		ps.setLong(num++, task.getVisibleTime());
 		ps.setString(num++, TaskQueueInsertSql.toStatusStr(task.getStatus()));
 		ps.setInt(num++, task.getRetryCount());
-		
+
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(bos))) {
 			oos.writeObject(task.getResult());
@@ -64,7 +64,7 @@ public class TaskQueueUpdateSql extends UpdateSqlHandler {
 			throw new SQLException(e);
 		}
 		ps.setBinaryStream(num++, new ByteArrayInputStream(bos.toByteArray()));
-		
+
 		ps.setInt(num++, task.getTenantId());
 		ps.setInt(num++, task.getQueueId());
 		ps.setLong(num++, task.getTaskId());

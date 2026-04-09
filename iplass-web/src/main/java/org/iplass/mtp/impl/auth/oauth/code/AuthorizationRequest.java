@@ -30,7 +30,7 @@ public class AuthorizationRequest implements Serializable {
 	private static final long serialVersionUID = -3518685489891704249L;
 
 	private String requestId;
-	
+
 	private String authorizationServerId;
 	private String clientId;
 	private String redirectUri;
@@ -40,21 +40,21 @@ public class AuthorizationRequest implements Serializable {
 	private String responseMode;
 	private String codeChallenge;
 	private String codeChallengeMethod;
-	
+
 	private String nonce;
 	private List<String> prompt;
 	private Long maxAge;
-	
+
 	private User user;
 	private long authTime;
-	
+
 	public AuthorizationRequest(String authorizationServerId, String clientId, String redirectUri) {
 		this.requestId = StringUtil.randomToken();
 		this.authorizationServerId = authorizationServerId;
 		this.clientId = clientId;
 		this.redirectUri = redirectUri;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -74,47 +74,58 @@ public class AuthorizationRequest implements Serializable {
 	public String getNonce() {
 		return nonce;
 	}
+
 	public void setNonce(String nonce) {
 		this.nonce = nonce;
 	}
+
 	public List<String> getPrompt() {
 		return prompt;
 	}
+
 	public void setPrompt(List<String> prompt) {
 		this.prompt = prompt;
 	}
+
 	public void addPrompts(String... prompt) {
 		if (prompt != null) {
 			if (this.prompt == null) {
 				this.prompt = new ArrayList<>();
 			}
-			for (String p: prompt) {
+			for (String p : prompt) {
 				this.prompt.add(p);
 			}
 		}
 	}
+
 	public Long getMaxAge() {
 		return maxAge;
 	}
+
 	public void setMaxAge(Long maxAge) {
 		this.maxAge = maxAge;
 	}
+
 	public String getRequestId() {
 		return requestId;
 	}
-	
+
 	public String getAuthorizationServerId() {
 		return authorizationServerId;
 	}
+
 	public void setAuthorizationServerId(String authorizationServerId) {
 		this.authorizationServerId = authorizationServerId;
 	}
+
 	public String getClientId() {
 		return clientId;
 	}
+
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
+
 	public String getRedirectUri() {
 		return redirectUri;
 	}
@@ -122,63 +133,77 @@ public class AuthorizationRequest implements Serializable {
 	public void setRedirectUri(String redirectUri) {
 		this.redirectUri = redirectUri;
 	}
+
 	public String getState() {
 		return state;
 	}
+
 	public void setState(String state) {
 		this.state = state;
 	}
+
 	public String getCodeChallenge() {
 		return codeChallenge;
 	}
+
 	public void setCodeChallenge(String codeChallenge) {
 		this.codeChallenge = codeChallenge;
 	}
+
 	public String getCodeChallengeMethod() {
 		return codeChallengeMethod;
 	}
+
 	public void setCodeChallengeMethod(String codeChallengeMethod) {
 		this.codeChallengeMethod = codeChallengeMethod;
 	}
+
 	public List<String> getResponseTypes() {
 		return responseTypes;
 	}
+
 	public void setResponseTypes(List<String> responseTypes) {
 		this.responseTypes = responseTypes;
 	}
+
 	public void addResponseTypes(String... responseType) {
 		if (responseType != null) {
 			if (this.responseTypes == null) {
 				this.responseTypes = new ArrayList<>();
 			}
-			for (String rt: responseType) {
+			for (String rt : responseType) {
 				this.responseTypes.add(rt);
 			}
 		}
 	}
+
 	public String getResponseMode() {
 		return responseMode;
 	}
+
 	public void setResponseMode(String responseMode) {
 		this.responseMode = responseMode;
 	}
+
 	public List<String> getScopes() {
 		return scopes;
 	}
+
 	public void setScopes(List<String> scopes) {
 		this.scopes = scopes;
 	}
+
 	public void addScopes(String... scope) {
 		if (scope != null) {
 			if (this.scopes == null) {
 				this.scopes = new ArrayList<>();
 			}
-			for (String s: scope) {
+			for (String s : scope) {
 				this.scopes.add(s);
 			}
 		}
 	}
-	
+
 	public boolean hasPrompt(String p) {
 		if (prompt == null) {
 			return false;

@@ -51,12 +51,14 @@ public final class MetaActionMenu extends MetaMenu {
 		parameter = def.getParameter();
 
 		//name - id 変換
-		ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		ActionMappingService service = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
 		ActionMappingRuntime target = service.getByPathHierarchy(def.getActionName());
 		if (target == null) {
 			definitionId = null;
 		} else {
-			definitionId = target.getMetaData().getId();
+			definitionId = target.getMetaData()
+					.getId();
 		}
 	}
 
@@ -66,13 +68,14 @@ public final class MetaActionMenu extends MetaMenu {
 		if (getDefinitionId() == null) {
 			return null;
 		}
-		ActionMappingService service = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
+		ActionMappingService service = ServiceRegistry.getRegistry()
+				.getService(ActionMappingService.class);
 		ActionMappingRuntime target = service.getRuntimeById(getDefinitionId());
-		if(target == null) {
+		if (target == null) {
 			return null;
 		}
 		MetaActionMapping mam = target.getMetaData();
-		if(mam == null) {
+		if (mam == null) {
 			return null;
 		}
 		ActionMenuItem definition = new ActionMenuItem();
@@ -96,7 +99,7 @@ public final class MetaActionMenu extends MetaMenu {
 	 * @return メニューで参照するActionのID
 	 */
 	public String getDefinitionId() {
-	    return definitionId;
+		return definitionId;
 	}
 
 	/**
@@ -105,7 +108,7 @@ public final class MetaActionMenu extends MetaMenu {
 	 * @param definitionId メニューで参照するActionのID
 	 */
 	public void setDefinitionId(String definitionId) {
-	    this.definitionId = definitionId;
+		this.definitionId = definitionId;
 	}
 
 	/**
@@ -114,7 +117,7 @@ public final class MetaActionMenu extends MetaMenu {
 	 * @return Action実行時に追加されるパラメータ
 	 */
 	public String getParameter() {
-	    return parameter;
+		return parameter;
 	}
 
 	/**
@@ -123,7 +126,7 @@ public final class MetaActionMenu extends MetaMenu {
 	 * @param parameter Action実行時に追加されるパラメータ
 	 */
 	public void setParameter(String parameter) {
-	    this.parameter = parameter;
+		this.parameter = parameter;
 	}
 
 	@Override

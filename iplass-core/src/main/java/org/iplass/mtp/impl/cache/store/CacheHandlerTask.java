@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
  * @param <R> 処理結果
  */
 public interface CacheHandlerTask<K, V, R> extends Callable<R>, Serializable {
-	
+
 	/**
 	 * 処理対象がこのメソッドでセットされる。
 	 * 

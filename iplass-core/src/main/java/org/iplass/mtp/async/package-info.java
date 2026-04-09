@@ -19,9 +19,9 @@
  */
 
 @jakarta.xml.bind.annotation.XmlSchema(
-		namespace="http://mtp.iplass.org/xml/async",
-		xmlns={
-			@jakarta.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/async", prefix="async")
+		namespace = "http://mtp.iplass.org/xml/async",
+		xmlns = {
+				@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://mtp.iplass.org/xml/async", prefix = "async")
 		}
-	)
+)
 package org.iplass.mtp.async;

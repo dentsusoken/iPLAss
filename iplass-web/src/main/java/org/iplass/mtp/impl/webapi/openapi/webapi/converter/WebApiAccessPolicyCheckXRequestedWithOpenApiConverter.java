@@ -32,26 +32,32 @@ public class WebApiAccessPolicyCheckXRequestedWithOpenApiConverter implements We
 
 	@Override
 	public void convertOpenApi(WebApiOpenApiConvertContext context) {
-		if (!context.getWebApiDefinition().isCheckXRequestedWithHeader()) {
+		if (!context.getWebApiDefinition()
+				.isCheckXRequestedWithHeader()) {
 			// X-Requested-Withヘッダにチェックされていない場合は何もしない
 			return;
 		}
 
 		var pathItem = context.getPathItem();
-		pathItem.addParametersItem(new HeaderParameter().name(HEADER).schema(new StringSchema()));
+		pathItem.addParametersItem(new HeaderParameter().name(HEADER)
+				.schema(new StringSchema()));
 	}
 
 	@Override
 	public void convertWebApi(WebApiOpenApiConvertContext context) {
 		// 初期値設定
-		context.getWebApiDefinition().setCheckXRequestedWithHeader(false);
+		context.getWebApiDefinition()
+				.setCheckXRequestedWithHeader(false);
 
-		var parameters = context.getPathItem().getParameters();
+		var parameters = context.getPathItem()
+				.getParameters();
 		if (null != parameters) {
 			for (var parameter : parameters) {
-				if (LOWER_HEADER.equals(parameter.getName().toLowerCase()) && "header".equals(parameter.getIn())) {
+				if (LOWER_HEADER.equals(parameter.getName()
+						.toLowerCase()) && "header".equals(parameter.getIn())) {
 					// 1つでも見つかればチェックオン
-					context.getWebApiDefinition().setCheckXRequestedWithHeader(true);
+					context.getWebApiDefinition()
+							.setCheckXRequestedWithHeader(true);
 					return;
 				}
 			}

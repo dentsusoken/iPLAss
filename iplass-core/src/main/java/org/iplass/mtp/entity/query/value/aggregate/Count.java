@@ -38,23 +38,23 @@ public class Count extends Aggregate {
 	private static final long serialVersionUID = -4428126857034145763L;
 
 	private boolean isDistinct;
-	
+
 	public Count() {
 	}
-	
+
 	public Count(String propertyName) {
 		setValue(new EntityField(propertyName));
 	}
-	
+
 	public Count(String propertyName, boolean isDistinct) {
 		setValue(new EntityField(propertyName));
 		this.isDistinct = isDistinct;
 	}
-	
+
 	public Count(ValueExpression value) {
 		setValue(value);
 	}
-	
+
 	public Count(ValueExpression value, boolean isDistinct) {
 		setValue(value);
 		this.isDistinct = isDistinct;
@@ -67,7 +67,7 @@ public class Count extends Aggregate {
 			}
 		}
 	}
-	
+
 	public boolean isDistinct() {
 		return isDistinct;
 	}
@@ -93,7 +93,7 @@ public class Count extends Aggregate {
 	protected String getFuncName() {
 		return "count";
 	}
-	
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}

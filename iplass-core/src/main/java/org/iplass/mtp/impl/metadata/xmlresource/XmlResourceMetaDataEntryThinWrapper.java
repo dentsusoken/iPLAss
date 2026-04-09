@@ -20,13 +20,13 @@
 
 package org.iplass.mtp.impl.metadata.xmlresource;
 
+import org.iplass.mtp.impl.metadata.MetaDataEntryThinWrapper;
+import org.iplass.mtp.impl.metadata.RootMetaData;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.iplass.mtp.impl.metadata.MetaDataEntryThinWrapper;
-import org.iplass.mtp.impl.metadata.RootMetaData;
 
 /**
  * <p>XMLリソース用メタデータエントリ定義のラッパークラスです。</p>
@@ -39,26 +39,26 @@ import org.iplass.mtp.impl.metadata.RootMetaData;
  * @see XmlResourceMetaDataStore
  *
  */
-@XmlRootElement(name="metaDataEntry")
+@XmlRootElement(name = "metaDataEntry")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlResourceMetaDataEntryThinWrapper extends
 		MetaDataEntryThinWrapper {
 
-	@XmlAttribute(required=false)
+	@XmlAttribute(required = false)
 	private String name;
-	
-	@XmlAttribute(required=false)
+
+	@XmlAttribute(required = false)
 	private boolean overwritable = true;
-	
-	@XmlAttribute(required=false)
+
+	@XmlAttribute(required = false)
 	private boolean sharable = true;
 
-	@XmlAttribute(required=false)
+	@XmlAttribute(required = false)
 	private boolean dataSharable = false;
-	
-	@XmlAttribute(required=false)
+
+	@XmlAttribute(required = false)
 	private boolean permissionSharable = false;
-	
+
 	public XmlResourceMetaDataEntryThinWrapper() {
 		super();
 	}
@@ -74,7 +74,7 @@ public class XmlResourceMetaDataEntryThinWrapper extends
 	public void setPermissionSharable(boolean permissionSharable) {
 		this.permissionSharable = permissionSharable;
 	}
-	
+
 	public boolean isDataSharable() {
 		return dataSharable;
 	}

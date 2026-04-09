@@ -84,7 +84,7 @@ public class MtpTreeGrid extends TreeGrid {
 			openParentFolder(parent);
 		}
 		//自身のOpen
-		if (getTree().isFolder(node) &&  !getTree().isOpen(node)) {
+		if (getTree().isFolder(node) && !getTree().isOpen(node)) {
 			getTree().openFolder(node);
 		}
 	}

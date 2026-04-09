@@ -37,8 +37,8 @@ import java.util.TimeZone;
 import java.util.function.UnaryOperator;
 
 import org.iplass.mtp.entity.EntityRuntimeException;
-import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.value.aggregate.Aggregate;
@@ -68,7 +68,6 @@ import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 
-
 public abstract class RdbAdapter {
 
 	private String listaggDefaultSeparator = ",";
@@ -84,8 +83,10 @@ public abstract class RdbAdapter {
 
 	protected void addFunction(FunctionAdapter<Function> functionAdapter) {
 		//LowerCase,UpperCase両方登録しとく
-		functionMap.put(functionAdapter.getFunctionName().toLowerCase(), functionAdapter);
-		functionMap.put(functionAdapter.getFunctionName().toUpperCase(), functionAdapter);
+		functionMap.put(functionAdapter.getFunctionName()
+				.toLowerCase(), functionAdapter);
+		functionMap.put(functionAdapter.getFunctionName()
+				.toUpperCase(), functionAdapter);
 	}
 
 	public <T extends UpdateSqlHandler> T getUpdateSqlCreator(Class<T> sqlCreatorClass) {
@@ -114,7 +115,7 @@ public abstract class RdbAdapter {
 
 	public String[] castExp(int sqlType, Integer lengthOrPrecision, Integer scale) {
 		String rdbType = getDataTypeOf(sqlType, lengthOrPrecision, scale);
-		return new String[]{"CAST(", " AS " + rdbType + ")"};
+		return new String[] { "CAST(", " AS " + rdbType + ")" };
 	}
 
 	public CharSequence cast(int fromSqlType, int toSqlType, CharSequence valExpr, Integer lengthOrPrecision, Integer scale) {
@@ -131,11 +132,15 @@ public abstract class RdbAdapter {
 	}
 
 	public abstract boolean isSupportOptimizerHint();
+
 	public abstract String getOptimizerHint();
+
 	public abstract HintPlace getOptimizerHintPlace();
+
 	public abstract String[] getOptimizerHintBracket();
 
 	public abstract boolean isSupportTableHint();
+
 	public abstract String[] getTableHintBracket();
 
 	protected abstract String getDataTypeOf(int sqlType, Integer lengthOrPrecision, Integer scale);
@@ -234,7 +239,8 @@ public abstract class RdbAdapter {
 			return toTimeStampExpression((Timestamp) rdbValue);
 		}
 
-		throw new UnsupportedDataTypeException("Unsupported Data Type:" + rdbValue.getClass().getName());
+		throw new UnsupportedDataTypeException("Unsupported Data Type:" + rdbValue.getClass()
+				.getName());
 	}
 
 	public void setParameter(PreparedStatement ps, int index, Object rdbValue) throws SQLException {//TODO 型情報が必要では？？
@@ -314,17 +320,24 @@ public abstract class RdbAdapter {
 	public abstract MultiInsertContext createMultiInsertContext(Statement stmt);
 
 	public abstract BulkInsertContext createBulkInsertContext();
+
 	public abstract BulkUpdateContext createBulkUpdateContext();
+
 	public abstract BulkDeleteContext createBulkDeleteContext();
 
 	public final Connection getConnection() throws SQLException {
 		return getConnection(null);
 	}
+
 	public Connection getConnection(String connectionFactoryName) throws SQLException {
 		if (connectionFactoryName == null) {
-			return ServiceRegistry.getRegistry().getService(ConnectionFactory.class).getConnection();
+			return ServiceRegistry.getRegistry()
+					.getService(ConnectionFactory.class)
+					.getConnection();
 		} else {
-			return ServiceRegistry.getRegistry().<ConnectionFactory>getService(connectionFactoryName).getConnection();
+			return ServiceRegistry.getRegistry()
+					.<ConnectionFactory> getService(connectionFactoryName)
+					.getConnection();
 		}
 	}
 
@@ -340,7 +353,9 @@ public abstract class RdbAdapter {
 	public String toLimitSql(String selectSql, int limitCount, int offset) {
 		return toLimitSql(selectSql, limitCount, offset, false);
 	}
+
 	public abstract String toLimitSql(String selectSql, int limitCount, int offset, boolean asBind);
+
 	public abstract Object[] toLimitSqlBindValue(int limitCount, int offset);
 
 	public abstract boolean isDuplicateValueException(SQLException e);
@@ -348,6 +363,7 @@ public abstract class RdbAdapter {
 	public abstract boolean isDeadLock(SQLException e);
 
 	public abstract boolean isLockFailed(SQLException e);
+
 	public abstract boolean isCastFailed(SQLException e);
 
 	public abstract String addDate(String dateExpression, int day);
@@ -385,6 +401,7 @@ public abstract class RdbAdapter {
 	public abstract boolean isSupportGroupingExtention(RollType rollType);
 
 	public abstract boolean isSupportGroupingExtention();
+
 	public abstract boolean isSupportGroupingExtentionWithOrderBy();
 
 	public abstract String rollUpStart(RollType rollType);
@@ -452,6 +469,7 @@ public abstract class RdbAdapter {
 	public abstract String initBlob();
 
 	public abstract boolean isEnableInPartitioning();
+
 	public abstract int getInPartitioningSize();
 
 	/**
@@ -523,6 +541,7 @@ public abstract class RdbAdapter {
 
 	//FIXME 暫定の実装。ver3.1で正式対応
 	private HashMap<Class<? extends WindowRankFunction>, String> windowRankFuncNameMap = createWindowRankFuncNameMap();
+
 	private HashMap<Class<? extends WindowRankFunction>, String> createWindowRankFuncNameMap() {
 		HashMap<Class<? extends WindowRankFunction>, String> map = new HashMap<>();
 		map.put(CumeDist.class, "CUME_DIST");
@@ -532,6 +551,7 @@ public abstract class RdbAdapter {
 		map.put(RowNumber.class, "ROW_NUMBER");
 		return map;
 	}
+
 	public String windowRankFunctionName(WindowRankFunction rankFunc) {
 		return windowRankFuncNameMap.get(rankFunc.getClass());
 	}

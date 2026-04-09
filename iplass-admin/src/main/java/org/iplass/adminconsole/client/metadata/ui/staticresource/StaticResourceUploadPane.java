@@ -227,7 +227,7 @@ public class StaticResourceUploadPane extends VLayout {
 				if (!SmartGWTUtil.isEmpty(lang)) {
 					builder.parameterWithValue(StaticResourceDownloadProperty.LANG, lang);
 				}
-				builder.parameterWithValue("dummy", String.valueOf(System.currentTimeMillis()));	// 画像変換時の再描画のため
+				builder.parameterWithValue("dummy", String.valueOf(System.currentTimeMillis())); // 画像変換時の再描画のため
 			}
 			imgRegistedBinary.setSrc(builder != null ? builder.toEncodedUrl() : null);
 			imgRegistedBinary.setVisible(builder != null);
@@ -235,7 +235,7 @@ public class StaticResourceUploadPane extends VLayout {
 		} else {
 			downloadForm.setVisible(false);
 
-			imgRegistedBinary.setSrc((String)null);
+			imgRegistedBinary.setSrc((String) null);
 			imgRegistedBinary.setVisible(false);
 			lblRegistedStatus.setContents("Still no resource data.");
 		}
@@ -243,23 +243,22 @@ public class StaticResourceUploadPane extends VLayout {
 
 	private void setTemplateDownloadAction(final String defName, final String lang) {
 
-		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler =
-			new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
-				@Override
-				public void onClick(ClickEvent event) {
-					PostDownloadFrame frame = new PostDownloadFrame();
-					frame.setAction(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL)
+			@Override
+			public void onClick(ClickEvent event) {
+				PostDownloadFrame frame = new PostDownloadFrame();
+				frame.setAction(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL)
 						.addParameter(StaticResourceDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
 						.addParameter(StaticResourceDownloadProperty.DEFINITION_NAME, defName)
 						.addParameter(StaticResourceDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
 						.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
-					if (!SmartGWTUtil.isEmpty(lang)) {
-						frame.addParameter(StaticResourceDownloadProperty.LANG, lang);
-					}
-					frame.execute();
+				if (!SmartGWTUtil.isEmpty(lang)) {
+					frame.addParameter(StaticResourceDownloadProperty.LANG, lang);
 				}
-			};
+				frame.execute();
+			}
+		};
 		downloadFilebtn.addClickHandler(handler);
 	}
 

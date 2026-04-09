@@ -25,28 +25,27 @@ import java.sql.Statement;
 
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
 
-
 public class PostgreSQLMultiInsertContext extends MultiInsertContext {
-	
+
 	public PostgreSQLMultiInsertContext(Statement stmt) {
 		super(stmt);
 //		sb = new StringBuilder();
 //		sb.append("INSERT ALL ");
 //		isInsert = false;
 	}
-	
+
 	@Override
 	public void addInsertSql(String sql) throws SQLException {
-		
+
 //		if (sql.regionMatches(true,0,"INSERT",0,6)) {
 //			sb.append(sql.substring(6));
 //			sb.append(" ");
 //			isInsert = true;
 //		} else {
-			super.addInsertSql(sql);
+		super.addInsertSql(sql);
 //		}
 	}
-	
+
 	@Override
 	public int[] execute() throws SQLException {
 //		if (isInsert) {
@@ -56,6 +55,5 @@ public class PostgreSQLMultiInsertContext extends MultiInsertContext {
 //		}
 		return super.execute();
 	}
-	
 
 }

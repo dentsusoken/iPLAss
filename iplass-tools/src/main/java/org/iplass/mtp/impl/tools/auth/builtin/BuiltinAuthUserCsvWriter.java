@@ -53,7 +53,8 @@ public class BuiltinAuthUserCsvWriter implements Closeable {
 
 	private CellProcessor[] processors;
 
-	private String[] header = {"OID", "Account ID", "Name", "Mail", "Policy Name", "Admin", "Error Count", "Login Error Date", "Last PW Change", "PW Remain Days", "Last Login", "Start Date", "End Date"};
+	private String[] header = { "OID", "Account ID", "Name", "Mail", "Policy Name", "Admin", "Error Count", "Login Error Date", "Last PW Change",
+			"PW Remain Days", "Last Login", "Start Date", "End Date" };
 
 	public BuiltinAuthUserCsvWriter(OutputStream out) throws IOException {
 
@@ -67,7 +68,8 @@ public class BuiltinAuthUserCsvWriter implements Closeable {
 
 	private void init(Writer writer) {
 		//Quat:「"」、Demilter：「,」、NewLine：「\n」
-		csvWriter = new CsvMapWriter(writer, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+		csvWriter = new CsvMapWriter(writer, new CsvPreference.Builder(CsvPreference.EXCEL_PREFERENCE).surroundingSpacesNeedQuotes(true)
+				.build());
 		//Quat:「"」、Demilter：「,」、NewLine：「\r\n」
 //		csvWriter = new CsvMapWriter(writer, CsvPreference.STANDARD_PREFERENCE);
 
@@ -146,7 +148,7 @@ public class BuiltinAuthUserCsvWriter implements Closeable {
 		//End Date
 		processors.add(new ConvertNullTo("", new FmtDateEx()));
 
-		this.processors = processors.toArray(new CellProcessor[]{});
+		this.processors = processors.toArray(new CellProcessor[] {});
 	}
 
 	private class FmtDateEx extends CellProcessorAdaptor implements DateCellProcessor {
@@ -160,16 +162,18 @@ public class BuiltinAuthUserCsvWriter implements Closeable {
 		 */
 		@Override
 		public <T> T execute(final Object value, final CsvContext context) throws SuperCsvException {
-			if( value == null ) {
+			if (value == null) {
 				throw new SuperCsvCellProcessorException("Input cannot be null on line " + context.getLineNumber()
 						+ " column " + context.getColumnNumber(), context, this);
 			}
-			if( !(value instanceof Date)) {
+			if (!(value instanceof Date)) {
 				throw new SuperCsvCellProcessorException("the value '" + value
 						+ "' is not of type Date", context, this);
 			}
 
-			final String result = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false).format((Date) value);
+			final String result = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDateFormat(), false)
+					.format((Date) value);
 
 			return next.execute(result, context);
 		}
@@ -186,16 +190,18 @@ public class BuiltinAuthUserCsvWriter implements Closeable {
 		 */
 		@Override
 		public <T> T execute(final Object value, final CsvContext context) throws SuperCsvException {
-			if( value == null ) {
+			if (value == null) {
 				throw new SuperCsvCellProcessorException("Input cannot be null on line " + context.getLineNumber()
 						+ " column " + context.getColumnNumber(), context, this);
 			}
-			if( !(value instanceof Timestamp)) {
+			if (!(value instanceof Timestamp)) {
 				throw new SuperCsvCellProcessorException("the value '" + value
 						+ "' is not of type Timestamp", context, this);
 			}
 
-			final String result = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true).format((Timestamp) value);
+			final String result = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
+					.getOutputDatetimeSecFormat(), true)
+					.format((Timestamp) value);
 
 			return next.execute(result, context);
 		}

@@ -67,7 +67,7 @@ public class SelectValueListGridRecord extends ListGridRecord {
 			return null;
 		} else {
 			Object object = getAttributeAsObject(LOCALLANG);
-			return (List<LocalizedStringDefinition>)JSOHelper.convertToJava((JavaScriptObject) object);
+			return (List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) object);
 		}
 	}
 

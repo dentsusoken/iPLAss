@@ -105,7 +105,8 @@ public class CreateViewDialog extends MtpDialog {
 				@Override
 				public void onSuccess(EntityView ev) {
 					//作成済みのView定義名取得
-					String name = nameItem.getValue().toString();
+					String name = nameItem.getValue()
+							.toString();
 
 					//プルダウンに追加、処理は画面の方に作成
 					if (okClickHandler != null) {
@@ -138,4 +139,3 @@ public class CreateViewDialog extends MtpDialog {
 		this.okClickHandler = handler;
 	}
 }
-

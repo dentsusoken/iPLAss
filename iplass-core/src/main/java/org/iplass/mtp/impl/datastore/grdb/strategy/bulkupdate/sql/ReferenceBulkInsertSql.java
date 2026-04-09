@@ -34,11 +34,11 @@ import org.iplass.mtp.impl.rdb.adapter.bulk.ColumnValue;
 import org.iplass.mtp.impl.rdb.adapter.bulk.DynamicColumnValue;
 
 public class ReferenceBulkInsertSql {
-	
+
 	private static final Long LONG_ZERO = Long.valueOf(0);
 
 	public static BulkInsertContext insert(EntityHandler eh, Connection con, RdbAdapter rdb) throws SQLException {
-		
+
 		List<ColumnValue> columnValue = new ArrayList<>();
 		columnValue.add(new DynamicColumnValue(ObjRefTable.TENANT_ID, rdb));
 		columnValue.add(new DynamicColumnValue(ObjRefTable.OBJ_DEF_ID, rdb));
@@ -48,14 +48,15 @@ public class ReferenceBulkInsertSql {
 		columnValue.add(new DynamicColumnValue(ObjRefTable.TARGET_OBJ_DEF_ID, rdb));
 		columnValue.add(new DynamicColumnValue(ObjRefTable.TARGET_OBJ_ID, rdb));
 		columnValue.add(new DynamicColumnValue(ObjRefTable.TARGET_OBJ_VER, rdb));
-		
+
 		BulkInsertContext bic = rdb.createBulkInsertContext();
 		bic.setContext(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_REF(), columnValue, con);
 		return bic;
 	}
-	
-	public static void addValueForInsert(BulkInsertContext bic, int tenantId, EntityHandler eh, String propId, String oid, Long version, String targetObjDefId, String targetObjId, Long targetObjVersion) throws SQLException {
-		
+
+	public static void addValueForInsert(BulkInsertContext bic, int tenantId, EntityHandler eh, String propId, String oid, Long version,
+			String targetObjDefId, String targetObjId, Long targetObjVersion) throws SQLException {
+
 		if (version == null) {
 			version = LONG_ZERO;
 		}
@@ -64,14 +65,15 @@ public class ReferenceBulkInsertSql {
 		}
 		List<Object> values = new ArrayList<>(8);
 		values.add(tenantId);
-		values.add(eh.getMetaData().getId());
+		values.add(eh.getMetaData()
+				.getId());
 		values.add(propId);
 		values.add(oid);
 		values.add(version);
 		values.add(targetObjDefId);
 		values.add(targetObjId);
 		values.add(targetObjVersion);
-		
+
 		bic.add(values);
 	}
 

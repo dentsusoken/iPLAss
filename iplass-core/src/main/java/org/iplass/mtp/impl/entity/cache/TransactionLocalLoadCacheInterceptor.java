@@ -62,7 +62,6 @@ import org.iplass.mtp.transaction.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 
 	private static final NullCacheStore NULL_CACHE = new NullCacheStore(EntityCacheInterceptor.LOCAL_LOAD_CACHE_NAMESPACE, null);
@@ -80,21 +79,31 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		String res = transactionLocalQueryCacheInterceptor.insert(invocation);
 		//ネガティブキャッシュしているので
 		CacheStore cache = getCache();
-		cache.remove(crateCacheKey(invocation, invocation.getEntity().getOid(), invocation.getEntity().getVersion()));
-		if (invocation.getEntity().getVersion() != null) {//バージョン未指定時のキャッシュも削除
-			cache.remove(crateCacheKey(invocation, invocation.getEntity().getOid(), null));
+		cache.remove(crateCacheKey(invocation, invocation.getEntity()
+				.getOid(),
+				invocation.getEntity()
+						.getVersion()));
+		if (invocation.getEntity()
+				.getVersion() != null) {//バージョン未指定時のキャッシュも削除
+			cache.remove(crateCacheKey(invocation, invocation.getEntity()
+					.getOid(), null));
 		}
 		return res;
 	}
 
 	private boolean isNameUpdate(EntityUpdateInvocation invocation) {
-		if (invocation.getUpdateOption().getUpdateProperties().contains(Entity.NAME)) {
+		if (invocation.getUpdateOption()
+				.getUpdateProperties()
+				.contains(Entity.NAME)) {
 			return true;
 		}
 		//namePropertyが指定されている場合
-		String nameProperty = invocation.getEntityDefinition().getNamePropertyName();
+		String nameProperty = invocation.getEntityDefinition()
+				.getNamePropertyName();
 		if (nameProperty != null
-				&& invocation.getUpdateOption().getUpdateProperties().contains(nameProperty)) {
+				&& invocation.getUpdateOption()
+						.getUpdateProperties()
+						.contains(nameProperty)) {
 			return true;
 		}
 
@@ -105,17 +114,22 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 	public void update(EntityUpdateInvocation invocation) {
 		transactionLocalQueryCacheInterceptor.update(invocation);
 		CacheStore cache = getCache();
-		CacheKey updateKey = crateCacheKey(invocation, invocation.getEntity().getOid(), invocation.getEntity().getVersion());
+		CacheKey updateKey = crateCacheKey(invocation, invocation.getEntity()
+				.getOid(),
+				invocation.getEntity()
+						.getVersion());
 		cache.remove(updateKey);
-		if (invocation.getEntity().getVersion() != null) {
+		if (invocation.getEntity()
+				.getVersion() != null) {
 			//バージョン未指定時のキャッシュも削除
-			cache.remove(crateCacheKey(invocation, invocation.getEntity().getOid(), null));
+			cache.remove(crateCacheKey(invocation, invocation.getEntity()
+					.getOid(), null));
 		}
 
 		//このEntityを参照しているEntityがあった場合、nameを更新した際、当該のEntityのnameを更新する必要あり
 		if (isNameUpdate(invocation)) {
 			ArrayList<CacheKey> keyList = new ArrayList<CacheKey>();
-			for (Object o: cache.keySet()) {
+			for (Object o : cache.keySet()) {
 				CacheKey key = (CacheKey) o;
 				CacheEntry val = cache.get(key);
 				EntityCacheEntry ce = null;
@@ -127,7 +141,7 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				}
 			}
 			if (keyList.size() > 0) {
-				for(CacheKey key: keyList) {
+				for (CacheKey key : keyList) {
 					cache.remove(key);
 				}
 			}
@@ -138,9 +152,14 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 	public void delete(EntityDeleteInvocation invocation) {
 		transactionLocalQueryCacheInterceptor.delete(invocation);
 		CacheStore cache = getCache();
-		cache.remove(crateCacheKey(invocation, invocation.getEntity().getOid(), invocation.getEntity().getVersion()));
-		if (invocation.getEntity().getVersion() != null) {//バージョン未指定時のキャッシュも削除
-			cache.remove(crateCacheKey(invocation, invocation.getEntity().getOid(), null));
+		cache.remove(crateCacheKey(invocation, invocation.getEntity()
+				.getOid(),
+				invocation.getEntity()
+						.getVersion()));
+		if (invocation.getEntity()
+				.getVersion() != null) {//バージョン未指定時のキャッシュも削除
+			cache.remove(crateCacheKey(invocation, invocation.getEntity()
+					.getOid(), null));
 		}
 	}
 
@@ -150,16 +169,20 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		if (res) {
 			CacheStore cache = getCache();
 			ArrayList<CacheKey> keyList = new ArrayList<CacheKey>();
-			for (Object o: cache.keySet()) {
+			for (Object o : cache.keySet()) {
 				CacheKey key = (CacheKey) o;
-				if (key.getTenantId() == ExecuteContext.getCurrentContext().getClientTenantId()
-						&& key.getDefitionName().equals(invocation.getEntityDefinition().getName())
-						&& key.getOid().equals(invocation.getOid())) {
+				if (key.getTenantId() == ExecuteContext.getCurrentContext()
+						.getClientTenantId()
+						&& key.getDefitionName()
+								.equals(invocation.getEntityDefinition()
+										.getName())
+						&& key.getOid()
+								.equals(invocation.getOid())) {
 					keyList.add(key);
 				}
 			}
 			if (keyList.size() > 0) {
-				for(CacheKey key: keyList) {
+				for (CacheKey key : keyList) {
 					cache.remove(key);
 				}
 			}
@@ -188,16 +211,20 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		if (res) {
 			CacheStore cache = getCache();
 			ArrayList<CacheKey> keyList = new ArrayList<CacheKey>();
-			for (Object o: cache.keySet()) {
+			for (Object o : cache.keySet()) {
 				CacheKey key = (CacheKey) o;
-				if (key.getTenantId() == ExecuteContext.getCurrentContext().getClientTenantId()
-						&& key.getDefitionName().equals(invocation.getEntityDefinition().getName())
-						&& key.getOid().equals(invocation.getOid())) {
+				if (key.getTenantId() == ExecuteContext.getCurrentContext()
+						.getClientTenantId()
+						&& key.getDefitionName()
+								.equals(invocation.getEntityDefinition()
+										.getName())
+						&& key.getOid()
+								.equals(invocation.getOid())) {
 					keyList.add(key);
 				}
 			}
 			if (keyList.size() > 0) {
-				for(CacheKey key: keyList) {
+				for (CacheKey key : keyList) {
 					cache.remove(key);
 				}
 			}
@@ -206,7 +233,6 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		}
 		return res;
 	}
-
 
 //	private void checkAndSetLockedByUser(Entity entity) {
 //		Transaction t = ServiceLocator.getInstance().getTransactionManager().currentTransaction();
@@ -223,20 +249,22 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 
 	@Override
 	public Entity load(EntityLoadInvocation invocation) {
-		if (invocation.getLoadOption() != null && invocation.getLoadOption().isVersioned()) {
+		if (invocation.getLoadOption() != null && invocation.getLoadOption()
+				.isVersioned()) {
 			//versioned指定の場合はキャッシュしない（TODO 現時点では）
 			return super.load(invocation);
 		}
-		
+
 		EntityHandler eh = ((EntityLoadInvocationImpl) invocation).getEntityHandler();
 
 		CacheStore cache = getCache();
 		CacheKey key = crateCacheKey(invocation, invocation.getOid(), invocation.getVersion());
 		CacheEntry val = cache.get(key);
 		EntityCacheEntry ce = null;
-		
+
 		//check AuthContext
-		EntityPermission.Action entityPermissionAction = EntityQueryAuthContextHolder.getContext().getQueryAction();
+		EntityPermission.Action entityPermissionAction = EntityQueryAuthContextHolder.getContext()
+				.getQueryAction();
 		AuthContextHolder authContext = AuthContextHolder.getAuthContext();
 		if (val != null) {
 			EntityCacheEntry ceForCheck = (EntityCacheEntry) val.getValue();
@@ -246,22 +274,25 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				val = null;
 			}
 		}
-		
+
 		if (val != null) {
 			ce = (EntityCacheEntry) val.getValue();
 			if (ce.entity == null) {
 				if (logger.isTraceEnabled()) {
-					logger.trace("hit entity cache null:definition=" + invocation.getEntityDefinition().getName() + ", oid=" + invocation.getOid());
+					logger.trace("hit entity cache null:definition=" + invocation.getEntityDefinition()
+							.getName() + ", oid=" + invocation.getOid());
 				}
 			} else {
 				if (logger.isTraceEnabled()) {
-					logger.trace("hit entity cache:definition=" + invocation.getEntityDefinition().getName() + ", oid=" + invocation.getOid());
+					logger.trace("hit entity cache:definition=" + invocation.getEntityDefinition()
+							.getName() + ", oid=" + invocation.getOid());
 				}
 
 				//ロックの場合でまだロックしてない場合は、実際に検索する
 				if (invocation.withLock() && !ce.withLock) {
 					if (logger.isTraceEnabled()) {
-						logger.trace("lock needed, so load entire store:definition=" + invocation.getEntityDefinition().getName() + ", oid=" + invocation.getOid());
+						logger.trace("lock needed, so load entire store:definition=" + invocation.getEntityDefinition()
+								.getName() + ", oid=" + invocation.getOid());
 					}
 					Entity e = invocation.proceed();
 					if (e == null) {
@@ -273,7 +304,8 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				} else {
 					if (ce.needLoad(invocation.getLoadOption(), invocation.getEntityDefinition())) {
 						if (logger.isTraceEnabled()) {
-							logger.trace("additional refProperty needed, so load entire store:definition=" + invocation.getEntityDefinition().getName() + ", oid=" + invocation.getOid());
+							logger.trace("additional refProperty needed, so load entire store:definition=" + invocation.getEntityDefinition()
+									.getName() + ", oid=" + invocation.getOid());
 						}
 						Entity e = invocation.proceed();
 						if (e == null) {
@@ -314,12 +346,13 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		}
 
 	}
-	
+
 	private EntityCacheEntry nullEntry(EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
 		return new EntityCacheEntry(null, true, null, false, null, entityPermissionAction, authContext);
 	}
 
-	private EntityCacheEntry createEntityCacheEntry(Entity e, EntityLoadInvocation invocation, EntityCacheEntry prev, EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
+	private EntityCacheEntry createEntityCacheEntry(Entity e, EntityLoadInvocation invocation, EntityCacheEntry prev,
+			EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
 
 		LoadOption option = invocation.getLoadOption();
 		boolean all = false;
@@ -337,7 +370,7 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 			} else {
 				loadRefNames = new HashSet<String>();
 			}
-			for (PropertyDefinition pd: def.getPropertyList()) {
+			for (PropertyDefinition pd : def.getPropertyList()) {
 				if (pd instanceof ReferenceProperty) {
 					defRefNames.add(pd.getName());
 					if (option.getLoadReferences() == null
@@ -360,12 +393,15 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 			if (!all && prev != null) {
 				//既存とマージ
 				if (e.getUpdateDate() != null
-						&& e.getUpdateDate().equals(prev.getEntity().getUpdateDate())) {
+						&& e.getUpdateDate()
+								.equals(prev.getEntity()
+										.getUpdateDate())) {
 
-					for (PropertyDefinition pd: def.getPropertyList()) {
+					for (PropertyDefinition pd : def.getPropertyList()) {
 						if (pd instanceof ReferenceProperty) {
 							if (!loadRefNames.contains(pd.getName())) {
-								e.setValue(pd.getName(), prev.getEntity().getValue(pd.getName()));
+								e.setValue(pd.getName(), prev.getEntity()
+										.getValue(pd.getName()));
 							}
 						}
 					}
@@ -377,7 +413,7 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				}
 			}
 		}
-		
+
 		return new EntityCacheEntry(e, all, loadRefNames, invocation.withLock(), def, entityPermissionAction, authContext);
 	}
 
@@ -402,16 +438,24 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 	}
 
 	private CacheKey crateCacheKey(EntityInvocation<?> invocation, String oid, Long version) {
-		return new CacheKey(ExecuteContext.getCurrentContext().getClientTenantId(), invocation.getEntityDefinition().getName(), oid, version);
+		return new CacheKey(ExecuteContext.getCurrentContext()
+				.getClientTenantId(),
+				invocation.getEntityDefinition()
+						.getName(),
+				oid, version);
 	}
 
 	private CacheStore getCache() {
-		Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+		Transaction t = ManagerLocator.getInstance()
+				.getManager(TransactionManager.class)
+				.currentTransaction();
 		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 
 			CacheStore cache = (CacheStore) t.getAttribute(EntityCacheInterceptor.LOCAL_LOAD_CACHE_NAMESPACE);
 			if (cache == null) {
-				cache = ServiceRegistry.getRegistry().getService(CacheService.class).createLocalCache(EntityCacheInterceptor.LOCAL_LOAD_CACHE_NAMESPACE);
+				cache = ServiceRegistry.getRegistry()
+						.getService(CacheService.class)
+						.createLocalCache(EntityCacheInterceptor.LOCAL_LOAD_CACHE_NAMESPACE);
 				t.setAttribute(EntityCacheInterceptor.LOCAL_LOAD_CACHE_NAMESPACE, cache);
 			}
 			return cache;
@@ -445,18 +489,19 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		final HashSet<String> refNames;
 		final boolean withLock;
 		final List<Entity> refEntity;
-		
+
 		final EntityPermission.Action entityPermissionAction;
 		final AuthContextHolder authContext;
 
-		private EntityCacheEntry(Entity entity, boolean all, HashSet<String> refNames, boolean withLock, EntityDefinition ed, EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
+		private EntityCacheEntry(Entity entity, boolean all, HashSet<String> refNames, boolean withLock, EntityDefinition ed,
+				EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
 			this.entity = entity;
 			this.all = all;
 			this.refNames = refNames;
 			this.withLock = withLock;
 			List<Entity> newRefEntity = null;
 			if (ed != null) {
-				for (PropertyDefinition pd: ed.getPropertyList()) {
+				for (PropertyDefinition pd : ed.getPropertyList()) {
 					if (pd instanceof ReferenceProperty) {
 						Object o = entity.getValue(pd.getName());
 						if (o != null) {
@@ -466,7 +511,7 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 							if (o instanceof Entity) {
 								newRefEntity.add((Entity) o);
 							} else if (o instanceof Entity[]) {
-								for (Entity e: (Entity[]) o) {
+								for (Entity e : (Entity[]) o) {
 									newRefEntity.add(e);
 								}
 							}
@@ -482,9 +527,11 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		public boolean isRef(CacheKey updateKey) {
 
 			if (refEntity != null) {
-				for (Entity e: refEntity) {
-					if (updateKey.getDefitionName().equals(e.getDefinitionName())
-							&& updateKey.getOid().equals(e.getOid())) {
+				for (Entity e : refEntity) {
+					if (updateKey.getDefitionName()
+							.equals(e.getDefinitionName())
+							&& updateKey.getOid()
+									.equals(e.getOid())) {
 						return true;
 					}
 				}
@@ -503,7 +550,7 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				}
 			} else {
 				ArrayList<String> refList = new ArrayList<String>();
-				for (PropertyDefinition pd: def.getPropertyList()) {
+				for (PropertyDefinition pd : def.getPropertyList()) {
 					if (pd instanceof ReferenceProperty) {
 						if (option == null) {
 							refList.add(pd.getName());
@@ -555,12 +602,15 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		public int getTenantId() {
 			return tenantId;
 		}
+
 		public String getDefitionName() {
 			return defitionName;
 		}
+
 		public String getOid() {
 			return oid;
 		}
+
 		public Long getVersion() {
 			return version;
 		}
@@ -606,7 +656,6 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				return false;
 			return true;
 		}
-
 
 	}
 

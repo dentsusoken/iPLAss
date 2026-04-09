@@ -49,6 +49,7 @@ public class LogRegexMaskHandler implements LogMaskHandler {
 	@Override
 	public String mask(String value) {
 		// 指定された正規表現でマスクする
-		return pattern.matcher(value).replaceAll(maskChar);
+		return pattern.matcher(value)
+				.replaceAll(maskChar);
 	}
 }

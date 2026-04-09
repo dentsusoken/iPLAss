@@ -54,7 +54,7 @@ package org.iplass.mtp.entity;
  * @param <T>
  */
 public interface PropertyNormalizer<T> {
-	
+
 	public T normalize(Object value, ValidationContext context);
 
 }

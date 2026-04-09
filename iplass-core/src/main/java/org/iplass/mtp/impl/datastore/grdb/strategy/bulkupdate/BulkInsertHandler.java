@@ -71,14 +71,15 @@ class BulkInsertHandler {
 		colSize = new int[objStoreInsertMapper.length];
 		for (int i = 0; i <= store.getCurrentMaxPage(); i++) {
 			if (i == 0) {
-				objStoreInsertMapper[i] = ObjStoreBulkInsertSql.insertMain(state.tenantId, state.eh, state.rdb, state.entityContext, timestampFromEntity);
+				objStoreInsertMapper[i] = ObjStoreBulkInsertSql.insertMain(state.tenantId, state.eh, state.rdb, state.entityContext,
+						timestampFromEntity);
 			} else {
 				objStoreInsertMapper[i] = ObjStoreBulkInsertSql.insertSubPage(state.tenantId, state.eh, i, state.rdb, state.entityContext);
 			}
 
 			BulkInsertContext ret = state.rdb.createBulkInsertContext();
 			List<ColumnValue> cv = new ArrayList<>();
-			for (ColumnValueMapper m: objStoreInsertMapper[i]) {
+			for (ColumnValueMapper m : objStoreInsertMapper[i]) {
 				m.columns(cv, state.rdb);
 			}
 			ret.setContext(tableName, cv, state.con);
@@ -94,21 +95,25 @@ class BulkInsertHandler {
 
 		//外部Index
 		indexes = new ArrayList<>();
-		for (PrimitivePropertyHandler pph: state.eh.getIndexedPropertyList(state.entityContext)) {
+		for (PrimitivePropertyHandler pph : state.eh.getIndexedPropertyList(state.entityContext)) {
 			GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) pph.getStoreSpecProperty();
 			if (colDef.isExternalIndex()) {
 				indexes.add(pph);
 			}
 		}
-		for (PrimitivePropertyHandler pph: indexes) {
+		for (PrimitivePropertyHandler pph : indexes) {
 			GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) pph.getStoreSpecProperty();
 			if (objIndexInsert == null) {
 				objIndexInsert = new HashMap<>();
 			}
-			IndexTableKey ikey = new IndexTableKey(pph.getMetaData().getIndexType(), colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
+			IndexTableKey ikey = new IndexTableKey(pph.getMetaData()
+					.getIndexType(),
+					colDef.getSingleColumnRdbTypeAdapter()
+							.getColOfIndex());
 			BulkInsertContext bic = objIndexInsert.get(ikey);
 			if (bic == null) {
-				bic = IndexBulkInsertSql.insert(colDef.asList().get(0), state.con, state.rdb);
+				bic = IndexBulkInsertSql.insert(colDef.asList()
+						.get(0), state.con, state.rdb);
 				objIndexInsert.put(ikey, bic);
 			}
 			if (ikey.indexType != IndexType.NON_UNIQUE && state.eh.isVersioned()) {
@@ -127,7 +132,7 @@ class BulkInsertHandler {
 	void addValue(BulkUpdateState state, Entity e) throws SQLException {
 		for (int i = 0; i < objStoreInsert.length; i++) {
 			ArrayList<Object> values = new ArrayList<>(colSize[i]);
-			for (ColumnValueMapper cm: objStoreInsertMapper[i]) {
+			for (ColumnValueMapper cm : objStoreInsertMapper[i]) {
 				cm.values(values, e, state.rdb);
 			}
 			objStoreInsert[i].add(values);
@@ -141,20 +146,24 @@ class BulkInsertHandler {
 
 		//参照
 		if (objRefInsert != null) {
-			for (ReferencePropertyHandler rh: refs) {
-				String targetObjDefId = rh.getReferenceEntityHandler(state.entityContext).getMetaData().getId();
+			for (ReferencePropertyHandler rh : refs) {
+				String targetObjDefId = rh.getReferenceEntityHandler(state.entityContext)
+						.getMetaData()
+						.getId();
 				Object val = e.getValue(rh.getName());
 				if (val != null) {
 					if (val instanceof Entity[]) {
-						for (Entity target: (Entity[]) val) {
-							ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId, target.getOid(), target.getVersion());
+						for (Entity target : (Entity[]) val) {
+							ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId,
+									target.getOid(), target.getVersion());
 							if (objRefInsert.getCurrentSize() >= state.rdb.getBatchSize()) {
 								objRefInsert.execute();
 							}
 						}
 					} else {
 						Entity target = (Entity) val;
-						ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId, target.getOid(), target.getVersion());
+						ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId,
+								target.getOid(), target.getVersion());
 						if (objRefInsert.getCurrentSize() >= state.rdb.getBatchSize()) {
 							objRefInsert.execute();
 						}
@@ -165,9 +174,13 @@ class BulkInsertHandler {
 
 		//外部Index
 		if (objIndexInsert != null) {
-			for (PrimitivePropertyHandler pph: indexes) {
-				GRdbPropertyStoreHandler colDef = ((GRdbPropertyStoreRuntime) pph.getStoreSpecProperty()).asList().get(0);
-				IndexTableKey ikey = new IndexTableKey(pph.getMetaData().getIndexType(), colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
+			for (PrimitivePropertyHandler pph : indexes) {
+				GRdbPropertyStoreHandler colDef = ((GRdbPropertyStoreRuntime) pph.getStoreSpecProperty()).asList()
+						.get(0);
+				IndexTableKey ikey = new IndexTableKey(pph.getMetaData()
+						.getIndexType(),
+						colDef.getSingleColumnRdbTypeAdapter()
+								.getColOfIndex());
 				BulkInsertContext bic = objIndexInsert.get(ikey);
 
 				Object val = e.getValue(pph.getName());
@@ -215,9 +228,8 @@ class BulkInsertHandler {
 		}
 	}
 
-
 	public void flushAll() throws SQLException {
-		for (BulkInsertContext bic: objStoreInsert) {
+		for (BulkInsertContext bic : objStoreInsert) {
 			if (bic.getCurrentSize() > 0) {
 				bic.execute();
 			}
@@ -228,21 +240,24 @@ class BulkInsertHandler {
 			}
 		}
 		if (objIndexInsert != null) {
-			for (Map.Entry<IndexTableKey, BulkInsertContext> e: objIndexInsert.entrySet()) {
-				if (e.getValue().getCurrentSize() > 0) {
-					e.getValue().execute();
+			for (Map.Entry<IndexTableKey, BulkInsertContext> e : objIndexInsert.entrySet()) {
+				if (e.getValue()
+						.getCurrentSize() > 0) {
+					e.getValue()
+							.execute();
 				}
 			}
 			if (versionedUniqueInexedOidsMap != null) {
 				for (Map.Entry<IndexTableKey, Set<String>> e : versionedUniqueInexedOidsMap.entrySet()) {
-					e.getValue().clear();
+					e.getValue()
+							.clear();
 				}
 			}
 		}
 	}
 
 	public void close() {
-		for (BulkInsertContext bic: objStoreInsert) {
+		for (BulkInsertContext bic : objStoreInsert) {
 			try {
 				bic.close();
 			} catch (SQLException e) {
@@ -257,9 +272,10 @@ class BulkInsertHandler {
 			}
 		}
 		if (objIndexInsert != null) {
-			for (Map.Entry<IndexTableKey, BulkInsertContext> ent: objIndexInsert.entrySet()) {
+			for (Map.Entry<IndexTableKey, BulkInsertContext> ent : objIndexInsert.entrySet()) {
 				try {
-					ent.getValue().close();
+					ent.getValue()
+							.close();
 				} catch (SQLException e) {
 					logger.error("fail to BulkInsertHandler close. maybe resource leak.", e);
 				}

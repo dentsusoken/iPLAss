@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 
 public class MysqlDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
-	
+
 //	/*HOUR*/
 //	select timestampdiff(HOUR, '2011-03-01', '2012-03-01 01:01:01');
 //
@@ -44,18 +44,20 @@ public class MysqlDateDiffFunctionAdapter implements FunctionAdapter<Function>, 
 //
 //	/*YEAR*/
 //	select timestampdiff(YEAR,'2011-03-01','2012-03-01');
-	
+
 	public MysqlDateDiffFunctionAdapter() {
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 3) {
 			throw new QueryException(function.getName() + " must have 3 arguments.");
 		}
-		
-		String unit = ((String) ((Literal) function.getArguments().get(0)).getValue()).toUpperCase();
-		
+
+		String unit = ((String) ((Literal) function.getArguments()
+				.get(0)).getValue()).toUpperCase();
+
 		if (unit.equals(MONTH)
 				|| unit.equals(YEAR)
 				|| unit.equals(DAY)
@@ -66,9 +68,11 @@ public class MysqlDateDiffFunctionAdapter implements FunctionAdapter<Function>, 
 			context.append("TIMESTAMPDIFF(");
 			context.append(unit);
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") ");
 		} else {
 			throw new QueryException("unknown interval unit:" + unit);
@@ -81,9 +85,11 @@ public class MysqlDateDiffFunctionAdapter implements FunctionAdapter<Function>, 
 		if (args == null || args.size() != 3) {
 			throw new QueryException(getFunctionName() + " must have 3 arguments.");
 		}
-		
-		String unit = args.get(0).toString().toUpperCase();
-		
+
+		String unit = args.get(0)
+				.toString()
+				.toUpperCase();
+
 		if (unit.equals(MONTH)
 				|| unit.equals(YEAR)
 				|| unit.equals(DAY)
@@ -102,7 +108,6 @@ public class MysqlDateDiffFunctionAdapter implements FunctionAdapter<Function>, 
 			throw new QueryException("unknown interval unit:" + unit);
 		}
 	}
-
 
 	@Override
 	public String getFunctionName() {

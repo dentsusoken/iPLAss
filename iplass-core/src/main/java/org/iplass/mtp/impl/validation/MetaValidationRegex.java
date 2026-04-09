@@ -78,7 +78,8 @@ public class MetaValidationRegex extends MetaValidation {
 					throw new EntityRuntimeException("not support type:" + value.getClass());
 				}
 
-				return compiledPattern.matcher(checkVal).matches();
+				return compiledPattern.matcher(checkVal)
+						.matches();
 
 			}
 

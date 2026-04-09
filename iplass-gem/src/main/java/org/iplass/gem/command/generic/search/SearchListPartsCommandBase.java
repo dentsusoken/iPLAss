@@ -50,7 +50,8 @@ public abstract class SearchListPartsCommandBase implements Command {
 	private EntityManager em;
 
 	public SearchListPartsCommandBase() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 	}
 
 	protected Query toQuery(SearchContext context) {
@@ -85,7 +86,8 @@ public abstract class SearchListPartsCommandBase implements Command {
 		}
 
 		if (!userOidList.isEmpty()) {
-			if (_context.getForm().isShowUserNameWithPrivilegedValue()) {
+			if (_context.getForm()
+					.isShowUserNameWithPrivilegedValue()) {
 				AuthContext.doPrivileged(() -> {
 					setUserInfoMap(context, userOidList);
 				});
@@ -138,7 +140,8 @@ public abstract class SearchListPartsCommandBase implements Command {
 			}
 		});
 
-		context.getRequest().setAttribute(Constants.USER_INFO_MAP, userMap);
+		context.getRequest()
+				.setAttribute(Constants.USER_INFO_MAP, userMap);
 	}
 
 	protected Limit getLimitForPaging(SearchContext context) {

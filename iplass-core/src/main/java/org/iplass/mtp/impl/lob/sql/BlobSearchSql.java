@@ -25,12 +25,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.iplass.mtp.impl.lob.Lob;
-import org.iplass.mtp.impl.lob.LobDao;
 import org.iplass.mtp.impl.lob.LobStoreService;
 import org.iplass.mtp.impl.lob.lobstore.LobStore;
 import org.iplass.mtp.impl.rdb.adapter.QuerySqlHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
-
 
 public class BlobSearchSql extends QuerySqlHandler {
 
@@ -60,19 +58,27 @@ public class BlobSearchSql extends QuerySqlHandler {
 		sb.append(lobId);
 		if (sessionId != null) {
 			sb.append(" AND " + ObjBlobTable.SESS_ID + "=");
-			sb.append("'").append(rdb.sanitize(sessionId)).append("'");
+			sb.append("'")
+					.append(rdb.sanitize(sessionId))
+					.append("'");
 		}
 		if (defId != null) {
 			sb.append(" AND " + ObjBlobTable.OBJ_DEF_ID + "=");
-			sb.append("'").append(rdb.sanitize(defId)).append("'");
+			sb.append("'")
+					.append(rdb.sanitize(defId))
+					.append("'");
 		}
 		if (propId != null) {
 			sb.append(" AND " + ObjBlobTable.PROP_DEF_ID + "=");
-			sb.append("'").append(rdb.sanitize(propId)).append("'");
+			sb.append("'")
+					.append(rdb.sanitize(propId))
+					.append("'");
 		}
 		if (oid != null) {
 			sb.append(" AND " + ObjBlobTable.OBJ_ID + "=");
-			sb.append("'").append(rdb.sanitize(oid)).append("'");
+			sb.append("'")
+					.append(rdb.sanitize(oid))
+					.append("'");
 		}
 		if (version != null) {
 			sb.append(" AND " + ObjBlobTable.OBJ_VER + "=");
@@ -131,7 +137,9 @@ public class BlobSearchSql extends QuerySqlHandler {
 				+ "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjBlobTable.OBJ_DEF_ID + "=");
-		sb.append("'").append(rdb.sanitize(defId)).append("'");
+		sb.append("'")
+				.append(rdb.sanitize(defId))
+				.append("'");
 
 		return sb.toString();
 	}
@@ -156,7 +164,8 @@ public class BlobSearchSql extends QuerySqlHandler {
 		sb.append(" AND " + ObjBlobTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		if (day < 0) {
-			sb.append(" AND " + ObjBlobTable.UP_DATE + "<").append(rdb.addDate(rdb.systimestamp(), day));
+			sb.append(" AND " + ObjBlobTable.UP_DATE + "<")
+					.append(rdb.addDate(rdb.systimestamp(), day));
 		}
 		return sb.toString();
 	}
@@ -203,7 +212,9 @@ public class BlobSearchSql extends QuerySqlHandler {
 				+ "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjBlobTable.OBJ_DEF_ID + "=");
-		sb.append("'").append(rdb.sanitize(defId)).append("'");
+		sb.append("'")
+				.append(rdb.sanitize(defId))
+				.append("'");
 
 		//利用されているPropertyを除外する
 		if (!validPropertyIds.isEmpty()) {
@@ -212,7 +223,9 @@ public class BlobSearchSql extends QuerySqlHandler {
 				notin.append("'" + rdb.sanitize(propertyId) + "',");
 			}
 			notin.deleteCharAt(notin.length() - 1);
-			sb.append(" AND " + ObjBlobTable.PROP_DEF_ID + " NOT IN (").append(notin.toString()).append(")");
+			sb.append(" AND " + ObjBlobTable.PROP_DEF_ID + " NOT IN (")
+					.append(notin.toString())
+					.append(")");
 		}
 
 		return sb.toString();

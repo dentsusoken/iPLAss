@@ -34,10 +34,10 @@ public class TenantGemInfo extends TenantConfig {
 
 	/** ログイン画面、エラー画面でテナント名表示 */
 	private boolean dispTenantName = true;
-	
+
 	/** テナント名制御Script */
 	private String screenTitle;
-	
+
 	/** 多言語設定用テナント名制御Script */
 	private List<LocalizedStringDefinition> localizedScreenTitle;
 
@@ -125,7 +125,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return スキン
 	 */
 	public String getSkin() {
-	    return skin;
+		return skin;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param skin スキン
 	 */
 	public void setSkin(String skin) {
-	    this.skin = skin;
+		this.skin = skin;
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return テーマ
 	 */
 	public String getTheme() {
-	    return theme;
+		return theme;
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param theme テーマ
 	 */
 	public void setTheme(String theme) {
-	    this.theme = theme;
+		this.theme = theme;
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return テナント画像URL
 	 */
 	public String getTenantImageUrl() {
-	    return tenantImageUrl;
+		return tenantImageUrl;
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param tenantImageUrl テナント画像URL
 	 */
 	public void setTenantImageUrl(String tenantImageUrl) {
-	    this.tenantImageUrl = tenantImageUrl;
+		this.tenantImageUrl = tenantImageUrl;
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return テナント画像URL(縮小時)
 	 */
 	public String getTenantMiniImageUrl() {
-	    return tenantMiniImageUrl;
+		return tenantMiniImageUrl;
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param tenantMiniImageUrl テナント画像URL(縮小時)
 	 */
 	public void setTenantMiniImageUrl(String tenantMiniImageUrl) {
-	    this.tenantMiniImageUrl = tenantMiniImageUrl;
+		this.tenantMiniImageUrl = tenantMiniImageUrl;
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return テナント画像URL(大)
 	 */
 	public String getTenantLargeImageUrl() {
-	    return tenantLargeImageUrl;
+		return tenantLargeImageUrl;
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param tenantLargeImageUrl テナント画像URL(大)
 	 */
 	public void setTenantLargeImageUrl(String tenantLargeImageUrl) {
-	    this.tenantLargeImageUrl = tenantLargeImageUrl;
+		this.tenantLargeImageUrl = tenantLargeImageUrl;
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return Javascriptファイルパス
 	 */
 	public String getJavascriptFilePath() {
-	    return javascriptFilePath;
+		return javascriptFilePath;
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param javascriptFilePath Javascriptファイルパス
 	 */
 	public void setJavascriptFilePath(String javascriptFilePath) {
-	    this.javascriptFilePath = javascriptFilePath;
+		this.javascriptFilePath = javascriptFilePath;
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @return スタイルシートファイルパス
 	 */
 	public String getStylesheetFilePath() {
-	    return stylesheetFilePath;
+		return stylesheetFilePath;
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class TenantGemInfo extends TenantConfig {
 	 * @param stylesheetFilePath スタイルシートファイルパス
 	 */
 	public void setStylesheetFilePath(String stylesheetFilePath) {
-	    this.stylesheetFilePath = stylesheetFilePath;
+		this.stylesheetFilePath = stylesheetFilePath;
 	}
 
 	@Override
@@ -293,7 +293,7 @@ public class TenantGemInfo extends TenantConfig {
 
 		if (dispTenantName != other.dispTenantName)
 			return false;
-		
+
 		if (screenTitle == null) {
 			if (other.screenTitle != null)
 				return false;

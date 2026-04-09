@@ -88,7 +88,6 @@ public class WebAuthnAttributePane extends VLayout {
 		form.setColWidths(100, 300, 100, 300, "*");
 		form.setMargin(5);
 
-
 		txtRpIdField = new TextItem();
 		txtRpIdField.setTitle("RP ID");
 		txtRpIdField.setWidth("100%");
@@ -161,22 +160,26 @@ public class WebAuthnAttributePane extends VLayout {
 			txtOriginField.clearValue();
 		}
 		if (definition.getAttestationConveyancePreference() != null) {
-			selAttestationConveyancePreferenceField.setValue(definition.getAttestationConveyancePreference().name());
+			selAttestationConveyancePreferenceField.setValue(definition.getAttestationConveyancePreference()
+					.name());
 		} else {
 			selAttestationConveyancePreferenceField.clearValue();
 		}
 		if (definition.getAuthenticatorAttachment() != null) {
-			selAuthenticatorAttachmentField.setValue(definition.getAuthenticatorAttachment().name());
+			selAuthenticatorAttachmentField.setValue(definition.getAuthenticatorAttachment()
+					.name());
 		} else {
 			selAuthenticatorAttachmentField.clearValue();
 		}
 		if (definition.getResidentKeyRequirement() != null) {
-			selResidentKeyRequirementField.setValue(definition.getResidentKeyRequirement().name());
+			selResidentKeyRequirementField.setValue(definition.getResidentKeyRequirement()
+					.name());
 		} else {
 			selResidentKeyRequirementField.clearValue();
 		}
 		if (definition.getUserVerificationRequirement() != null) {
-			selUserVerificationRequirementField.setValue(definition.getUserVerificationRequirement().name());
+			selUserVerificationRequirementField.setValue(definition.getUserVerificationRequirement()
+					.name());
 		} else {
 			selUserVerificationRequirementField.clearValue();
 		}
@@ -223,5 +226,5 @@ public class WebAuthnAttributePane extends VLayout {
 	public boolean validate() {
 		return form.validate();
 	}
-	
+
 }

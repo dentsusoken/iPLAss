@@ -60,27 +60,35 @@ public class Argon2PasswordHashSetting extends PasswordHashSetting {
 		}
 		super.setPasswordHashAlgorithm(passwordHashAlgorithm);
 	}
+
 	public int getParallelism() {
 		return parallelism;
 	}
+
 	public void setParallelism(int parallelism) {
 		this.parallelism = parallelism;
 	}
+
 	public int getMemorySizeKB() {
 		return memorySizeKB;
 	}
+
 	public void setMemorySizeKB(int memorySizeKB) {
 		this.memorySizeKB = memorySizeKB;
 	}
+
 	public int getHashLength() {
 		return hashLength;
 	}
+
 	public void setHashLength(int hashLength) {
 		this.hashLength = hashLength;
 	}
+
 	public int getIterations() {
 		return iterations;
 	}
+
 	public void setIterations(int iterations) {
 		this.iterations = iterations;
 	}
@@ -109,7 +117,7 @@ public class Argon2PasswordHashSetting extends PasswordHashSetting {
 	@Override
 	protected String hash(String password, String salt) {
 		byte[] ret = new byte[hashLength];
-		
+
 		Argon2Parameters.Builder pb = new Argon2Parameters.Builder(algArgon2)
 				.withParallelism(parallelism)
 				.withMemoryAsKB(memorySizeKB)
@@ -122,7 +130,7 @@ public class Argon2PasswordHashSetting extends PasswordHashSetting {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		Argon2Parameters params = pb.build();
 		Argon2BytesGenerator generator = new Argon2BytesGenerator();
 		generator.init(params);

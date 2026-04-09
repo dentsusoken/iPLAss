@@ -20,11 +20,10 @@
 
 package org.iplass.mtp.impl.webapi.jackson;
 
-import jakarta.ws.rs.ext.ContextResolver;
-
 import org.iplass.mtp.spi.ServiceRegistry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.ext.ContextResolver;
 
 /**
  * jacksonのObjectMapperのプロバイダ。
@@ -35,7 +34,9 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
-		ObjectMapper mapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper();
+		ObjectMapper mapper = ServiceRegistry.getRegistry()
+				.getService(WebApiObjectMapperService.class)
+				.getObjectMapper();
 		return mapper;
 	}
 

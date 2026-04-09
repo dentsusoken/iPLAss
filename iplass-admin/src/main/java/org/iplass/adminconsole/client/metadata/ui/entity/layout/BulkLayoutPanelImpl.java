@@ -83,7 +83,6 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 	/** 共通属性部分 */
 	private MetaCommonAttributeSection<EntityView> commonSection;
 
-
 	/** メニュー部分のレイアウト */
 	private EntityViewMenuPane viewMenuPane;
 
@@ -107,13 +106,15 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 		// 全削除ボタン
 		IButton allDelete = new IButton("All Remove");
 		allDelete.addClickHandler(new InitClickHandler());
-		SmartGWTUtil.addHoverToCanvas(allDelete, AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_deleteLayoutCautionComment"));
+		SmartGWTUtil.addHoverToCanvas(allDelete,
+				AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_deleteLayoutCautionComment"));
 		headerPane.addMember(allDelete);
 
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -140,7 +141,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 		//編集用のエリア
 		form = new BulkFormViewControl(defName);
 		form.setShowResizeBar(true);
-		form.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
+		form.setResizeBarTarget("next"); //リサイズバーをダブルクリックした際、次を収縮
 		layout.addMember(form);
 
 		//ドラッグエリア
@@ -235,14 +236,17 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 				commonSection.setSharedEditDisabled(true);
 
 				viewMenuPane.setValueMap(new String[0]);
-				viewMenuPane.getViewSelectItem().setValue("");
+				viewMenuPane.getViewSelectItem()
+						.setValue("");
 
 				return;
 			}
 
 			curDefinition = (EntityView) entry.getDefinition();
-			curVersion = entry.getDefinitionInfo().getVersion();
-			curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+			curVersion = entry.getDefinitionInfo()
+					.getVersion();
+			curDefinitionId = entry.getDefinitionInfo()
+					.getObjDefId();
 
 			commonSection.setDefinition(curDefinition);
 
@@ -251,11 +255,13 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 			//作成済みのView名を取得
 			viewMenuPane.setValueMap(curDefinition.getBulkFormViewNames());
-			viewMenuPane.getViewSelectItem().setValue("");
+			viewMenuPane.getViewSelectItem()
+					.setValue("");
 
 			//デフォルトのViewを展開
 			BulkFormView fv = curDefinition.getDefaultBulkFormView();
-			if (fv == null) fv = new BulkFormView();
+			if (fv == null)
+				fv = new BulkFormView();
 
 			apply(fv);
 
@@ -283,17 +289,17 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			if (name == null || name.isEmpty()) {
 				name = EntityViewMenuPane.DEFAULT_VIEW_NAME;
 			}
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewName") +name +
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewName") + name +
 					AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_saveView"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						//最新のView定義を取得
-						service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new SaveStartAsyncCallback());
-					}
-				}
-			});
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								//最新のView定義を取得
+								service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new SaveStartAsyncCallback());
+							}
+						}
+					});
 		}
 
 		/**
@@ -343,7 +349,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			}
 		}
 
-		private void createEntityView(final EntityView  definition) {
+		private void createEntityView(final EntityView definition) {
 			SmartGWTUtil.showSaveProgress();
 			service.createDefinition(TenantInfoHolder.getId(), definition, new MetaDataUpdateCallback() {
 
@@ -365,7 +371,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			});
 		}
 
-		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
+		private void updateEntityView(final EntityView definition, boolean checkVersion) {
 			SmartGWTUtil.showSaveProgress();
 			service.updateDefinition(TenantInfoHolder.getId(), definition, curVersion, checkVersion, new MetaDataUpdateCallback() {
 
@@ -391,12 +397,14 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 						@Override
 						public void onFailure(Throwable caught) {
-							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedBulkLayout") + caught.getMessage());
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedBulkLayout")
+									+ caught.getMessage());
 						}
 
 						@Override
 						public void onSuccess(DefinitionEntry result) {
-							curVersion = result.getDefinitionInfo().getVersion();
+							curVersion = result.getDefinitionInfo()
+									.getVersion();
 						}
 
 					});
@@ -415,15 +423,14 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_cancelCautionComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						reloadDefaultView();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_cancelCautionComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								reloadDefaultView();
+							}
+						}
+					});
 		}
 	}
 
@@ -526,7 +533,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			@Override
 			public void execute(MTPEvent event) {
 				String name = (String) event.getValue("name");
-				EntityView ev = (EntityView)  event.getValue("entityView");
+				EntityView ev = (EntityView) event.getValue("entityView");
 				List<String> names = new ArrayList<String>();
 				if (ev != null) {
 					String[] valueMap = ev.getBulkFormViewNames();
@@ -543,7 +550,8 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 				//プルダウンに追加
 				names.add(name);
 				viewMenuPane.setValueMap(names.toArray(new String[names.size()]));
-				viewMenuPane.getViewSelectItem().setValue(name);
+				viewMenuPane.getViewSelectItem()
+						.setValue(name);
 
 				//画面をリセット
 				reset();
@@ -566,7 +574,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			if (name.isEmpty()) {
 				name = EntityViewMenuPane.DEFAULT_VIEW_NAME;
 			}
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewName") +name +
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewName") + name +
 					AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_deleteViewCautionComment"),
 					new OkClickHandler());
 		}
@@ -601,7 +609,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 					}
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failed"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_selectView") + name +
-							AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_notRegist"));
+									AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_notRegist"));
 					return;
 				}
 
@@ -609,12 +617,14 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 				if (name.isEmpty() && ev.getBulkFormViewNames().length > 0) {
 					//defaultを削除しても他のViewがある場合は不正なのでNG
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failed"), "[" + EntityViewMenuPane.DEFAULT_VIEW_NAME + "]" +
-							AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewDeleteRemainsComment"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failed"),
+							"[" + EntityViewMenuPane.DEFAULT_VIEW_NAME + "]" +
+									AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewDeleteRemainsComment"));
 					return;
 				}
 
-				if (ev.getViews().size() > 0) {
+				if (ev.getViews()
+						.size() > 0) {
 					commonSection.getEditDefinition(ev);
 					ev.setDefinitionName(defName);
 					updateEntityView(ev, true);
@@ -625,7 +635,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 		}
 
-		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
+		private void updateEntityView(final EntityView definition, boolean checkVersion) {
 			SmartGWTUtil.showSaveProgress();
 			service.updateDefinition(TenantInfoHolder.getId(), definition, curVersion, checkVersion, new MetaDataUpdateCallback() {
 
@@ -707,7 +717,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			if (name.isEmpty()) {
 				name = EntityViewMenuPane.DEFAULT_VIEW_NAME;
 			}
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewName") +name +
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_viewName") + name +
 					AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_reflectLayoutStandardDef"), new OkClickHandler());
 		}
 
@@ -734,7 +744,8 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 						@Override
 						public void onFailure(Throwable caught) {
-							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedGetDefaultView") + caught.getMessage());
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedGetDefaultView")
+									+ caught.getMessage());
 							GWT.log(caught.toString(), caught);
 						}
 					});
@@ -786,7 +797,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 			@Override
 			public void execute(MTPEvent event) {
 				String name = (String) event.getValue("name");
-				EntityView ev = (EntityView)  event.getValue("entityView");
+				EntityView ev = (EntityView) event.getValue("entityView");
 				List<String> names = new ArrayList<String>();
 				if (ev != null) {
 					String[] valueMap = ev.getBulkFormViewNames();
@@ -803,7 +814,8 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 				// プルダウンに追加
 				names.add(name);
 				viewMenuPane.setValueMap(names.toArray(new String[names.size()]));
-				viewMenuPane.getViewSelectItem().setValue(name);
+				viewMenuPane.getViewSelectItem()
+						.setValue(name);
 
 				BulkFormView fv = form.getForm();
 				fv.setName(name);

@@ -27,7 +27,7 @@ import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
 public class RemoteAccessToken extends AccessToken {
-	
+
 	private String tokenEncoded;
 	private User user;
 	private List<String> grantedScopes;
@@ -37,11 +37,11 @@ public class RemoteAccessToken extends AccessToken {
 	private long expiresIn;
 	private long issuedAt;
 	private long notBefore;
-	
+
 	private String audience;
 	private String issuer;
 	private String username;
-	
+
 	RemoteAccessToken(String tokenEncoded, IntroResponse jsonMap) {
 		this.tokenEncoded = tokenEncoded;
 		if (jsonMap.scope != null) {
@@ -64,7 +64,7 @@ public class RemoteAccessToken extends AccessToken {
 		this.audience = jsonMap.aud;
 		this.issuer = jsonMap.iss;
 		this.username = jsonMap.username;
-		
+
 		this.user = jsonMap.resource_owner;
 		if (user == null) {
 			user = new User();
@@ -73,7 +73,7 @@ public class RemoteAccessToken extends AccessToken {
 			user.setName(username);
 		}
 	}
-	
+
 	public long getExpires() {
 		return expires;
 	}
@@ -93,7 +93,7 @@ public class RemoteAccessToken extends AccessToken {
 	public String getSub() {
 		return sub;
 	}
-	
+
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -102,7 +102,7 @@ public class RemoteAccessToken extends AccessToken {
 	public List<String> getGrantedScopes() {
 		return grantedScopes;
 	}
-	
+
 	@Override
 	public String getTokenEncoded() {
 		return tokenEncoded;
@@ -117,7 +117,7 @@ public class RemoteAccessToken extends AccessToken {
 	public User getUser() {
 		return user;
 	}
-	
+
 	@Override
 	public RefreshToken getRefreshToken() {
 		return null;

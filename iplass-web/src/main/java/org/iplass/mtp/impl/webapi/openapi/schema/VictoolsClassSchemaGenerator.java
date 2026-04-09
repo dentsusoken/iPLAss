@@ -55,8 +55,10 @@ public class VictoolsClassSchemaGenerator implements ClassSchemaGenerator {
 						// 引数なし getter メソッドをフィールドとして定義
 						Option.FIELDS_DERIVED_FROM_ARGUMENTFREE_METHODS);
 		// メソッド名が get, is で始まらないもしくは、引数が存在するメソッドを除外する
-		configBuilder.forMethods().withIgnoreCheck(this::shouldIgnoreMethod);
-		configBuilder.forTypesInGeneral().withDefinitionNamingStrategy(new UniqueSchemaDefinitionNamingStrategy());
+		configBuilder.forMethods()
+				.withIgnoreCheck(this::shouldIgnoreMethod);
+		configBuilder.forTypesInGeneral()
+				.withDefinitionNamingStrategy(new UniqueSchemaDefinitionNamingStrategy());
 		schemaGenerator = new SchemaGenerator(configBuilder.build());
 
 	}
@@ -76,7 +78,11 @@ public class VictoolsClassSchemaGenerator implements ClassSchemaGenerator {
 	 * @return 対象外の場合は true、それ以外は false
 	 */
 	protected boolean shouldIgnoreMethod(MethodScope method) {
-		return !(method.getDeclaredName().startsWith("get") || method.getDeclaredName().startsWith("is")) || method.getArgumentCount() > 0;
+		return !(method.getDeclaredName()
+				.startsWith("get")
+				|| method.getDeclaredName()
+						.startsWith("is"))
+				|| method.getArgumentCount() > 0;
 	}
 
 	/**
@@ -96,7 +102,9 @@ public class VictoolsClassSchemaGenerator implements ClassSchemaGenerator {
 		public String getDefinitionNameForKey(DefinitionKey key, SchemaGenerationContext context) {
 			// 名前が必ずユニークになるように、末尾にUUIDを付与
 			var name = super.getDefinitionNameForKey(key, context);
-			name = name + "_" + UUID.randomUUID().toString().replaceAll("\\-", "");
+			name = name + "_" + UUID.randomUUID()
+					.toString()
+					.replaceAll("\\-", "");
 			return name;
 		}
 	}

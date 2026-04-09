@@ -50,9 +50,9 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		TO_MAP,
 		VALUE_OBJECT
 	}
-	
+
 	private ParamMapGrid grid;
-	
+
 	public JxlsReportParamMapGridPane() {
 		setMargin(5);
 		setAutoHeight();
@@ -68,22 +68,22 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		Label captionHint = new Label();
 		SmartGWTUtil.addHintToLabel(captionHint,
 				"<style type=\"text/css\"><!--"
-				+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
-				+ "ul.notes li{padding:5px 0px;}"
-				+ "ul.notes li span.strong {text-decoration:underline;color:red}"
-				+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
-				+ "--></style>"
-				+ "<h3>Notes</h3>"
-				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment1")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment2")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment3"));
+						+ "ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}"
+						+ "ul.notes li{padding:5px 0px;}"
+						+ "ul.notes li span.strong {text-decoration:underline;color:red}"
+						+ "ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}"
+						+ "--></style>"
+						+ "<h3>Notes</h3>"
+						+ "<ul class=\"notes\">"
+						+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment1")
+						+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment2")
+						+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment3"));
 		captionComposit.addMember(captionHint);
 
 		grid = new ParamMapGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editMap((ListGridRecord)event.getRecord());
+				editMap((ListGridRecord) event.getRecord());
 			}
 		});
 
@@ -110,7 +110,7 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		addMember(grid);
 		addMember(mapButtonPane);
 	}
-	
+
 	/**
 	 * 入力チェックを実行します。
 	 *
@@ -120,17 +120,17 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		//チェック対象なし
 		return true;
 	}
-	
+
 	public ReportParamMapDefinition[] getParamMap() {
 		ListGridRecord[] records = grid.getRecords();
 		if (records == null || records.length == 0) {
 			return null;
 		}
-		
+
 		ReportParamMapDefinition[] maps = new ReportParamMapDefinition[records.length];
 		int i = 0;
 		for (ListGridRecord record : records) {
-			ReportParamMapDefinition rpmd = (ReportParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+			ReportParamMapDefinition rpmd = (ReportParamMapDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
 			maps[i] = rpmd;
 			i++;
 		}
@@ -143,10 +143,10 @@ public class JxlsReportParamMapGridPane extends VLayout {
 			for (ReportParamMapDefinition rpmd : paramMap) {
 				records.add(createRecord(rpmd, null));
 			}
-			grid.setData(records.toArray(new ListGridRecord[]{}));
+			grid.setData(records.toArray(new ListGridRecord[] {}));
 		}
 	}
-	
+
 	private ListGridRecord createRecord(ReportParamMapDefinition rpmd, ListGridRecord record) {
 		if (record == null) {
 			record = new ListGridRecord();
@@ -162,12 +162,12 @@ public class JxlsReportParamMapGridPane extends VLayout {
 	public void deleteAll() {
 		ListGridRecord[] records = grid.getRecords();
 		if (!(records == null || records.length == 0)) {
-			for(ListGridRecord record : records){
+			for (ListGridRecord record : records) {
 				grid.removeData(record);
 			}
 		}
 	}
-	
+
 	private void addMap() {
 		editMap(null);
 	}
@@ -191,29 +191,29 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		});
 
 		if (record != null) {
-			dialog.setParamMap((ReportParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+			dialog.setParamMap((ReportParamMapDefinition) record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 		}
 		dialog.show();
 	}
-	
+
 	private void deleteMap() {
 		grid.removeSelectedData();
 	}
-	
+
 	private class ParamMapGrid extends ListGrid {
 
 		public ParamMapGrid() {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 

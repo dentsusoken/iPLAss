@@ -22,7 +22,9 @@ package org.iplass.mtp.impl.async.rdb;
 
 public interface Worker {
 	public void start();
+
 	public void stop();
+
 	public void wakeup();
-	
+
 }

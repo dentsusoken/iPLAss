@@ -69,7 +69,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 
 	private final String SCRIPT = "Groovy";
 	private final String JAVACLASS = "JavaClass";
-	
+
 	private String scriptHint;
 	private String javaClassNameItemComment;
 
@@ -110,11 +110,11 @@ public class ReportOutLogicListGrid extends ListGrid {
 		// レコードダブルクリックイベント設定
 		addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				startReportOutputLogicEdit(false, (ReportOutLogicListGridRecord)getRecord(event.getRecordNum()));
+				startReportOutputLogicEdit(false, (ReportOutLogicListGridRecord) getRecord(event.getRecordNum()));
 			}
 		});
 	}
-	
+
 	public String getScriptHint() {
 		return scriptHint;
 	}
@@ -122,7 +122,6 @@ public class ReportOutLogicListGrid extends ListGrid {
 	public void setScriptHint(String scriptHint) {
 		this.scriptHint = scriptHint;
 	}
-
 
 	public String getJavaClassNameItemComment() {
 		return javaClassNameItemComment;
@@ -132,19 +131,20 @@ public class ReportOutLogicListGrid extends ListGrid {
 		this.javaClassNameItemComment = javaClassNameItemComment;
 	}
 
-
 	public void setDefinition(ReportType definition) {
 		ReportOutputLogicDefinition RepOutLogicDef = null;
-		
+
 		if (definition instanceof PoiReportType) {
-			PoiReportType poiRepo = (PoiReportType)definition;
+			PoiReportType poiRepo = (PoiReportType) definition;
 			RepOutLogicDef = poiRepo.getReportOutputLogicDefinition();
 		} else if (definition instanceof JxlsReportType) {
-			JxlsReportType jxlsRepo = (JxlsReportType)definition;
+			JxlsReportType jxlsRepo = (JxlsReportType) definition;
 			RepOutLogicDef = jxlsRepo.getReportOutputLogicDefinition();
 		}
 
-		if (RepOutLogicDef == null) { return; }
+		if (RepOutLogicDef == null) {
+			return;
+		}
 
 		//１件固定
 		ReportOutLogicListGridRecord[] records = new ReportOutLogicListGridRecord[1];
@@ -160,21 +160,21 @@ public class ReportOutLogicListGrid extends ListGrid {
 
 		ListGridRecord[] records = getRecords();
 
-		if(records != null && records.length > 0){
-			result = createElDef((ReportOutLogicListGridRecord)records[0]);
+		if (records != null && records.length > 0) {
+			result = createElDef((ReportOutLogicListGridRecord) records[0]);
 
 		}
-		
+
 		if (definition instanceof PoiReportType) {
-			PoiReportType poiRepo = (PoiReportType)definition;
+			PoiReportType poiRepo = (PoiReportType) definition;
 			poiRepo.setReportOutputLogicDefinition(result);
 			return poiRepo;
 		} else if (definition instanceof JxlsReportType) {
-			JxlsReportType jxlsRepo = (JxlsReportType)definition;
+			JxlsReportType jxlsRepo = (JxlsReportType) definition;
 			jxlsRepo.setReportOutputLogicDefinition(result);
 			return jxlsRepo;
 		}
-		
+
 		return definition;
 	}
 
@@ -183,8 +183,8 @@ public class ReportOutLogicListGrid extends ListGrid {
 
 		ListGridRecord[] records = getRecords();
 
-		if(records != null && records.length > 0){
-			result = createElDef((ReportOutLogicListGridRecord)records[0]);
+		if (records != null && records.length > 0) {
+			result = createElDef((ReportOutLogicListGridRecord) records[0]);
 		}
 		return result;
 	}
@@ -193,7 +193,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 		if (elDef instanceof GroovyReportOutputLogicDefinition) {
 			record.setElName(SCRIPT);
 
-			GroovyReportOutputLogicDefinition sDef = (GroovyReportOutputLogicDefinition)elDef;
+			GroovyReportOutputLogicDefinition sDef = (GroovyReportOutputLogicDefinition) elDef;
 			// Script文字列
 			record.setScript(sDef.getScript());
 			record.setGeneralPurpus(sDef.getScript());
@@ -201,7 +201,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 		} else if (elDef instanceof JavaClassReportOutputLogicDefinition) {
 			record.setElName(JAVACLASS);
 
-			JavaClassReportOutputLogicDefinition jcDef = (JavaClassReportOutputLogicDefinition)elDef;
+			JavaClassReportOutputLogicDefinition jcDef = (JavaClassReportOutputLogicDefinition) elDef;
 			record.setClassName(jcDef.getClassName());
 			record.setGeneralPurpus(jcDef.getClassName());
 		} else {
@@ -271,7 +271,6 @@ public class ReportOutLogicListGrid extends ListGrid {
 		private DynamicForm javaClassItemForm;
 		private TextItem javaClassNameItem;
 
-
 		private ReportOutputLogicEditDialog(boolean isNewRow, ReportOutLogicListGridRecord target) {
 			this.isNewRow = isNewRow;
 			this.target = target;
@@ -285,7 +284,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 
 			setHeight(150);
 			setTitle("ReportOutputLogic");
-			setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
+			setShowMaximizeButton(true); //最大化は可能に設定（スクリプト編集用）
 			centerInPage();
 
 			//---------------------------------
@@ -341,6 +340,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 								public void onSave(String text) {
 									scriptItem.setValue(text);
 								}
+
 								@Override
 								public void onCancel() {
 								}
@@ -376,7 +376,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 					if (isNewRow) {
 						//１件しか存在しないため、レコード削除
 						ListGridRecord[] records = getRecords();
-						if(records.length > 0) {
+						if (records.length > 0) {
 							removeData(records[0]);
 						}
 						addData(target);

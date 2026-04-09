@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.core;
 import org.iplass.mtp.Manager;
 
 public interface ManagerConstructor {
-	
+
 	public Manager construct();
 
 }

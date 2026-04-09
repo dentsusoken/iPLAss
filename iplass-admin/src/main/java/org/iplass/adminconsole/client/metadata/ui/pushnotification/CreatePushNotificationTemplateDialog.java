@@ -27,7 +27,7 @@ import org.iplass.mtp.pushnotification.template.definition.PushNotificationTempl
 
 public class CreatePushNotificationTemplateDialog extends MetaDataCreateDialog {
 
-	public CreatePushNotificationTemplateDialog(String definitionClassName,String nodeDisplayName, String folderPath, boolean isCopyMode) {
+	public CreatePushNotificationTemplateDialog(String definitionClassName, String nodeDisplayName, String folderPath, boolean isCopyMode) {
 		super(definitionClassName, nodeDisplayName, folderPath, isCopyMode);
 	}
 
@@ -49,8 +49,8 @@ public class CreatePushNotificationTemplateDialog extends MetaDataCreateDialog {
 	private void createPushNotificationTemplate(final SaveInfo saveInfo, final boolean isCopyMode) {
 		if (isCopyMode) {
 			service.copyDefinition(
-				TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(),saveInfo.getName(), saveInfo.getDisplayName(),
-				saveInfo.getDescription(), new SaveResultCallback());
+					TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(), saveInfo.getName(), saveInfo.getDisplayName(),
+					saveInfo.getDescription(), new SaveResultCallback());
 		} else {
 			PushNotificationTemplateDefinition definition = new PushNotificationTemplateDefinition();
 

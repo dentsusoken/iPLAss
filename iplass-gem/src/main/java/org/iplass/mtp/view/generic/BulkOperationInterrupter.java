@@ -52,7 +52,6 @@ public interface BulkOperationInterrupter {
 		return new BulkOperationContext(entities);
 	}
 
-
 	/**
 	 * 一括操作後の処理を行います。
 	 * @param entities 操作対象リスト

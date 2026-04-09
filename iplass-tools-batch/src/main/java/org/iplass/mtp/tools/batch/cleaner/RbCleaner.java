@@ -33,9 +33,12 @@ public class RbCleaner extends MtpSilentBatch {
 
 	private static Logger logger = LoggerFactory.getLogger(RbCleaner.class);
 
-	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private static EntityService entityHandlerService = ServiceRegistry.getRegistry().getService(EntityService.class);
-	private RecycleBinCleanService recycleBinCleanService = ServiceRegistry.getRegistry().getService(RecycleBinCleanService.class);
+	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry()
+			.getService(TenantContextService.class);
+	private static EntityService entityHandlerService = ServiceRegistry.getRegistry()
+			.getService(EntityService.class);
+	private RecycleBinCleanService recycleBinCleanService = ServiceRegistry.getRegistry()
+			.getService(RecycleBinCleanService.class);
 	private int tenantId;
 
 	/**
@@ -57,14 +60,14 @@ public class RbCleaner extends MtpSilentBatch {
 		if (args != null && args.length > 0 && StringUtil.isNotEmpty(args[0])) {
 			tenantId = Integer.parseInt(args[0]);
 		}
-		
+
 		try {
 			if (tenantId >= 0) {
 				(new RbCleaner(tenantId)).clean(purgeTargetDate);
 			} else {
 				List<TenantInfo> tenants = getValidTenantInfoList();
 				if (tenants != null) {
-					for (TenantInfo t: tenants) {
+					for (TenantInfo t : tenants) {
 						(new RbCleaner(t.getId())).clean(purgeTargetDate);
 					}
 				}
@@ -126,7 +129,7 @@ public class RbCleaner extends MtpSilentBatch {
 	 * @return tenantId
 	 */
 	public int getTenantId() {
-	    return tenantId;
+		return tenantId;
 	}
 
 	/**
@@ -134,7 +137,7 @@ public class RbCleaner extends MtpSilentBatch {
 	 * @param tenantId tenantId
 	 */
 	public void setTenantId(int tenantId) {
-	    this.tenantId = tenantId;
+		this.tenantId = tenantId;
 	}
 
 	@Override

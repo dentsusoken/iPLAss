@@ -23,17 +23,17 @@ package org.iplass.mtp.sms.template.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.mail.template.definition.PlainTextBodyPart;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * SMSメールテンプレート定義
  */
 @XmlRootElement
 public class SmsMailTemplateDefinition implements Definition {
-	
+
 	private static final long serialVersionUID = -4968797167511470126L;
 	private String name;
 	private String displayName;
@@ -41,14 +41,14 @@ public class SmsMailTemplateDefinition implements Definition {
 	private PlainTextBodyPart plainMessage;
 	private List<LocalizedSmsMailTemplateDefinition> localizedSmsMailTemplateList;
 	private String langOrUserBindingName;
-	
+
 	public void addLocalizedSmsMailTemplate(LocalizedSmsMailTemplateDefinition localizedSmsMailTemplate) {
 		if (localizedSmsMailTemplateList == null) {
 			localizedSmsMailTemplateList = new ArrayList<LocalizedSmsMailTemplateDefinition>();
 		}
 		localizedSmsMailTemplateList.add(localizedSmsMailTemplate);
 	}
-	
+
 	public String getName() {
 		return name;
 	}

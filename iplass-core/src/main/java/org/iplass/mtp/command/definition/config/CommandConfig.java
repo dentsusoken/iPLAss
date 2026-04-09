@@ -22,19 +22,19 @@ package org.iplass.mtp.command.definition.config;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.RollbackException;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-@XmlSeeAlso (value = {
-		CompositeCommandConfig.class,
-		SingleCommandConfig.class
-})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(
+		value = {
+				CompositeCommandConfig.class,
+				SingleCommandConfig.class
+		})
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class CommandConfig implements Serializable {
 	//Commandの初期化、設定を行うための定義
 
@@ -73,7 +73,7 @@ public abstract class CommandConfig implements Serializable {
 		this.throwExceptionIfSetRollbackOnly = throwExceptionIfSetRollbackOnly;
 	}
 
-	@XmlElement(namespace="http://mtp.iplass.org/xml/definition/command")
+	@XmlElement(namespace = "http://mtp.iplass.org/xml/definition/command")
 	public Propagation getTransactionPropagation() {
 		return transactionPropagation;
 	}

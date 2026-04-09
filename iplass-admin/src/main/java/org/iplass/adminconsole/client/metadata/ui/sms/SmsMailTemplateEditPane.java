@@ -116,7 +116,8 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -189,8 +190,10 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (SmsMailTemplateDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		smsMailTemplateAttrPane.setDefinition(curDefinition);
@@ -264,17 +267,17 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 					AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_saveSmsTemplateComment"),
 					new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						SmsMailTemplateDefinition definition = curDefinition;
-						definition = commonSection.getEditDefinition(definition);
-						definition = smsMailTemplateAttrPane.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								SmsMailTemplateDefinition definition = curDefinition;
+								definition = commonSection.getEditDefinition(definition);
+								definition = smsMailTemplateAttrPane.getEditDefinition(definition);
 
-						updateSmsMailTemplate(definition, true);
-					}
-				}
-			});
+								updateSmsMailTemplate(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -285,20 +288,17 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		@Override
 		public void onClick(ClickEvent event) {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
-
-
 
 	private class SmsMailTemplateAttributePane extends VLayout {
 		private DynamicForm form;
@@ -310,25 +310,26 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		private ScriptEditorPane plainEditor;
 
 		public SmsMailTemplateAttributePane() {
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
+			setOverflow(Overflow.AUTO); //Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
 
 			form = new DynamicForm();
 			form.setWidth100();
-			form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
+			form.setNumCols(5); //間延びしないように最後に１つ余分に作成
 			form.setColWidths(100, "*", 100, "*", "*");
 
-			langOrUserBindingName = new TextItem("bindKey", AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_langConfigInfoBindName"));
+			langOrUserBindingName = new TextItem("bindKey",
+					AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_langConfigInfoBindName"));
 			form.setItems(langOrUserBindingName);
 
 			//メッセージ編集領域
 			massageTabSet = new TabSet();
 			massageTabSet.setWidth100();
 			//massageTabSet.setHeight100();
-			massageTabSet.setHeight(450);	//高さは固定でないとうまくいかないため指定
-			massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	//Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
+			massageTabSet.setHeight(450); //高さは固定でないとうまくいかないため指定
+			massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN); //Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
 
 			plainMessageTab = new Tab();
 			plainMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateEditPane_textMessage"));
@@ -377,7 +378,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		 */
 		public SmsMailTemplateDefinition getEditDefinition(SmsMailTemplateDefinition definition) {
 			definition.setLangOrUserBindingName(SmartGWTUtil.getStringValue(langOrUserBindingName));
-			PlainTextBodyPart plainPart = new  PlainTextBodyPart();
+			PlainTextBodyPart plainPart = new PlainTextBodyPart();
 			plainPart.setContent(plainEditor.getText());
 			definition.setPlainMessage(plainPart);
 			return definition;
@@ -422,7 +423,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 			grid = new LanguageMapGrid();
 			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editMap((ListGridRecord)event.getRecord());
+					editMap((ListGridRecord) event.getRecord());
 				}
 			});
 
@@ -436,7 +437,8 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 			IButton delBtn = new IButton("Remove");
 			delBtn.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					String lang = grid.getSelectedRecord().getAttribute(FIELD_NAME.NAME.name());
+					String lang = grid.getSelectedRecord()
+							.getAttribute(FIELD_NAME.NAME.name());
 					grid.removeSelectedData();
 
 					Map<String, LocalizedSmsMailTemplateDefinition> map = new HashMap<String, LocalizedSmsMailTemplateDefinition>();
@@ -448,7 +450,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 
 					List<LocalizedSmsMailTemplateDefinition> newList = new ArrayList<LocalizedSmsMailTemplateDefinition>();
 
-					for(Map.Entry<String, LocalizedSmsMailTemplateDefinition> e : map.entrySet()) {
+					for (Map.Entry<String, LocalizedSmsMailTemplateDefinition> e : map.entrySet()) {
 						newList.add(e.getValue());
 					}
 
@@ -492,7 +494,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 
 				List<LocalizedSmsMailTemplateDefinition> newList = new ArrayList<LocalizedSmsMailTemplateDefinition>();
 
-				for(Map.Entry<String, LocalizedSmsMailTemplateDefinition> e : map.entrySet()) {
+				for (Map.Entry<String, LocalizedSmsMailTemplateDefinition> e : map.entrySet()) {
 					newList.add(e.getValue());
 				}
 
@@ -510,7 +512,8 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 			if (record == null) {
 
 			} else {
-				if (curDefinition != null && curDefinition.getLocalizedSmsMailTemplateList() != null && curDefinition.getLocalizedSmsMailTemplateList().size() > 0) {
+				if (curDefinition != null && curDefinition.getLocalizedSmsMailTemplateList() != null && curDefinition.getLocalizedSmsMailTemplateList()
+						.size() > 0) {
 
 					Map<String, LocalizedSmsMailTemplateDefinition> map = new HashMap<String, LocalizedSmsMailTemplateDefinition>();
 					for (LocalizedSmsMailTemplateDefinition def : curDefinition.getLocalizedSmsMailTemplateList()) {
@@ -543,7 +546,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		}
 
 		public void init(List<LocalizedSmsMailTemplateDefinition> definitionList) {
-			grid.setData(new ListGridRecord[]{});
+			grid.setData(new ListGridRecord[] {});
 
 			if (definitionList != null && definitionList.size() > 0) {
 				ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
@@ -552,7 +555,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 				for (LocalizedSmsMailTemplateDefinition definition : definitionList) {
 					ListGridRecord newRecord = createRecord(definition, null, true);
 					temp[cnt] = newRecord;
-					cnt ++;
+					cnt++;
 
 				}
 				grid.setData(temp);
@@ -566,14 +569,14 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 

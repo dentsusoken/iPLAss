@@ -75,7 +75,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	public EntityViewRuntime(MetaEntityView metaData) {
 		try {
 			this.metaData = metaData;
-			if (metaData.getViews().size() > 0) {
+			if (metaData.getViews()
+					.size() > 0) {
 				for (MetaFormView view : metaData.getViews()) {
 					// View名整合性チェック
 					this.checkViewName(view);
@@ -122,12 +123,14 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param formView レイアウト情報
 	 */
 	private void addFormView(FormViewRuntime formView) {
-		if (this.formViews == null) this.formViews = new ArrayList<>();
+		if (this.formViews == null)
+			this.formViews = new ArrayList<>();
 		this.formViews.add(formView);
 	}
 
 	public List<FormViewRuntime> getFormViews() {
-		if (this.formViews == null) this.formViews = new ArrayList<>();
+		if (this.formViews == null)
+			this.formViews = new ArrayList<>();
 		return formViews;
 	}
 
@@ -138,7 +141,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 */
 	public void addTemplate(String key, GroovyTemplate template) {
 		checkState();
-		if (templates == null) templates = new HashMap<>();
+		if (templates == null)
+			templates = new HashMap<>();
 		templates.put(key, template);
 	}
 
@@ -163,7 +167,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 */
 	public void addQuery(String key, PreparedQuery query) {
 		checkState();
-		if (queries == null) queries = new HashMap<>();
+		if (queries == null)
+			queries = new HashMap<>();
 		queries.put(key, query);
 	}
 
@@ -195,7 +200,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param customStyleMap カスタムスタイルの格納されたマップ
 	 */
 	public void addCustomStyle(String key, Map<String, GroovyTemplate> customStyleMap) {
-		if (customStylesMap == null) customStylesMap = new HashMap<>();
+		if (customStylesMap == null)
+			customStylesMap = new HashMap<>();
 		customStylesMap.put(key, customStyleMap);
 	}
 
@@ -215,9 +221,12 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param handler エレメントハンドラ
 	 */
 	public void addElement(ElementRuntime element) {
-		if (elementMap == null) elementMap = new HashMap<>();
-		if (element.getMetaData().getElementRuntimeId() != null) {
-			elementMap.put(element.getMetaData().getElementRuntimeId(), element);
+		if (elementMap == null)
+			elementMap = new HashMap<>();
+		if (element.getMetaData()
+				.getElementRuntimeId() != null) {
+			elementMap.put(element.getMetaData()
+					.getElementRuntimeId(), element);
 		}
 	}
 
@@ -227,7 +236,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @return エレメントハンドラ
 	 */
 	public ElementRuntime getElement(String elementRuntimeId) {
-		if (elementMap == null) return null;
+		if (elementMap == null)
+			return null;
 		return elementMap.get(elementRuntimeId);
 	}
 
@@ -236,9 +246,12 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param handler
 	 */
 	public void addButton(ButtonRuntime button) {
-		if (buttonMap == null) buttonMap = new HashMap<>();
-		if (button.getMetaData().getCustomDisplayTypeScriptKey() != null) {
-			buttonMap.put(button.getMetaData().getCustomDisplayTypeScriptKey(), button);
+		if (buttonMap == null)
+			buttonMap = new HashMap<>();
+		if (button.getMetaData()
+				.getCustomDisplayTypeScriptKey() != null) {
+			buttonMap.put(button.getMetaData()
+					.getCustomDisplayTypeScriptKey(), button);
 		}
 	}
 
@@ -248,7 +261,8 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @return
 	 */
 	public ButtonRuntime getButton(String key) {
-		if (buttonMap == null) return null;
+		if (buttonMap == null)
+			return null;
 		return buttonMap.get(key);
 	}
 
@@ -257,9 +271,12 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param handler
 	 */
 	public void addAutocompletionSetting(AutocompletionSettingRuntime setting) {
-		if (autocompletionSettingMap == null) autocompletionSettingMap = new HashMap<>();
-		if (setting.getMetaData().getRuntimeKey() != null) {
-			autocompletionSettingMap.put(setting.getMetaData().getRuntimeKey(), setting);
+		if (autocompletionSettingMap == null)
+			autocompletionSettingMap = new HashMap<>();
+		if (setting.getMetaData()
+				.getRuntimeKey() != null) {
+			autocompletionSettingMap.put(setting.getMetaData()
+					.getRuntimeKey(), setting);
 		}
 	}
 

@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.webapi.jaxb;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 import org.iplass.mtp.command.async.definition.AsyncCommandDefinition;
 import org.iplass.mtp.command.definition.CommandDefinition;
@@ -43,37 +41,22 @@ import org.iplass.mtp.web.staticresource.definition.StaticResourceDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
+import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
+
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({
-	DefinitionSummary.class,
-	ActionMappingDefinition.class
-	,CommandDefinition.class
-	,EntityDefinition.class
-	,EntityWebApiDefinition.class
-	,MailTemplateDefinition.class
-	,MessageCategory.class
-	,TemplateDefinition.class
-	,Tenant.class
-	,WebApiDefinition.class
-	,UtilityClassDefinition.class
-	,SelectValueDefinition.class
-	,AsyncCommandDefinition.class
-	,Preference.class
-	,AuthenticationPolicyDefinition.class
-	,StaticResourceDefinition.class
-	,PushNotificationTemplateDefinition.class
-	,SmsMailTemplateDefinition.class
-	,WebhookTemplateDefinition.class
-	,WebhookEndpointDefinition.class
+		DefinitionSummary.class,
+		ActionMappingDefinition.class, CommandDefinition.class, EntityDefinition.class, EntityWebApiDefinition.class, MailTemplateDefinition.class,
+		MessageCategory.class, TemplateDefinition.class, Tenant.class, WebApiDefinition.class, UtilityClassDefinition.class,
+		SelectValueDefinition.class, AsyncCommandDefinition.class, Preference.class, AuthenticationPolicyDefinition.class,
+		StaticResourceDefinition.class, PushNotificationTemplateDefinition.class, SmsMailTemplateDefinition.class, WebhookTemplateDefinition.class,
+		WebhookEndpointDefinition.class
 
-	//FIXME 今はTenantで参照しているが、参照しなくなるので追加
-	,TenantAuthInfo.class
-	,TenantMailInfo.class
-	,TenantI18nInfo.class
-	,TenantWebInfo.class
-	})
+		//FIXME 今はTenantで参照しているが、参照しなくなるので追加
+		, TenantAuthInfo.class, TenantMailInfo.class, TenantI18nInfo.class, TenantWebInfo.class
+})
 public class BuiltinDefinitions {
 
 }

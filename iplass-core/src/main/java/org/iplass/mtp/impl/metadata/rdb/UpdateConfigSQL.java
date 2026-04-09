@@ -27,7 +27,6 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
-
 public class UpdateConfigSQL extends UpdateSqlHandler {
 
 	private static final String UPDATE_CONFIG_SQL;
@@ -47,9 +46,11 @@ public class UpdateConfigSQL extends UpdateSqlHandler {
 		return UPDATE_CONFIG_SQL.replaceAll("systimestamp", rdb.systimestamp());
 	}
 
-	public void setUpdateParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String id, boolean share, boolean dataShare, boolean permissionShare, boolean overwrite) throws SQLException {
+	public void setUpdateParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String id, boolean share, boolean dataShare,
+			boolean permissionShare, boolean overwrite) throws SQLException {
 		int num = 1;
-		String clientId = ExecuteContext.getCurrentContext().getClientId();
+		String clientId = ExecuteContext.getCurrentContext()
+				.getClientId();
 		String shareStr = toCharShare(share, dataShare, permissionShare);
 		String overwriteStr = toCharOverwrite(overwrite);
 		ps.setString(num++, shareStr);
@@ -113,8 +114,9 @@ public class UpdateConfigSQL extends UpdateSqlHandler {
 	 * @return
 	 */
 	static boolean[] toBooleanShare(String flagStr) {
-		if (flagStr == null || flagStr.trim().length() == 0) {
-			return new boolean[]{false, false, false};
+		if (flagStr == null || flagStr.trim()
+				.length() == 0) {
+			return new boolean[] { false, false, false };
 		}
 		int val = Integer.parseInt(flagStr);
 		boolean[] ret = new boolean[3];

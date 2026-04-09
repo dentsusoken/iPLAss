@@ -37,9 +37,11 @@ public class OAuthResourceServerService extends AbstractTypedMetaDataService<Met
 		public TypeMap() {
 			super(getFixedPath(), MetaOAuthResourceServer.class, OAuthResourceServerDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<OAuthResourceServerDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(OAuthResourceServerDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(OAuthResourceServerDefinitionManager.class);
 		}
 
 		@Override
@@ -69,5 +71,5 @@ public class OAuthResourceServerService extends AbstractTypedMetaDataService<Met
 	@Override
 	public void destroy() {
 	}
-	
+
 }

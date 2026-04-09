@@ -32,45 +32,52 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class AuthTokenInfoListImpl implements AuthTokenInfoList {
-	
+
 	private UserContext userContext;
 	private AuthTokenService tokenService;
-	
+
 	public AuthTokenInfoListImpl(UserContext userContext) {
 		this.userContext = userContext;
-		this.tokenService = ServiceRegistry.getRegistry().getService(AuthTokenService.class);
+		this.tokenService = ServiceRegistry.getRegistry()
+				.getService(AuthTokenService.class);
 	}
 
 	@Override
 	public List<AuthTokenInfo> getList() {
-		
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
-		
+
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		String userUniqueKey = userContext.getAccount()
+				.getUnmodifiableUniqueKey();
+
 		List<AuthTokenInfo> atiList = new ArrayList<>();
-		for (AuthTokenHandler ah: tokenService.getHandlers()) {
+		for (AuthTokenHandler ah : tokenService.getHandlers()) {
 			if (ah.isVisible()) {
-				List<AuthToken> sList = ah.authTokenStore().getByOwner(tenantId, ah.getType(), userUniqueKey);
+				List<AuthToken> sList = ah.authTokenStore()
+						.getByOwner(tenantId, ah.getType(), userUniqueKey);
 				if (sList != null) {
-					for (AuthToken at: sList) {
+					for (AuthToken at : sList) {
 						atiList.add(ah.toAuthTokenInfo(at));
 					}
 				}
 			}
 		}
-		
+
 		return atiList;
 	}
 
 	@Override
 	public List<AuthTokenInfo> getList(String type) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
+		String userUniqueKey = userContext.getAccount()
+				.getUnmodifiableUniqueKey();
 
 		List<AuthTokenInfo> atiList = new ArrayList<>();
 		AuthTokenHandler ah = tokenService.getHandler(type);
 		if (ah != null && ah.isVisible()) {
-			List<AuthToken> sList = ah.authTokenStore().getByOwner(tenantId, type, userUniqueKey);
+			List<AuthToken> sList = ah.authTokenStore()
+					.getByOwner(tenantId, type, userUniqueKey);
 			if (sList != null) {
 				for (AuthToken at : sList) {
 					atiList.add(ah.toAuthTokenInfo(at));
@@ -90,23 +97,31 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		if (!handler.isVisible()) {
 			return null;
 		}
-		
-		AuthToken t = handler.authTokenStore().getBySeries(
-				ExecuteContext.getCurrentContext().getClientTenantId(), type, key);
 
-		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
-		if (t == null || !t.getOwnerId().equals(userUniqueKey)) {
+		AuthToken t = handler.authTokenStore()
+				.getBySeries(
+						ExecuteContext.getCurrentContext()
+								.getClientTenantId(),
+						type, key);
+
+		String userUniqueKey = userContext.getAccount()
+				.getUnmodifiableUniqueKey();
+		if (t == null || !t.getOwnerId()
+				.equals(userUniqueKey)) {
 			return null;
 		}
 		return handler.toAuthTokenInfo(t);
 	}
-	
+
 	@Override
 	public void remove(String type) {
 		AuthTokenHandler handler = tokenService.getHandler(type);
 		if (handler != null && handler.isVisible()) {
-			String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
-			handler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), type, userUniqueKey);
+			String userUniqueKey = userContext.getAccount()
+					.getUnmodifiableUniqueKey();
+			handler.authTokenStore()
+					.delete(ExecuteContext.getCurrentContext()
+							.getClientTenantId(), type, userUniqueKey);
 		}
 	}
 
@@ -114,7 +129,9 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 	public void remove(String type, String key) {
 		AuthTokenHandler handler = tokenService.getHandler(type);
 		if (handler != null && handler.isVisible()) {
-			handler.authTokenStore().deleteBySeries(ExecuteContext.getCurrentContext().getClientTenantId(), type, key);
+			handler.authTokenStore()
+					.deleteBySeries(ExecuteContext.getCurrentContext()
+							.getClientTenantId(), type, key);
 		}
 	}
 
@@ -127,9 +144,14 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		if (!handler.isVisible()) {
 			throw new IllegalArgumentException("type:" + newTokenInfo.getType() + " is invisible.");
 		}
-		
-		AuthToken newToken = handler.newAuthToken(userContext.getAccount().getUnmodifiableUniqueKey(), userContext.getUser().getAccountPolicy(), newTokenInfo);
-		handler.authTokenStore().create(newToken);
+
+		AuthToken newToken = handler.newAuthToken(userContext.getAccount()
+				.getUnmodifiableUniqueKey(),
+				userContext.getUser()
+						.getAccountPolicy(),
+				newTokenInfo);
+		handler.authTokenStore()
+				.create(newToken);
 		return handler.toCredential(newToken);
 	}
 

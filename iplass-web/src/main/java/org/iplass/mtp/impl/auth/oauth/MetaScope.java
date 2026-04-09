@@ -21,8 +21,6 @@ package org.iplass.mtp.impl.auth.oauth;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.auth.oauth.definition.OIDCClaimScopeDefinition;
 import org.iplass.mtp.auth.oauth.definition.ScopeDefinition;
 import org.iplass.mtp.impl.i18n.I18nUtil;
@@ -30,26 +28,28 @@ import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
-@XmlSeeAlso({MetaOIDCClaimScope.class})
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
+@XmlSeeAlso({ MetaOIDCClaimScope.class })
 public class MetaScope implements MetaData {
 	private static final long serialVersionUID = -4509688467517539934L;
 
 	private String name;
 	private String displayName;
 	private String description;
-	
+
 	private List<MetaLocalizedString> localizedDisplayNameList;
 	private List<MetaLocalizedString> localizedDescriptionList;
-	
+
 	public MetaScope() {
 	}
-	
+
 	public MetaScope(String name, String displayName, String description) {
 		this.name = name;
 		this.displayName = displayName;
 		this.description = description;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -94,7 +94,7 @@ public class MetaScope implements MetaData {
 	public MetaScope copy() {
 		return ObjectUtil.deepCopy(this);
 	}
-	
+
 	public static MetaScope createInstance(ScopeDefinition definition) {
 		if (definition instanceof OIDCClaimScopeDefinition) {
 			return new MetaOIDCClaimScope();
@@ -103,7 +103,7 @@ public class MetaScope implements MetaData {
 		}
 		return null;
 	}
-	
+
 	public void applyConfig(ScopeDefinition def) {
 		name = def.getName();
 		displayName = def.getDisplayName();
@@ -111,12 +111,13 @@ public class MetaScope implements MetaData {
 		localizedDisplayNameList = I18nUtil.toMeta(def.getLocalizedDisplayNameList());
 		localizedDescriptionList = I18nUtil.toMeta(def.getLocalizedDescriptionList());
 	}
+
 	public ScopeDefinition currentConfig() {
 		ScopeDefinition def = new ScopeDefinition();
 		fill(def);
 		return def;
 	}
-	
+
 	protected void fill(ScopeDefinition def) {
 		def.setName(name);
 		def.setDisplayName(displayName);

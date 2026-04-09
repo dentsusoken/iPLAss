@@ -22,15 +22,14 @@ package org.iplass.mtp.impl.datastore.strategy;
 
 import org.iplass.mtp.entity.query.value.ValueExpression;
 
-
 public interface SearchResultIterator {
-	
+
 	public boolean next();
-	
+
 	public Object getValue(ValueExpression propName);
-	
+
 	public Object getValue(int colIndex);//indexは0から
-	
+
 	public void close();
 
 }

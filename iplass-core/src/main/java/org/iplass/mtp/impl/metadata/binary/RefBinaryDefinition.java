@@ -27,14 +27,14 @@ class RefBinaryDefinition implements BinaryDefinition {
 	private static final long serialVersionUID = -7834580668842468330L;
 
 	private SimpleBinaryMetaData bin;
-	
+
 	RefBinaryDefinition() {
 	}
-	
+
 	RefBinaryDefinition(SimpleBinaryMetaData bin) {
 		this.bin = bin;
 	}
-	
+
 	@Override
 	public long getSize() {
 		return bin.getSize();

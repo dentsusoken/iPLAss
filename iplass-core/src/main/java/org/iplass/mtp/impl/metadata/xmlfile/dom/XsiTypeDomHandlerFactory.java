@@ -33,12 +33,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class XsiTypeDomHandlerFactory implements DomHandlerFactory {
-	
+
 	private static final String TAGNAME_METADATA = "metaData";
 	private List<XsiType> xsiType;
 	private String fileStorePath;
 	private String groovySourceStorePath;
-	
+
 	public String getFileStorePath() {
 		return fileStorePath;
 	}
@@ -54,23 +54,24 @@ public class XsiTypeDomHandlerFactory implements DomHandlerFactory {
 	public void setGroovySourceStorePath(String groovySourceStorePath) {
 		this.groovySourceStorePath = groovySourceStorePath;
 	}
-	
+
 	@Override
-	public DomHandler createDomHamdler(File xml, String charset, Document doc) {		
+	public DomHandler createDomHamdler(File xml, String charset, Document doc) {
 		String xtStr = getXsiTypeName(doc);
-		String xtCapitalized = xtStr.substring(0, 1).toUpperCase() + xtStr.substring(1);
+		String xtCapitalized = xtStr.substring(0, 1)
+				.toUpperCase() + xtStr.substring(1);
 
 		XsiType xt = findXsiType(xtCapitalized);
 		DomHandler handler = null;
-		if(xt != null) {
+		if (xt != null) {
 			handler = new XsiTypeDomHandler(xml, new File(fileStorePath), new File(groovySourceStorePath), charset, xt);
 		} else {
 			handler = new NoopDomHandler();
 		}
 
-		return handler;	 		
+		return handler;
 	}
-	
+
 	private String getXsiTypeName(Document doc) {
 		String typeName = null;
 		NodeList metaDataTags = doc.getElementsByTagName(TAGNAME_METADATA);
@@ -78,18 +79,20 @@ public class XsiTypeDomHandlerFactory implements DomHandlerFactory {
 		if (node != null) {
 			NamedNodeMap m = node.getAttributes();
 			Node typeAtr = m.getNamedItem("xsi:type");
-			
+
 			if (typeAtr != null) {
 				typeName = typeAtr.getNodeValue();
 			}
 		}
 		return typeName;
 	}
-	
+
 	private XsiType findXsiType(String xsiTypeCapitalized) {
 		XsiType ret = null;
-		for(XsiType type : xsiType) {
-			if(type.getClass().getSimpleName().startsWith(xsiTypeCapitalized)) {
+		for (XsiType type : xsiType) {
+			if (type.getClass()
+					.getSimpleName()
+					.startsWith(xsiTypeCapitalized)) {
 				ret = type;
 				break;
 			}
@@ -99,20 +102,21 @@ public class XsiTypeDomHandlerFactory implements DomHandlerFactory {
 
 	@Override
 	public void inited(MetaDataRepository service, XmlFileMetaDataStore xmlfileMetaDataStore) {
-		
+
 		fileStorePath = xmlfileMetaDataStore.getFileStorePath();
 		groovySourceStorePath = xmlfileMetaDataStore.getGroovySourceStorePath();
 
 		if (groovySourceStorePath == null) {
 			groovySourceStorePath = fileStorePath;
 		}
-		
+
 		if (!groovySourceStorePath.endsWith("/")) {
 			groovySourceStorePath = groovySourceStorePath + "/";
 		}
-		
+
 		xsiType = new ArrayList<XsiType>();
-		for (Class<?> x : XsiTypeList.class.getAnnotation(XsiTypeClass.class).value()) {
+		for (Class<?> x : XsiTypeList.class.getAnnotation(XsiTypeClass.class)
+				.value()) {
 			try {
 				xsiType.add((XsiType) x.newInstance());
 			} catch (InstantiationException | IllegalAccessException e) {

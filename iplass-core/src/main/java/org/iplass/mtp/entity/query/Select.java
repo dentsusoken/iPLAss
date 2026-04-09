@@ -29,7 +29,6 @@ import org.iplass.mtp.entity.query.hint.HintComment;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 
-
 /**
  * SELECT句を表す。
  * 
@@ -57,7 +56,7 @@ public class Select implements ASTNode {
 			if (selectValues == null) {
 				selectValues = new ArrayList<ValueExpression>();
 			}
-			for (ValueExpression ve: selectValueArray) {
+			for (ValueExpression ve : selectValueArray) {
 				selectValues.add(ve);
 			}
 		}
@@ -76,12 +75,12 @@ public class Select implements ASTNode {
 			if (selectValues == null) {
 				selectValues = new ArrayList<ValueExpression>();
 			}
-			for (ValueExpression ve: selectValueArray) {
+			for (ValueExpression ve : selectValueArray) {
 				selectValues.add(ve);
 			}
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -124,7 +123,8 @@ public class Select implements ASTNode {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select ");
 		if (hintComment != null) {
-			sb.append(hintComment).append(" ");
+			sb.append(hintComment)
+					.append(" ");
 		}
 		if (isDistinct) {
 			sb.append("distinct ");
@@ -148,7 +148,7 @@ public class Select implements ASTNode {
 	public void setHintComment(HintComment hintComment) {
 		this.hintComment = hintComment;
 	}
-	
+
 	public boolean isDistinct() {
 		return isDistinct;
 	}
@@ -171,13 +171,13 @@ public class Select implements ASTNode {
 				hintComment.accept(visitor);
 			}
 			if (selectValues != null) {
-				for (ValueExpression exp: selectValues) {
+				for (ValueExpression exp : selectValues) {
 					exp.accept(visitor);
 				}
 			}
 		}
 	}
-	
+
 	public Select values(Object... value) {
 		if (value != null) {
 			ArrayList<ValueExpression> newSelectValues = new ArrayList<ValueExpression>();
@@ -193,7 +193,7 @@ public class Select implements ASTNode {
 		isDistinct = true;
 		return this;
 	}
-	
+
 	public HintComment hintComment() {
 		if (hintComment == null) {
 			hintComment = new HintComment();
@@ -216,7 +216,7 @@ public class Select implements ASTNode {
 		hintComment.add(hintList);
 		return this;
 	}
-	
+
 	public Select add(Object... value) {
 		if (value != null) {
 			ArrayList<ValueExpression> newSelectValues = new ArrayList<ValueExpression>();
@@ -249,7 +249,7 @@ public class Select implements ASTNode {
 
 	private void addToList(List<ValueExpression> list, Object[] values) {
 
-		for (Object v: values) {
+		for (Object v : values) {
 			if (v instanceof ValueExpression) {
 				list.add((ValueExpression) v);
 			} else if (v instanceof String) {
@@ -260,9 +260,9 @@ public class Select implements ASTNode {
 		}
 
 	}
+
 	public ASTNode accept(ASTTransformer transformer) {
 		return transformer.visit(this);
 	}
-
 
 }

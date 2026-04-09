@@ -82,7 +82,7 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 				FieldType.TEXT,
 				"");
 
-		fields = new DataSourceField[] {name, dispName, remarks};
+		fields = new DataSourceField[] { name, dispName, remarks };
 	}
 
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
@@ -131,16 +131,16 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 
 		MenuItemType type = getItemType(menuItem);
 		switch (type) {
-			case NODE:
-				return nodeItemNode;
-			case ACTION:
-				return actionItemNode;
-			case ENTITY:
-				return entityItemNode;
-			case URL:
-				return urlItemNode;
-			default:
-				return null;
+		case NODE:
+			return nodeItemNode;
+		case ACTION:
+			return actionItemNode;
+		case ENTITY:
+			return entityItemNode;
+		case URL:
+			return urlItemNode;
+		default:
+			return null;
 		}
 	}
 
@@ -180,7 +180,8 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 
 		// NodeItem
 		nodeItemNode = createTypeRootNode("NodeMenuItem", MenuItemType.NODE);
-		if (holder.getNodeMenuItemList() != null && !holder.getNodeMenuItemList().isEmpty()) {
+		if (holder.getNodeMenuItemList() != null && !holder.getNodeMenuItemList()
+				.isEmpty()) {
 			nodes.add(createTypeTreeNodeList(nodeItemNode, holder.getNodeMenuItemList()));
 		} else {
 			nodeItemNode.setChildren(new TreeNode[] {});
@@ -188,7 +189,8 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 		}
 
 		actionItemNode = createTypeRootNode("ActionMenuItem", MenuItemType.ACTION);
-		if (holder.getActionMenuItemList() != null && !holder.getActionMenuItemList().isEmpty()) {
+		if (holder.getActionMenuItemList() != null && !holder.getActionMenuItemList()
+				.isEmpty()) {
 			nodes.add(createTypeTreeNodeList(actionItemNode, holder.getActionMenuItemList()));
 		} else {
 			actionItemNode.setChildren(new TreeNode[] {});
@@ -196,7 +198,8 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 		}
 
 		entityItemNode = createTypeRootNode("EntityMenuItem", MenuItemType.ENTITY);
-		if (holder.getEntityMenuItemList() != null && !holder.getEntityMenuItemList().isEmpty()) {
+		if (holder.getEntityMenuItemList() != null && !holder.getEntityMenuItemList()
+				.isEmpty()) {
 			nodes.add(createTypeTreeNodeList(entityItemNode, holder.getEntityMenuItemList()));
 		} else {
 			entityItemNode.setChildren(new TreeNode[] {});
@@ -204,7 +207,8 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 		}
 
 		urlItemNode = createTypeRootNode("UrlMenuItem", MenuItemType.URL);
-		if (holder.getUrlMenuItemList() != null && !holder.getUrlMenuItemList().isEmpty()) {
+		if (holder.getUrlMenuItemList() != null && !holder.getUrlMenuItemList()
+				.isEmpty()) {
 			nodes.add(createTypeTreeNodeList(urlItemNode, holder.getUrlMenuItemList()));
 		} else {
 			urlItemNode.setChildren(new TreeNode[] {});
@@ -230,7 +234,8 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 			Collections.sort(items, new Comparator<MenuItem>() {
 				@Override
 				public int compare(MenuItem o1, MenuItem o2) {
-					return o1.getName().compareTo(o2.getName());
+					return o1.getName()
+							.compareTo(o2.getName());
 				}
 			});
 
@@ -241,7 +246,8 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 			for (MenuItem item : items) {
 				MenuItemType type = getItemType(item);
 
-				String[] nodePaths = item.getName().split("/");
+				String[] nodePaths = item.getName()
+						.split("/");
 
 				String prePath = "";
 				WorkMenuItemNode current = rootWorkNode;
@@ -356,16 +362,16 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 
 	private String getRemarks(MenuItem menuItem) {
 		if (menuItem instanceof ActionMenuItem) {
-			return ((ActionMenuItem)menuItem).getActionName();
+			return ((ActionMenuItem) menuItem).getActionName();
 		} else if (menuItem instanceof EntityMenuItem) {
-			EntityMenuItem entityItem = (EntityMenuItem)menuItem;
+			EntityMenuItem entityItem = (EntityMenuItem) menuItem;
 			String entityDefinitionName = entityItem.getEntityDefinitionName();
 			if (SmartGWTUtil.isNotEmpty(entityItem.getViewName())) {
 				entityDefinitionName += " (" + entityItem.getViewName() + ")";
 			}
 			return entityDefinitionName;
 		} else if (menuItem instanceof UrlMenuItem) {
-			return SafeHtmlUtils.htmlEscape(((UrlMenuItem)menuItem).getUrl());
+			return SafeHtmlUtils.htmlEscape(((UrlMenuItem) menuItem).getUrl());
 		} else {
 			return "";
 		}

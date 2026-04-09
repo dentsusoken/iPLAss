@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.impl.auth.authenticate.token.web;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenClientStore;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.web.template.TemplateUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * RememberMeTokenをcookieで保存する場合のClientStore。
@@ -34,16 +34,16 @@ import org.iplass.mtp.web.template.TemplateUtil;
  *
  */
 public class AuthTokenCookieStore implements AuthTokenClientStore {
-	
+
 	private String cookieName;
-	
+
 	public AuthTokenCookieStore() {
 	}
-	
+
 	public AuthTokenCookieStore(String cookieName) {
 		this.cookieName = cookieName;
 	}
-	
+
 	public String getCookieName() {
 		return cookieName;
 	}
@@ -61,8 +61,10 @@ public class AuthTokenCookieStore implements AuthTokenClientStore {
 				cookie.setHttpOnly(true);
 				cookie.setMaxAge(maxAgeSeconds);
 				cookie.setPath(TemplateUtil.getTenantContextPath() + "/");
-				cookie.setSecure(reqStack.getRequest().isSecure());
-				reqStack.getResponse().addCookie(cookie);
+				cookie.setSecure(reqStack.getRequest()
+						.isSecure());
+				reqStack.getResponse()
+						.addCookie(cookie);
 			}
 		}
 	}
@@ -71,15 +73,16 @@ public class AuthTokenCookieStore implements AuthTokenClientStore {
 	public String getToken() {
 		return getToken(WebRequestStack.getCurrent());
 	}
-	
+
 	private String getToken(WebRequestStack reqStack) {
 		if (reqStack != null) {
 			HttpServletRequest req = reqStack.getRequest();
 			if (req != null) {
 				Cookie[] cookies = req.getCookies();
 				if (cookies != null) {
-					for (Cookie c: cookies) {
-						if (c.getName().equals(getCookieName())) {
+					for (Cookie c : cookies) {
+						if (c.getName()
+								.equals(getCookieName())) {
 							return c.getValue();
 						}
 					}
@@ -98,7 +101,8 @@ public class AuthTokenCookieStore implements AuthTokenClientStore {
 				cookie.setHttpOnly(true);
 				cookie.setMaxAge(0);
 				cookie.setPath(TemplateUtil.getTenantContextPath() + "/");
-				reqStack.getResponse().addCookie(cookie);
+				reqStack.getResponse()
+						.addCookie(cookie);
 			}
 		}
 	}

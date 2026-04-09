@@ -36,8 +36,9 @@ public class ToolsPluginSection extends SectionStackSection implements HasDestro
 		toolsTreeGrid.setWidth100();
 		int menuCount = toolsTreeGrid.getMenuCount();
 		// 1メニューあたり22.3px
-		int height = Double.valueOf(22.3 * menuCount).intValue();
-		toolsTreeGrid.setHeight(height);	//メニューが少ないので。ただしスクロールがでない・・・。toolsTreeGrid.setOverflow(Overflow.AUTO)を指定してもだめ。
+		int height = Double.valueOf(22.3 * menuCount)
+				.intValue();
+		toolsTreeGrid.setHeight(height); //メニューが少ないので。ただしスクロールがでない・・・。toolsTreeGrid.setOverflow(Overflow.AUTO)を指定してもだめ。
 		addItem(toolsTreeGrid);
 	}
 

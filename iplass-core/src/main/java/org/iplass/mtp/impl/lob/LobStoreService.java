@@ -110,7 +110,7 @@ public class LobStoreService implements Service {
 			defaultLobStoreName = config.getValue(DEFAULT_LOB_STORE_CONFIG_NAME);
 		}
 		stores = new HashMap<String, LobStore>();
-		for (String propName: config.getNames()) {
+		for (String propName : config.getNames()) {
 			Object val = config.getValue(propName, Object.class);
 			if (val instanceof LobStore) {
 				stores.put(propName, (LobStore) val);
@@ -135,7 +135,8 @@ public class LobStoreService implements Service {
 		if (lobDao == null) {
 			lobDao = new LobDao();
 		}
-		lobDao.init(config.getDependentService(RdbAdapterService.class).getRdbAdapter(),
+		lobDao.init(config.getDependentService(RdbAdapterService.class)
+				.getRdbAdapter(),
 				config.getDependentService(CounterService.OID_COUNTER_SERVICE_NAME),
 				this);
 	}

@@ -66,14 +66,15 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 	public CompositeCommandConfigEditDialog(boolean isMin) {
 
 		setTitle("Composite Command Config");
-		setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
+		setShowMaximizeButton(true); //最大化は可能に設定（スクリプト編集用）
 		centerInPage();
 
 		ButtonItem initScript = new ButtonItem("editScript1", "Edit");
 		initScript.setWidth(100);
 		initScript.setColSpan(3);
 		initScript.setAlign(Alignment.RIGHT);
-		initScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_dispEditDialogInitScript")));
+		initScript.setPrompt(SmartGWTUtil.getHoverString(
+				AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_dispEditDialogInitScript")));
 		initScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
@@ -89,6 +90,7 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 							public void onSave(String text) {
 								initScriptField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -105,7 +107,8 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 		editScript.setWidth(100);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
-		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_displayDialogEditExecuteRuleScript")));
+		editScript.setPrompt(SmartGWTUtil.getHoverString(
+				AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_displayDialogEditExecuteRuleScript")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
@@ -121,6 +124,7 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 							public void onSave(String text) {
 								execScriptField.setValue(text);
 							}
+
 							@Override
 							public void onCancel() {
 							}
@@ -152,12 +156,15 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 			}
 			transactionPropagationField.setValueMap(valueMap);
 			transactionPropagationField.setDefaultValue(Propagation.REQUIRED.name());
-			SmartGWTUtil.addHoverToFormItem(transactionPropagationField, AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_transactionPropagation"));
+			SmartGWTUtil.addHoverToFormItem(transactionPropagationField,
+					AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_transactionPropagation"));
 
 			rollbackWhenExceptionField = new CheckboxItem("rollbackWhenException", "Rollback when exception");
-			SmartGWTUtil.addHoverToFormItem(rollbackWhenExceptionField, AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_rollbackWhenException"));
+			SmartGWTUtil.addHoverToFormItem(rollbackWhenExceptionField,
+					AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_rollbackWhenException"));
 			throwExceptionIfSetRollbackOnlyField = new CheckboxItem("throwExceptionIfSetRollbackOnly", "Throw exception if setRollbackOnly");
-			SmartGWTUtil.addHoverToFormItem(throwExceptionIfSetRollbackOnlyField, AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_throwExceptionIfSetRollbackOnly"));
+			SmartGWTUtil.addHoverToFormItem(throwExceptionIfSetRollbackOnlyField,
+					AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_throwExceptionIfSetRollbackOnly"));
 
 			form1.setItems(transactionPropagationField, rollbackWhenExceptionField, throwExceptionIfSetRollbackOnlyField);
 		}
@@ -172,7 +179,7 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 			public void onClick(ClickEvent event) {
 				boolean isValidate1 = form1.validate();
 				boolean isValidate2 = form2.validate();
-				if (isValidate1 && isValidate2){
+				if (isValidate1 && isValidate2) {
 					saveExecScript();
 				}
 			}
@@ -243,7 +250,9 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 			transactionPropagation = SmartGWTUtil.getStringValue(transactionPropagationField);
 		}
 		boolean rollbackWhenException = rollbackWhenExceptionField != null ? SmartGWTUtil.getBooleanValue(rollbackWhenExceptionField) : true;
-		boolean throwExceptionIfSetRollbackOnly = throwExceptionIfSetRollbackOnlyField != null ? SmartGWTUtil.getBooleanValue(throwExceptionIfSetRollbackOnlyField) : false;
+		boolean throwExceptionIfSetRollbackOnly = throwExceptionIfSetRollbackOnlyField != null
+				? SmartGWTUtil.getBooleanValue(throwExceptionIfSetRollbackOnlyField)
+				: false;
 
 		fireDataChanged(execScript, initScript, transactionPropagation, rollbackWhenException, throwExceptionIfSetRollbackOnly);
 
@@ -256,7 +265,8 @@ public class CompositeCommandConfigEditDialog extends MtpDialog {
 	 * @param throwExceptionIfSetRollbackOnly
 	 * @param rollbackWhenException
 	 */
-	private void fireDataChanged(String execScript, String initScript, String transactionPropagation, boolean rollbackWhenException, boolean throwExceptionIfSetRollbackOnly) {
+	private void fireDataChanged(String execScript, String initScript, String transactionPropagation, boolean rollbackWhenException,
+			boolean throwExceptionIfSetRollbackOnly) {
 		DataChangedEvent event = new DataChangedEvent();
 		event.setValue("execScript", execScript);
 		event.setValue("initScript", initScript);

@@ -341,8 +341,9 @@ public class MetaDataImportDialog extends AbstractWindow {
 					}
 				}
 
-				TreeNode node = (TreeNode)record;
-				if (!grid.getTree().isFolder(node)) {
+				TreeNode node = (TreeNode) record;
+				if (!grid.getTree()
+						.isFolder(node)) {
 					selectRecords.add(record);
 				}
 			}
@@ -378,7 +379,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 			setAutoFetchData(false);
 			setShowAllRecords(true);
 
-			setWrapCells(true);	//折り返しOK
+			setWrapCells(true); //折り返しOK
 
 			//IDなどDragで選択可能にしたいが、Treeの場合ドラッグ時にエラーになる(JavaScriptException)
 			//動作上は問題がないので、GWTログのみ出力するように対応して選択可能にした(@see MtpAdmin.java)
@@ -396,10 +397,12 @@ public class MetaDataImportDialog extends AbstractWindow {
 				public void onDataArrived(DataArrivedEvent event) {
 
 					//名前表示
-					owner.setTargetName(dataSource.getResult().getFileName());
+					owner.setTargetName(dataSource.getResult()
+							.getFileName());
 
 					//件数表示
-					owner.setRecordCount(dataSource.getResult().getCount());
+					owner.setRecordCount(dataSource.getResult()
+							.getCount());
 
 					//全展開（全展開すると画面描画が遅いのでやめる）
 					//grid.getTree().openAll();
@@ -416,23 +419,21 @@ public class MetaDataImportDialog extends AbstractWindow {
 				@Override
 				public void onNodeClick(NodeClickEvent event) {
 					if (getTree().isLeaf(event.getNode())) {
-						owner.setSelectedPath(event.getNode().getAttribute(MetaDataImportTreeDS.FIELD_NAME.PATH.name()));
+						owner.setSelectedPath(event.getNode()
+								.getAttribute(MetaDataImportTreeDS.FIELD_NAME.PATH.name()));
 					}
 				}
 			});
 
 			//ここで指定しておかないとエラー
 			setHeaderSpans(
-					new HeaderSpan("Import Data", new String[]{
-							FIELD_NAME.DISPLAY_NAME.name()
-							,FIELD_NAME.ITEM_ID.name()
+					new HeaderSpan("Import Data", new String[] {
+							FIELD_NAME.DISPLAY_NAME.name(), FIELD_NAME.ITEM_ID.name()
 					}),
-					new HeaderSpan("Action", new String[]{
-							FIELD_NAME.ACTION_NAME.name()
-							,FIELD_NAME.MESSAGE.name()
-					})
-				);
-			setHeaderHeight(44);	//デフォルト × 2
+					new HeaderSpan("Action", new String[] {
+							FIELD_NAME.ACTION_NAME.name(), FIELD_NAME.MESSAGE.name()
+					}));
+			setHeaderHeight(44); //デフォルト × 2
 		}
 
 //		@Override
@@ -482,7 +483,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 //		}
 
 		@Override
-		protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum)  {
+		protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
 
 			//Drag選択可にした際に、NullPointerが発生するようになったため対応。
 			if (record == null) {
@@ -673,8 +674,10 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 											if (result.isError()) {
 												String cause = "";
-												if (result.getMessages() != null && result.getMessages().size() > 0) {
-													cause = getResourceString("MetaDataImportDialog_cause") + result.getMessages().get(0);
+												if (result.getMessages() != null && result.getMessages()
+														.size() > 0) {
+													cause = getResourceString("MetaDataImportDialog_cause") + result.getMessages()
+															.get(0);
 												}
 												SC.warn(getResourceString("failedToImportMetaData") + cause, new BooleanCallback() {
 
@@ -816,12 +819,14 @@ public class MetaDataImportDialog extends AbstractWindow {
 		}
 
 		private void getPathList(MetaTreeNode node) {
-			if (node.getChildren() != null && node.getChildren().size() > 0) {
+			if (node.getChildren() != null && node.getChildren()
+					.size() > 0) {
 				for (MetaTreeNode child : node.getChildren()) {
 					getPathList(child);
 				}
 			}
-			if (node.getItems() != null && node.getItems().size() > 0) {
+			if (node.getItems() != null && node.getItems()
+					.size() > 0) {
 				for (MetaTreeNode item : node.getItems()) {
 					importPathList.add(item.getPath());
 				}
@@ -829,7 +834,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 		}
 
 		private void statusRefresh(final int execCount) {
-			int percent = (int)(((double)execCount / (double)importPathList.size()) * 100.0);
+			int percent = (int) (((double) execCount / (double) importPathList.size()) * 100.0);
 
 			GWT.log(percent + "% check execute." + execCount + "/" + importPathList.size());
 			progressLabel.setContents("Check Progress:" + percent + "%");
@@ -848,7 +853,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 				endIndex = importPathList.size();
 			}
 			//subListのままだと、 「com.google.gwt.user.client.rpc.SerializationException: java.util.RandomAccessSubList is not a serializable type」
-			List<String> execPathList = new ArrayList<>(importPathList.subList(offset * PAGE_SIZE , endIndex));
+			List<String> execPathList = new ArrayList<>(importPathList.subList(offset * PAGE_SIZE, endIndex));
 
 			service.checkImportStatus(TenantInfoHolder.getId(), importTagOid, execPathList, new AsyncCallback<List<ImportMetaDataStatus>>() {
 
@@ -871,14 +876,13 @@ public class MetaDataImportDialog extends AbstractWindow {
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log(caught.toString(), caught);
-					SC.say(getResourceString("failed"), getResourceString("failedToCheckStatusMetaData")
-							,new BooleanCallback() {
+					SC.say(getResourceString("failed"), getResourceString("failedToCheckStatusMetaData"), new BooleanCallback() {
 
-								@Override
-								public void execute(Boolean value) {
-									destroy();
-								}
-							});
+						@Override
+						public void execute(Boolean value) {
+							destroy();
+						}
+					});
 				}
 			});
 		}
@@ -897,7 +901,6 @@ public class MetaDataImportDialog extends AbstractWindow {
 		}
 
 	}
-
 
 	private class ImportResultDialog extends AbstractWindow {
 		private MessageTabSet messageTabSet;
@@ -994,7 +997,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 //							return "ERRORGridRow";
 //						} else if ("WARN".equals(record.getAttribute("status"))) {
 //							return "WARNGridRow";
-////						} else if ("INFO".equals(record.getAttribute("status"))) {
+				////						} else if ("INFO".equals(record.getAttribute("status"))) {
 ////							return "infoGridRow";
 //						}
 //					}
@@ -1007,11 +1010,11 @@ public class MetaDataImportDialog extends AbstractWindow {
 			messageGrid.setHeight(100);
 			messageGrid.setShowAllRecords(true);
 			messageGrid.setWrapCells(true);
-			messageGrid.setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
-			messageGrid.setShowRowNumbers(true);		//行番号表示
+			messageGrid.setLeaveScrollbarGap(false); //falseで縦スクロールバー領域が自動表示制御される
+			messageGrid.setShowRowNumbers(true); //行番号表示
 
-			messageGrid.setWrapCells(true);				//折り返しOK
-			messageGrid.setCanDragSelectText(true);		//Dragでテキスト選択可
+			messageGrid.setWrapCells(true); //折り返しOK
+			messageGrid.setCanDragSelectText(true); //Dragでテキスト選択可
 
 			messageGrid.setCanSort(false);
 			messageGrid.setCanFreezeFields(false);
@@ -1022,8 +1025,8 @@ public class MetaDataImportDialog extends AbstractWindow {
 			messageGrid.setAutoFitData(Autofit.HORIZONTAL);
 //			messageGrid.setAutoFitMaxHeight(56);
 
-	        ListGridField statusField = new ListGridField("status", "Status");
-	        statusField.setWidth(80);
+			ListGridField statusField = new ListGridField("status", "Status");
+			statusField.setWidth(80);
 
 			ListGridField pathField = new ListGridField("path", "Path", 300);
 			pathField.setShowHover(true);
@@ -1034,50 +1037,50 @@ public class MetaDataImportDialog extends AbstractWindow {
 				}
 			});
 
-	        ListGridField actionField = new ListGridField("action", "Action");
-	        actionField.setWidth(150);
+			ListGridField actionField = new ListGridField("action", "Action");
+			actionField.setWidth(150);
 
-	        ListGridField messageField = new ListGridField("message", "Message");
-	        messageField.setShowHover(true);
-	        messageField.setHoverCustomizer(new HoverCustomizer() {
+			ListGridField messageField = new ListGridField("message", "Message");
+			messageField.setShowHover(true);
+			messageField.setHoverCustomizer(new HoverCustomizer() {
 				@Override
 				public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {
 					return SmartGWTUtil.getHoverString(record.getAttribute("detailmessage"));
 				}
 			});
 
-	        messageGrid.setFields(statusField, pathField, actionField, messageField);
+			messageGrid.setFields(statusField, pathField, actionField, messageField);
 
-	        ListGridRecord[] records = new ListGridRecord[errorList.size() + warnList.size() + infoList.size()];
-	        int row = 0;
-	        for (ImportMetaDataStatus status : errorList) {
-	        	records[row] = new ListGridRecord();
-	        	records[row].setAttribute("status", "ERROR");
-	        	records[row].setAttribute("path", status.getPath());
-	        	records[row].setAttribute("action", status.getImportActionName());
-	        	records[row].setAttribute("message", getSimpleMessage(status.getMessage()));
-	        	records[row].setAttribute("detailmessage", status.getMessageDetail());
-	        	row++;
-	        }
-	        for (ImportMetaDataStatus status : warnList) {
-	        	records[row] = new ListGridRecord();
-	        	records[row].setAttribute("status", "WARN");
-	        	records[row].setAttribute("path", status.getPath());
-	        	records[row].setAttribute("action", status.getImportActionName());
-	        	records[row].setAttribute("message", getSimpleMessage(status.getMessage()));
-	        	records[row].setAttribute("detailmessage", status.getMessageDetail());
-	        	row++;
-	        }
-	        for (ImportMetaDataStatus status : infoList) {
-	        	records[row] = new ListGridRecord();
-	        	records[row].setAttribute("status", "INFO");
-	        	records[row].setAttribute("path", status.getPath());
-	        	records[row].setAttribute("action", status.getImportActionName());
-	        	records[row].setAttribute("message", getSimpleMessage(status.getMessage()));
-	        	records[row].setAttribute("detailmessage", status.getMessageDetail());
-	        	row++;
-	        }
-	        messageGrid.setData(records);
+			ListGridRecord[] records = new ListGridRecord[errorList.size() + warnList.size() + infoList.size()];
+			int row = 0;
+			for (ImportMetaDataStatus status : errorList) {
+				records[row] = new ListGridRecord();
+				records[row].setAttribute("status", "ERROR");
+				records[row].setAttribute("path", status.getPath());
+				records[row].setAttribute("action", status.getImportActionName());
+				records[row].setAttribute("message", getSimpleMessage(status.getMessage()));
+				records[row].setAttribute("detailmessage", status.getMessageDetail());
+				row++;
+			}
+			for (ImportMetaDataStatus status : warnList) {
+				records[row] = new ListGridRecord();
+				records[row].setAttribute("status", "WARN");
+				records[row].setAttribute("path", status.getPath());
+				records[row].setAttribute("action", status.getImportActionName());
+				records[row].setAttribute("message", getSimpleMessage(status.getMessage()));
+				records[row].setAttribute("detailmessage", status.getMessageDetail());
+				row++;
+			}
+			for (ImportMetaDataStatus status : infoList) {
+				records[row] = new ListGridRecord();
+				records[row].setAttribute("status", "INFO");
+				records[row].setAttribute("path", status.getPath());
+				records[row].setAttribute("action", status.getImportActionName());
+				records[row].setAttribute("message", getSimpleMessage(status.getMessage()));
+				records[row].setAttribute("detailmessage", status.getMessageDetail());
+				row++;
+			}
+			messageGrid.setData(records);
 
 			Label msgTitle = new Label(getResourceString("messageLabel"));
 			msgTitle.setHeight(20);
@@ -1091,7 +1094,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 			msgContents.setBorder("1px solid silver");
 			msgContents.setAlign(Alignment.LEFT);
 
-	        messageGrid.addRecordClickHandler(new RecordClickHandler() {
+			messageGrid.addRecordClickHandler(new RecordClickHandler() {
 
 				@Override
 				public void onRecordClick(RecordClickEvent event) {
@@ -1107,7 +1110,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 		}
 
 		public void setSelectedPath(String path) {
-			for(ListGridRecord record : messageGrid.getRecords()) {
+			for (ListGridRecord record : messageGrid.getRecords()) {
 				if (path.equals(record.getAttribute("path"))) {
 					messageGrid.scrollToRow(messageGrid.getRowNum(record));
 					messageGrid.selectSingleRecord(record);
@@ -1123,7 +1126,10 @@ public class MetaDataImportDialog extends AbstractWindow {
 			}
 
 			msgContents.setContents(
-					record.getAttribute("detailmessage").replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>").replaceAll("\r", "<br/>"));
+					record.getAttribute("detailmessage")
+							.replaceAll("\r\n", "<br/>")
+							.replaceAll("\n", "<br/>")
+							.replaceAll("\r", "<br/>"));
 			msgContents.setStyleName(record.getAttribute("status") + "MessageCanvas");
 		}
 	}

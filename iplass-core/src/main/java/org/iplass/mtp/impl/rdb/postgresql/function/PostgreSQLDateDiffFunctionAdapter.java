@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.DateTimeUnit;
 
 public class PostgreSQLDateDiffFunctionAdapter implements FunctionAdapter<Function>, DateTimeUnit {
-	
+
 //	/* HOUR */
 //	select trunc(extract(EPOCH FROM to_timestamp('2012-03-01 01:01:01','yyyy-mm-dd hh:mi:ss')-to_timestamp('2011-03-01','yyyy-mm-dd'))/60/60);
 //	/* DAY */
@@ -40,75 +40,91 @@ public class PostgreSQLDateDiffFunctionAdapter implements FunctionAdapter<Functi
 //	     + extract(MONTH FROM age(to_date('2012-03-01','yyyy-mm-dd'),to_date('2011-03-01','yyyy-mm-dd')));
 //	/* YEAR */
 //	select extract(YEAR FROM age(to_date('2012-03-01','yyyy-mm-dd'),to_date('2011-03-01','yyyy-mm-dd')));
-	
+
 	public PostgreSQLDateDiffFunctionAdapter() {
 	}
-	
+
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 3) {
 			throw new QueryException(function.getName() + " must have 3 arguments.");
 		}
-		
-		String unit = ((String) ((Literal) function.getArguments().get(0)).getValue()).toUpperCase();
-		
+
+		String unit = ((String) ((Literal) function.getArguments()
+				.get(0)).getValue()).toUpperCase();
+
 		switch (unit) {
 		case YEAR:
 			//EXTRACT(YEAR FROM AGE(date2, date1));
 			context.append("EXTRACT(YEAR FROM AGE(");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append("))");
 			break;
 		case MONTH:
 			//(EXTRACT(YEAR FROM AGE(date2, date1))*12 + EXTRACT(MONTH FROM AGE(date2, date1)))
 			context.append("(EXTRACT(YEAR FROM AGE(");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append("))*12+EXTRACT(MONTH FROM AGE(");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(")))");
 			break;
 		case DAY:
 			//TRUNC(EXTRACT(EPOCH FROM CAST((date2) AS TIMESTAMP) - CAST((date1) AS TIMESTAMP)) / 86400)
 			context.append("TRUNC(EXTRACT(EPOCH FROM CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS TIMESTAMP)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS TIMESTAMP))/86400)");
 			break;
 		case HOUR:
 			//TRUNC(EXTRACT(EPOCH FROM CAST((date2) AS TIMESTAMP) - CAST((date1) AS TIMESTAMP)) / 1440)
 			context.append("TRUNC(EXTRACT(EPOCH FROM CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS TIMESTAMP)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS TIMESTAMP))/3600)");
 			break;
 		case MINUTE:
 			//TRUNC(EXTRACT(EPOCH FROM CAST((date2) AS TIMESTAMP) - CAST((date1) AS TIMESTAMP)) / 60)
 			context.append("TRUNC(EXTRACT(EPOCH FROM CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS TIMESTAMP)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS TIMESTAMP))/60)");
 			break;
 		case SECOND:
 			//EXTRACT(EPOCH FROM CAST((date2) AS TIMESTAMP) - CAST((date1) AS TIMESTAMP))
 			context.append("EXTRACT(EPOCH FROM CAST((");
-			context.appendArgument(function.getArguments().get(2));
+			context.appendArgument(function.getArguments()
+					.get(2));
 			context.append(") AS TIMESTAMP)-CAST((");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(") AS TIMESTAMP))");
 			break;
 		default:
 			throw new QueryException("unknown interval unit:" + unit);
 		}
-		
+
 	}
 
 	@Override
@@ -117,9 +133,11 @@ public class PostgreSQLDateDiffFunctionAdapter implements FunctionAdapter<Functi
 		if (args == null || args.size() != 3) {
 			throw new QueryException(getFunctionName() + " must have 3 arguments.");
 		}
-		
-		String unit = args.get(0).toString().toUpperCase();
-		
+
+		String unit = args.get(0)
+				.toString()
+				.toUpperCase();
+
 		switch (unit) {
 		case YEAR:
 			//EXTRACT(YEAR FROM AGE(date2, date1));

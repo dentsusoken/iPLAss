@@ -50,64 +50,68 @@ public class BuiltinAuthExplorerServiceImpl extends XsrfProtectedServiceServlet 
 
 	private static final long serialVersionUID = -7886389786183377885L;
 
-	private BuiltinAuthToolService service = ServiceRegistry.getRegistry().getService(BuiltinAuthToolService.class);
+	private BuiltinAuthToolService service = ServiceRegistry.getRegistry()
+			.getService(BuiltinAuthToolService.class);
 
 	@Override
 	public BuiltinAuthUserListResultDto search(final int tenantId, final BuiltinAuthUserSearchConditionDto condDto) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<BuiltinAuthUserListResultDto>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<BuiltinAuthUserListResultDto>() {
 
-			@Override
-			public BuiltinAuthUserListResultDto call() {
+					@Override
+					public BuiltinAuthUserListResultDto call() {
 
-				BuiltinAuthUserListResultDto resultDto = new BuiltinAuthUserListResultDto();
+						BuiltinAuthUserListResultDto resultDto = new BuiltinAuthUserListResultDto();
 
-				//dto -> tools.cond
-				BuiltinAuthUserSearchParameter param = convertCond(condDto);
+						//dto -> tools.cond
+						BuiltinAuthUserSearchParameter param = convertCond(condDto);
 
-				long start = System.nanoTime();
+						long start = System.nanoTime();
 
-				//検索実行
-				BuiltinAuthUserSearchResult result = service.search(param);
+						//検索実行
+						BuiltinAuthUserSearchResult result = service.search(param);
 
-				//tools.result -> dto
-				resultDto.setError(result.isError());
-				resultDto.setLogMessages(result.getMessages());
-				resultDto.setTotalCount(result.getTotalCount());
-				resultDto.setExecuteOffset(result.getExecuteOffset());
+						//tools.result -> dto
+						resultDto.setError(result.isError());
+						resultDto.setLogMessages(result.getMessages());
+						resultDto.setTotalCount(result.getTotalCount());
+						resultDto.setExecuteOffset(result.getExecuteOffset());
 
-				if (!result.isError()) {
-					long total = System.nanoTime() - start;
-					if (total > 1000000000) {
-						resultDto.addLogMessage("search exec time："
-								+ ((double)(System.nanoTime() - start)) / 1000000000 + "sec");
-					} else {
-						resultDto.addLogMessage("search exec time："
-								+ ((double)(System.nanoTime() - start)) / 1000000 + "ms");
-					}
+						if (!result.isError()) {
+							long total = System.nanoTime() - start;
+							if (total > 1000000000) {
+								resultDto.addLogMessage("search exec time："
+										+ ((double) (System.nanoTime() - start)) / 1000000000 + "sec");
+							} else {
+								resultDto.addLogMessage("search exec time："
+										+ ((double) (System.nanoTime() - start)) / 1000000 + "ms");
+							}
 
-					if (result.getUsers() == null || result.getUsers().isEmpty()) {
-						resultDto.addLogMessage("Count ：" + "not found data.");
-					} else {
-						resultDto.addLogMessage("Count ：" + result.getUsers().size()
-								+ " / " + result.getTotalCount());
-					}
+							if (result.getUsers() == null || result.getUsers()
+									.isEmpty()) {
+								resultDto.addLogMessage("Count ：" + "not found data.");
+							} else {
+								resultDto.addLogMessage("Count ：" + result.getUsers()
+										.size()
+										+ " / " + result.getTotalCount());
+							}
 
-					//tools.user -> dto
-					if (result.getUsers() != null) {
-						List<BuiltinAuthUserDto> users = new ArrayList<>();
-						for (BuiltinAuthUser user : result.getUsers()) {
-							users.add(convertUser(user));
+							//tools.user -> dto
+							if (result.getUsers() != null) {
+								List<BuiltinAuthUserDto> users = new ArrayList<>();
+								for (BuiltinAuthUser user : result.getUsers()) {
+									users.add(convertUser(user));
+								}
+
+								resultDto.setUsers(users);
+							}
+
 						}
 
-						resultDto.setUsers(users);
+						return resultDto;
 					}
 
-				}
-
-				return resultDto;
-			}
-
-		});
+				});
 	}
 
 	private BuiltinAuthUserSearchParameter convertCond(BuiltinAuthUserSearchConditionDto condDto) {
@@ -196,28 +200,29 @@ public class BuiltinAuthExplorerServiceImpl extends XsrfProtectedServiceServlet 
 	@Override
 	public BuiltinAuthUserResetErrorCountResultInfo resetErrorCount(final int tenantId, final List<BuiltinAuthUserDto> users) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<BuiltinAuthUserResetErrorCountResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<BuiltinAuthUserResetErrorCountResultInfo>() {
 
-			@Override
-			public BuiltinAuthUserResetErrorCountResultInfo call() {
+					@Override
+					public BuiltinAuthUserResetErrorCountResultInfo call() {
 
-				BuiltinAuthUserResetErrorCountResultInfo ret = new BuiltinAuthUserResetErrorCountResultInfo();
+						BuiltinAuthUserResetErrorCountResultInfo ret = new BuiltinAuthUserResetErrorCountResultInfo();
 
-				//対象アカウントIDの取得
-				List<String> accountIds = new ArrayList<>(users.size());
-				for (BuiltinAuthUserDto user : users) {
-					accountIds.add(user.getAccountId());
-				}
+						//対象アカウントIDの取得
+						List<String> accountIds = new ArrayList<>(users.size());
+						for (BuiltinAuthUserDto user : users) {
+							accountIds.add(user.getAccountId());
+						}
 
-				//更新
-				BuiltinAuthUserResetErrorCountResult result = service.resetErrorCount(accountIds);
+						//更新
+						BuiltinAuthUserResetErrorCountResult result = service.resetErrorCount(accountIds);
 
-				ret.setError(result.isError());
-				ret.setMessages(result.getMessages());
+						ret.setError(result.isError());
+						ret.setMessages(result.getMessages());
 
-				return ret;
-			}
+						return ret;
+					}
 
-		});
+				});
 	}
 }

@@ -89,30 +89,36 @@ public class SectionControllerImpl implements SectionController {
 	@Override
 	public void createControl(String sectionClassName, String defName, FieldReferenceType triggerType, Callback callback) {
 
-		if (DefaultSection.class.getName().equals(sectionClassName)) {
+		if (DefaultSection.class.getName()
+				.equals(sectionClassName)) {
 			DefaultSectionDialog dialog = new DefaultSectionDialog(defName, triggerType, callback);
 			dialog.show();
-		} else if (ScriptingSection.class.getName().equals(sectionClassName)) {
+		} else if (ScriptingSection.class.getName()
+				.equals(sectionClassName)) {
 			//HTMLセクション
 			ScriptingSection section = new ScriptingSection();
 			section.setDispFlag(true);
 			ScriptingSectionControl window = new ScriptingSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
-		} else if (TemplateSection.class.getName().equals(sectionClassName)) {
+		} else if (TemplateSection.class.getName()
+				.equals(sectionClassName)) {
 			//カスタムセクション
 			TemplateSection section = new TemplateSection();
 			section.setDispFlag(true);
 			TemplateSectionControl window = new TemplateSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
-		} else if (VersionSection.class.getName().equals(sectionClassName)) {
+		} else if (VersionSection.class.getName()
+				.equals(sectionClassName)) {
 			VersionSection section = new VersionSection();
 			section.setDispFlag(true);
 			VersionSectionControl window = new VersionSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
-		} else if (ReferenceSection.class.getName().equals(sectionClassName)) {
+		} else if (ReferenceSection.class.getName()
+				.equals(sectionClassName)) {
 			ReferenceSectionDialog dialog = new ReferenceSectionDialog(defName, triggerType, callback);
 			dialog.show();
-		} else if (MassReferenceSection.class.getName().equals(sectionClassName)) {
+		} else if (MassReferenceSection.class.getName()
+				.equals(sectionClassName)) {
 			MassReferenceSectionDialog dialog = new MassReferenceSectionDialog(defName, triggerType, callback);
 			dialog.show();
 		}
@@ -162,21 +168,24 @@ public class SectionControllerImpl implements SectionController {
 
 					// FIXME newした際にAdminConsole側でSystemPropertyが取得できないためサーバ側でインスタンス生成
 					// depricatedのフラグを削除した際は直接newする形に戻す
-					RefrectionServiceFactory.get().create(TenantInfoHolder.getId(), DefaultSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
-						@Override
-						public void onSuccess(Refrectable result) {
-							DefaultSection section = (DefaultSection) result;
-							section.setDispFlag(true);
-							section.setTitle(title.getValue() != null ? title.getValue().toString() : "");
-							section.setColNum(SmartGWTUtil.getIntegerValue(colNum));
-							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
-							section.setEditDisplayType(null);
+					RefrectionServiceFactory.get()
+							.create(TenantInfoHolder.getId(), DefaultSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
+								@Override
+								public void onSuccess(Refrectable result) {
+									DefaultSection section = (DefaultSection) result;
+									section.setDispFlag(true);
+									section.setTitle(title.getValue() != null ? title.getValue()
+											.toString() : "");
+									section.setColNum(SmartGWTUtil.getIntegerValue(colNum));
+									section.setExpandable(Boolean.parseBoolean(expand.getValue()
+											.toString()));
+									section.setEditDisplayType(null);
 
-							DefaultSectionControl window = new DefaultSectionControl(defName, triggerType, section);
-							callback.onCreated(window);
-							destroy();
-						}
-					});
+									DefaultSectionControl window = new DefaultSectionControl(defName, triggerType, section);
+									callback.onCreated(window);
+									destroy();
+								}
+							});
 				}
 			});
 
@@ -242,23 +251,25 @@ public class SectionControllerImpl implements SectionController {
 
 							// FIXME newした際にAdminConsole側でSystemPropertyが取得できないためサーバ側でインスタンス生成
 							// depricatedのフラグを削除した際は直接newする形に戻す
-							RefrectionServiceFactory.get().create(TenantInfoHolder.getId(), ReferenceSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
-								@Override
-								public void onSuccess(Refrectable result) {
-									ReferenceProperty rp = (ReferenceProperty) pd;
-									ReferenceSection section = (ReferenceSection) result;
-									section.setDefintionName(rp.getObjectDefinitionName());
-									section.setPropertyName(name);
-									section.setDispFlag(true);
-									section.setTitle(rp.getDisplayName());
-									section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
-									section.setEditDisplayType(null);
+							RefrectionServiceFactory.get()
+									.create(TenantInfoHolder.getId(), ReferenceSection.class.getName(), new AdminAsyncCallback<Refrectable>() {
+										@Override
+										public void onSuccess(Refrectable result) {
+											ReferenceProperty rp = (ReferenceProperty) pd;
+											ReferenceSection section = (ReferenceSection) result;
+											section.setDefintionName(rp.getObjectDefinitionName());
+											section.setPropertyName(name);
+											section.setDispFlag(true);
+											section.setTitle(rp.getDisplayName());
+											section.setExpandable(Boolean.parseBoolean(expand.getValue()
+													.toString()));
+											section.setEditDisplayType(null);
 
-									ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
-									callback.onCreated(window);
-									destroy();
-								}
-							});
+											ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
+											callback.onCreated(window);
+											destroy();
+										}
+									});
 						}
 
 						@Override
@@ -344,7 +355,8 @@ public class SectionControllerImpl implements SectionController {
 							section.setPropertyName(name);
 							section.setDispFlag(true);
 							section.setTitle(rp.getDisplayName());
-							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
+							section.setExpandable(Boolean.parseBoolean(expand.getValue()
+									.toString()));
 
 							MassReferenceSectionControl window = new MassReferenceSectionControl(defName, triggerType, section, result);
 							callback.onCreated(window);

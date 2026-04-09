@@ -20,6 +20,7 @@
 package org.iplass.mtp.impl.metadata.xmlfile.dom;
 
 import java.util.List;
+
 import org.w3c.dom.Document;
 
 /**
@@ -27,6 +28,8 @@ import org.w3c.dom.Document;
  */
 public interface DomHandler {
 	public void putUnescapedExtFiles(Document metaDataDoc);
+
 	public void restoreFromUnescapedExtFiles(Document metaDataDoc);
-	public List<String> refFiles();	
+
+	public List<String> refFiles();
 }

@@ -43,7 +43,6 @@ import org.iplass.mtp.impl.query.QuerySyntax;
 import org.iplass.mtp.impl.query.WhereSyntax;
 import org.iplass.mtp.util.StringUtil;
 
-
 /**
  * <p>
  * Entityの検索をする際利用するクエリーを表現するクラスです。
@@ -180,7 +179,9 @@ public class Query implements ASTNode {
 	 */
 	public static Query newQuery(String query) {
 		try {
-			return QueryServiceHolder.getInstance().getQueryParser().parse(query, QuerySyntax.class);
+			return QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(query, QuerySyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
@@ -210,12 +211,13 @@ public class Query implements ASTNode {
 
 	public Query() {
 	}
+
 	public Query(Select select, From from, Where where) {
 		this.select = select;
 		this.from = from;
 		this.where = where;
 	}
-	
+
 	/**
 	 * EQL文字列を指定してQueryインスタンスを生成します。
 	 * 
@@ -235,7 +237,7 @@ public class Query implements ASTNode {
 		this.versioned = q.versioned;
 		this.where = q.where;
 	}
-	
+
 	@Override
 	public Query copy() {
 		return (Query) ASTNode.super.copy();
@@ -326,7 +328,7 @@ public class Query implements ASTNode {
 			sb.append(" ");
 		}
 		if (refer != null) {
-			for (Refer r: refer) {
+			for (Refer r : refer) {
 				sb.append(r.toString());
 				sb.append(" ");
 			}
@@ -411,6 +413,7 @@ public class Query implements ASTNode {
 	public OrderBy getOrderBy() {
 		return orderBy;
 	}
+
 	public void setOrderBy(OrderBy orderBy) {
 		this.orderBy = orderBy;
 	}
@@ -418,6 +421,7 @@ public class Query implements ASTNode {
 	public Limit getLimit() {
 		return limit;
 	}
+
 	public void setLimit(Limit limit) {
 		this.limit = limit;
 	}
@@ -465,7 +469,7 @@ public class Query implements ASTNode {
 				from.accept(visitor);
 			}
 			if (refer != null) {
-				for (Refer r: refer) {
+				for (Refer r : refer) {
 					r.accept(visitor);
 				}
 			}
@@ -523,7 +527,7 @@ public class Query implements ASTNode {
 		clause.add(value);
 		return this;
 	}
-	
+
 	/**
 	 * selectを構築します。
 	 * その際distinctはfalse（デフォルト値）とします。
@@ -536,7 +540,7 @@ public class Query implements ASTNode {
 		clause.add(value);
 		return this;
 	}
-	
+
 	/**
 	 * ヒント句指定しつつ、selectを構築します。
 	 * その際distinctはfalse（デフォルト値）とします。
@@ -551,7 +555,6 @@ public class Query implements ASTNode {
 		clause.add(value);
 		return this;
 	}
-	
 
 	public Query selectAll(String definitionName, boolean distinct, boolean withReferenceOidAndName) {
 		return selectAll(definitionName, distinct, withReferenceOidAndName, false);
@@ -561,21 +564,25 @@ public class Query implements ASTNode {
 		return selectAll(definitionName, distinct, withReferenceOidAndName, withReferenceVersion, true);
 	}
 
-	public Query selectAll(String definitionName, boolean distinct, boolean withReferenceOidAndName, boolean withReferenceVersion, boolean withMappedByReference) {
+	public Query selectAll(String definitionName, boolean distinct, boolean withReferenceOidAndName, boolean withReferenceVersion,
+			boolean withMappedByReference) {
 		return selectAll(definitionName, null, distinct, withReferenceOidAndName, withReferenceVersion, withMappedByReference);
 	}
 
-	public Query selectAll(String definitionName, HintComment hint, boolean distinct, boolean withReferenceOidAndName, boolean withReferenceVersion, boolean withMappedByReference) {
+	public Query selectAll(String definitionName, HintComment hint, boolean distinct, boolean withReferenceOidAndName, boolean withReferenceVersion,
+			boolean withMappedByReference) {
 		Select clause = new Select();
 		clause.setHintComment(hint);
 		clause.setDistinct(distinct);
-		EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(definitionName);
+		EntityDefinition ed = ManagerLocator.getInstance()
+				.getManager(EntityDefinitionManager.class)
+				.get(definitionName);
 		if (ed == null) {
 			throw new EntityRuntimeException(definitionName + " not found.");
 		}
-		for (PropertyDefinition pd: ed.getPropertyList()) {
+		for (PropertyDefinition pd : ed.getPropertyList()) {
 			if (pd instanceof ReferenceProperty) {
-				ReferenceProperty rp = (ReferenceProperty)pd;
+				ReferenceProperty rp = (ReferenceProperty) pd;
 				if (StringUtil.isNotEmpty(rp.getMappedBy()) && !withMappedByReference) {
 					continue;
 				}
@@ -594,7 +601,7 @@ public class Query implements ASTNode {
 		from(definitionName);
 		return this;
 	}
-	
+
 	/**
 	 * ヒントを追加します。
 	 * 注意：selectAllを利用した場合、Selectインスタンスが初期化されるので、selectAllの後に呼び出すこと。
@@ -606,12 +613,12 @@ public class Query implements ASTNode {
 		select().addHint(hint);
 		return this;
 	}
-	
+
 	public Query hint(List<Hint> hintList) {
 		select().addHint(hintList);
 		return this;
 	}
-	
+
 	private From from() {
 		if (from == null) {
 			from = new From();
@@ -623,7 +630,7 @@ public class Query implements ASTNode {
 		from().setEntityName(entityName);
 		return this;
 	}
-	
+
 	public Query from(String entityName, AsOf asOf) {
 		from().setEntityName(entityName);
 		from().setAsOf(asOf);
@@ -633,11 +640,11 @@ public class Query implements ASTNode {
 	public Query refer(String referenceName, Condition onCondition) {
 		return refer(referenceName, null, onCondition);
 	}
-	
+
 	public Query refer(String referenceName, AsOf asOf) {
 		return refer(referenceName, asOf, null);
 	}
-	
+
 	public Query refer(String referenceName, AsOf asOf, Condition onCondition) {
 		if (refer == null) {
 			refer = new ArrayList<Refer>();
@@ -647,7 +654,9 @@ public class Query implements ASTNode {
 			Iterator<Refer> it = refer.iterator();
 			while (it.hasNext()) {
 				Refer r = it.next();
-				if (r.getReferenceName().getPropertyName().equals(referenceName)) {
+				if (r.getReferenceName()
+						.getPropertyName()
+						.equals(referenceName)) {
 					it.remove();
 					break;
 				}
@@ -662,8 +671,10 @@ public class Query implements ASTNode {
 			refer = new ArrayList<Refer>();
 		}
 		if (refer.size() > 0) {
-			for (Refer r: refer) {
-				if (r.getReferenceName().getPropertyName().equals(referenceName)) {
+			for (Refer r : refer) {
+				if (r.getReferenceName()
+						.getPropertyName()
+						.equals(referenceName)) {
 					return r;
 				}
 			}
@@ -684,7 +695,9 @@ public class Query implements ASTNode {
 	public Query where(String whereClause) {
 		String whereStr = QueryConstants.WHERE + " " + whereClause;
 		try {
-			where = QueryServiceHolder.getInstance().getQueryParser().parse(whereStr, WhereSyntax.class);
+			where = QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(whereStr, WhereSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
@@ -707,7 +720,7 @@ public class Query implements ASTNode {
 		if (groupBy == null) {
 			groupBy = new GroupBy();
 		}
-		for (Object v: groupingField) {
+		for (Object v : groupingField) {
 			groupBy.add(v);
 		}
 		return this;
@@ -721,7 +734,9 @@ public class Query implements ASTNode {
 	public Query having(String havingClause) {
 		String havingStr = QueryConstants.HAVING + " " + havingClause;
 		try {
-			having = QueryServiceHolder.getInstance().getQueryParser().parse(havingStr, HavingSyntax.class);
+			having = QueryServiceHolder.getInstance()
+					.getQueryParser()
+					.parse(havingStr, HavingSyntax.class);
 		} catch (ParseException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
@@ -733,7 +748,7 @@ public class Query implements ASTNode {
 		if (orderBy == null) {
 			orderBy = new OrderBy();
 		}
-		for (SortSpec o: sortSpec) {
+		for (SortSpec o : sortSpec) {
 			orderBy.add(o);
 		}
 		return this;
@@ -753,7 +768,7 @@ public class Query implements ASTNode {
 		this.versioned = versioned;
 		return this;
 	}
-	
+
 	/**
 	 * versioned=trueに設定します
 	 * 
@@ -762,12 +777,12 @@ public class Query implements ASTNode {
 	public Query versioned() {
 		return versioned(true);
 	}
-	
+
 	public Query localized(boolean localized) {
 		this.localized = localized;
 		return this;
 	}
-	
+
 	/**
 	 * localized=trueに設定します
 	 * 
@@ -776,7 +791,6 @@ public class Query implements ASTNode {
 	public Query localized() {
 		return localized(true);
 	}
-
 
 	@Override
 	public ASTNode accept(ASTTransformer transformer) {

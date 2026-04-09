@@ -42,13 +42,14 @@ import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ActionMapping(name=UpdatePasswordCommand.ACTION_DO_UPDATE_PASSWORD,
-		allowMethod=HttpMethodType.POST,
-		clientCacheType=ClientCacheType.NO_CACHE,
-		needTrustedAuthenticate=true,
-		result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
+@ActionMapping(
+		name = UpdatePasswordCommand.ACTION_DO_UPDATE_PASSWORD,
+		allowMethod = HttpMethodType.POST,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		needTrustedAuthenticate = true,
+		result = @Result(type = Type.TEMPLATE, value = Constants.TEMPLATE_UPDATE_PASSWORD)
 )
-@CommandClass(name="gem/auth/UpdatePasswordCommand", displayName="パスワード更新")
+@CommandClass(name = "gem/auth/UpdatePasswordCommand", displayName = "パスワード更新")
 public final class UpdatePasswordCommand implements Command, AuthCommandConstants {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdatePasswordCommand.class);
@@ -57,13 +58,15 @@ public final class UpdatePasswordCommand implements Command, AuthCommandConstant
 	public static final String ACTION_VIEW_UPDATE_PASSWORD = "gem/auth/password";
 	public static final String ACTION_DO_UPDATE_PASSWORD = "gem/auth/password/update";
 
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	@Override
 	public String execute(RequestContext request) {
 
 		String id = null;
-		User current = AuthContext.getCurrentContext().getUser();
+		User current = AuthContext.getCurrentContext()
+				.getUser();
 		if (current == null || current.isAnonymous()) {
 			throw new SystemException("not logined");
 		}

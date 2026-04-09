@@ -43,7 +43,7 @@ public class MetaReportParamMap implements MetaData {
 		this.name = name;
 		this.mapFrom = mapFrom;
 		this.paramType = "string";
-		
+
 	}
 
 	public MetaReportParamMap(String name, String mapFrom, String paramType, boolean convertEntityToMap) {
@@ -52,7 +52,6 @@ public class MetaReportParamMap implements MetaData {
 		this.paramType = paramType;
 		this.convertEntityToMap = convertEntityToMap;
 	}
-
 
 	public String getName() {
 		return name;
@@ -77,7 +76,7 @@ public class MetaReportParamMap implements MetaData {
 	public void setParamType(String paramType) {
 		this.paramType = paramType;
 	}
-	
+
 	public boolean isConvertEntityToMap() {
 		return convertEntityToMap;
 	}
@@ -96,7 +95,7 @@ public class MetaReportParamMap implements MetaData {
 		} else {
 			paramType = definition.getParamType();
 		}
-		
+
 		convertEntityToMap = definition.isConvertEntityToMap();
 	}
 

@@ -39,32 +39,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.OPTIONS;
-import jakarta.ws.rs.PATCH;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Request;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.StreamingOutput;
-import jakarta.ws.rs.core.Variant;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.session.SessionService;
 import org.iplass.mtp.impl.web.LimitRequestBodyHttpServletRequest;
@@ -92,6 +66,31 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.OPTIONS;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.StreamingOutput;
+import jakarta.ws.rs.core.Variant;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 
 @Path("/")
 public class RestCommandInvoker {
@@ -106,25 +105,32 @@ public class RestCommandInvoker {
 
 	private static Logger logger = LoggerFactory.getLogger(RestCommandInvoker.class);
 
-	private static WebApiJaxbService jbservice = ServiceRegistry.getRegistry().getService(WebApiJaxbService.class);
-	private static WebApiObjectMapperService omservice = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class);
-	private static SessionService sessionService = ServiceRegistry.getRegistry().getService(SessionService.class);
+	private static WebApiJaxbService jbservice = ServiceRegistry.getRegistry()
+			.getService(WebApiJaxbService.class);
+	private static WebApiObjectMapperService omservice = ServiceRegistry.getRegistry()
+			.getService(WebApiObjectMapperService.class);
+	private static SessionService sessionService = ServiceRegistry.getRegistry()
+			.getService(SessionService.class);
 
-	@Context SAXParserFactory sax;//XXE対策されたSAXParserFactory（jerseyの実装）
+	@Context
+	SAXParserFactory sax;//XXE対策されたSAXParserFactory（jerseyの実装）
 
 	//TODO 共通的な処理をFilterに移動して、methodの数を減らす
 
-	private <R> R process(String apiName, String httpMethod, ServletContext servletContext, Request rsRequest, HttpServletRequest request, HttpServletResponse response,
+	private <R> R process(String apiName, String httpMethod, ServletContext servletContext, Request rsRequest, HttpServletRequest request,
+			HttpServletResponse response,
 			BiFunction<WebRequestStack, WebApiRuntime, R> func) {
 
 		//MtpContainerRequestFilterでセット済み
 		RequestPath path = (RequestPath) request.getAttribute(RequestPath.ATTR_NAME);
 		WebApiRuntime runtime = (WebApiRuntime) request.getAttribute(RestRequestContext.WEB_API_RUNTIME_NAME);
 
-		RestRequestContext context = new RestRequestContext(servletContext, request, rsRequest, runtime.getMetaData().isSupportBearerToken());
+		RestRequestContext context = new RestRequestContext(servletContext, request, rsRequest, runtime.getMetaData()
+				.isSupportBearerToken());
 
 		WebRequestStack stack = new WebRequestStack(path, context, servletContext, request, response, null);
-		if (runtime.getMetaData().getState() == StateType.STATELESS) {
+		if (runtime.getMetaData()
+				.getState() == StateType.STATELESS) {
 			sessionService.setSessionStateless(false);
 		}
 
@@ -152,23 +158,32 @@ public class RestCommandInvoker {
 		Object onlyOneRes = null;
 		for (WebApiResultAttributeRuntime attributeRuntime : runtime.getResponseResults()) {
 			String attributeName = attributeRuntime.getName();
-			Object val = stack.getRequestContext().getAttribute(attributeName);
+			Object val = stack.getRequestContext()
+					.getAttribute(attributeName);
 			if (val != null) {
 				result.addResult(attributeName, val);
 			}
 		}
 
-		if (result.getResults() != null && result.getResults().size() == 1) {
-			onlyOneRes = result.getResults().values().iterator().next();
+		if (result.getResults() != null && result.getResults()
+				.size() == 1) {
+			onlyOneRes = result.getResults()
+					.values()
+					.iterator()
+					.next();
 		}
 
-		if (runtime.getMetaData().getCacheControlType() != null) {
-			switch (runtime.getMetaData().getCacheControlType()) {
+		if (runtime.getMetaData()
+				.getCacheControlType() != null) {
+			switch (runtime.getMetaData()
+					.getCacheControlType()) {
 			case CACHE:
-				WebUtil.setCacheControlHeader(stack, true, runtime.getMetaData().getCacheControlMaxAge());
+				WebUtil.setCacheControlHeader(stack, true, runtime.getMetaData()
+						.getCacheControlMaxAge());
 				break;
 			case CACHE_PUBLIC:
-				WebUtil.setCacheControlHeader(stack, true, true, runtime.getMetaData().getCacheControlMaxAge());
+				WebUtil.setCacheControlHeader(stack, true, true, runtime.getMetaData()
+						.getCacheControlMaxAge());
 				break;
 			case NO_CACHE:
 				WebUtil.setCacheControlHeader(stack, false, -1);
@@ -198,9 +213,11 @@ public class RestCommandInvoker {
 		}
 
 		RestRequestContext context = (RestRequestContext) stack.getRequestContext();
-		Variant v = context.rsRequest().selectVariant(variants);
+		Variant v = context.rsRequest()
+				.selectVariant(variants);
 		if (v == null) {
-			throw new WebApiRuntimeException("Response Type cannot determined. Specify correct Accept header:" + stack.getRequest().getHeader("Accept"));
+			throw new WebApiRuntimeException("Response Type cannot determined. Specify correct Accept header:" + stack.getRequest()
+					.getHeader("Accept"));
 		}
 		return v;
 	}
@@ -212,11 +229,11 @@ public class RestCommandInvoker {
 
 		runtime.checkRequestType(context.requestType(), stack.getRequest());
 		if (!handleCrossOriginResourceSharing(runtime, context, stack.getRequest(), stack.getResponse())) {
-			throw new WebApiRuntimeException("Cross Origin Resource Sharing Policy Erorr on WebApi:" + runtime.getMetaData().getName());
+			throw new WebApiRuntimeException("Cross Origin Resource Sharing Policy Erorr on WebApi:" + runtime.getMetaData()
+					.getName());
 		}
 		runtime.checkXRequestedWith(stack.getRequest());
 	}
-
 
 	private boolean isSameOrigin(String requestOrigin, HttpServletRequest request) {
 		URI originUri;
@@ -225,7 +242,8 @@ public class RestCommandInvoker {
 		} catch (URISyntaxException e) {
 			throw new IllegalArgumentException("requestOrigin not valid:" + requestOrigin, e);
 		}
-		if (originUri.getHost() == null || !originUri.getHost().equals(request.getServerName())) {
+		if (originUri.getHost() == null || !originUri.getHost()
+				.equals(request.getServerName())) {
 			return false;
 		}
 		int port = originUri.getPort();
@@ -243,7 +261,8 @@ public class RestCommandInvoker {
 		return true;
 	}
 
-	private boolean handleCrossOriginResourceSharing(WebApiRuntime runtime, RequestContext context, HttpServletRequest request, HttpServletResponse response) {
+	private boolean handleCrossOriginResourceSharing(WebApiRuntime runtime, RequestContext context, HttpServletRequest request,
+			HttpServletResponse response) {
 		String requestOrigin = request.getHeader(ORIGIN);
 		if (requestOrigin == null) {
 			return true;
@@ -255,7 +274,8 @@ public class RestCommandInvoker {
 		boolean allowOrigin = runtime.isCorsAllowOrigin(requestOrigin, context);
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("CORS check with Origin: " + requestOrigin + ", api: " + runtime.getMetaData().getName() + " = " + allowOrigin);
+			logger.debug("CORS check with Origin: " + requestOrigin + ", api: " + runtime.getMetaData()
+					.getName() + " = " + allowOrigin);
 		}
 
 		if (allowOrigin) {
@@ -264,11 +284,13 @@ public class RestCommandInvoker {
 				response.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 			}
 
-			if (request.getMethod().equals(HttpMethod.OPTIONS)) {
+			if (request.getMethod()
+					.equals(HttpMethod.OPTIONS)) {
 				//preflight
 				String accessControlRequestMethod = request.getHeader(ACCESS_CONTROL_REQUEST_METHOD);
 				if (accessControlRequestMethod != null
-						&& runtime.getRequestRestriction().isAllowedMethod(accessControlRequestMethod)) {
+						&& runtime.getRequestRestriction()
+								.isAllowedMethod(accessControlRequestMethod)) {
 
 					//Access-Control-Allow-Methods
 					response.addHeader(ACCESS_CONTROL_ALLOW_METHODS, runtime.corsAccessControlAllowMethods());
@@ -310,10 +332,13 @@ public class RestCommandInvoker {
 		String contentType = request.getContentType();
 		if (contentType != null) {
 			MediaType mt = MediaType.valueOf(contentType);
-			if (mt.getType().equals(MediaType.APPLICATION_JSON_TYPE.getType())) {
-				if (mt.getSubtype().equals(MediaType.APPLICATION_JSON_TYPE.getSubtype())) {
+			if (mt.getType()
+					.equals(MediaType.APPLICATION_JSON_TYPE.getType())) {
+				if (mt.getSubtype()
+						.equals(MediaType.APPLICATION_JSON_TYPE.getSubtype())) {
 					type = RequestType.REST_JSON;
-				} else if (mt.getSubtype().equals(MediaType.APPLICATION_XML_TYPE.getSubtype())) {
+				} else if (mt.getSubtype()
+						.equals(MediaType.APPLICATION_XML_TYPE.getSubtype())) {
 					type = RequestType.REST_XML;
 				}
 			}
@@ -330,8 +355,12 @@ public class RestCommandInvoker {
 		if (type == null) {
 			// リクエストタイプが決定できない場合、メタデータの Accepts が 1 つだけならばそのリクエストとして扱う
 			// 2つ以上のリクエストタイプを許可している場合は、リクエスト時にConetnt-Typeを指定する必要があり、ここでは決定しない。
-			if (runtime.getMetaData().getAccepts() != null && runtime.getMetaData().getAccepts().length == 1) {
-				type = runtime.getMetaData().getAccepts()[0];
+			if (runtime.getMetaData()
+					.getAccepts() != null
+					&& runtime.getMetaData()
+							.getAccepts().length == 1) {
+				type = runtime.getMetaData()
+						.getAccepts()[0];
 			}
 		}
 
@@ -445,7 +474,7 @@ public class RestCommandInvoker {
 
 	@PUT
 	@Path("{apiName : .+}")
-	@Consumes({MediaType.APPLICATION_JSON})
+	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response doPutJson(@Context ServletContext servletContext,
 			@Context Request coreRequest,
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
@@ -473,7 +502,7 @@ public class RestCommandInvoker {
 
 	@PUT
 	@Path("{apiName : .+}")
-	@Consumes({MediaType.APPLICATION_XML})
+	@Consumes({ MediaType.APPLICATION_XML })
 	public Response doPutXml(@Context ServletContext servletContext,
 			@Context Request coreRequest,
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
@@ -595,7 +624,7 @@ public class RestCommandInvoker {
 
 	@POST
 	@Path("{apiName : .+}")
-	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	@Consumes({ MediaType.MULTIPART_FORM_DATA })
 	public Response doPostFormMultipart(@Context ServletContext servletContext,
 			@Context Request coreRequest,
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
@@ -616,7 +645,7 @@ public class RestCommandInvoker {
 
 	@POST
 	@Path("{apiName : .+}")
-	@Consumes({MediaType.APPLICATION_JSON})
+	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response doPostJson(@Context ServletContext servletContext,
 			@Context Request coreRequest,
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
@@ -644,7 +673,7 @@ public class RestCommandInvoker {
 
 	@POST
 	@Path("{apiName : .+}")
-	@Consumes({MediaType.APPLICATION_XML})
+	@Consumes({ MediaType.APPLICATION_XML })
 	public Response doPostXml(@Context ServletContext servletContext,
 			@Context Request coreRequest,
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
@@ -937,11 +966,13 @@ public class RestCommandInvoker {
 		RestRequestContext context = (RestRequestContext) stack.getRequestContext();
 		MethodType methodType = context.methodType();
 		try {
-			String paramName = runtime.getMetaData().getRestJsonParameterName();
+			String paramName = runtime.getMetaData()
+					.getRestJsonParameterName();
 			if (paramName != null) {
 				ObjectMapper mapper = omservice.getObjectMapper();
 				Object o = null;
-				Class<?> type = runtime.getMetaData().getRestJsonParameterType();
+				Class<?> type = runtime.getMetaData()
+						.getRestJsonParameterType();
 				if (type == Reader.class) {
 					if (MethodType.GET == methodType || MethodType.DELETE == methodType) {
 						String paramStr = request.getParameter(paramName);
@@ -997,10 +1028,12 @@ public class RestCommandInvoker {
 		RestRequestContext context = (RestRequestContext) stack.getRequestContext();
 		MethodType methodType = context.methodType();
 		try {
-			String paramName = runtime.getMetaData().getRestXmlParameterName();
+			String paramName = runtime.getMetaData()
+					.getRestXmlParameterName();
 			if (paramName != null) {
 				Object o;
-				Class<?> type = runtime.getMetaData().getRestXmlParameterType();
+				Class<?> type = runtime.getMetaData()
+						.getRestXmlParameterType();
 				if (type == Reader.class) {
 					if (MethodType.GET == methodType || MethodType.DELETE == methodType) {
 						String paramStr = request.getParameter(paramName);
@@ -1023,17 +1056,25 @@ public class RestCommandInvoker {
 							InputStream bais = new ByteArrayInputStream(param.getBytes());
 							JAXBContext jaxb = jbservice.getJAXBContext();
 							if (type == null || type == void.class) {
-								o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(bais)));
+								o = jaxb.createUnmarshaller()
+										.unmarshal(new SAXSource(sax.newSAXParser()
+												.getXMLReader(), new InputSource(bais)));
 							} else {
-								o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(bais)), type);
+								o = jaxb.createUnmarshaller()
+										.unmarshal(new SAXSource(sax.newSAXParser()
+												.getXMLReader(), new InputSource(bais)), type);
 							}
 						}
 					} else {
 						JAXBContext jaxb = jbservice.getJAXBContext();
 						if (type == null || type == void.class) {
-							o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(reader)));
+							o = jaxb.createUnmarshaller()
+									.unmarshal(new SAXSource(sax.newSAXParser()
+											.getXMLReader(), new InputSource(reader)));
 						} else {
-							o = jaxb.createUnmarshaller().unmarshal(new SAXSource(sax.newSAXParser().getXMLReader(), new InputSource(reader)), type);
+							o = jaxb.createUnmarshaller()
+									.unmarshal(new SAXSource(sax.newSAXParser()
+											.getXMLReader(), new InputSource(reader)), type);
 						}
 					}
 

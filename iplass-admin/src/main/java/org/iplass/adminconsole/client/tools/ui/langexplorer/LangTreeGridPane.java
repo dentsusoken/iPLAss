@@ -106,7 +106,8 @@ public class LangTreeGridPane extends VLayout {
 	}
 
 	public void refreshGrid(RepositoryType repositoryType) {
-		grid.refreshGrid(repositoryType, searchPane.getUpdateDateFrom(), searchPane.getUpdateDateTo(), searchPane.getTagCreateDateFrom(), searchPane.getTagCreateDateTo());
+		grid.refreshGrid(repositoryType, searchPane.getUpdateDateFrom(), searchPane.getUpdateDateTo(), searchPane.getTagCreateDateFrom(),
+				searchPane.getTagCreateDateTo());
 	}
 
 	public void expandRoot() {
@@ -187,7 +188,7 @@ public class LangTreeGridPane extends VLayout {
 			updateDateField = new CheckboxItem();
 			updateDateField.setTitle("By Update Date:");
 			updateDateField.setShowTitle(false);
-			updateDateField.setValue(true);		//初期選択
+			updateDateField.setValue(true); //初期選択
 			updateDateField.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
@@ -201,7 +202,8 @@ public class LangTreeGridPane extends VLayout {
 			updateDateFromField.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
-					if (SmartGWTUtil.getStringValue(updateDateFromField) != null && !SmartGWTUtil.getStringValue(updateDateFromField).isEmpty()) {
+					if (SmartGWTUtil.getStringValue(updateDateFromField) != null && !SmartGWTUtil.getStringValue(updateDateFromField)
+							.isEmpty()) {
 						setSelectUpdateDate(true);
 					}
 				}
@@ -211,7 +213,8 @@ public class LangTreeGridPane extends VLayout {
 			updateDateTimeFromField.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
-					if (SmartGWTUtil.getStringValue(updateDateTimeFromField) != null && !SmartGWTUtil.getStringValue(updateDateTimeFromField).isEmpty()) {
+					if (SmartGWTUtil.getStringValue(updateDateTimeFromField) != null && !SmartGWTUtil.getStringValue(updateDateTimeFromField)
+							.isEmpty()) {
 						setSelectUpdateDate(true);
 					}
 				}
@@ -228,7 +231,8 @@ public class LangTreeGridPane extends VLayout {
 			updateDateToField.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
-					if (SmartGWTUtil.getStringValue(updateDateToField) != null && !SmartGWTUtil.getStringValue(updateDateToField).isEmpty()) {
+					if (SmartGWTUtil.getStringValue(updateDateToField) != null && !SmartGWTUtil.getStringValue(updateDateToField)
+							.isEmpty()) {
 						setSelectUpdateDate(true);
 					}
 				}
@@ -238,13 +242,15 @@ public class LangTreeGridPane extends VLayout {
 			updateDateTimeToField.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
-					if (SmartGWTUtil.getStringValue(updateDateTimeToField) != null && !SmartGWTUtil.getStringValue(updateDateTimeToField).isEmpty()) {
+					if (SmartGWTUtil.getStringValue(updateDateTimeToField) != null && !SmartGWTUtil.getStringValue(updateDateTimeToField)
+							.isEmpty()) {
 						setSelectUpdateDate(true);
 					}
 				}
 			});
 
-			updateDateForm.setItems(updateDateField, updateDateFromField, updateDateTimeFromField, updateDateDummy, updateDateToField, updateDateTimeToField);
+			updateDateForm.setItems(updateDateField, updateDateFromField, updateDateTimeFromField, updateDateDummy, updateDateToField,
+					updateDateTimeToField);
 
 			HLayout updateDatePane = new HLayout(5);
 			updateDatePane.setAutoHeight();
@@ -268,7 +274,7 @@ public class LangTreeGridPane extends VLayout {
 			tagDateField = new CheckboxItem();
 			tagDateField.setTitle("By Tag Create Date:");
 			tagDateField.setShowTitle(false);
-			tagDateField.setValue(false);		//初期未選択
+			tagDateField.setValue(false); //初期未選択
 			tagDateField.addChangedHandler(new ChangedHandler() {
 				@Override
 				public void onChanged(ChangedEvent event) {
@@ -351,7 +357,8 @@ public class LangTreeGridPane extends VLayout {
 			tagToDateField.setDisabled(true);
 			tagToDateField.setShowPickerIcon(false);
 
-			tagDateForm.setItems(tagDateField, tagFromSelectFiled, tagFromNameField, tagFromDateField, tagDateDummy, tagToSelectFiled, tagToNameField, tagToDateField);
+			tagDateForm.setItems(tagDateField, tagFromSelectFiled, tagFromNameField, tagFromDateField, tagDateDummy, tagToSelectFiled, tagToNameField,
+					tagToDateField);
 
 			HLayout tagDatePane = new HLayout(5);
 			tagDatePane.setAutoHeight();
@@ -404,9 +411,7 @@ public class LangTreeGridPane extends VLayout {
 			buttonPane.addMember(clearBtn);
 			buttonItems.setCanvas(buttonPane);
 
-			condForm.setItems(updateDateFormItems
-					,tagDateFormItems
-					,buttonItems);
+			condForm.setItems(updateDateFormItems, tagDateFormItems, buttonItems);
 
 			addMember(condForm);
 		}
@@ -433,9 +438,10 @@ public class LangTreeGridPane extends VLayout {
 				updateDateFromField.clearValue();
 				updateDateTimeFromField.clearValue();
 			}
-			updateDateFromField.validate();	//validate結果をクリアするためvalidateを再度呼び出し
+			updateDateFromField.validate(); //validate結果をクリアするためvalidateを再度呼び出し
 
-			return SmartGWTUtil.getDateTimeValue(updateDateFromField.getValueAsDate(), (Date)updateDateTimeFromField.getValue(), false, "00:00", "00", "000");
+			return SmartGWTUtil.getDateTimeValue(updateDateFromField.getValueAsDate(), (Date) updateDateTimeFromField.getValue(), false, "00:00", "00",
+					"000");
 		}
 
 		public Date getUpdateDateTo() {
@@ -446,9 +452,10 @@ public class LangTreeGridPane extends VLayout {
 				updateDateToField.clearValue();
 				updateDateTimeToField.clearValue();
 			}
-			updateDateToField.validate();	//validate結果をクリアするためvalidateを再度呼び出し
+			updateDateToField.validate(); //validate結果をクリアするためvalidateを再度呼び出し
 
-			return SmartGWTUtil.getDateTimeValue(updateDateToField.getValueAsDate(), (Date)updateDateTimeToField.getValue(), false, "23:59", "59", "999");
+			return SmartGWTUtil.getDateTimeValue(updateDateToField.getValueAsDate(), (Date) updateDateTimeToField.getValue(), false, "23:59", "59",
+					"999");
 		}
 
 		public Date getTagCreateDateFrom() {
@@ -516,13 +523,13 @@ public class LangTreeGridPane extends VLayout {
 							record.getAttributeAsString(FIELD_NAME.ERROR_MESSAGE.name()));
 
 					// ITEMの場合は選択不可
-					if (!getTree().isFolder((TreeNode)record)) {
+					if (!getTree().isFolder((TreeNode) record)) {
 						record.setEnabled(false);
 					}
 
 					return recordCanvas;
 				}
-			} else if ((FIELD_NAME.SHARABLE.name()  + "_disp").equals(fieldName)) {
+			} else if ((FIELD_NAME.SHARABLE.name() + "_disp").equals(fieldName)) {
 				Boolean isSharable = record.getAttributeAsBoolean(FIELD_NAME.SHARABLE.name());
 				if (isSharable != null && isSharable) {
 					Img img = new Img("tick.png", 16, 16);
@@ -531,7 +538,7 @@ public class LangTreeGridPane extends VLayout {
 					img.setImageType(ImageStyle.CENTER);
 					return img;
 				}
-			} else if ((FIELD_NAME.OVERWRITABLE.name()  + "_disp").equals(fieldName)) {
+			} else if ((FIELD_NAME.OVERWRITABLE.name() + "_disp").equals(fieldName)) {
 				Boolean isOverwritable = record.getAttributeAsBoolean(FIELD_NAME.OVERWRITABLE.name());
 				if (isOverwritable != null && isOverwritable) {
 					Img img = new Img("tick.png", 16, 16);
@@ -634,8 +641,8 @@ public class LangTreeGridPane extends VLayout {
 			//trueを指定することでPathは全て選択されていないと含まれない
 			ListGridRecord[] records = getSelectedRecords(true);
 			for (ListGridRecord record : records) {
-				TreeNode node = (TreeNode)record;
-				if (node.getAttributeAsBoolean(FIELD_NAME.SHARED.name()))  {
+				TreeNode node = (TreeNode) record;
+				if (node.getAttributeAsBoolean(FIELD_NAME.SHARED.name())) {
 					return true;
 				}
 			}
@@ -652,7 +659,7 @@ public class LangTreeGridPane extends VLayout {
 					continue;
 				}
 
-				TreeNode node = (TreeNode)record;
+				TreeNode node = (TreeNode) record;
 				if (!getTree().isFolder(node)) {
 					selectPaths.add(path);
 				}

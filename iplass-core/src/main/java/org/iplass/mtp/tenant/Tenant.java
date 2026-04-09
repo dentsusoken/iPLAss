@@ -28,12 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -42,12 +36,18 @@ import org.iplass.mtp.impl.xml.jaxb.XmlDate;
 import org.iplass.mtp.impl.xml.jaxb.XmlDateTime;
 import org.iplass.mtp.impl.xml.jaxb.XmlTime;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * テナント情報をあらわすオブジェクト
  * @author 片野　博之
  *
  */
-@XmlSeeAlso({XmlDate.class, XmlTime.class, XmlDateTime.class})
+@XmlSeeAlso({ XmlDate.class, XmlTime.class, XmlDateTime.class })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Tenant implements Definition {
@@ -86,7 +86,13 @@ public class Tenant implements Definition {
 	private String description;
 
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(
+			itemNameGetter = "getName",
+			itemKey = "displayName",
+			itemGetter = "getDisplayName",
+			itemSetter = "setDisplayName",
+			multiLangGetter = "getLocalizedDisplayNameList",
+			multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	/** 表示名(Localized) */
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
@@ -208,7 +214,7 @@ public class Tenant implements Definition {
 	 * @return 作成者
 	 */
 	public String getCreateUser() {
-	    return createUser;
+		return createUser;
 	}
 
 	/**
@@ -216,7 +222,7 @@ public class Tenant implements Definition {
 	 * @param createUser 作成者
 	 */
 	public void setCreateUser(String createUser) {
-	    this.createUser = createUser;
+		this.createUser = createUser;
 	}
 
 	/**
@@ -224,7 +230,7 @@ public class Tenant implements Definition {
 	 * @return 作成日時
 	 */
 	public Timestamp getCreateDate() {
-	    return createDate;
+		return createDate;
 	}
 
 	/**
@@ -232,7 +238,7 @@ public class Tenant implements Definition {
 	 * @param createDate 作成日時
 	 */
 	public void setCreateDate(Timestamp createDate) {
-	    this.createDate = createDate;
+		this.createDate = createDate;
 	}
 
 	/**
@@ -240,7 +246,7 @@ public class Tenant implements Definition {
 	 * @return 更新者
 	 */
 	public String getUpdateUser() {
-	    return updateUser;
+		return updateUser;
 	}
 
 	/**
@@ -248,7 +254,7 @@ public class Tenant implements Definition {
 	 * @param updateUser 更新者
 	 */
 	public void setUpdateUser(String updateUser) {
-	    this.updateUser = updateUser;
+		this.updateUser = updateUser;
 	}
 
 	/**
@@ -256,7 +262,7 @@ public class Tenant implements Definition {
 	 * @return 更新日時
 	 */
 	public Timestamp getUpdateDate() {
-	    return updateDate;
+		return updateDate;
 	}
 
 	/**
@@ -264,7 +270,7 @@ public class Tenant implements Definition {
 	 * @param updateDate 更新日時
 	 */
 	public void setUpdateDate(Timestamp updateDate) {
-	    this.updateDate = updateDate;
+		this.updateDate = updateDate;
 	}
 
 	/**
@@ -321,8 +327,10 @@ public class Tenant implements Definition {
 
 	public void setTenantConfigs(List<TenantConfig> tenantConfigs) {
 		if (tenantConfigs != null) {
-			this.tenantConfigs = tenantConfigs.stream().collect(
-					Collectors.toMap(config -> config.getClass().getName(), config -> config));
+			this.tenantConfigs = tenantConfigs.stream()
+					.collect(
+							Collectors.toMap(config -> config.getClass()
+									.getName(), config -> config));
 		} else {
 			this.tenantConfigs = null;
 		}
@@ -332,13 +340,14 @@ public class Tenant implements Definition {
 		if (tenantConfigs == null) {
 			tenantConfigs = new HashMap<>();
 		}
-		tenantConfigs.put(tenantConfig.getClass().getName(), tenantConfig);
+		tenantConfigs.put(tenantConfig.getClass()
+				.getName(), tenantConfig);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends TenantConfig> T getTenantConfig(Class<T> tenantConfigClass) {
 		if (tenantConfigs != null) {
-			return (T)tenantConfigs.get(tenantConfigClass.getName());
+			return (T) tenantConfigs.get(tenantConfigClass.getName());
 		}
 		return null;
 	}

@@ -47,7 +47,7 @@ public class LdapAccountHandle implements AccountHandle {
 	private boolean isInitialLogin;
 	private Map<String, Object> attributeMap;
 	private int authenticationProviderIndex;
-	
+
 	//LoginContextはSerializeできない。。。
 	@Deprecated
 	private transient LoginContext loginContext;
@@ -61,7 +61,7 @@ public class LdapAccountHandle implements AccountHandle {
 		this.uniqueKey = id;
 		this.loginContext = loginContext;
 	}
-	
+
 	public LdapAccountHandle(String id) {
 		this.id = id;
 		this.uniqueKey = id;
@@ -70,7 +70,7 @@ public class LdapAccountHandle implements AccountHandle {
 	public LoginContext getLoginContext() {
 		return loginContext;
 	}
-	
+
 	@Override
 	public boolean isAccountLocked() {
 		return isAccountLocked;
@@ -100,7 +100,7 @@ public class LdapAccountHandle implements AccountHandle {
 
 	@Override
 	public Map<String, Object> getAttributeMap() {
-		if(attributeMap == null){
+		if (attributeMap == null) {
 			attributeMap = new HashMap<String, Object>();
 		}
 		return attributeMap;
@@ -124,7 +124,7 @@ public class LdapAccountHandle implements AccountHandle {
 	public String getUnmodifiableUniqueKey() {
 		return uniqueKey;
 	}
-	
+
 	public void setUnmodifiableUniqueKey(String uniqueKey) {
 		this.uniqueKey = uniqueKey;
 	}

@@ -38,7 +38,8 @@ import org.iplass.mtp.transaction.Transaction;
 public class GroupCacheLogic implements LoadingAdapter<String, GroupContext> {
 
 	private final TenantAuthorizeContext authorizeContext;
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+	private EntityManager em = ManagerLocator.getInstance()
+			.getManager(EntityManager.class);
 
 	public GroupCacheLogic(TenantAuthorizeContext authorizeContext) {
 		this.authorizeContext = authorizeContext;
@@ -63,7 +64,7 @@ public class GroupCacheLogic implements LoadingAdapter<String, GroupContext> {
 					.from(Group.DEFINITION_NAME)
 					.where(new Equals(Group.CODE, key));
 
-			final String[] codeAndParentCode = {null, null, null};
+			final String[] codeAndParentCode = { null, null, null };
 			final ArrayList<String> childCodes = new ArrayList<String>();
 			em.search(q, new Predicate<Object[]>() {
 				@Override
@@ -81,7 +82,8 @@ public class GroupCacheLogic implements LoadingAdapter<String, GroupContext> {
 			if (codeAndParentCode[0] == null) {
 				return null;
 			}
-			return new GroupContext(codeAndParentCode[0], codeAndParentCode[1], codeAndParentCode[2], childCodes.toArray(new String[childCodes.size()]), authorizeContext);
+			return new GroupContext(codeAndParentCode[0], codeAndParentCode[1], codeAndParentCode[2], childCodes.toArray(new String[childCodes.size()]),
+					authorizeContext);
 		});
 	}
 
@@ -94,10 +96,12 @@ public class GroupCacheLogic implements LoadingAdapter<String, GroupContext> {
 	public List<GroupContext> loadByIndex(int indexType, Object indexVal) {
 		return null;
 	}
+
 	@Override
 	public long getVersion(GroupContext value) {
 		return 0;
 	}
+
 	@Override
 	public Object getIndexVal(int indexType, GroupContext value) {
 		return null;

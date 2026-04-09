@@ -39,15 +39,15 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class CacheAuthorizationCodeStore implements AuthorizationCodeStore, ServiceInitListener<OAuthAuthorizationService> {
 	public static final String DEFAULT_CACHE_NAMESPACE = "mtp.oauth.codeStore";
 	public static final String DEFAULT_SECURE_RANDOM_GENERATOR_NAME = "oauthAuthorizationCodeGenerator";
-	
+
 	private String secureRandomGeneratorName = DEFAULT_SECURE_RANDOM_GENERATOR_NAME;
 	private String cacheStoreName = DEFAULT_CACHE_NAMESPACE;
 
 	private long timeToLive = 3 * 60 * 1000;//default 3 min.
-	
+
 	private CacheStore cache;
 	private SecureRandomGenerator generator;
-	
+
 	public String getCacheStoreName() {
 		return cacheStoreName;
 	}
@@ -74,19 +74,25 @@ public class CacheAuthorizationCodeStore implements AuthorizationCodeStore, Serv
 
 	@Override
 	public void inited(OAuthAuthorizationService service, Config config) {
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		cache = cs.getCache(cacheStoreName);
-		generator = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator(secureRandomGeneratorName);
+		generator = ServiceRegistry.getRegistry()
+				.getService(SecureRandomService.class)
+				.createGenerator(secureRandomGeneratorName);
 	}
 
 	@Override
 	public void destroyed() {
 	}
-	
+
 	private String toKey(String code) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		int tenantId = ExecuteContext.getCurrentContext()
+				.getClientTenantId();
 		StringBuilder sb = new StringBuilder();
-		sb.append(tenantId).append("-").append(code);
+		sb.append(tenantId)
+				.append("-")
+				.append(code);
 		return sb.toString();
 	}
 

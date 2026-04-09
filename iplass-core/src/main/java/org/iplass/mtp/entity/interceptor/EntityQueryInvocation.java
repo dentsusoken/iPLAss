@@ -28,9 +28,11 @@ import org.iplass.mtp.entity.query.Query;
 public interface EntityQueryInvocation extends EntityInvocation<Void> {
 
 	public Query getQuery();
+
 	public void setQuery(Query query);
 
 	public Predicate<?> getPredicate();
+
 	public void setPredicate(Predicate<?> resultCallback);
 
 	public SearchOption getSearchOption();

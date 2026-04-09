@@ -38,7 +38,7 @@ public class CardLayout extends Canvas {
 		setMargin(0);
 		setPadding(0);
 
-		setOverflow(Overflow.AUTO);	//これを指定しないと余計な余白が表示される
+		setOverflow(Overflow.AUTO); //これを指定しないと余計な余白が表示される
 
 		//TODO 最大化して戻った場合にスクロールが表示されてしまうが、再描画しても消えない
 //		addResizedHandler(new ResizedHandler() {
@@ -55,11 +55,11 @@ public class CardLayout extends Canvas {
 
 	public void addCard(Object key, Canvas card) {
 
-		if(key == null) {
+		if (key == null) {
 			throw new IllegalArgumentException("key must not be NULL");
 		}
 
-		if(card == null) {
+		if (card == null) {
 			throw new IllegalArgumentException("card must not be NULL");
 		}
 
@@ -74,7 +74,7 @@ public class CardLayout extends Canvas {
 		this.addChild(card);
 		cards.put(key, card);
 
-		if(currentCardKey == null) {
+		if (currentCardKey == null) {
 			currentCardKey = key;
 		} else {
 			card.hide();
@@ -87,7 +87,9 @@ public class CardLayout extends Canvas {
 
 	public void showFirst() {
 		if (cards.size() > 0) {
-			showCard(cards.keySet().iterator().next());
+			showCard(cards.keySet()
+					.iterator()
+					.next());
 		} else {
 			throw new IllegalStateException("card not exist");
 		}
@@ -95,7 +97,9 @@ public class CardLayout extends Canvas {
 
 	public Canvas getFirstCardCanvas() {
 		if (cards.size() > 0) {
-			return getCard(cards.keySet().iterator().next());
+			return getCard(cards.keySet()
+					.iterator()
+					.next());
 		} else {
 			throw new IllegalStateException("card not exist");
 		}
@@ -103,7 +107,9 @@ public class CardLayout extends Canvas {
 
 	public Object getFirstCardKey() {
 		if (cards.size() > 0) {
-			return cards.keySet().iterator().next();
+			return cards.keySet()
+					.iterator()
+					.next();
 		} else {
 			throw new IllegalStateException("card not exist");
 		}
@@ -111,7 +117,7 @@ public class CardLayout extends Canvas {
 
 	public void showCard(Object key) {
 
-		if(key == null) {
+		if (key == null) {
 			throw new IllegalArgumentException("key must not be NULL");
 		}
 
@@ -137,7 +143,7 @@ public class CardLayout extends Canvas {
 	 * @return the currentCard
 	 */
 	public Canvas getCurrentCard() {
-		return  (currentCardKey==null) ? null : cards.get(currentCardKey);
+		return (currentCardKey == null) ? null : cards.get(currentCardKey);
 	}
 
 	/**

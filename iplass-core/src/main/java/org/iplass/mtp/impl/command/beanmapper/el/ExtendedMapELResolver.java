@@ -27,14 +27,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.entity.GenericEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotWritableException;
-
-import org.iplass.mtp.entity.GenericEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>カスタムのMapELResolver</p>
@@ -58,36 +58,42 @@ import org.slf4j.LoggerFactory;
 public class ExtendedMapELResolver extends ELResolver {
 	private static Logger log = LoggerFactory.getLogger(ExtendedMapELResolver.class);
 
-	static private Class<?> unmodifiableMapClass = Collections.unmodifiableMap(new HashMap<Object, Object>()).getClass();
-	
+	static private Class<?> unmodifiableMapClass = Collections.unmodifiableMap(new HashMap<Object, Object>())
+			.getClass();
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getValue(ELContext context, Object base, Object property) {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (base != null && base instanceof Map) {
 			context.setPropertyResolved(base, property);
 			@SuppressWarnings("rawtypes")
 			Map map = (Map) base;
-			
+
 			Object value = map.get(property);
 			if (value == null) {
 				BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
-				if (bmc.getElMapper().isAutoGrow()) {
-					PropertyInfo pi = bmc.getPropertyRef(map).getPropertyInfo();
-					
+				if (bmc.getElMapper()
+						.isAutoGrow()) {
+					PropertyInfo pi = bmc.getPropertyRef(map)
+							.getPropertyInfo();
+
 					try {
 						switch (pi.getComponentTypeKind()) {
 						case BEAN:
-							value = pi.getComponentType().newInstance();
+							value = pi.getComponentType()
+									.newInstance();
 							break;
 						case ENTITY:
-							if (pi.getComponentType().isInterface()) {
+							if (pi.getComponentType()
+									.isInterface()) {
 								value = new GenericEntity();
 							} else {
-								value = pi.getComponentType().newInstance();
+								value = pi.getComponentType()
+										.newInstance();
 							}
 							break;
 						case ARRAY:
@@ -106,16 +112,16 @@ public class ExtendedMapELResolver extends ELResolver {
 					} catch (Exception e) {
 						throw new ELException(e);
 					}
-					
+
 					if (value != null) {
 						map.put(property, value);
 					}
 				}
 			}
-			
+
 			return value;
 		}
-		
+
 		return null;
 	}
 
@@ -124,12 +130,12 @@ public class ExtendedMapELResolver extends ELResolver {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (base != null && base instanceof Map) {
 			context.setPropertyResolved(true);
 			return Object.class;
 		}
-		
+
 		return null;
 	}
 
@@ -139,7 +145,7 @@ public class ExtendedMapELResolver extends ELResolver {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (base != null && base instanceof Map) {
 			context.setPropertyResolved(base, property);
 			@SuppressWarnings("rawtypes")
@@ -148,20 +154,22 @@ public class ExtendedMapELResolver extends ELResolver {
 				throw new PropertyNotWritableException();
 			}
 			try {
-				
+
 				if (value instanceof String) {
 					//EL3.0の仕様上、nullをセットしようとしても、Stringの場合は空文字をセットしようとするのをnullをセットするようにする。
 					BeanMapperELContext bmc = (BeanMapperELContext) context.getContext(BeanMapperELContext.class);
-					if (bmc.getElMapper().isTrim()) {
+					if (bmc.getElMapper()
+							.isTrim()) {
 						value = ((String) value).trim();
 					}
-					if (bmc.getElMapper().isEmptyToNull()) {
+					if (bmc.getElMapper()
+							.isEmptyToNull()) {
 						if (((String) value).isEmpty()) {
 							value = null;
 						}
 					}
 				}
-				
+
 				map.put(property, value);
 			} catch (UnsupportedOperationException e) {
 				throw new PropertyNotWritableException();
@@ -174,7 +182,7 @@ public class ExtendedMapELResolver extends ELResolver {
 		if (context == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (base != null && base instanceof Map) {
 			context.setPropertyResolved(true);
 			return base.getClass() == unmodifiableMapClass;
@@ -187,12 +195,13 @@ public class ExtendedMapELResolver extends ELResolver {
 	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
 		if (base != null && base instanceof Map) {
 			Map map = (Map) base;
-			Iterator iter = map.keySet().iterator();
+			Iterator iter = map.keySet()
+					.iterator();
 			List<FeatureDescriptor> list = new ArrayList<FeatureDescriptor>();
 			while (iter.hasNext()) {
 				Object key = iter.next();
 				FeatureDescriptor descriptor = new FeatureDescriptor();
-				String name = (key == null) ? null: key.toString();
+				String name = (key == null) ? null : key.toString();
 				descriptor.setName(name);
 				descriptor.setDisplayName(name);
 				descriptor.setShortDescription("");
@@ -200,14 +209,14 @@ public class ExtendedMapELResolver extends ELResolver {
 				descriptor.setHidden(false);
 				descriptor.setPreferred(true);
 				if (key != null) {
-				    descriptor.setValue("type", key.getClass());
+					descriptor.setValue("type", key.getClass());
 				}
 				descriptor.setValue("resolvableAtDesignTime", Boolean.TRUE);
 				list.add(descriptor);
 			}
 			return list.iterator();
 		}
-		
+
 		return null;
 	}
 
@@ -216,7 +225,7 @@ public class ExtendedMapELResolver extends ELResolver {
 		if (base != null && base instanceof Map) {
 			return Object.class;
 		}
-		
+
 		return null;
 	}
 

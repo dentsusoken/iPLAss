@@ -27,7 +27,7 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebUtil;
 
 public class PreviewHandler {
-	public static final String CURRENT_TIMESTAMP ="org.iplass.mtp.currentTimestamp";
+	public static final String CURRENT_TIMESTAMP = "org.iplass.mtp.currentTimestamp";
 
 	public void init(RequestContext requestCotnext) {
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
@@ -80,7 +80,8 @@ public class PreviewHandler {
 	private boolean isUsePreview(ExecuteContext exec) {
 
 		if (exec.getCurrentTenant() != null) {
-			return WebUtil.getTenantWebInfo(exec.getCurrentTenant()).isUsePreview();
+			return WebUtil.getTenantWebInfo(exec.getCurrentTenant())
+					.isUsePreview();
 		}
 		return false;
 	}

@@ -25,32 +25,31 @@ import java.sql.Statement;
 
 import org.iplass.mtp.impl.rdb.adapter.MultiInsertContext;
 
-
 public class MysqlMultiInsertContext extends MultiInsertContext {
-	
+
 	private StringBuilder sb;
-	
+
 //	private boolean isInsert;
-	
+
 	public MysqlMultiInsertContext(Statement stmt) {
 		super(stmt);
 		sb = new StringBuilder();
 //		sb.append("INSERT ALL ");
 //		isInsert = false;
 	}
-	
+
 	@Override
 	public void addInsertSql(String sql) throws SQLException {
-		
+
 //		if (sql.regionMatches(true,0,"INSERT",0,6)) {
 //			sb.append(sql.substring(6));
 //			sb.append(" ");
 //			isInsert = true;
 //		} else {
-			super.addInsertSql(sql);
+		super.addInsertSql(sql);
 //		}
 	}
-	
+
 	@Override
 	public int[] execute() throws SQLException {
 //		if (isInsert) {
@@ -60,7 +59,5 @@ public class MysqlMultiInsertContext extends MultiInsertContext {
 //		}
 		return super.execute();
 	}
-	
-	
 
 }

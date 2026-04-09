@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.shared.metadata.dto.Name;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.AnalysisListDataResult;
@@ -56,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implements RefrectionService {
 
@@ -193,7 +192,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 						}
 
 						Collections.sort(nameList, (name1, name2) -> {
-							return name1.getName().compareTo(name2.getName());
+							return name1.getName()
+									.compareTo(name2.getName());
 						});
 						return nameList.toArray(new Name[nameList.size()]);
 					}
@@ -236,7 +236,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 		for (Object constants : cls.getEnumConstants()) {
 			// Deprecatedされてない最初の要素を返す
 			try {
-				if (!cls.getField(constants.toString()).isAnnotationPresent(Deprecated.class)) {
+				if (!cls.getField(constants.toString())
+						.isAnnotationPresent(Deprecated.class)) {
 					return constants;
 				}
 			} catch (SecurityException e) {
@@ -316,7 +317,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 			getFieldInfo(list, cls.getSuperclass(), ignoreFields);
 		}
 
-		EntityViewService evs = ServiceRegistry.getRegistry().getService(EntityViewService.class);
+		EntityViewService evs = ServiceRegistry.getRegistry()
+				.getService(EntityViewService.class);
 		for (Field field : cls.getDeclaredFields()) {
 			MetaFieldInfo annotation = field.getAnnotation(MetaFieldInfo.class);
 			if (annotation != null && !ignoreFields.contains(field.getName())) {
@@ -332,7 +334,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				info.setMaxRange(annotation.maxRange());
 				info.setMinRange(annotation.minRange());
 				info.setMultiple(annotation.multiple());
-				info.setReferenceClassName(annotation.referenceClass().getName());
+				info.setReferenceClassName(annotation.referenceClass()
+						.getName());
 				if (annotation.fixedReferenceClass().length > 0) {
 					List<Name> nameList = new ArrayList<>();
 					for (Class<?> fixedReferenceClass : annotation.fixedReferenceClass()) {
@@ -344,8 +347,10 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 					info.setFixedReferenceClass(nameList.toArray(new Name[] {}));
 				}
 				if (annotation.inputType() == InputType.ENUM && annotation.enumClass() != null
-						&& annotation.enumClass().isEnum()) {
-					info.setEnumClassName(annotation.enumClass().getName());
+						&& annotation.enumClass()
+								.isEnum()) {
+					info.setEnumClassName(annotation.enumClass()
+							.getName());
 					List<Serializable> enumValues = new ArrayList<>();
 
 					List<String> fixedEnumValues = null;
@@ -353,10 +358,12 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 						fixedEnumValues = Arrays.asList(annotation.fixedEnumValue());
 					}
 
-					for (Object constants : annotation.enumClass().getEnumConstants()) {
+					for (Object constants : annotation.enumClass()
+							.getEnumConstants()) {
 						// Deprecatedなメソッドは選択させない
 						try {
-							if (!annotation.enumClass().getField(constants.toString())
+							if (!annotation.enumClass()
+									.getField(constants.toString())
 									.isAnnotationPresent(Deprecated.class)) {
 								// 固定値が指定されている場合は、それのみ指定
 								if (fixedEnumValues != null && !fixedEnumValues.contains(constants.toString())) {
@@ -375,7 +382,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				}
 				// 入力型がプロパティかつ除外タイプがある場合
 				if (annotation.inputType() == InputType.PROPERTY && annotation.excludePropertyType() != null
-						 && annotation.excludePropertyType().length > 0) {
+						&& annotation.excludePropertyType().length > 0) {
 					info.setExcludePropertyType(annotation.excludePropertyType());
 				}
 				info.setMode(annotation.mode());
@@ -460,7 +467,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 	 */
 	private Map<String, Serializable> getFieldValues(Class<?> cls, Refrectable object, FieldInfo[] fields) {
 		Map<String, Serializable> valueMap = new HashMap<>();
-		if (object == null || cls.getName().equals(Object.class.getName()))
+		if (object == null || cls.getName()
+				.equals(Object.class.getName()))
 			return valueMap;
 
 		if (cls.getSuperclass() != null && cls.getSuperclass() instanceof Object) {
@@ -527,7 +535,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 							Method enumValueOf = enumClass.getMethod("valueOf", String.class);
 							if (field.getType() == List.class) {
 								@SuppressWarnings("unchecked")
-								List<String> strValues = (List<String>)valueMap.get(info.getName());
+								List<String> strValues = (List<String>) valueMap.get(info.getName());
 								List<Object> enumValues = new ArrayList<>(strValues.size());
 								for (String strValue : strValues) {
 									//ブランクは除外

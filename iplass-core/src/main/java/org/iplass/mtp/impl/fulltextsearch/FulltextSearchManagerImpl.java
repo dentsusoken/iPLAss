@@ -28,7 +28,8 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class FulltextSearchManagerImpl implements FulltextSearchManager {
 
-	FulltextSearchService service = ServiceRegistry.getRegistry().getService(FulltextSearchService.class);
+	FulltextSearchService service = ServiceRegistry.getRegistry()
+			.getService(FulltextSearchService.class);
 
 	@Override
 	public boolean isUseFulltextSearch() {

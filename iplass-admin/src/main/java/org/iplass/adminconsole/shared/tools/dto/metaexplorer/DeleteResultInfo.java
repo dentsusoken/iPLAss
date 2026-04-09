@@ -76,9 +76,11 @@ public class DeleteResultInfo implements Serializable {
 	public void addErrorMessage(String message) {
 		addMessage(Level.ERROR, message);
 	}
+
 	public void addWarnMessage(String message) {
 		addMessage(Level.WARN, message);
 	}
+
 	public void addInfoMessage(String message) {
 		addMessage(Level.INFO, message);
 	}
@@ -95,6 +97,7 @@ public class DeleteResultInfo implements Serializable {
 	public boolean isError() {
 		return isError;
 	}
+
 	public boolean isWarn() {
 		return isWarn;
 	}
@@ -102,9 +105,11 @@ public class DeleteResultInfo implements Serializable {
 	public int getDeleteCount() {
 		return deleteCount;
 	}
+
 	public void setDeleteCount(int deleteCount) {
 		this.deleteCount = deleteCount;
 	}
+
 	public void addDeleteCount() {
 		deleteCount++;
 	}
@@ -112,9 +117,11 @@ public class DeleteResultInfo implements Serializable {
 	public int getErrorCount() {
 		return errorCount;
 	}
+
 	public void setErrorCount(int errorCount) {
 		this.errorCount = errorCount;
 	}
+
 	public void addErrorCount() {
 		errorCount++;
 	}
@@ -122,9 +129,11 @@ public class DeleteResultInfo implements Serializable {
 	public int getWarnCount() {
 		return warnCount;
 	}
+
 	public void setWarnCount(int warnCount) {
 		this.warnCount = warnCount;
 	}
+
 	public void addWarnCount() {
 		warnCount++;
 	}
@@ -133,11 +142,13 @@ public class DeleteResultInfo implements Serializable {
 		checkError(level);
 		checkWarn(level);
 	}
+
 	private void checkError(Level level) {
 		if (Level.ERROR.equals(level)) {
 			isError = true;
 		}
 	}
+
 	private void checkWarn(Level level) {
 		if (Level.WARN.equals(level)) {
 			isWarn = true;

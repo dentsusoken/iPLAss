@@ -33,7 +33,7 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	private List<EventType> listenEvent;
 	private List<String> destinationList;
 	private boolean sendTogether;
-	
+
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
 	private String responseHandler;

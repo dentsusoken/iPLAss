@@ -43,7 +43,6 @@ import org.iplass.mtp.view.menu.NodeMenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-
 public class MenuPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
@@ -113,24 +112,27 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
-		service.deleteDefinition(TenantInfoHolder.getId(), MenuTree.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToDeleteMenu") + caught.getMessage());
-			}
-			@Override
-			public void onSuccess(AdminDefinitionModifyResult result) {
-				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_deleteMenuComp"));
+		service.deleteDefinition(TenantInfoHolder.getId(), MenuTree.class.getName(), itemNode.getDefName(),
+				new AsyncCallback<AdminDefinitionModifyResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// 失敗時
+						SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToDeleteMenu") + caught.getMessage());
+					}
 
-					refresh();
-					removeTab(itemNode);
-				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToGetMenuItemCause") + result.getMessage());
-				}
-			}
-		});
+					@Override
+					public void onSuccess(AdminDefinitionModifyResult result) {
+						if (result.isSuccess()) {
+							SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_deleteMenuComp"));
+
+							refresh();
+							removeTab(itemNode);
+						} else {
+							SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToGetMenuItemCause")
+									+ result.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
@@ -140,7 +142,7 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{MenuEditPane.class};
+		return new Class[] { MenuEditPane.class };
 	}
 
 	/**
@@ -149,7 +151,8 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 	@Override
 	public boolean isEditSupportMetaData(ViewMetaDataEvent event) {
 		return (definitionClassName().equals(event.getDefinitionClassName())
-				|| MenuItem.class.getName().equals(event.getDefinitionClassName()));
+				|| MenuItem.class.getName()
+						.equals(event.getDefinitionClassName()));
 	}
 
 	/**
@@ -164,7 +167,8 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 
 		if (definitionClassName().equals(event.getDefinitionClassName())) {
 			addTabOnViewMetaDataEvent(event);
-		} else if (MenuItem.class.getName().equals(event.getDefinitionClassName())) {
+		} else if (MenuItem.class.getName()
+				.equals(event.getDefinitionClassName())) {
 			//MenuItemはダイアログで表示なので、ここで検索
 			service.getDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), event.getDefinitionName(), new AsyncCallback<MenuItem>() {
 				@Override
@@ -172,6 +176,7 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 					// 失敗時
 					SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToGetMenuItemCause") + caught.getMessage());
 				}
+
 				@Override
 				public void onSuccess(MenuItem result) {
 					if (result == null) {

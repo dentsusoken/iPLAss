@@ -35,9 +35,9 @@ public interface AuthorizationProvider extends ServiceInitListener<AuthService> 
 
 	//sharedの権限の際に、shareTenant側のロールで判断したいため、tenantIdの引数が必要。。。
 	public boolean userInRole(AuthContextHolder userAuthContext, int tenantId, String role);
-	
+
 	public boolean useSharedPermission(Permission permission);
-	
+
 	public AuthorizationContext getAuthorizationContext(int tenantId, Permission permission);
 
 }

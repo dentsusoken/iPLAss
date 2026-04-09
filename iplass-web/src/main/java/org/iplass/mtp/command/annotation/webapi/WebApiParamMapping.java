@@ -31,8 +31,10 @@ public @interface WebApiParamMapping {
 	 * WebApiのパスを除いたサブパスの文字列をマップする場合の定数です。
 	 */
 	public static final String PATHS = WebApiParamMapDefinition.PATHS;
-	
+
 	String name();
+
 	String mapFrom();
+
 	String condition() default "##default";
 }

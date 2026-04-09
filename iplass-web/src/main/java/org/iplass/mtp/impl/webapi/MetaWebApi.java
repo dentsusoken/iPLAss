@@ -34,15 +34,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.Variant;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.mtp.command.CommandRuntimeException;
 import org.iplass.mtp.command.RequestContext;
@@ -88,6 +79,15 @@ import org.iplass.mtp.webapi.definition.WebApiResultAttribute;
 import org.iplass.mtp.webapi.definition.WebApiStubContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Variant;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * WebAPI メタデータ
@@ -280,7 +280,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	public void setSynchronizeOnSession(boolean synchronizeOnSession) {
 		this.synchronizeOnSession = synchronizeOnSession;
 	}
-
 
 	public boolean isCheckXRequestedWithHeader() {
 		return isCheckXRequestedWithHeader;
@@ -607,8 +606,10 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private GroovyTemplate accessControlAllowOriginTemplate;
 		private List<Variant> variants;
 
-		private WebApiService service = ServiceRegistry.getRegistry().getService(WebApiService.class);
-		private InterceptorService is = ServiceRegistry.getRegistry().getService(InterceptorService.class);
+		private WebApiService service = ServiceRegistry.getRegistry()
+				.getService(WebApiService.class);
+		private InterceptorService is = ServiceRegistry.getRegistry()
+				.getService(InterceptorService.class);
 
 		private MethodType specificMethod;
 		private String parentName;
@@ -629,7 +630,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private Map<String, List<WebApiStubContentRuntime>> stubContentsMap;
 
 		public WebApiRuntime() {
-			var webApiService = ServiceRegistry.getRegistry().getService(WebApiService.class);
+			var webApiService = ServiceRegistry.getRegistry()
+					.getService(WebApiService.class);
 
 			try {
 				if (command != null) {
@@ -654,7 +656,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 				if (webApiParamMap != null) {
 					webApiParamMapRuntimes = new HashMap<>();
-					for (MetaWebApiParamMap p: webApiParamMap) {
+					for (MetaWebApiParamMap p : webApiParamMap) {
 						WebApiParamMapRuntime pmr = p.createRuntime();
 						List<WebApiParamMapRuntime> pmrList = webApiParamMapRuntimes.get(p.getName());
 						if (pmrList == null) {
@@ -665,9 +667,12 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					}
 				}
 
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				ScriptEngine se = ExecuteContext.getCurrentContext()
+						.getTenantContext()
+						.getScriptEngine();
 				if (accessControlAllowOrigin != null && accessControlAllowOrigin.length() != 0) {
-					accessControlAllowOriginTemplate = GroovyTemplateCompiler.compile(accessControlAllowOrigin, "AccessControlAllowOriginTemplate" + getName(), (GroovyScriptEngine) se);
+					accessControlAllowOriginTemplate = GroovyTemplateCompiler.compile(accessControlAllowOrigin,
+							"AccessControlAllowOriginTemplate" + getName(), (GroovyScriptEngine) se);
 				}
 
 				//variants
@@ -677,21 +682,28 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					for (int i = 0; i < rtList.length; i++) {
 						mtList[i] = MediaType.valueOf(rtList[i].trim());
 					}
-					variants = Variant.mediaTypes(mtList).add().build();
+					variants = Variant.mediaTypes(mtList)
+							.add()
+							.build();
 				} else {
-					variants = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE).add().build();
+					variants = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
+							.add()
+							.build();
 				}
 
 				//method
-				for (MethodType mt: MethodType.values()) {
-					if (name.endsWith(mt.toString()) && name.charAt(name.length() - mt.toString().length() - 1) == '/') {
+				for (MethodType mt : MethodType.values()) {
+					if (name.endsWith(mt.toString()) && name.charAt(name.length() - mt.toString()
+							.length() - 1) == '/') {
 						specificMethod = mt;
-						parentName = name.substring(0, name.length() - mt.toString().length() - 1);
+						parentName = name.substring(0, name.length() - mt.toString()
+								.length() - 1);
 						break;
 					}
 				}
 
-				WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+				WebFrontendService wfs = ServiceRegistry.getRegistry()
+						.getService(WebFrontendService.class);
 				if (getCacheControlType() != null) {
 					cacheControlType = getCacheControlType();
 				} else {
@@ -712,7 +724,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 						}
 						if (methods != null && methods.length > 0) {
 							ArrayList<String> aml = new ArrayList<>(methods.length);
-							for (MethodType hmt: methods) {
+							for (MethodType hmt : methods) {
 								aml.add(hmt.toString());
 							}
 							requestRestrictionRuntime.setAllowMethods(aml);
@@ -727,15 +739,13 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 				corsAllowString = corsAllowString();
 
-
 				restJsonAcceptableContentTypeSet = restJsonAcceptableContentTypes != null
 						? new HashSet<>(Arrays.asList(restJsonAcceptableContentTypes))
-								: Collections.emptySet();
+						: Collections.emptySet();
 
 				restXmlAcceptableContentTypeSet = restXmlAcceptableContentTypes != null
 						? new HashSet<>(Arrays.asList(restXmlAcceptableContentTypes))
-								: Collections.emptySet();
-
+						: Collections.emptySet();
 
 				// responseResults 設定
 				List<WebApiResultAttributeRuntime> responseResultsRuntimeList = new ArrayList<>();
@@ -756,7 +766,11 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					for (int i = 0; i < results.length; i++) {
 						// responseResultsRuntimeList に同一の属性名を持つかを確認する
 						var attributeName = results[i];
-						var isNotContainsName = responseResultsRuntimeList.stream().filter(r -> r.getName().equals(attributeName)).findAny().isEmpty();
+						var isNotContainsName = responseResultsRuntimeList.stream()
+								.filter(r -> r.getName()
+										.equals(attributeName))
+								.findAny()
+								.isEmpty();
 						if (isNotContainsName) {
 							// 属性名が存在しない場合は、Runtime を作成し追加する
 							var attribute = new MetaWebApiResultAttribute();
@@ -767,7 +781,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 
 				responseResultsRuntime = responseResultsRuntimeList.toArray(WebApiResultAttributeRuntime[]::new);
-				responseResultsNameRuntimeMap = responseResultsRuntimeList.stream().collect(Collectors.toMap(r -> r.getName(), r -> r));
+				responseResultsNameRuntimeMap = responseResultsRuntimeList.stream()
+						.collect(Collectors.toMap(r -> r.getName(), r -> r));
 
 				// スタブコンテンツ
 				stubContentsMap = Collections.emptyMap();
@@ -807,7 +822,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					var metaAttribute = new MetaWebApiResultAttribute();
 					metaAttribute.setName(WebApiRequestConstants.DEFAULT_RESULT);
 					this.responseResultsRuntime = new WebApiResultAttributeRuntime[] { new WebApiResultAttributeRuntime(metaAttribute) };
-					this.responseResultsNameRuntimeMap = Stream.of(this.responseResultsRuntime).collect(Collectors.toMap(r -> r.getName(), r -> r));
+					this.responseResultsNameRuntimeMap = Stream.of(this.responseResultsRuntime)
+							.collect(Collectors.toMap(r -> r.getName(), r -> r));
 
 				} else if (!webApiService.isEnableStubResponse() && MetaWebApi.this.returnStubResponse) {
 					// WebApiService#isEnableStubResponse() は false だが、MetaWebApi#returnStubResponse が true の場合は、意図せずスタブモードで動作しようとしている
@@ -822,34 +838,44 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		private String corsAllowString() {
 			StringBuilder sb = new StringBuilder();
-			for (String m: requestRestrictionRuntime.getAllowMethods()) {
+			for (String m : requestRestrictionRuntime.getAllowMethods()) {
 				switch (m) {
 				case HttpMethod.GET:
-					sb.append(HttpMethod.GET).append(", ");
+					sb.append(HttpMethod.GET)
+							.append(", ");
 					break;
 				case HttpMethod.POST:
-					sb.append(HttpMethod.POST).append(", ");
+					sb.append(HttpMethod.POST)
+							.append(", ");
 					break;
 				case HttpMethod.PUT:
-					sb.append(HttpMethod.PUT).append(", ");
+					sb.append(HttpMethod.PUT)
+							.append(", ");
 					break;
 				case HttpMethod.DELETE:
-					sb.append(HttpMethod.DELETE).append(", ");
+					sb.append(HttpMethod.DELETE)
+							.append(", ");
 					break;
 				case HttpMethod.PATCH:
-					sb.append(HttpMethod.PATCH).append(", ");
+					sb.append(HttpMethod.PATCH)
+							.append(", ");
 					break;
 				case WILDCARD:
 					// GET
-					sb.append(HttpMethod.GET).append(", ");
+					sb.append(HttpMethod.GET)
+							.append(", ");
 					// POST
-					sb.append(HttpMethod.POST).append(", ");
+					sb.append(HttpMethod.POST)
+							.append(", ");
 					// PUT
-					sb.append(HttpMethod.PUT).append(", ");
+					sb.append(HttpMethod.PUT)
+							.append(", ");
 					// DELETE
-					sb.append(HttpMethod.DELETE).append(", ");
+					sb.append(HttpMethod.DELETE)
+							.append(", ");
 					// PATCH
-					sb.append(HttpMethod.PATCH).append(", ");
+					sb.append(HttpMethod.PATCH)
+							.append(", ");
 					break;
 				default:
 					// HEAD, TRACE, CONNECT は設定しない
@@ -882,7 +908,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		public List<WebApiRuntime> getIndividualRuntime() {
 			List<WebApiRuntime> rl = new ArrayList<>(MethodType.values().length);
-			for (MethodType mt: MethodType.values()) {
+			for (MethodType mt : MethodType.values()) {
 				WebApiRuntime r = service.getRuntimeByName(parentName + "/" + mt.toString());
 				if (r != null) {
 					rl.add(r);
@@ -913,7 +939,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				String acao = sw.toString().trim();
+				String acao = sw.toString()
+						.trim();
 				if (acao.length() == 0 || "null".equals(acao)) {
 					return null;
 				} else {
@@ -957,7 +984,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			}
 
 			if (cc != null && cc.getAllowOrigin() != null) {
-				for (String s: cc.getAllowOrigin()) {
+				for (String s : cc.getAllowOrigin()) {
 					if (corsAllowOrign(origin, s)) {
 						return true;
 					}
@@ -971,7 +998,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			if (accessControlAllowOrigin != null) {
 				if (accessControlAllowOrigin.indexOf(' ') >= 0) {
 					String[] accessControlAllowOriginArray = StringUtil.split(accessControlAllowOrigin, ' ');
-					for (String s: accessControlAllowOriginArray) {
+					for (String s : accessControlAllowOriginArray) {
 						if (isMatchOrigin(origin, s)) {
 							return true;
 						}
@@ -1016,7 +1043,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 				//parameter map
 				if (webApiParamMap != null) {
-					WebApiVariableParameterValueMap variableValueMap = new WebApiVariableParameterValueMap(currentValueMap, stack.getRequestPath(), this);
+					WebApiVariableParameterValueMap variableValueMap = new WebApiVariableParameterValueMap(currentValueMap, stack.getRequestPath(),
+							this);
 					webRequestContext.setValueMap(variableValueMap);
 				}
 			}
@@ -1033,7 +1061,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		public void checkXRequestedWith(HttpServletRequest request) {
 			//prevent JSON hijack and CSRF
 			if (isCheckXRequestedWithHeader) {
-				for (Map.Entry<String, String> e: service.getXRequestedWithMap().entrySet()) {
+				for (Map.Entry<String, String> e : service.getXRequestedWithMap()
+						.entrySet()) {
 					String xRequestedWith = request.getHeader(e.getKey());
 					if (xRequestedWith != null && xRequestedWith.equals(e.getValue())) {
 						return;
@@ -1071,7 +1100,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		public void checkRequestType(RequestType requestAcceptType, HttpServletRequest request) {
 			if (accepts != null && accepts.length >= 1) {
 				// 許可リクエストタイプが設定されている
-				for (RequestType a: accepts) {
+				for (RequestType a : accepts) {
 					if (a == requestAcceptType) {
 						return;
 					}
@@ -1120,7 +1149,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				return false;
 			}
 
-			for (String os: oauthScopes) {
+			for (String os : oauthScopes) {
 				if (os.indexOf(' ') > 0) {
 					String[] osSplit = os.split(" ");
 					if (grantedScopes.containsAll(Arrays.asList(osSplit))) {
@@ -1288,7 +1317,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		definition.setReturnStubResponse(returnStubResponse);
 		definition.setStubDefaultContent(stubDefaultContent);
-		var defStubContents = null != stubContents ? Stream.of(stubContents).map(c -> c.currentConfig()).toArray(WebApiStubContent[]::new) : null;
+		var defStubContents = null != stubContents ? Stream.of(stubContents)
+				.map(c -> c.currentConfig())
+				.toArray(WebApiStubContent[]::new) : null;
 		definition.setStubContents(defStubContents);
 
 		definition.setOpenApiVersion(openApiVersion);
@@ -1387,14 +1418,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		restJsonAcceptableContentTypes = definition.getRestJsonAcceptableContentTypes() != null
 				// null ではない場合
 				? Arrays.copyOf(definition.getRestJsonAcceptableContentTypes(), definition.getRestJsonAcceptableContentTypes().length)
-						// null の場合
-						: null;
+				// null の場合
+				: null;
 
 		restXmlAcceptableContentTypes = definition.getRestXmlAcceptableContentTypes() != null
 				// null ではない場合
 				? Arrays.copyOf(definition.getRestXmlAcceptableContentTypes(), definition.getRestXmlAcceptableContentTypes().length)
-						// null の場合
-						: null;
+				// null の場合
+				: null;
 
 		if (definition.getTokenCheck() != null) {
 			tokenCheck = new MetaWebApiTokenCheck();

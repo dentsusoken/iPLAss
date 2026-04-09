@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.exception.WriteLimitReachedException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.ParseContext;
@@ -71,7 +72,8 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 
 	@Override
 	public String parse(BinaryReference br, int writeLimit) {
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
 
 		try (InputStream is = em.getInputStream(br)) {
 
@@ -82,19 +84,20 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 			try {
 				parser.parse(is, handler, metadata, new ParseContext());
 			} catch (SAXException e) {
-				//privateクラスのためクラス名で判定
-				if (e.getClass().getName().equals("org.apache.tika.sax.WriteOutContentHandler$WriteLimitReachedException")) {
+				if (WriteLimitReachedException.isWriteLimitReached(e)) {
 					//コンテンツのLimitに引っかかった場合はWARNログを出して、今までの結果を出力
-					logger.warn(br.getName() + " contained more than " + writeLimit + " characters. so cut " + writeLimit + " characters.");
+					logger.warn("{} contained more than {} characters. so cut {} characters.", br.getName(), writeLimit,
+							writeLimit);
 				} else {
-					throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
+					throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 				}
 			} catch (TikaException e) {
-				throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
+				throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 			} catch (Throwable e) {
 				//タイプに一致するParserで必要なClassがなかったもしくは、処理継続可能な例外クラスに設定されていた場合、BinaryReferenceParseExceptionをthrow
-				if (e instanceof NoClassDefFoundError || continuableExceptions.contains(e.getClass().getName())) {
-					throw new BinaryReferenceParseException("Exception occured on index creating process.", e);
+				if (e instanceof NoClassDefFoundError || continuableExceptions.contains(e.getClass()
+						.getName())) {
+					throw new BinaryReferenceParseException("Exception occurred on index creating process.", e);
 				} else {
 					throw e;
 				}
@@ -111,7 +114,7 @@ public abstract class AbstractBinaryReferenceParser implements BinaryReferencePa
 			}
 
 		} catch (IOException e) {
-			throw new FulltextSearchRuntimeException("Exception occured on index creating process.", e);
+			throw new FulltextSearchRuntimeException("Exception occurred on index creating process.", e);
 		}
 	}
 

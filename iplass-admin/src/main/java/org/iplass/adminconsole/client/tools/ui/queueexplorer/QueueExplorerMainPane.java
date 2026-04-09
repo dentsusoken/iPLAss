@@ -71,7 +71,7 @@ public class QueueExplorerMainPane extends VLayout implements ContentStateChange
 		//queueNameItem.setShowTitle(false);
 		queueNameItem.setWidth(200);
 		QueueListDS.setDataSource(queueNameItem, false);
-		queueNameItem.setAutoFetchData(false);	//Fetchは初期表示時に行う
+		queueNameItem.setAutoFetchData(false); //Fetchは初期表示時に行う
 
 		queueNameItem.addChangedHandler(new ChangedHandler() {
 
@@ -139,6 +139,7 @@ public class QueueExplorerMainPane extends VLayout implements ContentStateChange
 	}
 
 	private static final String RES_PREFIX = "ui_tools_queueexplorer_QueueExplorerMainPane_";
+
 	private String getResString(String key) {
 		return AdminClientMessageUtil.getString(RES_PREFIX + key);
 	}

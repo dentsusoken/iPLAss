@@ -89,7 +89,9 @@ public class MetaValidationLength extends MetaValidation {
 	@Override
 	public ValidationHandler createRuntime(MetaEntity entity, MetaProperty property) {
 
-		final String charset = ServiceRegistry.getRegistry().getService(StoreService.class).getCharset();
+		final String charset = ServiceRegistry.getRegistry()
+				.getService(StoreService.class)
+				.getCharset();
 		return new ValidationHandler(this, entity, property) {
 
 			@Override
@@ -100,10 +102,12 @@ public class MetaValidationLength extends MetaValidation {
 						entityDisplayName);
 				if (msg != null) {
 					if (msg.contains("${max}")) {
-						msg = maxPattern.matcher(msg).replaceAll(String.valueOf(max));
+						msg = maxPattern.matcher(msg)
+								.replaceAll(String.valueOf(max));
 					}
 					if (msg.contains("${min}")) {
-						msg = minPattern.matcher(msg).replaceAll(String.valueOf(min));
+						msg = minPattern.matcher(msg)
+								.replaceAll(String.valueOf(min));
 					}
 				}
 				return msg;

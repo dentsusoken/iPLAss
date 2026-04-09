@@ -41,7 +41,7 @@ public class DefinitionLocalizedInfo {
 	 * @return definitionのパス
 	 */
 	public String getPath() {
-	    return path;
+		return path;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class DefinitionLocalizedInfo {
 	 * @param path definitionのパス
 	 */
 	public void setPath(String path) {
-	    this.path = path;
+		this.path = path;
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class DefinitionLocalizedInfo {
 	 * @return 各項目の多言語情報
 	 */
 	public Map<String, MultiLangFieldInfo> getFieldInfoList() {
-	    return fieldInfoList;
+		return fieldInfoList;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class DefinitionLocalizedInfo {
 	 * @param fieldInfoList 各項目の多言語情報
 	 */
 	public void setFieldInfoList(Map<String, MultiLangFieldInfo> fieldInfoList) {
-	    this.fieldInfoList = fieldInfoList;
+		this.fieldInfoList = fieldInfoList;
 	}
 
 	/**
@@ -74,7 +74,8 @@ public class DefinitionLocalizedInfo {
 	 * @param fieldInfo 多言語情報
 	 */
 	public void addFieldInfo(String key, MultiLangFieldInfo fieldInfo) {
-	    if (this.fieldInfoList == null) this.fieldInfoList = new LinkedHashMap<String, MultiLangFieldInfo>();
-	    this.fieldInfoList.put(key, fieldInfo);
+		if (this.fieldInfoList == null)
+			this.fieldInfoList = new LinkedHashMap<String, MultiLangFieldInfo>();
+		this.fieldInfoList.put(key, fieldInfo);
 	}
 }

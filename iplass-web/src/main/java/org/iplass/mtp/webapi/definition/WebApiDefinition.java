@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.webapi.definition;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.command.definition.config.CommandConfig;
 import org.iplass.mtp.definition.Definition;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class WebApiDefinition implements Definition {

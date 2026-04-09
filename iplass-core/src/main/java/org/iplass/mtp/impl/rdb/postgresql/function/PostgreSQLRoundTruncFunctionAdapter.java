@@ -40,11 +40,13 @@ public class PostgreSQLRoundTruncFunctionAdapter extends RoundTruncFunctionAdapt
 		context.append(sqlFunctionName);
 		context.append("(");
 		if (function.getArguments() != null) {
-			for (int i = 0; i < function.getArguments().size(); i++) {
+			for (int i = 0; i < function.getArguments()
+					.size(); i++) {
 				if (i != 0) {
 					context.append(",");
 				}
-				context.appendArgument(function.getArguments().get(i));
+				context.appendArgument(function.getArguments()
+						.get(i));
 				if (i == 0) {
 					context.append("::numeric");
 				}
@@ -52,8 +54,6 @@ public class PostgreSQLRoundTruncFunctionAdapter extends RoundTruncFunctionAdapt
 		}
 		context.append(")");
 	}
-
-
 
 	@Override
 	public void toSQL(StringBuilder context, List<CharSequence> args, RdbAdapter rdb) {

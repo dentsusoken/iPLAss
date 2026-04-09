@@ -98,8 +98,10 @@ public class MTPTestInvokerDecorator {
 		@Override
 		public T invoke(MTPTestConfig config) throws Throwable {
 			if (config.getConfigFileName() != null) {
-				if (BootstrapProps.getInstance().replaceProperty(BootstrapProps.CONFIG_FILE_NAME, config.getConfigFileName())) {
-					ServiceRegistry.getRegistry().reInit();
+				if (BootstrapProps.getInstance()
+						.replaceProperty(BootstrapProps.CONFIG_FILE_NAME, config.getConfigFileName())) {
+					ServiceRegistry.getRegistry()
+							.reInit();
 				}
 			}
 
@@ -133,29 +135,36 @@ public class MTPTestInvokerDecorator {
 				isInit = ResourceHolder.init();
 
 				//ここでセットしておかないと、TransactionManagerが初期化されてしまう
-				TransactionService ts = ServiceRegistry.getRegistry().getService(TransactionService.class);
+				TransactionService ts = ServiceRegistry.getRegistry()
+						.getService(TransactionService.class);
 				if (!(ts instanceof TestTransactionService)) {
-					ServiceRegistry.getRegistry().setService(TransactionService.class.getName(), new TestTransactionService());
+					ServiceRegistry.getRegistry()
+							.setService(TransactionService.class.getName(), new TestTransactionService());
 				}
 
-				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext("/" + config.getTenantName());
+				TenantContext tc = ServiceRegistry.getRegistry()
+						.getService(TenantContextService.class)
+						.getTenantContext("/" + config.getTenantName());
 				if (tc == null) {
 					throw new IllegalArgumentException("tenantName:" + config.getTenantName() + " not found");
 				}
 				try {
 					return ExecuteContext.executeAs(tc, () -> {
 						try {
-							ClassLoader cl = Thread.currentThread().getContextClassLoader();
+							ClassLoader cl = Thread.currentThread()
+									.getContextClassLoader();
 							boolean replaceCl = config.isGroovy();
 							try {
 								if (replaceCl) {
-									Thread.currentThread().setContextClassLoader(((GroovyScriptEngine) tc.getScriptEngine()).getSharedClassLoader());
+									Thread.currentThread()
+											.setContextClassLoader(((GroovyScriptEngine) tc.getScriptEngine()).getSharedClassLoader());
 								}
 								return test.invoke(config);
 
 							} finally {
 								if (replaceCl) {
-									Thread.currentThread().setContextClassLoader(cl);
+									Thread.currentThread()
+											.setContextClassLoader(cl);
 								}
 							}
 						} catch (Throwable e) {
@@ -194,9 +203,11 @@ public class MTPTestInvokerDecorator {
 
 		@Override
 		public T invoke(MTPTestConfig config) throws Throwable {
-			TransactionService ts = ServiceRegistry.getRegistry().getService(TransactionService.class);
+			TransactionService ts = ServiceRegistry.getRegistry()
+					.getService(TransactionService.class);
 			if (!(ts instanceof TestTransactionService)) {
-				ServiceRegistry.getRegistry().setService(TransactionService.class.getName(), new TestTransactionService());
+				ServiceRegistry.getRegistry()
+						.setService(TransactionService.class.getName(), new TestTransactionService());
 			}
 			TestTransactionService.rollback = config.isRollbackTransaction();;
 			return test.invoke(config);
@@ -225,7 +236,8 @@ public class MTPTestInvokerDecorator {
 
 		@Override
 		public T invoke(MTPTestConfig config) throws Throwable {
-			AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+			AuthService as = ServiceRegistry.getRegistry()
+					.getService(AuthService.class);
 			if (Boolean.FALSE == config.isNoAuth()) {
 				as.login(new IdPasswordCredential(config.getUserId(), config.getPassword()));
 			} else {

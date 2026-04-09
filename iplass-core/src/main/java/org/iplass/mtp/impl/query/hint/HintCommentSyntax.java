@@ -33,20 +33,20 @@ import org.iplass.mtp.impl.query.QueryConstants;
 import org.iplass.mtp.impl.query.QueryServiceHolder;
 
 public class HintCommentSyntax implements Syntax<HintComment>, QueryConstants {
-	
+
 	private HintSyntax hint;
 
 	public HintComment parse(ParseContext str) throws ParseException {
-		
+
 		// /*+
 		if (!str.startsWith(LEFT_HINT_COMMENT)) {
 			throw new ParseException(new EvalError("/*+ expected.", this, str));
 		}
 		str.consumeChars(LEFT_HINT_COMMENT.length());
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
+
 		HintComment hc = new HintComment();
-		
+
 		//Hint
 		while (!str.startsWith(RIGHT_HINT_COMMENT)) {
 			int currentIndex = str.getCurrentIndex();
@@ -62,10 +62,10 @@ public class HintCommentSyntax implements Syntax<HintComment>, QueryConstants {
 			}
 		}
 		str.consumeChars(RIGHT_HINT_COMMENT.length());
-		
+
 		return hc;
 	}
-	
+
 	private boolean externalHint(ParseContext str, HintComment hc) throws ParseException {
 		if (!str.equalsNextToken(EXTERNAL_HINT, ParseContext.TOKEN_DELIMITERS)) {
 			return false;
@@ -80,15 +80,16 @@ public class HintCommentSyntax implements Syntax<HintComment>, QueryConstants {
 		if (key == null) {
 			throw new ParseException(new EvalError("External Hint key expected.", this, str));
 		}
-		List<Hint> ehs = QueryServiceHolder.getInstance().getExternalHint(key);
-		
+		List<Hint> ehs = QueryServiceHolder.getInstance()
+				.getExternalHint(key);
+
 		str.consumeChars(ParseContext.WHITE_SPACES);
 		if (str.popChar() != RIGHT_PAREN_CHAR) {
 			throw new ParseException(new EvalError(") expected.", this, str));
 		}
 		str.consumeChars(ParseContext.WHITE_SPACES);
-		
-		for (Hint h: ehs) {
+
+		for (Hint h : ehs) {
 			hc.add(h);
 		}
 		return true;

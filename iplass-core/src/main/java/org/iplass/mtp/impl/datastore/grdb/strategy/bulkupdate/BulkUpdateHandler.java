@@ -74,19 +74,21 @@ class BulkUpdateHandler {
 		colSize = new int[objStoreUpdateMapper.length];
 		for (int i = 0; i <= store.getCurrentMaxPage(); i++) {
 			if (i == 0) {
-				objStoreUpdateMapper[i] = ObjStoreBulkUpdateSql.updateMain(state.tenantId, state.eh, state.bulkUpdatable.getUpdateProperties(), state.rdb, state.entityContext);
+				objStoreUpdateMapper[i] = ObjStoreBulkUpdateSql.updateMain(state.tenantId, state.eh, state.bulkUpdatable.getUpdateProperties(),
+						state.rdb, state.entityContext);
 			} else {
-				objStoreUpdateMapper[i] = ObjStoreBulkUpdateSql.updateSub(state.tenantId, state.eh, i, state.bulkUpdatable.getUpdateProperties(), state.rdb, state.entityContext);
+				objStoreUpdateMapper[i] = ObjStoreBulkUpdateSql.updateSub(state.tenantId, state.eh, i, state.bulkUpdatable.getUpdateProperties(),
+						state.rdb, state.entityContext);
 			}
 
 			if (objStoreUpdateMapper[i] != null) {
 				BulkUpdateContext ret = state.rdb.createBulkUpdateContext();
 				List<ColumnValue> keyCv = new ArrayList<>();
-				for (ColumnValueMapper m: objStoreUpdateMapper[i].keys) {
+				for (ColumnValueMapper m : objStoreUpdateMapper[i].keys) {
 					m.columns(keyCv, state.rdb);
 				}
 				List<ColumnValue> valueCv = new ArrayList<>();
-				for (ColumnValueMapper m: objStoreUpdateMapper[i].values) {
+				for (ColumnValueMapper m : objStoreUpdateMapper[i].values) {
 					m.columns(valueCv, state.rdb);
 				}
 				ret.setContext(tableName, keyCv, valueCv, objStoreUpdateMapper[i].additionalConditionExpression, state.con);
@@ -99,8 +101,9 @@ class BulkUpdateHandler {
 		refs = state.eh.getReferencePropertyList(true, state.entityContext);
 		if (state.bulkUpdatable.getUpdateProperties() != null) {
 			ArrayList<ReferencePropertyHandler> filtered = new ArrayList<>();
-			for (ReferencePropertyHandler rph: refs) {
-				if (state.bulkUpdatable.getUpdateProperties().contains(rph.getName())) {
+			for (ReferencePropertyHandler rph : refs) {
+				if (state.bulkUpdatable.getUpdateProperties()
+						.contains(rph.getName())) {
 					filtered.add(rph);
 				}
 			}
@@ -115,13 +118,17 @@ class BulkUpdateHandler {
 		//外部Index
 		//version管理かつ、ユニークインデックスは更新しない
 		indexes = new ArrayList<>();
-		for (PrimitivePropertyHandler pph: state.eh.getIndexedPropertyList(state.entityContext)) {
-			if (state.bulkUpdatable.getUpdateProperties() == null || state.bulkUpdatable.getUpdateProperties().contains(pph.getName())) {
+		for (PrimitivePropertyHandler pph : state.eh.getIndexedPropertyList(state.entityContext)) {
+			if (state.bulkUpdatable.getUpdateProperties() == null || state.bulkUpdatable.getUpdateProperties()
+					.contains(pph.getName())) {
 				GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) pph.getStoreSpecProperty();
 				if (colDef.isExternalIndex()) {
 					boolean needAdd = true;
 					if (state.eh.isVersioned()) {
-						if (pph.getMetaData().getIndexType() == IndexType.UNIQUE || pph.getMetaData().getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
+						if (pph.getMetaData()
+								.getIndexType() == IndexType.UNIQUE
+								|| pph.getMetaData()
+										.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
 							needAdd = false;
 						}
 					}
@@ -131,15 +138,19 @@ class BulkUpdateHandler {
 				}
 			}
 		}
-		for (PrimitivePropertyHandler pph: indexes) {
+		for (PrimitivePropertyHandler pph : indexes) {
 			GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) pph.getStoreSpecProperty();
 			if (objIndexUpdate == null) {
 				objIndexUpdate = new HashMap<>();
 			}
-			IndexTableKey ikey = new IndexTableKey(pph.getMetaData().getIndexType(), colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
+			IndexTableKey ikey = new IndexTableKey(pph.getMetaData()
+					.getIndexType(),
+					colDef.getSingleColumnRdbTypeAdapter()
+							.getColOfIndex());
 			IndexUpdateContext iuc = objIndexUpdate.get(ikey);
 			if (iuc == null) {
-				GRdbPropertyStoreHandler col = colDef.asList().get(0);
+				GRdbPropertyStoreHandler col = colDef.asList()
+						.get(0);
 				iuc = new IndexUpdateContext();
 				iuc.objIndexDeleteByOidAndVersion = IndexBulkDeleteSql.deleteByOidVersionColName(col, state.con, state.rdb);
 				iuc.objIndexInsert = IndexBulkInsertSql.insert(col, state.con, state.rdb);
@@ -149,7 +160,7 @@ class BulkUpdateHandler {
 	}
 
 	public void flushAll() throws SQLException {
-		for (BulkUpdateContext buc: objStoreUpdate) {
+		for (BulkUpdateContext buc : objStoreUpdate) {
 			if (buc != null && buc.getCurrentSize() > 0) {
 				buc.execute();
 			}
@@ -165,7 +176,7 @@ class BulkUpdateHandler {
 			}
 		}
 		if (objIndexUpdate != null) {
-			for (Map.Entry<IndexTableKey, IndexUpdateContext> e: objIndexUpdate.entrySet()) {
+			for (Map.Entry<IndexTableKey, IndexUpdateContext> e : objIndexUpdate.entrySet()) {
 				if (e.getValue().objIndexDeleteByOidAndVersion.getCurrentSize() > 0) {
 					e.getValue().objIndexDeleteByOidAndVersion.execute();
 				}
@@ -177,7 +188,7 @@ class BulkUpdateHandler {
 	}
 
 	public void close() {
-		for (BulkUpdateContext buc: objStoreUpdate) {
+		for (BulkUpdateContext buc : objStoreUpdate) {
 			try {
 				if (buc != null) {
 					buc.close();
@@ -201,7 +212,7 @@ class BulkUpdateHandler {
 			}
 		}
 		if (objIndexUpdate != null) {
-			for (Map.Entry<IndexTableKey, IndexUpdateContext> ent: objIndexUpdate.entrySet()) {
+			for (Map.Entry<IndexTableKey, IndexUpdateContext> ent : objIndexUpdate.entrySet()) {
 				try {
 					ent.getValue().objIndexDeleteByOidAndVersion.close();
 				} catch (SQLException e) {
@@ -221,11 +232,11 @@ class BulkUpdateHandler {
 		for (int i = 0; i < objStoreUpdate.length; i++) {
 			if (objStoreUpdate[i] != null) {
 				ArrayList<Object> key = new ArrayList<>(5);
-				for (ColumnValueMapper cm: objStoreUpdateMapper[i].keys) {
+				for (ColumnValueMapper cm : objStoreUpdateMapper[i].keys) {
 					cm.values(key, entity, state.rdb);
 				}
 				ArrayList<Object> values = new ArrayList<>(colSize[i]);
-				for (ColumnValueMapper cm: objStoreUpdateMapper[i].values) {
+				for (ColumnValueMapper cm : objStoreUpdateMapper[i].values) {
 					cm.values(values, entity, state.rdb);
 				}
 				objStoreUpdate[i].add(key, values);
@@ -235,14 +246,15 @@ class BulkUpdateHandler {
 			}
 		}
 
-
 		String oid = entity.getOid();
 		Long ver = entity.getVersion();
 
 		//参照
 		if (objRefInsert != null) {
-			for (ReferencePropertyHandler rh: refs) {
-				String targetObjDefId = rh.getReferenceEntityHandler(state.entityContext).getMetaData().getId();
+			for (ReferencePropertyHandler rh : refs) {
+				String targetObjDefId = rh.getReferenceEntityHandler(state.entityContext)
+						.getMetaData()
+						.getId();
 				ReferenceBulkDeleteSql.addValueForDeleteByOidVersionRefId(objRefDeleteByOidPropId, state.tenantId, state.eh, rh.getId(), oid, ver);
 				if (objRefDeleteByOidPropId.getCurrentSize() >= state.rdb.getBatchSize()) {
 					objRefDeleteByOidPropId.execute();
@@ -251,8 +263,9 @@ class BulkUpdateHandler {
 				Object val = entity.getValue(rh.getName());
 				if (val != null) {
 					if (val instanceof Entity[]) {
-						for (Entity target: (Entity[]) val) {
-							ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId, target.getOid(), target.getVersion());
+						for (Entity target : (Entity[]) val) {
+							ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId,
+									target.getOid(), target.getVersion());
 							if (objRefInsert.getCurrentSize() >= state.rdb.getBatchSize()) {
 								//削除が優先する必要あり
 								if (objRefDeleteByOidPropId.getCurrentSize() > 0) {
@@ -263,7 +276,8 @@ class BulkUpdateHandler {
 						}
 					} else {
 						Entity target = (Entity) val;
-						ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId, target.getOid(), target.getVersion());
+						ReferenceBulkInsertSql.addValueForInsert(objRefInsert, state.tenantId, state.eh, rh.getId(), oid, ver, targetObjDefId,
+								target.getOid(), target.getVersion());
 						if (objRefInsert.getCurrentSize() >= state.rdb.getBatchSize()) {
 							//削除が優先する必要あり
 							if (objRefDeleteByOidPropId.getCurrentSize() > 0) {
@@ -278,9 +292,13 @@ class BulkUpdateHandler {
 
 		//外部Index
 		if (objIndexUpdate != null) {
-			for (PrimitivePropertyHandler pph: indexes) {
-				GRdbPropertyStoreHandler colDef = ((GRdbPropertyStoreRuntime) pph.getStoreSpecProperty()).asList().get(0);
-				IndexTableKey ikey = new IndexTableKey(pph.getMetaData().getIndexType(), colDef.getSingleColumnRdbTypeAdapter().getColOfIndex());
+			for (PrimitivePropertyHandler pph : indexes) {
+				GRdbPropertyStoreHandler colDef = ((GRdbPropertyStoreRuntime) pph.getStoreSpecProperty()).asList()
+						.get(0);
+				IndexTableKey ikey = new IndexTableKey(pph.getMetaData()
+						.getIndexType(),
+						colDef.getSingleColumnRdbTypeAdapter()
+								.getColOfIndex());
 				IndexUpdateContext iuc = objIndexUpdate.get(ikey);
 				IndexBulkDeleteSql.addValueForDeleteByOidVersionColName(iuc.objIndexDeleteByOidAndVersion, state.tenantId, colDef, oid, ver);
 				if (iuc.objIndexDeleteByOidAndVersion.getCurrentSize() >= state.rdb.getBatchSize()) {

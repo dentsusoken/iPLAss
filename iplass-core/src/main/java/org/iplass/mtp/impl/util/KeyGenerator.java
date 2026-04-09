@@ -23,14 +23,15 @@ package org.iplass.mtp.impl.util;
 import java.util.UUID;
 
 public class KeyGenerator {
-	
+
 	//FIXME UUIDが重複することを考慮したロジックにする。（このクラスを使用する側で。）
-	
+
 	public String generateId() {
-		
+
 		//TODO 	Long.toString(i, 32)でやったほうが文字列が短くなる
-		
-		return UUID.randomUUID().toString();
+
+		return UUID.randomUUID()
+				.toString();
 	}
-	
+
 }

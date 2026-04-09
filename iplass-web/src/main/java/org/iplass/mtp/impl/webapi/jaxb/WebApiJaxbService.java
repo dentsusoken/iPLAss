@@ -22,15 +22,14 @@ package org.iplass.mtp.impl.webapi.jaxb;
 
 import java.util.List;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 
 public class WebApiJaxbService implements Service {
 

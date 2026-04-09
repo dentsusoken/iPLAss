@@ -52,5 +52,4 @@ public class AuthenticationPolicyAttributeControllerImpl implements Authenticati
 		return settingPaneList;
 	}
 
-
 }

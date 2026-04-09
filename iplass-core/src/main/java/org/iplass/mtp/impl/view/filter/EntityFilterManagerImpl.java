@@ -33,7 +33,8 @@ import org.iplass.mtp.view.filter.EntityFilterManager;
  */
 public class EntityFilterManagerImpl extends AbstractTypedDefinitionManager<EntityFilter> implements EntityFilterManager {
 
-	private EntityFilterService service = ServiceRegistry.getRegistry().getService(EntityFilterService.class);
+	private EntityFilterService service = ServiceRegistry.getRegistry()
+			.getService(EntityFilterService.class);
 
 	@Override
 	public Class<EntityFilter> getDefinitionType() {

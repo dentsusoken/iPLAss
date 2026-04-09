@@ -26,10 +26,16 @@ import org.w3c.dom.Node;
 
 public interface ExternalRefPath {
 	List<Node> getNodeList(Document doc);
+
 	String getTagName();
+
 	String getFileExtention(Node node);
+
 	String getTemplateType(Node node);
+
 	boolean isBase64Tag(Node node);
+
 	String getLocaleName(Node node);
+
 	String getSequenceNumber(int index);
 }

@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.entity.property;
 
-
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
@@ -31,10 +30,10 @@ import org.iplass.mtp.spi.ServiceRegistry;
 
 public class MetaPrimitiveProperty extends MetaProperty {
 	private static final long serialVersionUID = 1566456340736914795L;
-	
+
 	/** プロパティの型 */
 	private PropertyType type;
-	
+
 	public PropertyType getType() {
 		return type;
 	}
@@ -42,21 +41,23 @@ public class MetaPrimitiveProperty extends MetaProperty {
 	public void setType(PropertyType type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public void applyConfig(PropertyDefinition pDef, EntityContext context) {
 		if (pDef instanceof ReferenceProperty) {
 			throw new EntityRuntimeException("Illegal Type Convert. PrimitiveProperty to ReferenceProperty cannot support.");
 		}
-		
+
 		fillFrom(pDef, context);
-		PropertyService pService = ServiceRegistry.getRegistry().getService(PropertyService.class);
+		PropertyService pService = ServiceRegistry.getRegistry()
+				.getService(PropertyService.class);
 		type = pService.newPropertyType(pDef);
 		if (type == null) {
-			throw new EntityRuntimeException("Unsupported PropertyType." + pDef.getClass().getName());
+			throw new EntityRuntimeException("Unsupported PropertyType." + pDef.getClass()
+					.getName());
 		}
 	}
-	
+
 	@Override
 	public PropertyDefinition currentConfig(EntityContext context) {
 		PropertyDefinition pd = type.createPropertyDefinitionInstance();
@@ -66,9 +67,9 @@ public class MetaPrimitiveProperty extends MetaProperty {
 
 	@Override
 	public MetaPrimitiveProperty copy() {
-		
+
 		return ObjectUtil.deepCopy(this);
-		
+
 //		MetaPrimitiveProperty copy = new MetaPrimitiveProperty();
 //		copyTo(copy);
 //		copy.type = type.copy();
@@ -79,7 +80,7 @@ public class MetaPrimitiveProperty extends MetaProperty {
 	public PrimitivePropertyHandler createRuntime(MetaEntity metaEntity) {
 		return new PrimitivePropertyHandler(this, metaEntity);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

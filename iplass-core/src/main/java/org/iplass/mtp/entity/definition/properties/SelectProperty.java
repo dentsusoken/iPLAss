@@ -30,7 +30,6 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 
-
 /**
  * 選択肢からのセレクトを行うプロパティを表す定義。
  * SelectPropertyの定義方法は2つ。
@@ -48,7 +47,14 @@ public class SelectProperty extends PropertyDefinition {
 
 	private String selectValueDefinitionName;
 
-	@MultiLang(isMultiLangValue = false, itemKey = "selectValue", itemGetter = "getSelectValueList", itemSetter = "setSelectValueList", multiLangGetter = "getLocalizedSelectValueList", multiLangSetter = "setLocalizedSelectValueList", isSelectValue = true)
+	@MultiLang(
+			isMultiLangValue = false,
+			itemKey = "selectValue",
+			itemGetter = "getSelectValueList",
+			itemSetter = "setSelectValueList",
+			multiLangGetter = "getLocalizedSelectValueList",
+			multiLangSetter = "setLocalizedSelectValueList",
+			isSelectValue = true)
 	private List<SelectValue> selectValueList;
 
 	private List<LocalizedSelectValueDefinition> localizedSelectValueList;
@@ -63,7 +69,7 @@ public class SelectProperty extends PropertyDefinition {
 	public SelectProperty(String name, SelectValue... value) {
 		setName(name);
 		if (value != null) {
-			for (SelectValue v: value) {
+			for (SelectValue v : value) {
 				addSelectValue(v);
 			}
 		}
@@ -81,7 +87,7 @@ public class SelectProperty extends PropertyDefinition {
 	 */
 	public SelectValue getSelectValue(String value) {
 		if (selectValueList != null) {
-			for (SelectValue s: selectValueList) {
+			for (SelectValue s : selectValueList) {
 				if (value.equals(s.getValue())) {
 					return s;
 				}
@@ -100,7 +106,7 @@ public class SelectProperty extends PropertyDefinition {
 	 */
 	public SelectValue getLocalizedSelectValue(String value, String locale) {
 		if (localizedSelectValueList != null && locale != null) {
-			for (LocalizedSelectValueDefinition ls: localizedSelectValueList) {
+			for (LocalizedSelectValueDefinition ls : localizedSelectValueList) {
 				if (locale.equals(ls.getLocaleName())) {
 					SelectValue s = ls.getSelectValue(value);
 					if (s != null) {
@@ -120,8 +126,9 @@ public class SelectProperty extends PropertyDefinition {
 		selectValueDefinitionName = selectValueDefinition.getName();
 		if (selectValueDefinition.getSelectValueList() != null) {
 			if (deepCopy) {
-				selectValueList = new ArrayList<SelectValue>(selectValueDefinition.getSelectValueList().size());
-				for (SelectValue sv: selectValueDefinition.getSelectValueList()) {
+				selectValueList = new ArrayList<SelectValue>(selectValueDefinition.getSelectValueList()
+						.size());
+				for (SelectValue sv : selectValueDefinition.getSelectValueList()) {
 					selectValueList.add(sv.copy());
 				}
 			} else {
@@ -130,13 +137,14 @@ public class SelectProperty extends PropertyDefinition {
 		}
 		if (selectValueDefinition.getLocalizedSelectValueList() != null) {
 			if (deepCopy) {
-				localizedSelectValueList = new ArrayList<LocalizedSelectValueDefinition>(selectValueDefinition.getLocalizedSelectValueList().size());
-				for (LocalizedSelectValueDefinition lsvd: selectValueDefinition.getLocalizedSelectValueList()) {
+				localizedSelectValueList = new ArrayList<LocalizedSelectValueDefinition>(selectValueDefinition.getLocalizedSelectValueList()
+						.size());
+				for (LocalizedSelectValueDefinition lsvd : selectValueDefinition.getLocalizedSelectValueList()) {
 					LocalizedSelectValueDefinition copyLsvd = new LocalizedSelectValueDefinition();
 					copyLsvd.setLocaleName(lsvd.getLocaleName());
 					if (lsvd.getSelectValueList() != null) {
 						ArrayList<SelectValue> copyLsvl = new ArrayList<SelectValue>(lsvd.getSelectValueList());
-						for (SelectValue sv: lsvd.getSelectValueList()) {
+						for (SelectValue sv : lsvd.getSelectValueList()) {
 							copyLsvl.add(sv.copy());
 						}
 						copyLsvd.setSelectValueList(copyLsvl);
@@ -172,7 +180,6 @@ public class SelectProperty extends PropertyDefinition {
 		this.selectValueList = selectValueList;
 	}
 
-
 	public void addLocalizedSelectValue(LocalizedSelectValueDefinition localizedSelectValue) {
 		if (localizedSelectValueList == null) {
 			localizedSelectValueList = new ArrayList<LocalizedSelectValueDefinition>();
@@ -197,6 +204,5 @@ public class SelectProperty extends PropertyDefinition {
 	public PropertyDefinitionType getType() {
 		return PropertyDefinitionType.SELECT;
 	}
-
 
 }

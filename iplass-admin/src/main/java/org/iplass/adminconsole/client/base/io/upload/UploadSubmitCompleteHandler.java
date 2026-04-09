@@ -56,7 +56,7 @@ public abstract class UploadSubmitCompleteHandler implements SubmitCompleteHandl
 		for (Widget w : pnlForm.getWidgetList()) {
 
 			if (w instanceof FileUpload) {
-				FileUpload f = (FileUpload)w;
+				FileUpload f = (FileUpload) w;
 				String name = f.getName();
 
 				if (name.startsWith(UploadProperty.LOCALE_PREFIX)) {

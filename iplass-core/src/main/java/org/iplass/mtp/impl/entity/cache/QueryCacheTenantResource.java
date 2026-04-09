@@ -34,7 +34,8 @@ public class QueryCacheTenantResource implements TenantResource {
 
 	@Override
 	public void destory() {
-		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
+		CacheService cs = ServiceRegistry.getRegistry()
+				.getService(CacheService.class);
 		cs.invalidate(EntityCacheInterceptor.QUERY_CACHE_NAMESPACE_PREFIX + tenantId);
 		cs.invalidate(EntityCacheInterceptor.KEEP_QUERY_CACHE_NAMESPACE_PREFIX + tenantId);
 	}

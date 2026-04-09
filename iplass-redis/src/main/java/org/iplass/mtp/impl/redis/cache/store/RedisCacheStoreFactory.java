@@ -86,9 +86,12 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 			throw new SystemException("Unknown redis server name: " + serverName);
 		}
 
-		ClientResources resouces = DefaultClientResources.builder().build();
+		ClientResources resouces = DefaultClientResources.builder()
+				.build();
 
-		RedisURI.Builder uriBuilder = RedisURI.builder().withHost(server.getHost()).withPort(server.getPort())
+		RedisURI.Builder uriBuilder = RedisURI.builder()
+				.withHost(server.getHost())
+				.withPort(server.getPort())
 				.withDatabase(server.getDatabase());
 		if (server.getTimeout() > 0) {
 			uriBuilder.withTimeout(Duration.ofSeconds(server.getTimeout()));
@@ -97,9 +100,11 @@ public class RedisCacheStoreFactory extends CacheStoreFactory implements Service
 		uriBuilder.withSsl(server.isSsl());
 		if (server.getPassword() != null) {
 			if (server.getUserName() != null) {
-				uriBuilder.withAuthentication(server.getUserName(), server.getPassword().toCharArray());
+				uriBuilder.withAuthentication(server.getUserName(), server.getPassword()
+						.toCharArray());
 			} else {
-				uriBuilder.withPassword(server.getPassword().toCharArray());
+				uriBuilder.withPassword(server.getPassword()
+						.toCharArray());
 			}
 		}
 		this.client = RedisClient.create(resouces, uriBuilder.build());

@@ -41,61 +41,75 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter<Function
 
 	@Override
 	public void toSQL(FunctionContext context, Function function, RdbAdapter rdb) {
-		if (function.getArguments() == null || function.getArguments().size() != 3) {
+		if (function.getArguments() == null || function.getArguments()
+				.size() != 3) {
 			throw new QueryException(function.getName() + " must have 3 arguments.");
 		}
 
-		String unit = ((String) ((Literal) function.getArguments().get(2)).getValue()).toUpperCase();
+		String unit = ((String) ((Literal) function.getArguments()
+				.get(2)).getValue()).toUpperCase();
 
 		switch (unit) {
 		case YEAR:
 			//ADD_MONTHS
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(year,");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(")");
 			break;
 		case MONTH:
 			//ADD_MONTHS
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(month,");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(")");
 			break;
 		case DAY:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(day,");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(")");
 			break;
 		case HOUR:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(hour,");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(")");
 			break;
 		case MINUTE:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(minute,");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(")");
 			break;
 		case SECOND:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(second,");
-			context.appendArgument(function.getArguments().get(1));
+			context.appendArgument(function.getArguments()
+					.get(1));
 			context.append(",");
-			context.appendArgument(function.getArguments().get(0));
+			context.appendArgument(function.getArguments()
+					.get(0));
 			context.append(")");
 			break;
 		default:
@@ -110,7 +124,9 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter<Function
 			throw new QueryException(getFunctionName() + " must have 3 arguments.");
 		}
 
-		String unit = args.get(2).toString().toUpperCase();
+		String unit = args.get(2)
+				.toString()
+				.toUpperCase();
 
 		switch (unit) {
 		case YEAR:

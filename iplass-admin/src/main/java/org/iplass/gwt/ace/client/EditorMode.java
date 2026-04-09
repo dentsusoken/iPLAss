@@ -47,8 +47,7 @@ public enum EditorMode {
 	/** XML. */
 	XML("xml", "Xml"),
 	/** YAML. */
-	YAML("yaml", "YAML")
-	;
+	YAML("yaml", "YAML");
 
 	private final String modeName;
 	private final String text;
@@ -74,7 +73,8 @@ public enum EditorMode {
 
 	public static EditorMode modeNameOf(String modeName) {
 		for (EditorMode mode : values()) {
-			if (mode.getModeName().equals(modeName.toLowerCase())) {
+			if (mode.getModeName()
+					.equals(modeName.toLowerCase())) {
 				return mode;
 			}
 		}

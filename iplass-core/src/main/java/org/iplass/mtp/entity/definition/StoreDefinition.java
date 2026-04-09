@@ -22,15 +22,13 @@ package org.iplass.mtp.entity.definition;
 
 import java.io.Serializable;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-
-@XmlSeeAlso(value = { SchemalessRdbStore.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@XmlSeeAlso(value = { SchemalessRdbStore.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class StoreDefinition implements Serializable {
 	private static final long serialVersionUID = 1980845539980871395L;
 

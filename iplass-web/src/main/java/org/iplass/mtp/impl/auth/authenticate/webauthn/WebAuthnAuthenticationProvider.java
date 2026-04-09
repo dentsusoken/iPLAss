@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 	private static final Logger logger = LoggerFactory.getLogger(WebAuthnAuthenticationProvider.class);
-	
+
 	private WebAuthnService webAuthnService;
 	private AuthenticationPolicyService authPolicyService;
 	private TenantContextService tenantContextService;
@@ -62,9 +62,12 @@ public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 	@Override
 	public void inited(AuthService service, Config config) {
 		super.inited(service, config);
-		webAuthnService = ServiceRegistry.getRegistry().getService(WebAuthnService.class);
-		authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
-		tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+		webAuthnService = ServiceRegistry.getRegistry()
+				.getService(WebAuthnService.class);
+		authPolicyService = ServiceRegistry.getRegistry()
+				.getService(AuthenticationPolicyService.class);
+		tenantContextService = ServiceRegistry.getRegistry()
+				.getService(TenantContextService.class);
 		accountDao = new RdbAccountStore();
 		accountDao.inited(this, config);
 
@@ -94,7 +97,7 @@ public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 		WebAuthnCredential cre = (WebAuthnCredential) credential;
 		WebAuthnRuntime webauthn = webAuthnService.getOrDefault(cre.getWebAuthnDefinitionName());
 		WebAuthnVerifyResult result = webauthn.verify(cre.getPublicKeyCredential(), cre.getServer(), true);
-		
+
 		if (!result.isVerified()) {
 			if (logger.isDebugEnabled()) {
 				if (result.getRootCause() == null) {
@@ -104,41 +107,50 @@ public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 							+ result.getRootCause(), result.getRootCause());
 				}
 			}
-			throw new LoginFailedException(resourceString("impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider.error", result.getError()), result.getRootCause());
+			throw new LoginFailedException(resourceString("impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider.error", result.getError()),
+					result.getRootCause());
 		}
-		
+
 		//check id(UserHandle) if specified
 		if (cre.getId() != null) {
-			if (!cre.getId().equals(result.getUserHandle())) {
+			if (!cre.getId()
+					.equals(result.getUserHandle())) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("WebAuthn failed: UserHandle mismatch.");
 				}
-				throw new LoginFailedException(resourceString("impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider.error", "authentication_failed"));
+				throw new LoginFailedException(
+						resourceString("impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider.error", "authentication_failed"));
 			}
 		}
-		
+
 		//check Policy
 		AuthenticationPolicyRuntime policy = getPolicy(result.getPolicyName());
 		if (!webauthn.isAllowedOnPolicy(policy)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("WebAuthn failed: WebAuthn is not allowed by policy.");
 			}
-			throw new LoginFailedException(resourceString("impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider.error", "authentication_failed"));
+			throw new LoginFailedException(
+					resourceString("impl.auth.authenticate.webauthn.WebAuthnAuthenticationProvider.error", "authentication_failed"));
 		}
 
 		WebAuthnAccountHandle ah = new WebAuthnAccountHandle(result.getUserHandle(), result.getUserOid(),
-				webauthn.getMetaData().getName(), result.getCredentialId(), null);
+				webauthn.getMetaData()
+						.getName(),
+				result.getCredentialId(), null);
 
-		if (policy.getMetaData().isRecordLastLoginDate()) {
+		if (policy.getMetaData()
+				.isRecordLastLoginDate()) {
 			//前回ログイン日時を取得
 			BuiltinAccount ba = accountDao.getAccountFromOid(getTenantIdForAccountDao(), result.getUserOid());
 			if (ba != null) {
-				ah.getAttributeMap().put(AccountHandle.LAST_LOGIN_ON, ba.getLastLoginOn());
+				ah.getAttributeMap()
+						.put(AccountHandle.LAST_LOGIN_ON, ba.getLastLoginOn());
 				policy.updateLastLoginOn(ba);
 				accountDao.updateAccountLoginStatus(ba);
 			}
 		}
-		ah.getAttributeMap().put(User.ACCOUNT_POLICY, result.getPolicyName());
+		ah.getAttributeMap()
+				.put(User.ACCOUNT_POLICY, result.getPolicyName());
 
 		return ah;
 
@@ -147,7 +159,8 @@ public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 	private boolean isSharedLoginUser() {
 		TenantContext shareTenantContext = tenantContextService.getSharedTenantContext();
 		MetaDataEntry mde = shareTenantContext.getMetaDataContext()
-				.getMetaDataEntry(DefinitionService.getInstance().getPath(EntityDefinition.class, User.DEFINITION_NAME));
+				.getMetaDataEntry(DefinitionService.getInstance()
+						.getPath(EntityDefinition.class, User.DEFINITION_NAME));
 		return mde.isDataSharable();
 	}
 
@@ -156,7 +169,9 @@ public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 		if (isSharedLoginUser()) {
 			tenantId = tenantContextService.getSharedTenantId();
 		} else {
-			tenantId = ExecuteContext.getCurrentContext().getCurrentTenant().getId();
+			tenantId = ExecuteContext.getCurrentContext()
+					.getCurrentTenant()
+					.getId();
 		}
 		return tenantId;
 	}
@@ -172,15 +187,19 @@ public class WebAuthnAuthenticationProvider extends AuthenticationProviderBase {
 
 	@Override
 	public void afterLoginSuccess(AccountHandle account) {
-		Timestamp llo = (Timestamp) account.getAttributeMap().get(AccountHandle.LAST_LOGIN_ON);
+		Timestamp llo = (Timestamp) account.getAttributeMap()
+				.get(AccountHandle.LAST_LOGIN_ON);
 		if (llo == null) {
-			String policyName = (String) account.getAttributeMap().get(User.ACCOUNT_POLICY);
+			String policyName = (String) account.getAttributeMap()
+					.get(User.ACCOUNT_POLICY);
 			AuthenticationPolicyRuntime pol = authPolicyService.getOrDefault(policyName);
-			if (pol != null && pol.getMetaData().isRecordLastLoginDate()) {
+			if (pol != null && pol.getMetaData()
+					.isRecordLastLoginDate()) {
 				//前回ログイン日時を取得
 				BuiltinAccount ba = accountDao.getAccountFromOid(getTenantIdForAccountDao(), account.getUnmodifiableUniqueKey());
 				if (ba != null) {
-					account.getAttributeMap().put(AccountHandle.LAST_LOGIN_ON, ba.getLastLoginOn());
+					account.getAttributeMap()
+							.put(AccountHandle.LAST_LOGIN_ON, ba.getLastLoginOn());
 				}
 			}
 		}

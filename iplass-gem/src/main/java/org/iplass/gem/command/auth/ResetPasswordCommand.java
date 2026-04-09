@@ -53,40 +53,43 @@ import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantAuthInfo;
 
 @ActionMappings({
-	@ActionMapping(name=ResetPasswordCommand.ACTION_NAME,
-			paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
-			clientCacheType=ClientCacheType.NO_CACHE,
-			command={
-					@CommandConfig(commandClass=ResetPasswordCommand.class),
-					@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;")
+		@ActionMapping(
+				name = ResetPasswordCommand.ACTION_NAME,
+				paramMapping = @ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}"),
+				clientCacheType = ClientCacheType.NO_CACHE,
+				command = {
+						@CommandConfig(commandClass = ResetPasswordCommand.class),
+						@CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=false;")
 				},
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT)
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_EDIT)
 				},
-			tokenCheck=@TokenCheck
-	),
-	@ActionMapping(name=ResetPasswordCommand.ACTION_REF_NAME,
-			paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
-			clientCacheType=ClientCacheType.NO_CACHE,
-			command={
-					@CommandConfig(commandClass=ResetPasswordCommand.class),
-					@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;")
+				tokenCheck = @TokenCheck
+		),
+		@ActionMapping(
+				name = ResetPasswordCommand.ACTION_REF_NAME,
+				paramMapping = @ParamMapping(name = Constants.VIEW_NAME, mapFrom = "${0}"),
+				clientCacheType = ClientCacheType.NO_CACHE,
+				command = {
+						@CommandConfig(commandClass = ResetPasswordCommand.class),
+						@CommandConfig(commandClass = DetailViewCommand.class, value = "cmd.detail=false;")
 				},
-			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT)
+				result = {
+						@Result(status = Constants.CMD_EXEC_SUCCESS, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_VIEW),
+						@Result(status = Constants.CMD_EXEC_ERROR, type = Type.TEMPLATE, value = Constants.TEMPLATE_REF_EDIT)
 				},
-			tokenCheck=@TokenCheck
-	)
+				tokenCheck = @TokenCheck
+		)
 })
-@CommandClass(name="gem/auth/ResetPasswordCommand", displayName="パスワードリセット")
+@CommandClass(name = "gem/auth/ResetPasswordCommand", displayName = "パスワードリセット")
 public final class ResetPasswordCommand implements Command, AuthCommandConstants {
 
 	public static final String ACTION_NAME = "gem/auth/password/reset";
 	public static final String ACTION_REF_NAME = "gem/auth/password/ref/reset";
 
-	private AuthManager am = ManagerLocator.getInstance().getManager(AuthManager.class);
+	private AuthManager am = ManagerLocator.getInstance()
+			.getManager(AuthManager.class);
 
 	@Override
 	public String execute(RequestContext request) {
@@ -97,11 +100,13 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 			throw new SystemException("oid is null");
 		}
 
-		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		Entity user = EntityPermission.doQueryAs(EntityPermission.Action.UPDATE, () ->
-				em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
+		EntityManager em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		Entity user = EntityPermission.doQueryAs(EntityPermission.Action.UPDATE,
+				() -> em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
 						.from(User.DEFINITION_NAME)
-						.where(new Equals(Entity.OID, oid))).getFirst());
+						.where(new Equals(Entity.OID, oid)))
+						.getFirst());
 
 		//アカウントID存在チェック
 		String id = null;
@@ -117,21 +122,22 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 
 		//ユーザー更新時であること
 		String execType = request.getParam(Constants.EXEC_TYPE);
-		if(!Constants.EXEC_TYPE_UPDATE.equals(execType)){
+		if (!Constants.EXEC_TYPE_UPDATE.equals(execType)) {
 			//ユーザー更新でないため、エラー
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyUpdate"));
 			return Constants.CMD_EXEC_ERROR;
 		}
 
 		//アカウント管理のパスワードリセット機能が可能であること
-		if(!am.canResetCredential(user.getValue(User.ACCOUNT_POLICY))) {
+		if (!am.canResetCredential(user.getValue(User.ACCOUNT_POLICY))) {
 			//サポート外のため、エラー
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.notSupport"));
 			return Constants.CMD_EXEC_ERROR;
 		}
 
 		//管理者以外にもpasswordリセットを許可するか確認
-		Tenant tenant = AuthContext.getCurrentContext().getTenant();
+		Tenant tenant = AuthContext.getCurrentContext()
+				.getTenant();
 		//パスワードリセット実施者が管理者権限であること
 		if (!isUserAdminRole(tenant)) {
 			//管理者権限がないため、エラー
@@ -140,8 +146,9 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 		}
 
 		//UserのEntityProperty権限チェック
-		if (!AuthContext.getCurrentContext().checkPermission(
-				new EntityPropertyPermission(User.DEFINITION_NAME, User.PASSWORD, EntityPropertyPermission.Action.UPDATE))) {
+		if (!AuthContext.getCurrentContext()
+				.checkPermission(
+						new EntityPropertyPermission(User.DEFINITION_NAME, User.PASSWORD, EntityPropertyPermission.Action.UPDATE))) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
 			return Constants.CMD_EXEC_ERROR;
 		}
@@ -153,12 +160,14 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 
 	static boolean isUserAdminRole(Tenant tenant) {
 		AuthContext auth = AuthContext.getCurrentContext();
-		if (auth.getUser().isAdmin()) {
+		if (auth.getUser()
+				.isAdmin()) {
 			return true;
 		}
-		List<String> userAdminRoles = tenant.getTenantConfig(TenantAuthInfo.class).getUserAdminRoles();
+		List<String> userAdminRoles = tenant.getTenantConfig(TenantAuthInfo.class)
+				.getUserAdminRoles();
 		if (userAdminRoles != null) {
-			for (String role: userAdminRoles) {
+			for (String role : userAdminRoles) {
 				if (auth.userInRole(role)) {
 					return true;
 				}

@@ -58,12 +58,12 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
 
 @ActionMapping(
-	name=UpdateUserCommand.ACTION_NAME,
-	displayName="更新",
-	needTrustedAuthenticate=true,
-	result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
+		name = UpdateUserCommand.ACTION_NAME,
+		displayName = "更新",
+		needTrustedAuthenticate = true,
+		result = @Result(type = Type.TEMPLATE, value = Constants.TEMPLATE_UPDATE_PASSWORD)
 )
-@CommandClass(name="gem/auth/UpdateUserCommand", displayName="ユーザー情報更新")
+@CommandClass(name = "gem/auth/UpdateUserCommand", displayName = "ユーザー情報更新")
 public final class UpdateUserCommand extends DetailCommandBase {
 
 	public static final String ACTION_NAME = "gem/auth/updateUser";
@@ -72,9 +72,12 @@ public final class UpdateUserCommand extends DetailCommandBase {
 	private TopViewDefinitionManager tdm;
 
 	public UpdateUserCommand() {
-		em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		tdm = ManagerLocator.getInstance().getManager(TopViewDefinitionManager.class);
+		em = ManagerLocator.getInstance()
+				.getManager(EntityManager.class);
+		evm = ManagerLocator.getInstance()
+				.getManager(EntityViewManager.class);
+		tdm = ManagerLocator.getInstance()
+				.getManager(TopViewDefinitionManager.class);
 	}
 
 	@Override
@@ -103,14 +106,17 @@ public final class UpdateUserCommand extends DetailCommandBase {
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		if (view.getInterrupterName() == null || view.getInterrupterName().isEmpty()) {
+		if (view.getInterrupterName() == null || view.getInterrupterName()
+				.isEmpty()) {
 			view.setInterrupterName(UserRegistrationInterrupter.class.getName());
 		}
 		DetailCommandContext context = getContext(request);
 		context.setView(view);
 
 		if (context.hasErrors()) {
-			ValidateError[] errors = context.getErrors().toArray(new ValidateError[context.getErrors().size()]);
+			ValidateError[] errors = context.getErrors()
+					.toArray(new ValidateError[context.getErrors()
+							.size()]);
 			request.setAttribute(Constants.ERROR_PROP, errors);
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.UpdateUserCommand.inputErr"));
 			return Constants.CMD_EXEC_ERROR;
@@ -118,7 +124,8 @@ public final class UpdateUserCommand extends DetailCommandBase {
 
 		//nameの更新とかで表示してない項目が必要になる可能性があるので、
 		//最新データを画面の入力内容で上書きし、それを更新する
-		User user = AuthContext.getCurrentContext().getUser();
+		User user = AuthContext.getCurrentContext()
+				.getUser();
 		Entity updateEntity = em.load(user.getOid(), User.DEFINITION_NAME);
 		Entity newEntity = context.createEntity();
 //		for (PropertyDefinition pd : context.getPropertyList()) {
@@ -143,7 +150,8 @@ public final class UpdateUserCommand extends DetailCommandBase {
 			return Constants.CMD_EXEC_ERROR;
 		}
 
-		AuthContext.getCurrentContext().refresh();
+		AuthContext.getCurrentContext()
+				.refresh();
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
@@ -153,7 +161,7 @@ public final class UpdateUserCommand extends DetailCommandBase {
 			if (section instanceof DefaultSection
 					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT, entity)
 					&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
-				propList.addAll(getProperty((DefaultSection)section, entity));
+				propList.addAll(getProperty((DefaultSection) section, entity));
 			}
 		}
 		return propList;
@@ -185,7 +193,7 @@ public final class UpdateUserCommand extends DetailCommandBase {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				propList.addAll(getProperty((DefaultSection)elem, entity));
+				propList.addAll(getProperty((DefaultSection) elem, entity));
 			}
 		}
 		return propList;

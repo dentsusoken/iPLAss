@@ -18,7 +18,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package com.google.gwt.user.client.rpc.core.org.iplass.mtp.entity;
 
 import java.util.Set;
@@ -42,7 +41,7 @@ public class GenericEntity_CustomFieldSerializer extends CustomFieldSerializer<G
 			String propertyName = streamReader.readString();
 			Object value = streamReader.readObject();
 			instance.setValue(propertyName, value);
-	    }
+		}
 	}
 
 	public static void serialize(SerializationStreamWriter streamWriter, GenericEntity instance) throws SerializationException {

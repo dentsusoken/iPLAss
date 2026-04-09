@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 
 public class NoopDomHandler implements DomHandler {
 	private List<String> emptyRef = new ArrayList<String>();
-	
+
 	@Override
 	public void putUnescapedExtFiles(Document metaDataDoc) {
 	}

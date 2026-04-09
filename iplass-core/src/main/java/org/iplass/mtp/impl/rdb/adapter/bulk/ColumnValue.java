@@ -20,7 +20,7 @@
 package org.iplass.mtp.impl.rdb.adapter.bulk;
 
 public interface ColumnValue {
-	
+
 	public String colName();
 
 }

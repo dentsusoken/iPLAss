@@ -26,11 +26,17 @@ import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 public interface OAuthAccessTokenStore {
 
 	public AccessToken createAccessToken(OAuthClientRuntime client, String resourceOwnerId, List<String> scopes);
+
 	public AccessToken createAccessToken(OAuthClientRuntime client, RefreshToken refreshToken);
+
 	public AccessToken getAccessTokenByUserOid(OAuthClientRuntime client, String userOid);
+
 	public AccessToken getAccessToken(String tokenString);
+
 	public RefreshToken getRefreshToken(String tokenString);
+
 	public void revokeToken(OAuthClientRuntime client, String tokenString, String tokenTypeHint);
+
 	public void revokeTokenByUserOid(String userOid);
 
 }

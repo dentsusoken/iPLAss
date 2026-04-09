@@ -39,9 +39,11 @@ public class SelectValueService extends AbstractTypedMetaDataService<MetaSelectV
 		public TypeMap() {
 			super(getFixedPath(), MetaSelectValue.class, SelectValueDefinition.class);
 		}
+
 		@Override
 		public TypedDefinitionManager<SelectValueDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(SelectValueDefinitionManager.class);
+			return ManagerLocator.getInstance()
+					.getManager(SelectValueDefinitionManager.class);
 		}
 
 		@Override

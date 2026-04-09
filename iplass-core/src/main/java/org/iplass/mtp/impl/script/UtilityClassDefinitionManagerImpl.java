@@ -38,17 +38,20 @@ public class UtilityClassDefinitionManagerImpl extends AbstractTypedDefinitionMa
 	private GroovyScriptService service;
 
 	public UtilityClassDefinitionManagerImpl() {
-		service = (GroovyScriptService) ServiceRegistry.getRegistry().getService(ScriptService.class);
+		service = (GroovyScriptService) ServiceRegistry.getRegistry()
+				.getService(ScriptService.class);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T createInstanceAs(Class<T> type, String definitionName) throws ClassNotFoundException {
 
-		GroovyScriptEngine se = (GroovyScriptEngine) ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+		GroovyScriptEngine se = (GroovyScriptEngine) ExecuteContext.getCurrentContext()
+				.getTenantContext()
+				.getScriptEngine();
 		try {
 			Class<?> clazz = Class.forName(definitionName, true, se.getSharedClassLoader());
-			return (T)clazz.newInstance();
+			return (T) clazz.newInstance();
 		} catch (ClassNotFoundException e) {
 			logger.debug("not found utility class. name:" + definitionName, e);
 			throw e;

@@ -29,7 +29,7 @@ import org.iplass.mtp.command.RequestContext;
  *
  */
 public interface ActionCacheCriteria {
-	
+
 	/**
 	 * キャッシュのキーとして利用する一意の文字列を返却するように実装します。<br>
 	 * 
@@ -40,6 +40,5 @@ public interface ActionCacheCriteria {
 	 * @return
 	 */
 	public String createCacheKey(RequestContext request);
-	
 
 }

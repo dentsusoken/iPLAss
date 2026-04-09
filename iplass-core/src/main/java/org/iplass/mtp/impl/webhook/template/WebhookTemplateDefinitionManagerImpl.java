@@ -27,14 +27,14 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinitionManager;
 
-
 public class WebhookTemplateDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebhookTemplateDefinition> implements
-WebhookTemplateDefinitionManager{
+		WebhookTemplateDefinitionManager {
 
 	private WebhookService service;
-	
+
 	public WebhookTemplateDefinitionManagerImpl() {
-		this.service = ServiceRegistry.getRegistry().getService(WebhookService.class);
+		this.service = ServiceRegistry.getRegistry()
+				.getService(WebhookService.class);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ WebhookTemplateDefinitionManager{
 	protected RootMetaData newInstance(WebhookTemplateDefinition definition) {
 		return new MetaWebhookTemplate();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected TypedMetaDataService getService() {

@@ -31,7 +31,7 @@ import org.slf4j.MDC;
 
 public class Task implements Serializable {
 	private static final long serialVersionUID = 7838808634253106613L;
-	
+
 	private int tenantId;
 	private int queueId;
 	private long taskId;
@@ -47,17 +47,18 @@ public class Task implements Serializable {
 	private boolean returnResult;
 	private Object result;
 	private int retryCount;
-	
+
 	public Task() {
 	}
-	
+
 	public Task(Callable<?> callable, String groupingKey, ExceptionHandlingMode exceptionHandlingMode, boolean returnResult, long visibleTime) {
-		this.callable = new CallableInput<>(callable, null, false ,MDC.get(ExecuteContext.MDC_TRACE_ID));
+		this.callable = new CallableInput<>(callable, null, false, MDC.get(ExecuteContext.MDC_TRACE_ID));
 		this.groupingKey = groupingKey;
 		this.exceptionHandlingMode = exceptionHandlingMode;
 		this.returnResult = returnResult;
 		this.visibleTime = visibleTime;
 	}
+
 	public Task(CallableInput<?> callable, String groupingKey, ExceptionHandlingMode exceptionHandlingMode, boolean returnResult, long visibleTime) {
 		this.callable = callable;
 		this.groupingKey = groupingKey;
@@ -65,7 +66,7 @@ public class Task implements Serializable {
 		this.returnResult = returnResult;
 		this.visibleTime = visibleTime;
 	}
-	
+
 	public int getRetryCount() {
 		return retryCount;
 	}
@@ -77,78 +78,103 @@ public class Task implements Serializable {
 	public int getTenantId() {
 		return tenantId;
 	}
+
 	public void setTenantId(int tenantId) {
 		this.tenantId = tenantId;
 	}
+
 	public int getQueueId() {
 		return queueId;
 	}
+
 	public void setQueueId(int queueId) {
 		this.queueId = queueId;
 	}
+
 	public long getTaskId() {
 		return taskId;
 	}
+
 	public void setTaskId(long taskId) {
 		this.taskId = taskId;
 	}
+
 	public long getVisibleTime() {
 		return visibleTime;
 	}
+
 	public void setVisibleTime(long visibleTime) {
 		this.visibleTime = visibleTime;
 	}
+
 	public TaskStatus getStatus() {
 		return status;
 	}
+
 	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
+
 	public String getGroupingKey() {
 		return groupingKey;
 	}
+
 	public void setGroupingKey(String groupingKey) {
 		this.groupingKey = groupingKey;
 	}
+
 	public int getVirtualWorkerId() {
 		return virtualWorkerId;
 	}
+
 	public void setVirtualWorkerId(int virtualWorkerId) {
 		this.virtualWorkerId = virtualWorkerId;
 	}
+
 	public long getVersion() {
 		return version;
 	}
+
 	public void setVersion(long version) {
 		this.version = version;
 	}
+
 	public Timestamp getUpdateTime() {
 		return updateTime;
 	}
+
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
+
 	public CallableInput<?> getCallable() {
 		return callable;
 	}
+
 	public void setCallable(CallableInput<?> callable) {
 		this.callable = callable;
 	}
+
 	public ExceptionHandlingMode getExceptionHandlingMode() {
 		return exceptionHandlingMode;
 	}
+
 	public void setExceptionHandlingMode(ExceptionHandlingMode exceptionHandlingMode) {
 		this.exceptionHandlingMode = exceptionHandlingMode;
 	}
+
 	public boolean isReturnResult() {
 		return returnResult;
 	}
+
 	public void setReturnResult(boolean returnResult) {
 		this.returnResult = returnResult;
 	}
+
 	public Object getResult() {
 		return result;
 	}
+
 	public void setResult(Object result) {
 		this.result = result;
 	}
@@ -173,6 +199,5 @@ public class Task implements Serializable {
 				+ ", returnResult=" + returnResult + ", result=" + result
 				+ ", retryCount=" + retryCount + "]";
 	}
-
 
 }

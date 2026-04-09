@@ -63,8 +63,10 @@ public class ExcelFileDownloadSearchViewWriter extends EntityFileDownloadSearchV
 	protected void initWriter(OutputStream out) throws IOException {
 		this.out = out;
 
-		String sheetName = TemplateUtil.getMultilingualString(context.getEntityDefinition().getDisplayName(),
-				context.getEntityDefinition().getLocalizedDisplayNameList());
+		String sheetName = TemplateUtil.getMultilingualString(context.getEntityDefinition()
+				.getDisplayName(),
+				context.getEntityDefinition()
+						.getLocalizedDisplayNameList());
 
 		this.workbook = new SXSSFWorkbook();
 		// this.workbook.setCompressTempFiles(true);
@@ -107,18 +109,25 @@ public class ExcelFileDownloadSearchViewWriter extends EntityFileDownloadSearchV
 		dateCellStyle = workbook.createCellStyle();
 		applyDataCellStyle(dateCellStyle);
 		dateCellStyle.setDataFormat(
-				createHelper.createDataFormat().getFormat(TemplateUtil.getLocaleFormat().getExcelDateFormat()));
+				createHelper.createDataFormat()
+						.getFormat(TemplateUtil.getLocaleFormat()
+								.getExcelDateFormat()));
 
 		dateTimeCellStyle = workbook.createCellStyle();
 		applyDataCellStyle(dateTimeCellStyle);
 		dateTimeCellStyle.setDataFormat(
-				createHelper.createDataFormat().getFormat(TemplateUtil.getLocaleFormat().getExcelDateFormat() + " "
-						+ TemplateUtil.getLocaleFormat().getExcelTimeFormat()));
+				createHelper.createDataFormat()
+						.getFormat(TemplateUtil.getLocaleFormat()
+								.getExcelDateFormat() + " "
+								+ TemplateUtil.getLocaleFormat()
+										.getExcelTimeFormat()));
 
 		timeCellStyle = workbook.createCellStyle();
 		applyDataCellStyle(timeCellStyle);
 		timeCellStyle.setDataFormat(
-				createHelper.createDataFormat().getFormat(TemplateUtil.getLocaleFormat().getExcelTimeFormat()));
+				createHelper.createDataFormat()
+						.getFormat(TemplateUtil.getLocaleFormat()
+								.getExcelTimeFormat()));
 	}
 
 	@Override
@@ -192,7 +201,8 @@ public class ExcelFileDownloadSearchViewWriter extends EntityFileDownloadSearchV
 			return dataCellStyle;
 		}
 
-		PropertyDefinitionType type = fileColumn.getPropertyDefinition().getType();
+		PropertyDefinitionType type = fileColumn.getPropertyDefinition()
+				.getType();
 		switch (type) {
 		case DATE:
 			return dateCellStyle;

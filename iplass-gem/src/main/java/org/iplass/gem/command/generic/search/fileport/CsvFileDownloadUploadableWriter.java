@@ -103,7 +103,7 @@ public class CsvFileDownloadUploadableWriter extends EntityFileDownloadUploadabl
 						boolean sortValue = false;
 						FileColumn column = context.getFileColumn(select.getName());
 						if (column != null && column.getEditor() instanceof SelectPropertyEditor) {
-							SelectPropertyEditor spe = (SelectPropertyEditor)column.getEditor();
+							SelectPropertyEditor spe = (SelectPropertyEditor) column.getEditor();
 							if (spe.isSortCsvOutputValue()) {
 								sortValue = true;
 							}

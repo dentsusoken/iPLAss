@@ -32,10 +32,10 @@ public class RolePermissionInfo implements Serializable {
 	public static final String UPDATE = "U";
 	public static final String DELETE = "D";
 
-	private String status;	//blank・・変更なし、I・・Insert、U・・Update、D・・Delete
+	private String status; //blank・・変更なし、I・・Insert、U・・Update、D・・Delete
 	private Entity permission;
 
-	public RolePermissionInfo(){
+	public RolePermissionInfo() {
 	}
 
 	public String getStatus() {

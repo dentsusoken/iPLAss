@@ -35,9 +35,9 @@ import org.iplass.mtp.impl.entity.interceptor.EntityLoadInvocationImpl;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
 public class NonVersionController implements VersionController {
-	
+
 	@Override
-	public void normalizeForInsert(Entity entity, InsertOption option,EntityContext entityContext) {
+	public void normalizeForInsert(Entity entity, InsertOption option, EntityContext entityContext) {
 		entity.setVersion(Long.valueOf(0));
 	}
 
@@ -50,7 +50,7 @@ public class NonVersionController implements VersionController {
 	@Override
 	public DeleteTarget[] getDeleteTarget(Entity entity, DeleteOption option, EntityHandler eh, EntityContext entityContext) {
 		return new DeleteTarget[] {
-				new DeleteTarget(entity.getOid(), Long.valueOf(0), entity.getUpdateDate())};
+				new DeleteTarget(entity.getOid(), Long.valueOf(0), entity.getUpdateDate()) };
 	}
 
 	@Override
@@ -58,12 +58,14 @@ public class NonVersionController implements VersionController {
 			EntityHandler eh, ReferencePropertyHandler rph,
 			EntityContext entityContext) {
 		//キャッシュされているもの取得
-		Entity loadedEntity = new EntityLoadInvocationImpl(entity.getOid(), Long.valueOf(0), null, false, eh.getService().getInterceptors(), eh).proceed();
+		Entity loadedEntity = new EntityLoadInvocationImpl(entity.getOid(), Long.valueOf(0), null, false, eh.getService()
+				.getInterceptors(), eh).proceed();
 		if (loadedEntity != null) {
-			if (rph.getMetaData().getMultiplicity() == 1) {
+			if (rph.getMetaData()
+					.getMultiplicity() == 1) {
 				Entity cascade = loadedEntity.getValue(rph.getName());
 				if (cascade != null) {
-					return new String[]{
+					return new String[] {
 							cascade.getOid()
 					};
 				}
@@ -80,12 +82,12 @@ public class NonVersionController implements VersionController {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Condition mainQueryCondition(EntityHandler eh, AsOf asOf, EntityContext context) {
 		return new Equals(Entity.VERSION, Long.valueOf(0));
 	}
-	
+
 	@Override
 	public Condition refEntityQueryCondition(String refPropPath, ReferencePropertyHandler rph, AsOf asOf, EntityContext context) {
 		return null;
@@ -98,7 +100,7 @@ public class NonVersionController implements VersionController {
 			return null;
 		}
 		Long zero = Long.valueOf(0);
-		for (Entity e: refEntity) {
+		for (Entity e : refEntity) {
 			if (e != null) {
 				e.setVersion(zero);
 			}
@@ -110,16 +112,17 @@ public class NonVersionController implements VersionController {
 	public Entity[] getCascadeDeleteTargetForUpdate(Entity[] refEntity,
 			Entity[] beforeRefEntity, ReferencePropertyHandler rph,
 			Entity beforeEntity, EntityHandler eh, EntityContext entityContext) {
-		
+
 		ArrayList<Entity> ret = new ArrayList<Entity>();
-		for (Entity e: beforeRefEntity) {
+		for (Entity e : beforeRefEntity) {
 			if (e != null) {
 				if (refEntity == null) {
 					ret.add(e);
 				} else {
 					boolean match = false;
-					for (Entity newE: refEntity) {
-						if (newE != null && newE.getOid().equals(e.getOid())) {
+					for (Entity newE : refEntity) {
+						if (newE != null && newE.getOid()
+								.equals(e.getOid())) {
 							match = true;
 							break;
 						}
@@ -130,13 +133,12 @@ public class NonVersionController implements VersionController {
 				}
 			}
 		}
-		
+
 		if (ret.size() == 0) {
 			return null;
 		} else {
 			return ret.toArray(new Entity[ret.size()]);
 		}
 	}
-
 
 }

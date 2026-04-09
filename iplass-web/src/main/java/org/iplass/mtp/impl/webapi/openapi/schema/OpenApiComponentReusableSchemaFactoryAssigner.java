@@ -47,7 +47,8 @@ public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiCom
 			}
 		}
 
-		throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
+		throw new IllegalArgumentException("Unsupported object type: " + object.getClass()
+				.getName());
 	}
 
 	/**

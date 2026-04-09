@@ -26,22 +26,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-
 import org.iplass.mtp.impl.metadata.AbstractXmlMetaDataStore;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataJAXBService;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.metadata.MetaDataRepositoryKind;
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.spi.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 
@@ -67,13 +67,13 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	}
 
 	public String getFileStorePath() {
-		if(rootPath == null) {
+		if (rootPath == null) {
 			return fileStorePath;
 		} else {
 			return rootPath + fileStorePath;
 		}
 	}
-	
+
 	public void setFileStorePath(String fileStorePath) {
 		this.fileStorePath = fileStorePath;
 	}
@@ -102,7 +102,7 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	 */
 	@Override
 	public MetaDataEntry loadById(final int tenantId, final String id) {
-		if(tenantId != localTenantId) {
+		if (tenantId != localTenantId) {
 			return null;
 		}
 		String prefixpath = getFileStorePath();
@@ -123,10 +123,10 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 
 	@Override
 	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid) throws MetaDataRuntimeException {
-		if(tenantId != localTenantId) {
+		if (tenantId != localTenantId) {
 			return new ArrayList<MetaDataEntryInfo>();
 		}
-		
+
 		String path = prefixPath;
 		if (path != null) {
 			if (!path.endsWith("/")) {
@@ -137,16 +137,16 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 				throw new MetaDataRuntimeException("invalid path:" + path);
 			}
 		}
-		
+
 		ArrayList<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>();
 		File dir = new File(getFileStorePath() + "/" + path);
 		readMetaDataEntryInfoRecursive(res, prefixPath, dir);
-		
+
 		return res;
 	}
 
 	private void readMetaDataEntryInfoRecursive(ArrayList<MetaDataEntryInfo> res, String prefixPath, File f) {
-		if(f.exists()) {
+		if (f.exists()) {
 			if (f.isDirectory()) {
 				String[] list = f.list();
 				for (String l : list) {
@@ -154,14 +154,17 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 					readMetaDataEntryInfoRecursive(res, prefixPath, subdirFile);
 				}
 			} else {
-				if(isMetaDataXml(f)) {
+				if (isMetaDataXml(f)) {
 					MetaDataEntry e = readMetaDataEntry(f);
-	
+
 					MetaDataEntryInfo node = new MetaDataEntryInfo();
 					node.setPath(e.getPath());
-					node.setId(e.getMetaData().getId());
-					node.setDisplayName(e.getMetaData().getDisplayName());
-					node.setDescription(e.getMetaData().getDescription());
+					node.setId(e.getMetaData()
+							.getId());
+					node.setDisplayName(e.getMetaData()
+							.getDisplayName());
+					node.setDescription(e.getMetaData()
+							.getDescription());
 					node.setSharable(false);
 					node.setDataSharable(false);
 					node.setPermissionSharable(false);
@@ -173,11 +176,11 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 			}
 		}
 	}
-	
+
 	@Override
 	public void inited(MetaDataRepository service, Config config) {
 		super.inited(service, config);
-		
+
 		if (fileStorePath != null) {
 			fileStorePath = fileStorePath.replaceAll("\\\\", "/");
 			if (!fileStorePath.endsWith("/")) {
@@ -188,7 +191,7 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 			// XmlFileMetaDataEntryThinWrapperのルートタグはMetaDataEntryThinWrapperと同じ. 
 			// この場合、MetaDataJAXBServiceのclassesToBeBoundの後ろの要素のクラスが勝つため、JAXBContextインスタンスは共有のものは使わず新規生成.
 			this.context = jaxbService.createJAXBContext(XmlFileMetaDataEntryThinWrapper.class);
-			
+
 			xmlExternalRefHandler.inited(service, this);
 		}
 		if (groovySourceStorePath != null) {
@@ -202,38 +205,39 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	private MetaDataEntry readMetaDataEntry(File file) {
 		MetaDataEntry instance = null;
 
-		try {		
+		try {
 			instance = new MetaDataEntry();
 			XmlFileMetaDataEntryThinWrapper meta = unmarshal(file);
 			if (meta != null && meta.getMetaData() == null) {
 				logger.warn("Cannot unmarshal metadata from XmlFile. filePath:" + file);
 			}
 			instance.setMetaData(meta.getMetaData());
-			if(!(meta.getVersion() == null)){
-				instance.setVersion(meta.getVersion());	
+			if (!(meta.getVersion() == null)) {
+				instance.setVersion(meta.getVersion());
 			}
 			instance.setState(State.VALID);
-			
+
 			String storeRoot = getFileStorePath();
-			if(storeRoot.endsWith("/")) {
+			if (storeRoot.endsWith("/")) {
 				storeRoot = storeRoot.substring(0, storeRoot.length() - 1);
 			}
-			
+
 			String filePath = file.getPath();
 			String path = filePath.substring(storeRoot.length());
-			path = path.substring(0, path.lastIndexOf(".")).replaceAll("\\\\", "/");
+			path = path.substring(0, path.lastIndexOf("."))
+					.replaceAll("\\\\", "/");
 			instance.setPath(path);
 		} catch (JAXBException e) {
 			throw new MetaDataRuntimeException(e);
 		}
-		
+
 		return instance;
 	}
-	
+
 	private MetaDataEntry searchFileById(String id, File dir) {
 		if (dir.isDirectory()) {
 			String[] list = dir.list();
-			for (String l: list) {
+			for (String l : list) {
 				File f = new File(dir, l);
 				if (f.isDirectory()) {
 					MetaDataEntry subDirMeta = searchFileById(id, f);
@@ -241,19 +245,20 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 						return subDirMeta;
 					}
 				} else {
-					if(isMetaDataXml(f)) {
+					if (isMetaDataXml(f)) {
 						MetaDataEntry e = readMetaDataEntry(f);
-						if (id.equals(e.getMetaData().getId())) {
+						if (id.equals(e.getMetaData()
+								.getId())) {
 							return e;
-						}	
+						}
 					}
-						
+
 				}
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	public MetaDataEntry load(int tenantId, String path) {
 		if (tenantId != localTenantId) {
@@ -263,7 +268,7 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 			// fix Path Manipulation
 			throw new MetaDataRuntimeException("invalid path:" + path);
 		}
-		
+
 		String filePath = "/" + path;
 		try {
 			String dirPath = getFileStorePath() + filePath.substring(0, filePath.lastIndexOf("/"));
@@ -279,7 +284,7 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 			}
 
 			String[] list = dir.list();
-			for (String l: list) {
+			for (String l : list) {
 				if (l.equals(fileName + suffix)) {
 					File file = new File(dir, l);
 
@@ -289,8 +294,8 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 						logger.warn("Cannot unmarshal metadata from XmlFile. filePath:" + file);
 					}
 					instance.setMetaData(meta.getMetaData());
-					if(!(meta.getVersion() == null)) {
-						instance.setVersion(meta.getVersion());	
+					if (!(meta.getVersion() == null)) {
+						instance.setVersion(meta.getVersion());
 					}
 					instance.setState(State.VALID);
 
@@ -323,46 +328,48 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		if (tenantId != localTenantId) {
 			throw new MetaDataRuntimeException("can not save metadata on local file store except tenantId {" + localTenantId + "}");
 		}
-		
+
 		String filePath = "/" + metaDataEntry.getPath();
-		
+
 		XmlFileMetaDataEntryThinWrapper meta = new XmlFileMetaDataEntryThinWrapper(metaDataEntry.getMetaData());
 		meta.setVersion(version);
 		File xml = new File(getFileStorePath() + filePath + suffix);
 
 		marshal(meta, xml);
 	}
-	
+
 	@Override
 	public void update(int tenantId, MetaDataEntry metaDataEntry)
 			throws MetaDataRuntimeException {
 		if (tenantId != localTenantId) {
 			throw new MetaDataRuntimeException("can not update metadata on local file store except tenantId {" + localTenantId + "}");
 		}
-		
+
 		String filePath = "/" + metaDataEntry.getPath();
 
 		File file = new File(getFileStorePath() + filePath + suffix);
 		int version = 0;
 		try {
-			MetaDataEntry prevMeta = loadById(tenantId, metaDataEntry.getMetaData().getId());
+			MetaDataEntry prevMeta = loadById(tenantId, metaDataEntry.getMetaData()
+					.getId());
 			if (prevMeta != null) {
-				File oldFile = new File(getFileStorePath() + "/" + prevMeta.getPath() + suffix);	
+				File oldFile = new File(getFileStorePath() + "/" + prevMeta.getPath() + suffix);
 				XmlFileMetaDataEntryThinWrapper meta = unmarshal(oldFile);
 				version = meta.getVersion() == null ? 0 : meta.getVersion() + 1;
 				file.delete();
 			}
-			
+
 			XmlFileMetaDataEntryThinWrapper meta = new XmlFileMetaDataEntryThinWrapper(metaDataEntry.getMetaData());
 			meta.setVersion(version);
 			marshal(meta, file);
-			
+
 			// リネームされてたら前のバージョンは削除
-			if (prevMeta != null && !prevMeta.getPath().equals(metaDataEntry.getPath())) {
+			if (prevMeta != null && !prevMeta.getPath()
+					.equals(metaDataEntry.getPath())) {
 				File oldFile = new File(getFileStorePath() + "/" + prevMeta.getPath() + suffix);
 				File dir = oldFile.getParentFile();
 				for (String oldName : dir.list()) {
-					if(oldName.startsWith(oldFile.getName())) {
+					if (oldName.startsWith(oldFile.getName())) {
 						File unReferencedFile = new File(dir, oldName);
 						unReferencedFile.delete();
 					}
@@ -375,11 +382,11 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	}
 
 	private void marshal(XmlFileMetaDataEntryThinWrapper meta, File file) {
-		File dir = file.getParentFile(); 
-		if(!dir.exists()) {
+		File dir = file.getParentFile();
+		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-		
+
 		try {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(meta, file);
@@ -388,22 +395,22 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		}
 		this.xmlExternalRefHandler.putOutExtcontent(file);
 	}
-	
+
 	private XmlFileMetaDataEntryThinWrapper unmarshal(File f) throws JAXBException {
-	    // 外部参照させている内容を復元
+		// 外部参照させている内容を復元
 		byte[] xmlRestoredExtenalContent = this.xmlExternalRefHandler.readRestoringExtContent(f);
 
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		return (XmlFileMetaDataEntryThinWrapper) unmarshaller
 				.unmarshal(new ByteArrayInputStream(xmlRestoredExtenalContent));
 	}
-	
+
 	@Override
 	public void remove(int tenantId, String path) throws MetaDataRuntimeException {
 		if (tenantId != localTenantId) {
 			throw new MetaDataRuntimeException("can not remove metadata on local file store except tenantId {" + localTenantId + "}");
 		}
-		
+
 		String filePath = "/" + path;
 		String dirPath = getFileStorePath() + filePath.substring(0, filePath.lastIndexOf("/"));
 		String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
@@ -414,10 +421,10 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		}
 
 		String[] list = dir.list();
-		for (String l: list) {
+		for (String l : list) {
 			if (l.startsWith(fileName)) {
 				File file = new File(dir, l);
-				if(!file.delete()) {
+				if (!file.delete()) {
 					throw new MetaDataRuntimeException("指定のMetaDataを削除できませんでした。XMLファイル名=" + fileName);
 				}
 			}
@@ -433,7 +440,7 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	public List<MetaDataEntryInfo> getHistoryById(int tenantId, String id) {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public void purgeById(int tenantId, String id) throws MetaDataRuntimeException {
 	}
@@ -449,9 +456,11 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	 * @return
 	 */
 	private boolean isMetaDataXml(File f) {
-		int idx = f.getName().lastIndexOf(".");
-		if(idx != -1) {
-			String base = f.getName().substring(0, idx);
+		int idx = f.getName()
+				.lastIndexOf(".");
+		if (idx != -1) {
+			String base = f.getName()
+					.substring(0, idx);
 			return !base.contains(suffix);
 		} else {
 			return false;

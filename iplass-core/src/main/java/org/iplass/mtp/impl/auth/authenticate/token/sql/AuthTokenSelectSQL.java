@@ -37,46 +37,53 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthTokenSelectSQL extends QuerySqlHandler {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(AuthTokenSelectSQL.class);
-	
+
 	public String createSelectSQL() {
 		return "SELECT " +
 				"TENANT_ID,T_TYPE,U_KEY,SERIES,TOKEN,POL_NAME,S_DATE,T_INFO " +
 				"FROM T_ATOKEN " +
 				"WHERE TENANT_ID=? AND T_TYPE=? AND SERIES=?";
 	}
+
 	public void setSelectParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String type, String series) throws SQLException {
 		ps.setInt(1, tenantId);
 		ps.setString(2, type);
 		ps.setString(3, series);
 	}
+
 	public AuthToken toAuthToken(ResultSet rs, boolean saveDetailAsJson, ObjectMapper om, RdbAdapter rdb) throws SQLException {
-		AuthToken at = new AuthToken(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getTimestamp(7, rdb.rdbCalendar()), null);
+		AuthToken at = new AuthToken(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
+				rs.getTimestamp(7, rdb.rdbCalendar()), null);
 		byte[] tiByte = rs.getBytes(8);
 		if (tiByte != null && tiByte.length > 0) {
 			try {
 				if (saveDetailAsJson) {
-					at.setDetails(om.readValue(tiByte, DetailWrapper.class).getDetails());
+					at.setDetails(om.readValue(tiByte, DetailWrapper.class)
+							.getDetails());
 				} else {
 					ByteArrayInputStream byteIn = new ByteArrayInputStream(tiByte);
 					ObjectInputStream in = new ObjectInputStream(byteIn);
 					at.setDetails((Serializable) in.readObject());
 				}
 			} catch (IOException | ClassNotFoundException e) {
-				logger.error("Can't parse tokenInfo value so ignore tokenInfo:tenantId=" + at.getTenantId() + ", type=" + at.getType() + ", series=" + at.getSeries());
+				logger.error("Can't parse tokenInfo value so ignore tokenInfo:tenantId=" + at.getTenantId() + ", type=" + at.getType() + ", series="
+						+ at.getSeries());
 			}
 		}
 		return at;
 	}
-	
+
 	public String createSelectByUserUniqueKeySQL() {
 		return "SELECT " +
 				"TENANT_ID,T_TYPE,U_KEY,SERIES,TOKEN,POL_NAME,S_DATE,T_INFO " +
 				"FROM T_ATOKEN " +
 				"WHERE TENANT_ID=? AND U_KEY=? AND T_TYPE=?";
 	}
-	public void setSelectByUserUniqueKeyParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String type, String userUniqueKey) throws SQLException {
+
+	public void setSelectByUserUniqueKeyParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String type, String userUniqueKey)
+			throws SQLException {
 		ps.setInt(1, tenantId);
 		ps.setString(2, userUniqueKey);
 		ps.setString(3, type);

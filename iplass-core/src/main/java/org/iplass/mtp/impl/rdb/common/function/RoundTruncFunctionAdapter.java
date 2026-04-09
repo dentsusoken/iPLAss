@@ -30,14 +30,14 @@ import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.rdb.adapter.function.BaseFunctionAdapter;
 
 public class RoundTruncFunctionAdapter extends BaseFunctionAdapter {
-	
+
 	public RoundTruncFunctionAdapter(String funcName, String sqlFuncName) {
 		super(funcName, sqlFuncName);
 	}
 
 	@Override
 	public Class<?> getType(Function function, ArgumentTypeResolver typeResolver) {
-		
+
 		List<ValueExpression> args = function.getArguments();
 		if (args == null) {
 			return null;
@@ -57,10 +57,10 @@ public class RoundTruncFunctionAdapter extends BaseFunctionAdapter {
 				} else {
 					return BigDecimal.class;
 				}
-			} 
+			}
 		}
-		
+
 		throw new QueryException(function.getName() + " Function's second arg must Literal(Long) value.");
 	}
-	
+
 }

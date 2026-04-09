@@ -59,21 +59,27 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 		this.timeToLiveCalculator = timeToLiveCalculator;
 
 		if (size > 0) {
-			cache = Caffeine.newBuilder().maximumSize(size).initialCapacity(initialCapacity)
+			cache = Caffeine.newBuilder()
+					.maximumSize(size)
+					.initialCapacity(initialCapacity)
 					.removalListener((key, value, cause) -> {
 						if (cause.wasEvicted()) {
 							removeFromIndex((CacheEntry) value, false);
 							notifyRemoved((CacheEntry) value);
 						}
-					}).build();
+					})
+					.build();
 		} else {
-			cache = Caffeine.newBuilder().initialCapacity(initialCapacity).build();
+			cache = Caffeine.newBuilder()
+					.initialCapacity(initialCapacity)
+					.build();
 		}
 
 		indexCache = new FineGrainedLockIndex[indexCount];
 		for (int i = 0; i < indexCache.length; i++) {
 			if (indexConfig != null && i < indexConfig.size()) {
-				indexCache[i] = indexConfig.get(i).build();
+				indexCache[i] = indexConfig.get(i)
+						.build();
 			} else {
 				indexCache[i] = new FineGrainedLockIndexConfig().build();
 			}
@@ -116,7 +122,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 	@Override
 	public CacheEntry put(CacheEntry entry, boolean isClean) {
 		timeToLiveCalculator.set(entry);
-		
+
 		if (entry.getKey() instanceof NullKey) {
 			//NullKeyの場合は本体には格納しない
 			try (FineGrainedLockState fgls = new FineGrainedLockState(entry, null, indexCache)) {
@@ -125,14 +131,15 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			return null;
 		} else {
 			CacheEntry[] previous = new CacheEntry[1];
-			CacheEntry putted = cache.asMap().compute(entry.getKey(), (k, v) -> {
-				previous[0] = v;
-				try (FineGrainedLockState fgls = new FineGrainedLockState(entry, v, indexCache)) {
-					fgls.maintain();
-				}
-				return entry;
-			});
-			
+			CacheEntry putted = cache.asMap()
+					.compute(entry.getKey(), (k, v) -> {
+						previous[0] = v;
+						try (FineGrainedLockState fgls = new FineGrainedLockState(entry, v, indexCache)) {
+							fgls.maintain();
+						}
+						return entry;
+					});
+
 			if (previous[0] == null) {
 				notifyPut(entry);
 			} else {
@@ -145,16 +152,17 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 	@Override
 	public CacheEntry remove(Object key) {
 		CacheEntry[] previous = new CacheEntry[1];
-		cache.asMap().compute(key, (k, v) -> {
-			previous[0] = v;
-			if (v != null) {
-				try (FineGrainedLockState fgls = new FineGrainedLockState(null, v, indexCache)) {
-					fgls.maintain();
-				}
-			}
-			return null;
-		});
-		
+		cache.asMap()
+				.compute(key, (k, v) -> {
+					previous[0] = v;
+					if (v != null) {
+						try (FineGrainedLockState fgls = new FineGrainedLockState(null, v, indexCache)) {
+							fgls.maintain();
+						}
+					}
+					return null;
+				});
+
 		if (previous[0] != null) {
 			notifyRemoved(previous[0]);
 		}
@@ -173,22 +181,23 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 		if (entry.getKey() instanceof NullKey) {
 			throw new UnsupportedOperationException("PutIfAbsent with Null Entry(NullKey) is Unsupported.");
 		}
-		
+
 		timeToLiveCalculator.set(entry);
 		CacheEntry[] previous = new CacheEntry[1];
-		cache.asMap().compute(entry.getKey(), (k, v) -> {
-			previous[0] = v;
-			
-			if (v == null) {
-				try (FineGrainedLockState fgls = new FineGrainedLockState(entry, v, indexCache)) {
-					fgls.maintain();
-				}
-				return entry;
-			} else {
-				return v;
-			}
-		});
-		
+		cache.asMap()
+				.compute(entry.getKey(), (k, v) -> {
+					previous[0] = v;
+
+					if (v == null) {
+						try (FineGrainedLockState fgls = new FineGrainedLockState(entry, v, indexCache)) {
+							fgls.maintain();
+						}
+						return entry;
+					} else {
+						return v;
+					}
+				});
+
 		if (previous[0] == null) {
 			notifyPut(entry);
 		}
@@ -204,21 +213,22 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 		if (key instanceof NullKey) {
 			throw new UnsupportedOperationException("computeIfAbsent with Null Entry(NullKey) is Unsupported.");
 		}
-		
+
 		boolean[] computed = new boolean[1];
-		CacheEntry entry = cache.asMap().computeIfAbsent(key, k -> {
-			computed[0] = true;
-			CacheEntry v = mappingFunction.apply(k);
-			if (v != null) {
-				timeToLiveCalculator.set(v);
-				
-				try (FineGrainedLockState fgls = new FineGrainedLockState(v, null, indexCache)) {
-					fgls.maintain();
-				}
-			}
-			return v;
-		});
-		
+		CacheEntry entry = cache.asMap()
+				.computeIfAbsent(key, k -> {
+					computed[0] = true;
+					CacheEntry v = mappingFunction.apply(k);
+					if (v != null) {
+						timeToLiveCalculator.set(v);
+
+						try (FineGrainedLockState fgls = new FineGrainedLockState(v, null, indexCache)) {
+							fgls.maintain();
+						}
+					}
+					return v;
+				});
+
 		if (computed[0] && entry != null) {
 			notifyPut(entry);
 		}
@@ -231,20 +241,21 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 	@Override
 	public CacheEntry compute(Object key, BiFunction<Object, CacheEntry, CacheEntry> remappingFunction) {
 		CacheEntry[] old = new CacheEntry[1];
-		CacheEntry entry = cache.asMap().compute(key, (k, v) -> {
-			old[0] = v;
-			CacheEntry newV = remappingFunction.apply(k, v);
-			if (v != newV) {
-				if (newV != null) {
-					timeToLiveCalculator.set(newV);
-				}
-				try (FineGrainedLockState fgls = new FineGrainedLockState(newV, v, indexCache)) {
-					fgls.maintain();
-				}
-			}
-			return newV;
-		});
-		
+		CacheEntry entry = cache.asMap()
+				.compute(key, (k, v) -> {
+					old[0] = v;
+					CacheEntry newV = remappingFunction.apply(k, v);
+					if (v != newV) {
+						if (newV != null) {
+							timeToLiveCalculator.set(newV);
+						}
+						try (FineGrainedLockState fgls = new FineGrainedLockState(newV, v, indexCache)) {
+							fgls.maintain();
+						}
+					}
+					return newV;
+				});
+
 		if (entry != null) {
 			//put
 			if (old[0] == null) {
@@ -265,19 +276,20 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 	public boolean remove(CacheEntry entry) {
 		CacheEntry[] previous = new CacheEntry[1];
 		boolean[] res = new boolean[1];
-		cache.asMap().computeIfPresent(entry.getKey(), (k, v) -> {
-			previous[0] = v;
-			if (entry.equals(v)) {
-				try (FineGrainedLockState fgls = new FineGrainedLockState(null, v, indexCache)) {
-					fgls.maintain();
-				}
-				res[0] = true;
-				return null;
-			} else {
-				return v;
-			}
-		});
-		
+		cache.asMap()
+				.computeIfPresent(entry.getKey(), (k, v) -> {
+					previous[0] = v;
+					if (entry.equals(v)) {
+						try (FineGrainedLockState fgls = new FineGrainedLockState(null, v, indexCache)) {
+							fgls.maintain();
+						}
+						res[0] = true;
+						return null;
+					} else {
+						return v;
+					}
+				});
+
 		if (res[0]) {
 			notifyRemoved(previous[0]);
 		}
@@ -288,14 +300,15 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 	public CacheEntry replace(CacheEntry entry) {
 		timeToLiveCalculator.set(entry);
 		CacheEntry[] previous = new CacheEntry[1];
-		cache.asMap().computeIfPresent(entry.getKey(), (k, v) -> {
-			previous[0] = v;
-			try (FineGrainedLockState fgls = new FineGrainedLockState(entry, v, indexCache)) {
-				fgls.maintain();
-			}
-			return entry;
-		});
-		
+		cache.asMap()
+				.computeIfPresent(entry.getKey(), (k, v) -> {
+					previous[0] = v;
+					try (FineGrainedLockState fgls = new FineGrainedLockState(entry, v, indexCache)) {
+						fgls.maintain();
+					}
+					return entry;
+				});
+
 		if (previous[0] != null) {
 			notifyUpdated(previous[0], entry);
 		}
@@ -304,26 +317,28 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+		if (!oldEntry.getKey()
+				.equals(newEntry.getKey())) {
 			throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 		}
-		
+
 		timeToLiveCalculator.set(newEntry);
 		CacheEntry[] previous = new CacheEntry[1];
 		boolean[] res = new boolean[1];
-		cache.asMap().computeIfPresent(newEntry.getKey(), (k, v) -> {
-			previous[0] = v;
-			if (oldEntry.equals(v)) {
-				try (FineGrainedLockState fgls = new FineGrainedLockState(newEntry, v, indexCache)) {
-					fgls.maintain();
-				}
-				res[0] = true;
-				return newEntry;
-			} else {
-				return v;
-			}
-		});
-		
+		cache.asMap()
+				.computeIfPresent(newEntry.getKey(), (k, v) -> {
+					previous[0] = v;
+					if (oldEntry.equals(v)) {
+						try (FineGrainedLockState fgls = new FineGrainedLockState(newEntry, v, indexCache)) {
+							fgls.maintain();
+						}
+						res[0] = true;
+						return newEntry;
+					} else {
+						return v;
+					}
+				});
+
 		if (res[0]) {
 			notifyUpdated(previous[0], newEntry);
 		}
@@ -332,7 +347,8 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 
 	@Override
 	public List<Object> keySet() {
-		return new ArrayList<Object>(cache.asMap().keySet());
+		return new ArrayList<Object>(cache.asMap()
+				.keySet());
 	}
 
 	@Override
@@ -350,7 +366,7 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 			indexValues[indexKey] = indexValue;
 			return new CacheEntry(key, null, Long.MIN_VALUE, indexValues);
 		}
-		
+
 		return get(key);
 	}
 
@@ -360,20 +376,20 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 		if (iv == null) {
 			return Collections.emptyList();
 		}
-		
+
 		List<Object> keys = iv.refs();
 		if (keys.size() == 0) {
 			return Collections.emptyList();
 		}
-		
+
 		if (keys.size() == 1 && keys.get(0) instanceof NullKey) {
 			Object[] indexValues = new Object[indexCache.length];
 			indexValues[indexKey] = indexValue;
 			return Collections.singletonList(new CacheEntry(keys.get(0), null, Long.MIN_VALUE, indexValues));
 		}
-		
+
 		ArrayList<CacheEntry> result = new ArrayList<CacheEntry>(keys.size());
-		for (Object k: keys) {
+		for (Object k : keys) {
 			CacheEntry e = get(k);
 			if (e != null) {
 				result.add(e);
@@ -388,14 +404,14 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 		if (iv == null) {
 			return Collections.emptyList();
 		}
-		
+
 		List<Object> keys = iv.refs();
 		if (keys.size() == 0) {
 			return Collections.emptyList();
 		}
-		
+
 		ArrayList<CacheEntry> result = new ArrayList<CacheEntry>(keys.size());
-		for (Object k: keys) {
+		for (Object k : keys) {
 			if (!(k instanceof NullKey)) {
 				CacheEntry e = remove(k);
 				if (e != null) {
@@ -434,7 +450,8 @@ public class FineGrainedLockIndexedConcurrentHashMapCacheStore extends SimpleCac
 
 	@Override
 	public void destroy() {
-		cache.asMap().clear();
+		cache.asMap()
+				.clear();
 		cache.invalidateAll();
 		cache.cleanUp();
 		for (int i = 0; i < indexCache.length; i++) {

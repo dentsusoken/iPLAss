@@ -27,6 +27,7 @@ public enum BuiltinAuthUserSpecificType {
 	LASTLOGIN("last login date");
 
 	private String displayName;
+
 	private BuiltinAuthUserSpecificType(String displayName) {
 		this.displayName = displayName;
 	}

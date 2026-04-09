@@ -26,11 +26,11 @@ import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.impl.entity.EntityHandler;
 
 public class EntityUnlockByUserInvocationImpl extends EntityInvocationImpl<Boolean> implements EntityUnlockByUserInvocation {
-	
+
 	private String oid;
 	private String userId;
 	private boolean force;
-	
+
 	public EntityUnlockByUserInvocationImpl(String oid, String userId, boolean force, EntityInterceptor[] entityInterceptors,
 			EntityHandler entityHandler) {
 		super(entityInterceptors, entityHandler);
@@ -38,15 +38,15 @@ public class EntityUnlockByUserInvocationImpl extends EntityInvocationImpl<Boole
 		this.userId = userId;
 		this.force = force;
 	}
-	
+
 	public String getOid() {
 		return oid;
 	}
-	
+
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
-	
+
 	@Override
 	protected Boolean callEntityHandler(EntityHandler eh) {
 		return eh.unlockEntityByUser(oid, userId, force);
@@ -76,5 +76,5 @@ public class EntityUnlockByUserInvocationImpl extends EntityInvocationImpl<Boole
 	public void setForce(boolean force) {
 		this.force = force;
 	}
-	
+
 }

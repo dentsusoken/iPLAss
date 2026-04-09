@@ -451,31 +451,40 @@ public class MetaNestProperty implements MetaData, HasEntityProperty {
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(property.getEditor());
 
 		if (property.getEditor() instanceof JoinPropertyEditor) {
-			((JoinPropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
+			((JoinPropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData()
+					.getName());
 		} else if (property.getEditor() instanceof DateRangePropertyEditor) {
-			((DateRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
+			((DateRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData()
+					.getName());
 		} else if (property.getEditor() instanceof NumericRangePropertyEditor) {
-			((NumericRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData().getName());
+			((NumericRangePropertyEditor) property.getEditor()).setObjectName(referenceEntity.getMetaData()
+					.getName());
 		} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) property.getEditor();
 			if (ph != null && ph instanceof ReferencePropertyHandler) {
 				// 参照先Entity名をセット
 				ReferencePropertyHandler rph = (ReferencePropertyHandler) ph;
-				String objName = rph.getReferenceEntityHandler(ctx).getMetaData().getName();
+				String objName = rph.getReferenceEntityHandler(ctx)
+						.getMetaData()
+						.getName();
 				rpe.setObjectName(objName);
 				// 参照元Entity名をセット
 				if (rph.getParent() != null) {
-					rpe.setReferenceFromObjectName(rph.getParent().getMetaData().getName());
+					rpe.setReferenceFromObjectName(rph.getParent()
+							.getMetaData()
+							.getName());
 				}
 				// ルートEntity名をセット
 				if (rootEntity != null) {
-					rpe.setRootObjectName(rootEntity.getMetaData().getName());
+					rpe.setRootObjectName(rootEntity.getMetaData()
+							.getName());
 				}
 			}
 		}
 
 		if (editor != null) {
-			property.getEditor().setPropertyName(property.getPropertyName());
+			property.getEditor()
+					.setPropertyName(property.getPropertyName());
 			editor.applyConfig(property.getEditor());
 			this.editor = editor;
 		}

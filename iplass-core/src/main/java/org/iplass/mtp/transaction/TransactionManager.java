@@ -31,14 +31,14 @@ import org.iplass.mtp.Manager;
  *
  */
 public interface TransactionManager extends Manager {
-	
+
 	/**
 	 * 新規にトランザクションを開始する。
 	 * 
 	 * @return
 	 */
 	public Transaction newTransaction();
-	
+
 	/**
 	 * 新規に読み込み専用とマークしたトランザクションを開始する。
 	 * 
@@ -46,7 +46,7 @@ public interface TransactionManager extends Manager {
 	 * @return
 	 */
 	public Transaction newTransaction(boolean readOnly);
-	
+
 	/**
 	 * トランザクションをサスペンドします。
 	 * サスペンドされた状態（Transacton.status=SUSPENDED）であることを示すTransactionインスタンスが返却されます。
@@ -54,14 +54,14 @@ public interface TransactionManager extends Manager {
 	 * @return サスペンド状態のTransaction
 	 */
 	public Transaction suspend();
-	
+
 	/**
 	 * サスペンドされたトランザクションを復帰します。
 	 * 
 	 * @param t suspend()の際取得したTransactionインスタンス
 	 */
 	public void resume(Transaction t);
-	
+
 	/**
 	 * 現在のトランザクションを取得します。
 	 * トランザクションが開始されていない場合、{@link TransactionStatus#NONE}のTransactionが返却されます。
@@ -70,7 +70,7 @@ public interface TransactionManager extends Manager {
 	 * @return
 	 */
 	public Transaction currentTransaction();
-	
+
 	/**
 	 * 指定のfunctionをoptionに従った形でトランザクション処理します。<br>
 	 * 
@@ -80,9 +80,9 @@ public interface TransactionManager extends Manager {
 	 * @return functionで返却されるインスタンス
 	 */
 	public default <R> R doTransaction(TransactionOption option, Function<Transaction, R> function) {
-		
+
 		Propagation propagation = option.getPropagation();
-		
+
 		Transaction t = currentTransaction();
 		boolean isSuccess = false;
 		boolean isCreate = false;
@@ -111,7 +111,7 @@ public interface TransactionManager extends Manager {
 			default:
 				break;
 			}
-			
+
 			R ret = function.apply(t);
 			isSuccess = true;
 			return ret;
@@ -155,7 +155,9 @@ public interface TransactionManager extends Manager {
 						} else {
 							if (t.isRollbackOnly()) {
 								if (Holder.logger.isDebugEnabled()) {
-									Holder.logger.debug("rollbackWhenException=false, but rollback transaction because set rollbackOnly=true. exception:" + th + ":" + t, th);
+									Holder.logger
+											.debug("rollbackWhenException=false, but rollback transaction because set rollbackOnly=true. exception:"
+													+ th + ":" + t, th);
 								}
 								try {
 									t.rollback();
@@ -179,7 +181,8 @@ public interface TransactionManager extends Manager {
 				case ROLLEDBACK:
 					//トランザクション処理中に明示的にcommit/rollbackした。
 					if (Holder.logger.isDebugEnabled()) {
-						Holder.logger.debug("In transaction function, explicitly committed/rolledback, so no handle transaction in doTransactiion():" + t);
+						Holder.logger
+								.debug("In transaction function, explicitly committed/rolledback, so no handle transaction in doTransactiion():" + t);
 					}
 					break;
 				case NONE:
@@ -191,5 +194,5 @@ public interface TransactionManager extends Manager {
 			}
 		}
 	}
-	
+
 }

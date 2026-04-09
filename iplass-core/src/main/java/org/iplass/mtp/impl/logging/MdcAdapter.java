@@ -28,9 +28,9 @@ import java.util.Set;
 import org.slf4j.MDC;
 
 class MdcAdapter implements Map<String, String> {
-	
+
 	private Map<String, String> mdcCopy;
-	
+
 	private void initCopy() {
 		if (mdcCopy == null) {
 			mdcCopy = MDC.getCopyOfContextMap();

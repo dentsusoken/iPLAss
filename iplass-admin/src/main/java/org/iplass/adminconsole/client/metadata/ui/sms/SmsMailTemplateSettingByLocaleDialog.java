@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.sms;
 
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -135,8 +134,8 @@ public class SmsMailTemplateSettingByLocaleDialog extends MtpDialog {
 					massageTabSet = new TabSet();
 					massageTabSet.setWidth100();
 					//massageTabSet.setHeight100();
-					massageTabSet.setHeight(450);	//高さは固定でないとうまくいかないため指定
-					massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	//Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
+					massageTabSet.setHeight(450); //高さは固定でないとうまくいかないため指定
+					massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN); //Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
 
 					plainMessageTab = new Tab();
 					plainMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateSettingByLocaleDialog_textMessage"));
@@ -154,7 +153,8 @@ public class SmsMailTemplateSettingByLocaleDialog extends MtpDialog {
 				}
 			});
 		}
-		public void setDefinition(LocalizedSmsMailTemplateDefinition definition){
+
+		public void setDefinition(LocalizedSmsMailTemplateDefinition definition) {
 			String plainMessage = null;
 			if (definition != null) {
 				langSelectItem.setValue(definition.getLocaleName());
@@ -168,12 +168,13 @@ public class SmsMailTemplateSettingByLocaleDialog extends MtpDialog {
 			}
 			massageTabSet.selectTab(plainMessageTab);
 
-			setTabTitle(plainMessageTab, AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateSettingByLocaleDialog_textMessage"), plainMessage);
+			setTabTitle(plainMessageTab, AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplateSettingByLocaleDialog_textMessage"),
+					plainMessage);
 		}
 
 		public LocalizedSmsMailTemplateDefinition getEditDefinition(LocalizedSmsMailTemplateDefinition definition) {
 			definition.setLocaleName(SmartGWTUtil.getStringValue(langSelectItem));
-			PlainTextBodyPart plainPart = new  PlainTextBodyPart();
+			PlainTextBodyPart plainPart = new PlainTextBodyPart();
 			plainPart.setContent(plainEditor.getText());
 			definition.setMessage(plainPart);
 			return definition;

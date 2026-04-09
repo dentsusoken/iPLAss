@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -33,9 +31,11 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.view.generic.ViewControlSetting;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormView;
+import org.iplass.mtp.view.generic.ViewControlSetting;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * 画面定義
@@ -76,7 +76,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 	 * @return レイアウト情報
 	 */
 	public List<MetaFormView> getViews() {
-		if (this.views == null) this.views = new ArrayList<MetaFormView>();
+		if (this.views == null)
+			this.views = new ArrayList<MetaFormView>();
 		return views;
 	}
 
@@ -97,7 +98,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 	}
 
 	public List<MetaViewControlSetting> getViewControlSettings() {
-		if (this.viewControlSettings == null) this.viewControlSettings = new ArrayList<>();
+		if (this.viewControlSettings == null)
+			this.viewControlSettings = new ArrayList<>();
 		return viewControlSettings;
 	}
 
@@ -129,7 +131,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 	public void applyConfig(EntityView entityView) {
 		//name -> id
 		EntityContext eContext = EntityContext.getCurrentContext();
-		MetaEntity metaEntity = eContext.getHandlerByName(entityView.getDefinitionName()).getMetaData();
+		MetaEntity metaEntity = eContext.getHandlerByName(entityView.getDefinitionName())
+				.getMetaData();
 
 		this.name = entityView.getName();
 		this.displayName = entityView.getDisplayName();
@@ -137,7 +140,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 
 		this.definitionId = metaEntity.getId();
 
-		if (entityView.getViews().size() > 0) {
+		if (entityView.getViews()
+				.size() > 0) {
 			for (FormView view : entityView.getViews()) {
 				MetaFormView mView = MetaFormView.createInstance(view);
 				mView.applyConfig(view, definitionId);
@@ -145,11 +149,13 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 			}
 
 			//追加/更新の度に順序が変わる、構成管理上履歴が追いにくくなるので型とView名でソートしておく
-			this.getViews().sort(Comparator.comparing(MetaFormView::getTypeName)
-					.thenComparing(Comparator.comparing(MetaFormView::getName, Comparator.nullsFirst(Comparator.naturalOrder()))));
+			this.getViews()
+					.sort(Comparator.comparing(MetaFormView::getTypeName)
+							.thenComparing(Comparator.comparing(MetaFormView::getName, Comparator.nullsFirst(Comparator.naturalOrder()))));
 		}
 
-		if (!entityView.getViewControlSettings().isEmpty()) {
+		if (!entityView.getViewControlSettings()
+				.isEmpty()) {
 			for (ViewControlSetting viewControlSetting : entityView.getViewControlSettings()) {
 				MetaViewControlSetting meta = new MetaViewControlSetting();
 				meta.applyConfig(viewControlSetting);
@@ -173,17 +179,20 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 		EntityContext eContext = EntityContext.getCurrentContext();
 		EntityHandler eh = eContext.getHandlerById(this.definitionId);
 		if (eh != null) {
-			entityView.setDefinitionName(eh.getMetaData().getName());
+			entityView.setDefinitionName(eh.getMetaData()
+					.getName());
 		}
 
-		if (this.getViews().size() > 0) {
+		if (this.getViews()
+				.size() > 0) {
 			for (MetaFormView mv : this.getViews()) {
 				FormView formView = mv.currentConfig(definitionId);
 				entityView.addView(formView);
 			}
 		}
 
-		if (!this.getViewControlSettings().isEmpty()) {
+		if (!this.getViewControlSettings()
+				.isEmpty()) {
 			for (MetaViewControlSetting meta : this.getViewControlSettings()) {
 				ViewControlSetting viewControlSetting = meta.currentConfig();
 				entityView.addViewControlSetting(viewControlSetting);

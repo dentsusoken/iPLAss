@@ -46,7 +46,8 @@ public class TimeConverter extends TypeConverter {
 	private Time toTime(String exp, DateFormat sdf) {
 		try {
 			sdf.setLenient(false);
-			return new Time(sdf.parse(exp).getTime());
+			return new Time(sdf.parse(exp)
+					.getTime());
 		} catch (ParseException e) {
 		}
 		return null;
@@ -84,7 +85,9 @@ public class TimeConverter extends TypeConverter {
 					t = toTime(exp, DateUtil.getSimpleDateFormat("HHmmss", false));
 				}
 				if (t == null) {
-					t = toTime(exp, DateUtil.getSimpleDateFormat(ExecuteContext.getCurrentContext().getLocaleFormat().getOutputTimeSecFormat(), false));
+					t = toTime(exp, DateUtil.getSimpleDateFormat(ExecuteContext.getCurrentContext()
+							.getLocaleFormat()
+							.getOutputTimeSecFormat(), false));
 				}
 				if (t == null) {
 					t = toTime(exp, DateUtil.getSimpleDateFormat(lf.getExcelTimeFormat(), true));
@@ -98,4 +101,5 @@ public class TimeConverter extends TypeConverter {
 			return t;
 		}
 		return null;
-	}}
+	}
+}

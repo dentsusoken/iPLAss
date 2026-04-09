@@ -1182,7 +1182,8 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, de
  */
 function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
-		countUp(countId, function(count) {
+		//jQueryセレクタ用のエスケープは、本来 セレクタ側（countUpの $()）でやるべき。しかし、影響範囲が広すぎるため、ここでエスケープしている
+		countUp(es(countId), function(count) {
 			var $copy = copyUniqueRefItem(dummyRowId, propName, count, delCallback);
 			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
@@ -1194,7 +1195,7 @@ function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, fun
 		var copyId = "li_" + newId;
 
 		//ソースをコピー
-		var $src = $("#" + dummyRowId);
+		var $src = $("#" + es(dummyRowId));
 		var $copy = clone($src, copyId);
 
 		//input
@@ -1202,15 +1203,22 @@ function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, fun
 		var $link = $("a.modal-lnk", $copy);
 		var $hidden = $(":hidden:last", $copy);
 		var $selBtn = $(":button.sel-btn", $copy);
+		var $insBtn = $(":button.ins-btn", $copy);
 		var $delBtn = $(":button.del-btn", $copy);
 
 		//inputのidを設定
 		$text.attr("id", "uniq_txt_" + copyId);
 
 		if ($("body.modal-body").length != 0) {
+			// modal 内で開く場合
 			$link.subModalWindow();
+			$selBtn.subModalWindow();
+			$insBtn.subModalWindow();
 		} else {
+			// main ページで開く場合
 			$link.modalWindow();
+			$selBtn.modalWindow();
+			$insBtn.modalWindow();
 		}
 
 		//hiddenにnameとidを指定
@@ -4454,6 +4462,12 @@ function addNestRow_Reference(type, cell, idx) {
 		var $li = $(".unique-list", cell);
 		replaceDummyAttr($li, "data-propName", idx);
 		$(".refUnique", cell).refUnique();
+		var $buttons = $(cell).find(".sel-btn, .ins-btn");
+		if ($("body.modal-body").length != 0) {
+			$buttons.subModalWindow();
+		} else {
+			$buttons.modalWindow();
+		}
 	} else if (type == "REFCOMBO") {
 		// 参照コンボの対応
 		$(".ref-combo-sync", cell).refComboSync();

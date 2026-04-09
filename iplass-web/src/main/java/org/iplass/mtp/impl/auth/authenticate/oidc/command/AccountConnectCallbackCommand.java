@@ -41,23 +41,25 @@ import org.iplass.mtp.impl.auth.authenticate.oidc.OIDCValidateResult;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 
-@ActionMapping(name=AccountConnectCallbackCommand.ACTION_NAME,
-	clientCacheType=ClientCacheType.NO_CACHE,
-	paramMapping={
-			@ParamMapping(name=AccountConnectCallbackCommand.PARAM_DEFINITION_NAME, mapFrom=ParamMapping.PATHS)
-	},
-	result={
-			@Result(status=AccountConnectCallbackCommand.STAT_SUCCESS, type=Type.REDIRECT, value=WebRequestConstants.REDIRECT_PATH),
-			@Result(exception=ApplicationException.class, type=Type.DYNAMIC, value=AuthCommand.REQUEST_ERROR_TEMPLATE)
-	}
+@ActionMapping(
+		name = AccountConnectCallbackCommand.ACTION_NAME,
+		clientCacheType = ClientCacheType.NO_CACHE,
+		paramMapping = {
+				@ParamMapping(name = AccountConnectCallbackCommand.PARAM_DEFINITION_NAME, mapFrom = ParamMapping.PATHS)
+		},
+		result = {
+				@Result(status = AccountConnectCallbackCommand.STAT_SUCCESS, type = Type.REDIRECT, value = WebRequestConstants.REDIRECT_PATH),
+				@Result(exception = ApplicationException.class, type = Type.DYNAMIC, value = AuthCommand.REQUEST_ERROR_TEMPLATE)
+		}
 )
-@CommandClass(name="mtp/oidc/AccountConnectCallbackCommand", displayName="OpenID Connect Account Connect Callback processing")
+@CommandClass(name = "mtp/oidc/AccountConnectCallbackCommand", displayName = "OpenID Connect Account Connect Callback processing")
 public class AccountConnectCallbackCommand extends AbstractCallbackCommand {
 	public static final String ACTION_NAME = "oidc/connectcb";
 	public static final String PARAM_DEFINITION_NAME = "defName";
 	public static final String STAT_SUCCESS = "SUCCESS";
 
-	private AuthenticationPolicyService policyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
+	private AuthenticationPolicyService policyService = ServiceRegistry.getRegistry()
+			.getService(AuthenticationPolicyService.class);
 
 	public AccountConnectCallbackCommand() {
 		super(AccountConnectCommand.SESSION_OIDC_STATE);
@@ -73,15 +75,18 @@ public class AccountConnectCallbackCommand extends AbstractCallbackCommand {
 			} else {
 				ore = new OIDCRuntimeException(vr.getError() + ":" + vr.getErrorDescription(), vr.getRootCause());
 			}
-			throw new ApplicationException(resourceString("impl.auth.authenticate.oidc.command.AbstractCallbackCommand.error", "Invalid response from OpenID Provider.", "invalid_response"), ore);
+			throw new ApplicationException(resourceString("impl.auth.authenticate.oidc.command.AbstractCallbackCommand.error",
+					"Invalid response from OpenID Provider.", "invalid_response"), ore);
 		}
-		
-		User user = AuthContext.getCurrentContext().getUser();
+
+		User user = AuthContext.getCurrentContext()
+				.getUser();
 		AuthenticationPolicyRuntime userPolicy = policyService.getOrDefault(user.getAccountPolicy());
 		if (!oidp.isAllowedOnPolicy(userPolicy)) {
-			throw new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidp.getMetaData().getName());
+			throw new OIDCRuntimeException("policy not allow OpenIdConnectDefinition:" + oidp.getMetaData()
+					.getName());
 		}
-		
+
 		oidp.connect(user.getOid(), vr);
 	}
 

@@ -121,7 +121,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		headerPane.setHistoryClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass().getName(), curDefinitionId, curVersion);
+				MetaDataHistoryDialog metaDataHistoryDialog = new MetaDataHistoryDialog(curDefinition.getClass()
+						.getName(), curDefinitionId, curVersion);
 				metaDataHistoryDialog.show();
 			}
 		});
@@ -201,14 +202,15 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 	 */
 	private void setDefinition(DefinitionEntry entry) {
 		this.curDefinition = (MailTemplateDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		this.curVersion = entry.getDefinitionInfo()
+				.getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo()
+				.getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
 		mailTemplateAttrPane.setDefinition(curDefinition);
 		multiMailTemplateAttrPane.setDefinition(curDefinition);
 	}
-
 
 	/**
 	 * 更新処理
@@ -272,10 +274,11 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 			form = new DynamicForm();
 			form.setWidth100();
-			form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+			form.setNumCols(3); //間延びしないように最後に１つ余分に作成
 			form.setColWidths(100, "*", "*");
 
-			langOrUserBindingName = new TextItem("bindKey", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_langConfigInfoBindName"));
+			langOrUserBindingName = new TextItem("bindKey",
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_langConfigInfoBindName"));
 			langOrUserBindingName.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
 			form.setItems(langOrUserBindingName);
@@ -283,7 +286,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			grid = new LanguageMapGrid();
 			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editMap((ListGridRecord)event.getRecord());
+					editMap((ListGridRecord) event.getRecord());
 				}
 			});
 
@@ -297,7 +300,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			IButton delMap = new IButton("Remove");
 			delMap.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					String lang = grid.getSelectedRecord().getAttribute(FIELD_NAME.NAME.name());
+					String lang = grid.getSelectedRecord()
+							.getAttribute(FIELD_NAME.NAME.name());
 					grid.removeSelectedData();
 
 					Map<String, LocalizedMailTemplateDefinition> map = new HashMap<String, LocalizedMailTemplateDefinition>();
@@ -309,7 +313,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 					List<LocalizedMailTemplateDefinition> newList = new ArrayList<LocalizedMailTemplateDefinition>();
 
-					for(Map.Entry<String, LocalizedMailTemplateDefinition> e : map.entrySet()) {
+					for (Map.Entry<String, LocalizedMailTemplateDefinition> e : map.entrySet()) {
 						newList.add(e.getValue());
 					}
 
@@ -355,7 +359,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 				List<LocalizedMailTemplateDefinition> newList = new ArrayList<LocalizedMailTemplateDefinition>();
 
-				for(Map.Entry<String, LocalizedMailTemplateDefinition> e : map.entrySet()) {
+				for (Map.Entry<String, LocalizedMailTemplateDefinition> e : map.entrySet()) {
 					newList.add(e.getValue());
 				}
 
@@ -374,7 +378,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			if (record == null) {
 
 			} else {
-				if (curDefinition != null && curDefinition.getLocalizedMailTemplateList() != null && curDefinition.getLocalizedMailTemplateList().size() > 0) {
+				if (curDefinition != null && curDefinition.getLocalizedMailTemplateList() != null && curDefinition.getLocalizedMailTemplateList()
+						.size() > 0) {
 
 					Map<String, LocalizedMailTemplateDefinition> map = new HashMap<String, LocalizedMailTemplateDefinition>();
 					for (LocalizedMailTemplateDefinition def : curDefinition.getLocalizedMailTemplateList()) {
@@ -413,7 +418,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		 */
 		public void setDefinition(MailTemplateDefinition definition) {
 
-			grid.setData(new ListGridRecord[]{});
+			grid.setData(new ListGridRecord[] {});
 
 			if (definition != null) {
 				langOrUserBindingName.setValue(definition.getLangOrUserBindingName());
@@ -426,7 +431,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 					for (LocalizedMailTemplateDefinition localDefinition : definitionList) {
 						ListGridRecord newRecord = createRecord(localDefinition, null, true);
 						temp[cnt] = newRecord;
-						cnt ++;
+						cnt++;
 
 					}
 					grid.setData(temp);
@@ -470,14 +475,14 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			setWidth100();
 			setHeight(1);
 
-			setShowAllColumns(true);							//列を全て表示
-			setShowAllRecords(true);							//レコードを全て表示
-			setCanResizeFields(true);							//列幅変更可能
-			setCanSort(false);									//ソート不可
-			setCanPickFields(false);							//表示フィールドの選択不可
-			setCanGroupBy(false);								//GroupByの選択不可
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
-			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setShowAllColumns(true); //列を全て表示
+			setShowAllRecords(true); //レコードを全て表示
+			setCanResizeFields(true); //列幅変更可能
+			setCanSort(false); //ソート不可
+			setCanPickFields(false); //表示フィールドの選択不可
+			setCanGroupBy(false); //GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH); //AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false); //縦スクロールバー自動表示制御
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
@@ -519,7 +524,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 		public MailTemplateAttributePane() {
 
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
+			setOverflow(Overflow.AUTO); //Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
@@ -555,13 +560,15 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			fromField = new TextItem("from", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_sendFrom"));
 			fromField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
-			fromDisplayNameField = new TextItem("fromDisplayName", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_sendFromDisplayName"));
+			fromDisplayNameField = new TextItem("fromDisplayName",
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_sendFromDisplayName"));
 			fromDisplayNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
 			replyToField = new TextItem("replyTo", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_replyTo"));
 			replyToField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
-			replyToDisplayNameField = new TextItem("replyToDisplayName", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_replyToDisplayName"));
+			replyToDisplayNameField = new TextItem("replyToDisplayName",
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_replyToDisplayName"));
 			replyToDisplayNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
 			returnPathField = new TextItem("returnPath", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_returnPath"));
@@ -581,8 +588,10 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			SmartGWTUtil.addHoverToFormItem(smimeSignField, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeSignTooltip"));
 			smimeSignField.setWidth(150);
 
-			smimeEncryptField = new CheckboxItem("smimeEncrypt", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeEncrypt"));
-			SmartGWTUtil.addHoverToFormItem(smimeEncryptField, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeEncryptTooltip"));
+			smimeEncryptField = new CheckboxItem("smimeEncrypt",
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeEncrypt"));
+			SmartGWTUtil.addHoverToFormItem(smimeEncryptField,
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeEncryptTooltip"));
 			smimeEncryptField.setWidth(150);
 
 			smimeForm.setItems(smimeSignField, smimeEncryptField);
@@ -593,7 +602,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 			subjectForm = new DynamicForm();
 			subjectForm.setWidth100();
-			subjectForm.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+			subjectForm.setNumCols(3); //間延びしないように最後に１つ余分に作成
 			subjectForm.setColWidths(70, "*", "*");
 
 			subjectField = new TextItem("subject", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_subject"));
@@ -608,20 +617,20 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			massageTabSet = new TabSet();
 			massageTabSet.setWidth100();
 			//massageTabSet.setHeight100();
-			massageTabSet.setHeight(450);	//高さは固定でないとうまくいかないため指定
-			massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	//Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
+			massageTabSet.setHeight(450); //高さは固定でないとうまくいかないため指定
+			massageTabSet.setPaneContainerOverflow(Overflow.HIDDEN); //Editor側のスクロールを利用するため非表示に設定（Editor側のサイズを調整）
 
-	        plainMessageTab = new Tab();
-	        plainMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_textMessage"));
+			plainMessageTab = new Tab();
+			plainMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_textMessage"));
 
 			plainEditor = new ScriptEditorPane();
 			plainEditor.setMode(EditorMode.TEXT);
 
 			plainMessageTab.setPane(plainEditor);
-	        massageTabSet.addTab(plainMessageTab);
+			massageTabSet.addTab(plainMessageTab);
 
-	        htmlMessageTab = new Tab();
-	        htmlMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_htmlMessage"));
+			htmlMessageTab = new Tab();
+			htmlMessageTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_htmlMessage"));
 
 			htmlEditor = new ScriptEditorPane();
 			htmlEditor.setMode(EditorMode.HTML);
@@ -661,8 +670,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 				} else {
 					PlainTextBodyPart part = definition.getPlainMessage();
 					plainEditor.setText(part.getContent());
-					existPlainMessage
-						= (part.getContent() != null && !part.getContent().isEmpty());
+					existPlainMessage = (part.getContent() != null && !part.getContent()
+							.isEmpty());
 					plainMessage = part.getContent();
 				}
 
@@ -673,8 +682,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 					HtmlBodyPart part = definition.getHtmlMessage();
 					htmlEditor.setText(part.getContent());
 					htmlCharsetField.setValue(part.getCharset());
-					existHtmlMessage
-						= (part.getContent() != null && !part.getContent().isEmpty());
+					existHtmlMessage = (part.getContent() != null && !part.getContent()
+							.isEmpty());
 					htmlMessage = part.getContent();
 				}
 
@@ -720,10 +729,10 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			definition.setReplyTo(SmartGWTUtil.getStringValue(replyToField));
 			definition.setReplyToDisplayName(SmartGWTUtil.getStringValue(replyToDisplayNameField));
 			definition.setReturnPath(SmartGWTUtil.getStringValue(returnPathField));
-			PlainTextBodyPart plainPart = new  PlainTextBodyPart();
+			PlainTextBodyPart plainPart = new PlainTextBodyPart();
 			plainPart.setContent(plainEditor.getText());
 			definition.setPlainMessage(plainPart);
-			HtmlBodyPart htmlPart = new  HtmlBodyPart();
+			HtmlBodyPart htmlPart = new HtmlBodyPart();
 			htmlPart.setContent(htmlEditor.getText());
 			htmlPart.setCharset(SmartGWTUtil.getStringValue(htmlCharsetField));
 			definition.setHtmlMessage(htmlPart);
@@ -784,18 +793,18 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_saveMailTemplateComment"), new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						MailTemplateDefinition definition = curDefinition;
-						definition = commonSection.getEditDefinition(definition);
-						definition = mailTemplateAttrPane.getEditDefinition(definition);
-						definition = multiMailTemplateAttrPane.getEditDefinition(definition);
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								MailTemplateDefinition definition = curDefinition;
+								definition = commonSection.getEditDefinition(definition);
+								definition = mailTemplateAttrPane.getEditDefinition(definition);
+								definition = multiMailTemplateAttrPane.getEditDefinition(definition);
 
-						updateMailTemplate(definition, true);
-					}
-				}
-			});
+								updateMailTemplate(definition, true);
+							}
+						}
+					});
 		}
 	}
 
@@ -808,16 +817,15 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_cancelConfirmComment")
-					, new BooleanCallback() {
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						initializeData();
-						commonSection.refreshSharedConfig();
-					}
-				}
-			});
+					AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_cancelConfirmComment"), new BooleanCallback() {
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								initializeData();
+								commonSection.refreshSharedConfig();
+							}
+						}
+					});
 		}
 	}
 }

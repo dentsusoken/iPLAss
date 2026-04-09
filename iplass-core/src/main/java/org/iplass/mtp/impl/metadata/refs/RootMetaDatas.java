@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.metadata.refs;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy;
 import org.iplass.mtp.impl.command.MetaInterceptorClass;
 import org.iplass.mtp.impl.command.MetaMetaCommand;
@@ -42,28 +40,14 @@ import org.iplass.mtp.impl.view.filter.MetaEntityFilter;
 import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint;
 import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
 
-@XmlSeeAlso({
-	BaseRootMetaData.class
-	,MetaInterceptorClass.class
-	,MetaMetaCommand.class
-	,MetaEntity.class
-	,MetaEntityFilter.class
-	,MetaMailTemplate.class
-	,MetaSmsMailTemplate.class
-	,MetaMessageCategory.class
-	,MetaSelectValue.class
-	,MetaUtilityClass.class
-	,MetaTenant.class
-	,MetaAsyncCommand.class
-	,MetaPreference.class
-	,MetaAuthenticationPolicy.class
-	,MetaPushNotificationTemplate.class
-	,MetaWebhookTemplate.class
-	,MetaWebhookEndpoint.class
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-	,MetaTenantAuthInfo.class
-	,MetaTenantMailInfo.class
-	,MetaTenantI18nInfo.class
+@XmlSeeAlso({
+		BaseRootMetaData.class, MetaInterceptorClass.class, MetaMetaCommand.class, MetaEntity.class, MetaEntityFilter.class, MetaMailTemplate.class,
+		MetaSmsMailTemplate.class, MetaMessageCategory.class, MetaSelectValue.class, MetaUtilityClass.class, MetaTenant.class, MetaAsyncCommand.class,
+		MetaPreference.class, MetaAuthenticationPolicy.class, MetaPushNotificationTemplate.class, MetaWebhookTemplate.class, MetaWebhookEndpoint.class
+
+		, MetaTenantAuthInfo.class, MetaTenantMailInfo.class, MetaTenantI18nInfo.class
 })
 class RootMetaDatas {
 	//MetaDataへのXmlSeeAlsoを管理するためだけのクラス

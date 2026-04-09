@@ -47,22 +47,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReplicationAwareConnection implements Connection {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ReplicationAwareConnection.class);
 
 	private ReplicationAwareDataSourceConnectionFactory conFactory;
 	private Function<Connection, Connection> afterGetPhysicalConnectionHandler;
-	
+
 	private Connection con;
 	private boolean readOnly;
 	private boolean autoCommit = true;
 	private boolean close;
 
-	ReplicationAwareConnection(ReplicationAwareDataSourceConnectionFactory conFactory, Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
+	ReplicationAwareConnection(ReplicationAwareDataSourceConnectionFactory conFactory,
+			Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
 		this.conFactory = conFactory;
 		this.afterGetPhysicalConnectionHandler = afterGetPhysicalConnectionHandler;
 	}
-	
+
 	private Connection getCon() throws SQLException {
 		if (close) {
 			throw new SQLException("Connection is closed");
@@ -83,7 +84,7 @@ public class ReplicationAwareConnection implements Connection {
 			con.setAutoCommit(autoCommit);
 			con.setReadOnly(readOnly);
 		}
-		
+
 		return con;
 	}
 
@@ -299,7 +300,8 @@ public class ReplicationAwareConnection implements Connection {
 		try {
 			getCon().setClientInfo(name, value);
 		} catch (SQLException e) {
-			throw new SQLClientInfoException("Failed Create Connecton on setClientInfo()", Collections.singletonMap(name, ClientInfoStatus.REASON_UNKNOWN), e);
+			throw new SQLClientInfoException("Failed Create Connecton on setClientInfo()",
+					Collections.singletonMap(name, ClientInfoStatus.REASON_UNKNOWN), e);
 		}
 	}
 
@@ -307,10 +309,10 @@ public class ReplicationAwareConnection implements Connection {
 		try {
 			getCon().setClientInfo(properties);
 		} catch (SQLException e) {
-			
+
 			HashMap<String, ClientInfoStatus> ci = new HashMap<>();
 			if (properties != null) {
-				for (Object k: properties.keySet()) {
+				for (Object k : properties.keySet()) {
 					ci.put((String) k, ClientInfoStatus.REASON_UNKNOWN);
 				}
 			}

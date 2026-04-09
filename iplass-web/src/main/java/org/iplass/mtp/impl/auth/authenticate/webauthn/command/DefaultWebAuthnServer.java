@@ -57,7 +57,8 @@ public class DefaultWebAuthnServer implements WebAuthnServer {
 		int port = httpReq.getServerPort();
 		if ((httpReq.isSecure() && port != 443)
 				|| (!httpReq.isSecure() && port != 80)) {
-			sb.append(':').append(port);
+			sb.append(':')
+					.append(port);
 		}
 		return sb.toString();
 	}

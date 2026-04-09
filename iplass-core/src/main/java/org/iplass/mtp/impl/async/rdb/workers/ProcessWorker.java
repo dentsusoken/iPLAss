@@ -55,48 +55,59 @@ public class ProcessWorker extends LocalWorker {
 
 	//別スレッドでプロセスのリターンを待機する。Process#waitForがタイムアウトを設定できないので（java8からできるっぽいけど）
 	private ExecutorService executor;
-	
+
 	public ProcessWorker(Queue queue, int workerId) {
 		super(queue, workerId);
 	}
-	
+
 	private Process createProcess(Task task) throws IOException {
 		ArrayList<String> command = new ArrayList<>();
-		command.add(queue.getConfig().getWorker().getJavaCommand());
-		if (queue.getConfig().getWorker().getVmArgs() != null) {
-			command.addAll(queue.getConfig().getWorker().getVmArgs());
+		command.add(queue.getConfig()
+				.getWorker()
+				.getJavaCommand());
+		if (queue.getConfig()
+				.getWorker()
+				.getVmArgs() != null) {
+			command.addAll(queue.getConfig()
+					.getWorker()
+					.getVmArgs());
 		}
 		command.add("-D" + WorkerFactory.WORKER_PROCESS + "=true");
 		command.add(Main.class.getName());
-		
-		
+
 		Redirect redirect = null;
-		if (queue.getConfig().getWorker().getRedirectFile() == null) {
+		if (queue.getConfig()
+				.getWorker()
+				.getRedirectFile() == null) {
 			redirect = Redirect.INHERIT;
 		} else {
-			File f = new File(queue.getConfig().getWorker().getRedirectFile());
+			File f = new File(queue.getConfig()
+					.getWorker()
+					.getRedirectFile());
 			if (!f.exists()) {
 				f.createNewFile();
 			}
 			redirect = Redirect.appendTo(f);
-			
+
 		}
 		//TODO 環境変数
-		return new ProcessBuilder(command).
-				redirectError(redirect).
-				redirectOutput(redirect).start();
+		return new ProcessBuilder(command).redirectError(redirect)
+				.redirectOutput(redirect)
+				.start();
 	}
 
 	@Override
 	protected void startImpl() {
 		SecurityManager s = System.getSecurityManager();
-		final ThreadGroup group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		final ThreadGroup group = (s != null) ? s.getThreadGroup()
+				: Thread.currentThread()
+						.getThreadGroup();
 		executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
-	            Thread t = new Thread(group, r,
-	            		queueConfig.getName() + "-" + workerId + "-processWatcher-" + counter.incrementAndGet(),
-                        0);
+				Thread t = new Thread(group, r,
+						queueConfig.getName() + "-" + workerId + "-processWatcher-" + counter.incrementAndGet(),
+						0);
 				if (t.isDaemon()) {
 					t.setDaemon(false);
 				}
@@ -112,12 +123,17 @@ public class ProcessWorker extends LocalWorker {
 	protected void stopImpl() {
 		executor.shutdown();
 		try {
-			boolean isOk = executor.awaitTermination((long) (queue.getConfig().getWorker().getExecutionTimeout() * 1.3), TimeUnit.MILLISECONDS);
+			boolean isOk = executor.awaitTermination((long) (queue.getConfig()
+					.getWorker()
+					.getExecutionTimeout() * 1.3), TimeUnit.MILLISECONDS);
 			if (!isOk) {
-				logger.error(queueConfig.getName() + "'s processWatcher:" + workerId + " stop process timeout( at ProcessWorker). may be illegal state....");
+				logger.error(
+						queueConfig.getName() + "'s processWatcher:" + workerId + " stop process timeout( at ProcessWorker). may be illegal state....");
 			}
 		} catch (InterruptedException e) {
-			logger.error(queueConfig.getName() + "'s processWatcher:" + workerId + " stop process Interrupted( at ProcessWorker). may be illegal state....", e);
+			logger.error(
+					queueConfig.getName() + "'s processWatcher:" + workerId + " stop process Interrupted( at ProcessWorker). may be illegal state....",
+					e);
 		}
 	}
 
@@ -126,7 +142,7 @@ public class ProcessWorker extends LocalWorker {
 		return executor.submit(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
-				
+
 				boolean isDone = false;
 				Process process = createProcess(task);
 				//taskを標準出力で渡す
@@ -134,13 +150,13 @@ public class ProcessWorker extends LocalWorker {
 						ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(os))) {
 					oos.writeObject(task);
 					oos.flush();
-					
+
 					int exitCode = process.waitFor();
 					if (exitCode != 0) {
 						logger.warn("process exited un-normal code:" + exitCode + ", re-run or abort after a while.");
 					}
 					isDone = true;
-					
+
 				} finally {
 					process.destroy();
 					if (!isDone) {
@@ -151,35 +167,39 @@ public class ProcessWorker extends LocalWorker {
 			}
 		});
 	}
-	
-	
+
 	public static class Main {
 		public static void main(String[] args) throws Exception {
-			
+
 			boolean isSuccess = false;
 			InputStream is = System.in;
 			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(is));
 			Task task = (Task) ois.readObject();
-			
+
 			try {
 				ResourceHolder.init();
 
 				//テナントに依存しないので-1で初期化
 				if (!ExecuteContext.isInited()) {
-					TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+					TenantContextService tcs = ServiceRegistry.getRegistry()
+							.getService(TenantContextService.class);
 					TenantContext tContext = new TenantContext(tcs.getSharedTenantId(), null, null, true);
 					ExecuteContext econtext = new ExecuteContext(tContext);
 					ExecuteContext.initContext(econtext);
 				}
-				
-				Queue queue = ServiceRegistry.getRegistry().getService(RdbQueueService.class).getQueueById(task.getQueueId());
+
+				Queue queue = ServiceRegistry.getRegistry()
+						.getService(RdbQueueService.class)
+						.getQueueById(task.getQueueId());
 				if (queue == null) {
 					throw new IllegalArgumentException("queueId:" + task.getQueueId() + " not found");
 				}
-				
-				WorkerCallable wc = new WorkerCallable(task, queue, queue.getConfig().getWorker().isTrace(), false);
+
+				WorkerCallable wc = new WorkerCallable(task, queue, queue.getConfig()
+						.getWorker()
+						.isTrace(), false);
 				wc.call();
-				
+
 				isSuccess = true;
 			} catch (Throwable t) {
 				logger.error("error occured while task processing:" + task, t);
@@ -189,15 +209,16 @@ public class ProcessWorker extends LocalWorker {
 			} finally {
 				ExecuteContext.finContext();
 				ResourceHolder.fin();
-				ServiceRegistry.getRegistry().destroyAllService();
+				ServiceRegistry.getRegistry()
+						.destroyAllService();
 				if (isSuccess) {
 					System.exit(0);
 				} else {
 					System.exit(1);
 				}
 			}
-			
+
 		}
 	}
-	
+
 }

@@ -33,29 +33,34 @@ import org.iplass.mtp.web.template.TemplateUtil.TokenOutputType;
 import groovy.lang.Closure;
 
 public class WebGTmplBase extends GTmplBase {
-	
+
 	protected String esc(Object value) {
 		return escHtml(value);
 	}
+
 	protected String token() {
 		return TemplateUtil.outputToken(TokenOutputType.VALUE, true);
 	}
+
 	protected String fixToken() {
 		return TemplateUtil.outputToken(TokenOutputType.VALUE, false);
 	}
+
 	protected String outputToken(Object tokenOutputType, boolean createNew) {
 		if (tokenOutputType instanceof TokenOutputType) {
 			return TemplateUtil.outputToken((TokenOutputType) tokenOutputType, createNew);
 		}
 		return TemplateUtil.outputToken(TokenOutputType.valueOf(tokenOutputType.toString()), createNew);
 	}
+
 	protected RequestContext rc() {
 		return TemplateUtil.getRequestContext();
 	}
+
 	protected String tcPath() {
 		return TemplateUtil.getTenantContextPath();
 	}
-	
+
 	protected void bind(Map<String, Object> params, Closure<Void> inner) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		BindContext parent = (BindContext) ec.getAttribute(BindContext.class.getName());
@@ -71,19 +76,19 @@ public class WebGTmplBase extends GTmplBase {
 			ec.setAttribute(BindContext.class.getName(), parent, false);
 		}
 	}
-	
+
 	protected void errors() {
 		errors(Collections.emptyMap(), null);
 	}
-	
+
 	protected void errors(Closure<Void> inner) {
 		errors(Collections.emptyMap(), inner);
 	}
-	
+
 	protected void errors(Map<String, Object> params) {
 		errors(params, null);
 	}
-	
+
 	protected void errors(Map<String, Object> params, Closure<Void> inner) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		BindContext bindContext = (BindContext) ec.getAttribute(BindContext.class.getName());
@@ -95,9 +100,11 @@ public class WebGTmplBase extends GTmplBase {
 				}
 				inner.call();
 			} else {
-				errors.write((Writer) GroovyTemplateContext.getContext().bindings().getVariable("out"));
+				errors.write((Writer) GroovyTemplateContext.getContext()
+						.bindings()
+						.getVariable("out"));
 			}
 		}
 	}
-	
+
 }

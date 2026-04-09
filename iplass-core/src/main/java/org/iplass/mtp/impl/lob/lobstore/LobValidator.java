@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.lob.lobstore;
 import org.iplass.mtp.impl.lob.Lob;
 
 public interface LobValidator {
-	
+
 	/**
 	 * 次を指定可能。
 	 * 
@@ -32,7 +32,7 @@ public interface LobValidator {
 	 * @return
 	 */
 	public String getChecksumAlgorithm();
-	
+
 	public void stored(Lob lob, String streamWriteChecksum);
 
 }

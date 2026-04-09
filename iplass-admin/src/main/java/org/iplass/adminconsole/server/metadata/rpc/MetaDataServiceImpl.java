@@ -153,93 +153,116 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataServiceImpl.class);
 
-	private EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	private TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
-	private ActionMappingDefinitionManager amm = ManagerLocator.getInstance().getManager(ActionMappingDefinitionManager.class);
-	private StaticResourceDefinitionManager srdm = ManagerLocator.getInstance().getManager(StaticResourceDefinitionManager.class);
-	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
-	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
-	private WebhookEndpointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
-	private WebhookEndpointService wheps = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
+	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+			.getManager(EntityDefinitionManager.class);
+	private TemplateDefinitionManager tdm = ManagerLocator.getInstance()
+			.getManager(TemplateDefinitionManager.class);
+	private ActionMappingDefinitionManager amm = ManagerLocator.getInstance()
+			.getManager(ActionMappingDefinitionManager.class);
+	private StaticResourceDefinitionManager srdm = ManagerLocator.getInstance()
+			.getManager(StaticResourceDefinitionManager.class);
+	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance()
+			.getManager(EntityWebApiDefinitionManager.class);
+	private DefinitionManager dm = ManagerLocator.getInstance()
+			.getManager(DefinitionManager.class);
+	private WebhookEndpointDefinitionManager wepdm = ManagerLocator.getInstance()
+			.getManager(WebhookEndpointDefinitionManager.class);
+	private WebhookEndpointService wheps = ServiceRegistry.getRegistry()
+			.getService(WebhookEndpointService.class);
 
 	private EntityManager em = AdminEntityManager.getInstance();
-	private AsyncTaskManager atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
+	private AsyncTaskManager atm = ManagerLocator.getInstance()
+			.getManager(AsyncTaskManager.class);
 
-	private AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+	private AuthService as = ServiceRegistry.getRegistry()
+			.getService(AuthService.class);
 	private MetaDataAuditLogger auditLogger = MetaDataAuditLogger.getLogger();
 
-	private DefinitionService ds = ServiceRegistry.getRegistry().getService(DefinitionService.class);
-	private RdbQueueService rqs = ServiceRegistry.getRegistry().getService(RdbQueueService.class);
-	private GemConfigService gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+	private DefinitionService ds = ServiceRegistry.getRegistry()
+			.getService(DefinitionService.class);
+	private RdbQueueService rqs = ServiceRegistry.getRegistry()
+			.getService(RdbQueueService.class);
+	private GemConfigService gcs = ServiceRegistry.getRegistry()
+			.getService(GemConfigService.class);
 
-	private OAuthClientService oacs = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
-	private OAuthResourceServerService oars = ServiceRegistry.getRegistry().getService(OAuthResourceServerService.class);
-	
-	private OpenIdConnectDefinitionManager oicdm = ManagerLocator.getInstance().getManager(OpenIdConnectDefinitionManager.class);
+	private OAuthClientService oacs = ServiceRegistry.getRegistry()
+			.getService(OAuthClientService.class);
+	private OAuthResourceServerService oars = ServiceRegistry.getRegistry()
+			.getService(OAuthResourceServerService.class);
 
+	private OpenIdConnectDefinitionManager oicdm = ManagerLocator.getInstance()
+			.getManager(OpenIdConnectDefinitionManager.class);
 
-	/* ---------------------------------------
-	 * 共通
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- 共通 ---------------------------------------
+	 */
 
 	@Override
 	public List<String> getAllMetaDataPath(final int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
 
-			@Override
-			public List<String> call() {
-				return MetaDataContext.getContext().pathList("/");
-			}
+					@Override
+					public List<String> call() {
+						return MetaDataContext.getContext()
+								.pathList("/");
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public <D extends Definition> MetaTreeNode getMetaDataTree(int tenantId, String className) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<MetaTreeNode>() {
-			@Override
-			public MetaTreeNode call() {
-				Class<D> type = getDefinitionClass(className);
-				return new MetaDataTreeBuilder().type(type).build();
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaTreeNode>() {
+					@Override
+					public MetaTreeNode call() {
+						Class<D> type = getDefinitionClass(className);
+						return new MetaDataTreeBuilder().type(type)
+								.build();
+					}
+				});
 	}
 
 	@Override
 	public <D extends Definition> MetaDataInfo getMetaDataInfo(int tenantId, final String className, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<MetaDataInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaDataInfo>() {
 
-			@Override
-			public MetaDataInfo call() {
-				Class<D> type = getDefinitionClass(className);
-				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(ds.getPath(type, name));
-				if (entry != null) {
-					MetaDataInfo info = convert(entry, className);
-					return info;
-				}
+					@Override
+					public MetaDataInfo call() {
+						Class<D> type = getDefinitionClass(className);
+						MetaDataEntry entry = MetaDataContext.getContext()
+								.getMetaDataEntry(ds.getPath(type, name));
+						if (entry != null) {
+							MetaDataInfo info = convert(entry, className);
+							return info;
+						}
 
-				return null;
-			}
-		});
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public <D extends Definition> MetaDataInfo getMetaDataInfo(int tenantId, final String path) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<MetaDataInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<MetaDataInfo>() {
 
-			@Override
-			public MetaDataInfo call() {
-				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
-				if (entry != null) {
-					MetaDataInfo info = convert(entry, null);
-					return info;
-				}
+					@Override
+					public MetaDataInfo call() {
+						MetaDataEntry entry = MetaDataContext.getContext()
+								.getMetaDataEntry(path);
+						if (entry != null) {
+							MetaDataInfo info = convert(entry, null);
+							return info;
+						}
 
-				return null;
-			}
-		});
+						return null;
+					}
+				});
 	}
 
 	private MetaDataInfo convert(MetaDataEntry entry, String className) {
@@ -260,7 +283,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			//パスから取得
 			DefinitionPath defPath = ds.resolvePath(entry.getPath());
 			if (defPath != null && defPath.getType() != null) {
-				info.setDefinitionClassName(defPath.getType().getName());
+				info.setDefinitionClassName(defPath.getType()
+						.getName());
 			}
 		}
 
@@ -269,95 +293,103 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	@Override
 	public <D extends Definition> I18nMetaDisplayInfo getMetaDisplayInfo(int tenantId, final String className, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<I18nMetaDisplayInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<I18nMetaDisplayInfo>() {
 
-			@Override
-			public I18nMetaDisplayInfo call() {
-				Class<D> type = getDefinitionClass(className);
-				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(ds.getPath(type, name));
-				if (entry != null) {
-					RootMetaData meta = entry.getMetaData();
+					@Override
+					public I18nMetaDisplayInfo call() {
+						Class<D> type = getDefinitionClass(className);
+						MetaDataEntry entry = MetaDataContext.getContext()
+								.getMetaDataEntry(ds.getPath(type, name));
+						if (entry != null) {
+							RootMetaData meta = entry.getMetaData();
 
-					I18nMetaDisplayInfo ret = new I18nMetaDisplayInfo();
-					ret.setI18nDisplayName(I18nUtil.stringMeta(meta.getDisplayName(), meta.getLocalizedDisplayNameList()));
-					//TODO 多言語化？
-					ret.setI18nDescription(meta.getDescription());
+							I18nMetaDisplayInfo ret = new I18nMetaDisplayInfo();
+							ret.setI18nDisplayName(I18nUtil.stringMeta(meta.getDisplayName(), meta.getLocalizedDisplayNameList()));
+							//TODO 多言語化？
+							ret.setI18nDescription(meta.getDescription());
 
-					return ret;
-				}
+							return ret;
+						}
 
-				return null;
-			}
-		});
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public I18nMetaDisplayInfo getMetaDisplayInfo(int tenantId, final String path) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<I18nMetaDisplayInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<I18nMetaDisplayInfo>() {
 
-			@Override
-			public I18nMetaDisplayInfo call() {
+					@Override
+					public I18nMetaDisplayInfo call() {
 
-				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
-				if (entry != null) {
-					RootMetaData meta = entry.getMetaData();
+						MetaDataEntry entry = MetaDataContext.getContext()
+								.getMetaDataEntry(path);
+						if (entry != null) {
+							RootMetaData meta = entry.getMetaData();
 
-					I18nMetaDisplayInfo ret = new I18nMetaDisplayInfo();
-					ret.setI18nDisplayName(I18nUtil.stringMeta(meta.getDisplayName(), meta.getLocalizedDisplayNameList()));
-					//TODO 多言語化？
-					ret.setI18nDescription(meta.getDescription());
+							I18nMetaDisplayInfo ret = new I18nMetaDisplayInfo();
+							ret.setI18nDisplayName(I18nUtil.stringMeta(meta.getDisplayName(), meta.getLocalizedDisplayNameList()));
+							//TODO 多言語化？
+							ret.setI18nDescription(meta.getDescription());
 
-					return ret;
-				}
+							return ret;
+						}
 
-				return null;
-			}
-		});
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public <D extends Definition> String checkStatus(int tenantId, String className, String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
 
-			@Override
-			public String call() {
+					@Override
+					public String call() {
 
-				Class<D> type = getDefinitionClass(className);
-				String path = ds.getPath(type, name);
-				try {
-					MetaDataContext.getContext().checkState(path);
+						Class<D> type = getDefinitionClass(className);
+						String path = ds.getPath(type, name);
+						try {
+							MetaDataContext.getContext()
+									.checkState(path);
 
-					return null;
-				} catch (MetaDataIllegalStateException e) {
-					logger.error("meta data status check error. target=" + path + ", " + e.getMessage(), e);
-					return getMetaDataIllegalStateMessage(e);
-				}
-			}
+							return null;
+						} catch (MetaDataIllegalStateException e) {
+							logger.error("meta data status check error. target=" + path + ", " + e.getMessage(), e);
+							return getMetaDataIllegalStateMessage(e);
+						}
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public LinkedHashMap<String, String> checkStatus(int tenantId, final List<String> paths) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<LinkedHashMap<String, String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<LinkedHashMap<String, String>>() {
 
-			@Override
-			public LinkedHashMap<String, String> call() {
-				LinkedHashMap<String, String> ret = new LinkedHashMap<String, String>();
-				for (String path : paths) {
+					@Override
+					public LinkedHashMap<String, String> call() {
+						LinkedHashMap<String, String> ret = new LinkedHashMap<String, String>();
+						for (String path : paths) {
 
-					try {
-						MetaDataContext.getContext().checkState(path);
-					} catch (MetaDataIllegalStateException e) {
-						logger.error("meta data status check error. target=" + path + ", " + e.getMessage(), e);
+							try {
+								MetaDataContext.getContext()
+										.checkState(path);
+							} catch (MetaDataIllegalStateException e) {
+								logger.error("meta data status check error. target=" + path + ", " + e.getMessage(), e);
 //						Map<String, String> entry = new HashMap<String, String>(1);
 //						entry.put(path, getMetaDataIllegalStateMessage(e));
-						ret.put(path, getMetaDataIllegalStateMessage(e));
+								ret.put(path, getMetaDataIllegalStateMessage(e));
+							}
+						}
+						return ret;
 					}
-				}
-				return ret;
-			}
-		});
+				});
 	}
 
 	private String getMetaDataIllegalStateMessage(MetaDataIllegalStateException e) {
@@ -368,136 +400,155 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			if (cause.getMessage() != null) {
 				return cause.getMessage();
 			} else {
-				return cause.getClass().getName();
+				return cause.getClass()
+						.getName();
 			}
 		} else {
-			return e.getClass().getName();
+			return e.getClass()
+					.getName();
 		}
 	}
 
 	@Override
 	public void clearAllCache(final int tenantId) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				auditLogger.logTenant("reload tenant context", null);
+					@Override
+					public Void call() {
+						auditLogger.logTenant("reload tenant context", null);
 
-				ServiceRegistry.getRegistry().getService(TenantContextService.class).reloadTenantContext(tenantId, false);
+						ServiceRegistry.getRegistry()
+								.getService(TenantContextService.class)
+								.reloadTenantContext(tenantId, false);
 //				MetaDataContext.getContext().clearAllCache();
-				return null;
-			}
-		});
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public void clearActionCache(int tenantId, String actionName) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				auditLogger.logTenant("clear content cache of action", "tenantId:" + tenantId + ", actionName:" + actionName);
+					@Override
+					public Void call() {
+						auditLogger.logTenant("clear content cache of action", "tenantId:" + tenantId + ", actionName:" + actionName);
 
-				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
-				ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
-				ac.invalidateByActionName(actionName);
-				return null;
-			}
-		});
+						TenantContext tc = ServiceRegistry.getRegistry()
+								.getService(TenantContextService.class)
+								.getTenantContext(tenantId);
+						ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
+						ac.invalidateByActionName(actionName);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public void clearTenantActionCache(int tenantId) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				auditLogger.logTenant("clear content cache of all tenant action", "tenantId:" + tenantId);
+					@Override
+					public Void call() {
+						auditLogger.logTenant("clear content cache of all tenant action", "tenantId:" + tenantId);
 
-				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
-				ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
-				ac.invalidateAllEntry();
-				return null;
-			}
-		});
+						TenantContext tc = ServiceRegistry.getRegistry()
+								.getService(TenantContextService.class)
+								.getTenantContext(tenantId);
+						ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
+						ac.invalidateAllEntry();
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public void updateSharedConfig(int tenantId, final String className, final String name, final SharedConfig config) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
-			@Override
-			public Void call() {
-				Class<? extends Definition> type = getDefinitionClass(className);
-				auditLogger.logMetadata(MetaDataAction.UPDATE, className, "name:" + name + " config:" + config.toString());
-				dm.setSharedConfig(type, name, config);
-				return null;
-			}
-		});
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
+					@Override
+					public Void call() {
+						Class<? extends Definition> type = getDefinitionClass(className);
+						auditLogger.logMetadata(MetaDataAction.UPDATE, className, "name:" + name + " config:" + config.toString());
+						dm.setSharedConfig(type, name, config);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult renameDefinition(int tenantId, final String className, final String fromName, final String toName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				try {
-					Class<? extends Definition> type = getDefinitionClass(className);
-					auditLogger.logMetadata(MetaDataAction.UPDATE, className, "fromName:" + fromName + " toName:" + toName);
-					dm.rename(type, fromName, toName);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						try {
+							Class<? extends Definition> type = getDefinitionClass(className);
+							auditLogger.logMetadata(MetaDataAction.UPDATE, className, "fromName:" + fromName + " toName:" + toName);
+							dm.rename(type, fromName, toName);
 
-					if (className.equals(EntityDefinition.class.getName())) {
-						//Entityの場合はEntityView、EntityFilter、EntityWebAPIも更新
-						ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().renameViewDefinition(fromName, toName);
+							if (className.equals(EntityDefinition.class.getName())) {
+								//Entityの場合はEntityView、EntityFilter、EntityWebAPIも更新
+								ScreenModuleBasedClassFactoryHolder.getFactory()
+										.getEntityOperationController()
+										.renameViewDefinition(fromName, toName);
+							}
+
+						} catch (Exception e) {
+							logger.error(e.getMessage(), e);
+							return new AdminDefinitionModifyResult(false, e.getMessage());
+						}
+						return new AdminDefinitionModifyResult(true);
 					}
-
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-					return new AdminDefinitionModifyResult(false, e.getMessage());
-				}
-				return new AdminDefinitionModifyResult(true);
-			}
-		});
+				});
 	}
 
 	@Override
 	public DefinitionInfo getDefinitionInfo(int tenantId, final String className, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DefinitionInfo>() {
-			@Override
-			public DefinitionInfo call() {
-				Class<? extends Definition> type = getDefinitionClass(className);
-				return dm.getInfo(type, name);
-			}
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DefinitionInfo>() {
+					@Override
+					public DefinitionInfo call() {
+						Class<? extends Definition> type = getDefinitionClass(className);
+						return dm.getInfo(type, name);
+					}
 
-		});
+				});
 
 	}
 
 	@Override
 	public Map<String, String> getEnableLanguages(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Map<String, String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Map<String, String>>() {
 
-			@Override
-			public Map<String, String> call() {
-				I18nService i18n = ServiceRegistry.getRegistry().getService(I18nService.class);
-				return i18n.getEnableLanguagesMap();
-			}
-		});
+					@Override
+					public Map<String, String> call() {
+						I18nService i18n = ServiceRegistry.getRegistry()
+								.getService(I18nService.class);
+						return i18n.getEnableLanguagesMap();
+					}
+				});
 	}
 
 	@Override
-	public DefinitionInfo getHistoryById(int tenantId, final  String className, final String definitionId) {
+	public DefinitionInfo getHistoryById(int tenantId, final String className, final String definitionId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DefinitionInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DefinitionInfo>() {
 
-			@Override
-			public DefinitionInfo call() {
-				Class<? extends Definition> type = getDefinitionClass(className);
+					@Override
+					public DefinitionInfo call() {
+						Class<? extends Definition> type = getDefinitionClass(className);
 
-				//FIXME DefinitionManagerからは、defIdでの操作は行わない
-				return ((DefinitionManagerImpl) dm).getHistoryById(type, definitionId);
-			}
+						//FIXME DefinitionManagerからは、defIdでの操作は行わない
+						return ((DefinitionManagerImpl) dm).getHistoryById(type, definitionId);
+					}
 
-		});
+				});
 	}
 
 	/**
@@ -509,26 +560,27 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 * @return 有効なパス
 	 */
 	private String convertPath(String path) {
-		return path.replace(".","/");
+		return path.replace(".", "/");
 	}
 
 	@Override
 	public List<Name> getDefinitionNameList(int tenantId, String className) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Name>>() {
-			@Override
-			public List<Name> call() {
-				Class<? extends Definition> type = getDefinitionClass(className);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Name>>() {
+					@Override
+					public List<Name> call() {
+						Class<? extends Definition> type = getDefinitionClass(className);
 
-				TypedDefinitionManager<?> manager = ds.getTypedDefinitionManager(type);
-				List<DefinitionSummary> defList = manager.definitionSummaryList();
+						TypedDefinitionManager<?> manager = ds.getTypedDefinitionManager(type);
+						List<DefinitionSummary> defList = manager.definitionSummaryList();
 
-				List<Name> res = new ArrayList<Name>(defList.size());
-				for (DefinitionSummary def : defList) {
-					res.add(new Name(def.getName(), def.getDisplayName()));
-				}
-				return res;
-			}
-		});
+						List<Name> res = new ArrayList<Name>(defList.size());
+						for (DefinitionSummary def : defList) {
+							res.add(new Name(def.getName(), def.getDisplayName()));
+						}
+						return res;
+					}
+				});
 	}
 
 	@Override
@@ -567,7 +619,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 					@Override
 					public AdminDefinitionModifyResult call() {
 
-						auditLogger.logMetadata(MetaDataAction.CREATE, definition.getClass().getName(), "name:" + definition.getName());
+						auditLogger.logMetadata(MetaDataAction.CREATE, definition.getClass()
+								.getName(), "name:" + definition.getName());
 						TypedDefinitionManager<D> manager = (TypedDefinitionManager<D>) ds.getTypedDefinitionManager(definition.getClass());
 						DefinitionModifyResult ret = manager.create(definition);
 						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
@@ -576,7 +629,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	}
 
 	@Override
-	public <D extends Definition> AdminDefinitionModifyResult updateDefinition(int tenantId, D definition, int currentVersion, boolean checkVersion) throws MetaVersionCheckException {
+	public <D extends Definition> AdminDefinitionModifyResult updateDefinition(int tenantId, D definition, int currentVersion, boolean checkVersion)
+			throws MetaVersionCheckException {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
 				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
 
@@ -587,7 +641,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 						// バージョンの最新チェック
 						MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(), currentVersion);
 
-						auditLogger.logMetadata(MetaDataAction.UPDATE, definition.getClass().getName(), "name:" + definition.getName());
+						auditLogger.logMetadata(MetaDataAction.UPDATE, definition.getClass()
+								.getName(), "name:" + definition.getName());
 						TypedDefinitionManager<D> manager = (TypedDefinitionManager<D>) ds.getTypedDefinitionManager(definition.getClass());
 						DefinitionModifyResult ret = manager.update(definition);
 						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
@@ -648,119 +703,129 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	// 以下、共通化できないロジック、Manager側で個別に実装してるケース
 
-	/* ---------------------------------------
-	 * Entity
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Entity ---------------------------------------
+	 */
 
 	@Override
 	public List<Name> getEntityDefinitionNameList(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Name>>() {
-			@Override
-			public List<Name> call() {
-				List<DefinitionSummary> defList = edm.definitionNameList();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Name>>() {
+					@Override
+					public List<Name> call() {
+						List<DefinitionSummary> defList = edm.definitionNameList();
 
-				List<Name> res = new ArrayList<Name>(defList.size());
-				for (DefinitionSummary def : defList) {
-					res.add(new Name(def.getName(), def.getDisplayName()));
-				}
-				return res;
-			}
-		});
+						List<Name> res = new ArrayList<Name>(defList.size());
+						for (DefinitionSummary def : defList) {
+							res.add(new Name(def.getName(), def.getDisplayName()));
+						}
+						return res;
+					}
+				});
 
 	}
 
 	@Override
 	public EntityDefinition getEntityDefinition(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EntityDefinition>() {
-			@Override
-			public EntityDefinition call() {
-				return edm.get(name);
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<EntityDefinition>() {
+					@Override
+					public EntityDefinition call() {
+						return edm.get(name);
+					}
+				});
 	}
 
 	@Override
 	public DefinitionEntry getEntityDefinitionEntry(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DefinitionEntry>() {
-			@Override
-			public DefinitionEntry call() {
-				return dm.getDefinitionEntry(EntityDefinition.class, name);
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DefinitionEntry>() {
+					@Override
+					public DefinitionEntry call() {
+						return dm.getDefinitionEntry(EntityDefinition.class, name);
+					}
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult createEntityDefinition(int tenantId, final EntityDefinition definition) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				try {
-					//作成
-					AdminDefinitionModifyResult ret = createEntity(definition);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						try {
+							//作成
+							AdminDefinitionModifyResult ret = createEntity(definition);
 
-					return ret;
-				} catch (EntityRuntimeException e) {
-					logger.error(e.getMessage(), e);
-					return new AdminDefinitionModifyResult(false, e.getMessage());
-				}
-			}
-		});
+							return ret;
+						} catch (EntityRuntimeException e) {
+							logger.error(e.getMessage(), e);
+							return new AdminDefinitionModifyResult(false, e.getMessage());
+						}
+					}
+				});
 	}
 
 	@Override
-	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, final EntityDefinition definition, final int currentVersion, final boolean checkVersion) {
+	public AdminDefinitionModifyResult updateEntityDefinition(int tenantId, final EntityDefinition definition, final int currentVersion,
+			final boolean checkVersion) {
 		return updateEntityDefinition(tenantId, definition, currentVersion, null, checkVersion);
 	}
 
 	@Override
-	public AdminDefinitionModifyResult updateEntityDefinition(final int tenantId, final EntityDefinition definition, final int currentVersion, final Map<String, String> renamePropertyMap, final boolean checkVersion) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				try {
+	public AdminDefinitionModifyResult updateEntityDefinition(final int tenantId, final EntityDefinition definition, final int currentVersion,
+			final Map<String, String> renamePropertyMap, final boolean checkVersion) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						try {
 
-					// バージョンの最新チェック
-					MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(), currentVersion);
+							// バージョンの最新チェック
+							MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(), currentVersion);
 
-					//ロックチェック
-					boolean locked = doCheckLockEntityDefinition(tenantId, definition.getName());
-					if (locked) {
-						throw new EntitySchemaLockedException("entity definition schema is locked. name=" + definition.getName());
+							//ロックチェック
+							boolean locked = doCheckLockEntityDefinition(tenantId, definition.getName());
+							if (locked) {
+								throw new EntitySchemaLockedException("entity definition schema is locked. name=" + definition.getName());
+							}
+
+							// メニューItemの更新
+							AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory()
+									.getEntityOperationController()
+									.updateMenuItem(definition);
+							if (ret != null) {
+								return ret;
+							}
+
+							//非同期で実行するため、結果を確認しないで正常を返す
+							//EntityDefinitionModifyResult ret2 = edm.update(definition, renamePropertyMap);
+							//return new AdminDefinitionModifyResult(ret2.isSuccess(), ret2.getMessage());
+							auditLogger.logMetadata(MetaDataAction.UPDATE, EntityDefinition.class.getName(), "name:" + definition.getName());
+
+							edm.update(definition, renamePropertyMap);
+							return new AdminDefinitionModifyResult(true, null);
+
+						} catch (EntityRuntimeException e) {
+							logger.error(e.getMessage(), e);
+							return new AdminDefinitionModifyResult(false, e.getMessage());
+						}
 					}
-
-					// メニューItemの更新
-					AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().updateMenuItem(definition);
-					if (ret != null) {
-						return ret;
-					}
-
-					//非同期で実行するため、結果を確認しないで正常を返す
-					//EntityDefinitionModifyResult ret2 = edm.update(definition, renamePropertyMap);
-					//return new AdminDefinitionModifyResult(ret2.isSuccess(), ret2.getMessage());
-					auditLogger.logMetadata(MetaDataAction.UPDATE, EntityDefinition.class.getName(), "name:" + definition.getName());
-
-					edm.update(definition, renamePropertyMap);
-					return new AdminDefinitionModifyResult(true, null);
-
-				} catch (EntityRuntimeException e) {
-					logger.error(e.getMessage(), e);
-					return new AdminDefinitionModifyResult(false, e.getMessage());
-				}
-			}
-		});
+				});
 	}
 
 	@Override
 	public boolean checkLockEntityDefinition(final int tenantId, final String defName) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Boolean>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Boolean>() {
 
-			@Override
-			public Boolean call() {
-				return doCheckLockEntityDefinition(tenantId, defName);
-			}
-		});
+					@Override
+					public Boolean call() {
+						return doCheckLockEntityDefinition(tenantId, defName);
+					}
+				});
 	}
 
 	private boolean doCheckLockEntityDefinition(final int tenantId, final String defName) {
@@ -769,33 +834,36 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	@Override
 	public AdminDefinitionModifyResult deleteEntityDefinition(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				try {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						try {
 
-					//対象のEntity定義がSharedOverwriteの場合は削除しても、Sharedとして残るので関連メタデータは削除しない
-					DefinitionInfo entity = dm.getInfo(EntityDefinition.class, name);
-					if (!entity.isSharedOverwrite()) {
-						AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().deleteViewDefinition(name);
-						if (ret != null) {
-							return ret;
+							//対象のEntity定義がSharedOverwriteの場合は削除しても、Sharedとして残るので関連メタデータは削除しない
+							DefinitionInfo entity = dm.getInfo(EntityDefinition.class, name);
+							if (!entity.isSharedOverwrite()) {
+								AdminDefinitionModifyResult ret = ScreenModuleBasedClassFactoryHolder.getFactory()
+										.getEntityOperationController()
+										.deleteViewDefinition(name);
+								if (ret != null) {
+									return ret;
+								}
+							}
+
+							//Entityの削除
+							auditLogger.logMetadata(MetaDataAction.DELETE, EntityDefinition.class.getName(), "name:" + name);
+							EntityDefinitionModifyResult ret = edm.remove(name);
+
+							//serialize errorになるため、EntityDefinitionModifyResult -> AdminDefinitionModifyResult
+							//return ret3;
+							return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+						} catch (EntityRuntimeException e) {
+							logger.error(e.getMessage(), e);
+							return new AdminDefinitionModifyResult(false, e.getMessage());
 						}
 					}
-
-					//Entityの削除
-					auditLogger.logMetadata(MetaDataAction.DELETE, EntityDefinition.class.getName(), "name:" + name);
-					EntityDefinitionModifyResult ret = edm.remove(name);
-
-					//serialize errorになるため、EntityDefinitionModifyResult -> AdminDefinitionModifyResult
-					//return ret3;
-					return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-				} catch (EntityRuntimeException e) {
-					logger.error(e.getMessage(), e);
-					return new AdminDefinitionModifyResult(false, e.getMessage());
-				}
-			}
-		});
+				});
 	}
 
 	@Override
@@ -803,36 +871,39 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			final String newName, final String displayName, final String description,
 			final boolean isCopyEntityView, final boolean isCopyEntityFilter, final boolean isCopyEntityWebAPI) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				try {
-					//コピー元の取得
-					EntityDefinition ed = edm.get(sourceName);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						try {
+							//コピー元の取得
+							EntityDefinition ed = edm.get(sourceName);
 
-					//値の設定
-					ed.setName(newName);
-					ed.setDisplayName(displayName);
-					ed.setDescription(description);
+							//値の設定
+							ed.setName(newName);
+							ed.setDisplayName(displayName);
+							ed.setDescription(description);
 
-					//作成
-					AdminDefinitionModifyResult ret = createEntity(ed);
+							//作成
+							AdminDefinitionModifyResult ret = createEntity(ed);
 
-					if (ret.isSuccess()) {
-						AdminDefinitionModifyResult ret2 = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController()
-								.copyViewDefinition(sourceName, newName, displayName, description, isCopyEntityView, isCopyEntityFilter, isCopyEntityWebAPI);
-						if (ret2 != null) {
-							return ret2;
+							if (ret.isSuccess()) {
+								AdminDefinitionModifyResult ret2 = ScreenModuleBasedClassFactoryHolder.getFactory()
+										.getEntityOperationController()
+										.copyViewDefinition(sourceName, newName, displayName, description, isCopyEntityView, isCopyEntityFilter,
+												isCopyEntityWebAPI);
+								if (ret2 != null) {
+									return ret2;
+								}
+							}
+
+							return ret;
+						} catch (EntityRuntimeException e) {
+							logger.error(e.getMessage(), e);
+							return new AdminDefinitionModifyResult(false, e.getMessage());
 						}
 					}
-
-					return ret;
-				} catch (EntityRuntimeException e) {
-					logger.error(e.getMessage(), e);
-					return new AdminDefinitionModifyResult(false, e.getMessage());
-				}
-			}
-		});
+				});
 	}
 
 	/**
@@ -848,8 +919,10 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		auditLogger.logMetadata(MetaDataAction.CREATE, EntityDefinition.class.getName(), "name:" + definition.getName());
 		EntityDefinitionModifyResult ret = edm.create(definition);
 
-		if(ret.isSuccess()) {
-			AdminDefinitionModifyResult ret2 = ScreenModuleBasedClassFactoryHolder.getFactory().getEntityOperationController().createMenuItem(definition);
+		if (ret.isSuccess()) {
+			AdminDefinitionModifyResult ret2 = ScreenModuleBasedClassFactoryHolder.getFactory()
+					.getEntityOperationController()
+					.createMenuItem(definition);
 			if (ret2 != null) {
 				return ret2;
 			}
@@ -860,343 +933,376 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	@Override
 	public List<Name> getPropertyDefinitionNameList(int tenantId, final String name) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Name>>() {
-			@Override
-			public List<Name> call() {
-				List<Name> res = new ArrayList<Name>();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Name>>() {
+					@Override
+					public List<Name> call() {
+						List<Name> res = new ArrayList<Name>();
 
-				EntityDefinition ed = edm.get(name);
-				if (ed != null) {
-					for (PropertyDefinition pd : ed.getPropertyList()) {
-						res.add(new Name(pd.getName(), I18nUtil.stringDef(pd.getDisplayName(), pd.getLocalizedDisplayNameList())));
+						EntityDefinition ed = edm.get(name);
+						if (ed != null) {
+							for (PropertyDefinition pd : ed.getPropertyList()) {
+								res.add(new Name(pd.getName(), I18nUtil.stringDef(pd.getDisplayName(), pd.getLocalizedDisplayNameList())));
+							}
+						}
+						return res;
 					}
-				}
-				return res;
-			}
-		});
+				});
 	}
 
 	@Override
 	public PropertyDefinition getPropertyDefinition(int tenantId, final String name, final String propertyName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<PropertyDefinition>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<PropertyDefinition>() {
 
-			@Override
-			public PropertyDefinition call() {
-				EntityDefinition ed = edm.get(name);
-				return getProperty(ed, propertyName);
-			}
-
-			private PropertyDefinition getProperty(EntityDefinition ed, String propName) {
-				int firstDotIndex = propName.indexOf('.');
-				if (firstDotIndex > 0) {
-					String topPropName = propName.substring(0, firstDotIndex);
-					String subPropName = propName.substring(firstDotIndex + 1);
-					PropertyDefinition topProperty = ed.getProperty(topPropName);
-					if (topProperty instanceof ReferenceProperty) {
-						EntityDefinition red = edm.get(((ReferenceProperty) topProperty).getObjectDefinitionName());
-						if (red != null) {
-							return getProperty(red, subPropName);
-						}
+					@Override
+					public PropertyDefinition call() {
+						EntityDefinition ed = edm.get(name);
+						return getProperty(ed, propertyName);
 					}
-				} else {
-					return ed.getProperty(propName);
-				}
-				return null;
-			}
 
-		});
+					private PropertyDefinition getProperty(EntityDefinition ed, String propName) {
+						int firstDotIndex = propName.indexOf('.');
+						if (firstDotIndex > 0) {
+							String topPropName = propName.substring(0, firstDotIndex);
+							String subPropName = propName.substring(firstDotIndex + 1);
+							PropertyDefinition topProperty = ed.getProperty(topPropName);
+							if (topProperty instanceof ReferenceProperty) {
+								EntityDefinition red = edm.get(((ReferenceProperty) topProperty).getObjectDefinitionName());
+								if (red != null) {
+									return getProperty(red, subPropName);
+								}
+							}
+						} else {
+							return ed.getProperty(propName);
+						}
+						return null;
+					}
+
+				});
 	}
 
 	@Override
 	public Name getEntityDefinitionName(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Name>() {
-			@Override
-			public Name call() {
-				EntityDefinition def = edm.get(name);
-				if(def == null) {
-					return null;
-				}
-				return new Name(def.getName(), def.getDisplayName());
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Name>() {
+					@Override
+					public Name call() {
+						EntityDefinition def = edm.get(name);
+						if (def == null) {
+							return null;
+						}
+						return new Name(def.getName(), def.getDisplayName());
+					}
+				});
 	}
 
 	@Override
 	public String getPropertyDisplayName(int tenantId, final String name, final String propertyName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
 
-			@Override
-			public String call() {
-				PropertyDefinition pd = getPropertyDefinition(tenantId, name, propertyName);
-				if (pd != null) {
-					return pd.getDisplayName();
-				}
-				return null;
-			}
-		});
+					@Override
+					public String call() {
+						PropertyDefinition pd = getPropertyDefinition(tenantId, name, propertyName);
+						if (pd != null) {
+							return pd.getDisplayName();
+						}
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public List<String> getEntityStoreSpaceList(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
-			@Override
-			public List<String> call() {
-				return edm.getStorageSpaceList();
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
+					@Override
+					public List<String> call() {
+						return edm.getStorageSpaceList();
+					}
+				});
 	}
 
 	@Override
 	public List<KeyValue<String, Long>> getAutoNumberCurrentValueList(int tenantId, final String name, final String propertyName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<KeyValue<String, Long>>>() {
-			@Override
-			public List<KeyValue<String, Long>> call() {
-				return edm.getAutoNumberCurrentValueList(name, propertyName).stream().map(value -> {
-					return new KeyValue<String, Long>(value.getKey(), value.getValue());
-				}).collect(Collectors.toList());
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<KeyValue<String, Long>>>() {
+					@Override
+					public List<KeyValue<String, Long>> call() {
+						return edm.getAutoNumberCurrentValueList(name, propertyName)
+								.stream()
+								.map(value -> {
+									return new KeyValue<String, Long>(value.getKey(), value.getValue());
+								})
+								.collect(Collectors.toList());
+					}
+				});
 	}
 
 	@Override
 	public void resetAutoNumberCounterList(int tenantId, final String name, final String propertyName, final List<KeyValue<String, Long>> values) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
-			@Override
-			public Void call() {
-				values.forEach(value -> {
-					auditLogger.logMetadata(MetaDataAction.UPDATE, EntityDefinition.class.getName(), "name:" + name + " propertyName:" + propertyName + " subKey:" + value.getKey() + " autoNumber:" + value.getValue());
-					//開始値を指定するため、+1する
-					edm.resetAutoNumberCounter(name, propertyName, value.getKey(), value.getValue() + 1);
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
+					@Override
+					public Void call() {
+						values.forEach(value -> {
+							auditLogger.logMetadata(MetaDataAction.UPDATE, EntityDefinition.class.getName(),
+									"name:" + name + " propertyName:" + propertyName + " subKey:" + value.getKey() + " autoNumber:" + value.getValue());
+							//開始値を指定するため、+1する
+							edm.resetAutoNumberCounter(name, propertyName, value.getKey(), value.getValue() + 1);
+						});
+						return null;
+					}
 				});
-				return null;
-			}
-		});
 	}
 
 	@Override
 	public List<SortInfo> getSortInfo(int tenantId, final String orderBy) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<SortInfo>>() {
-			@Override
-			public List<SortInfo> call() {
-				OrderBy q;
-				try {
-					q = QueryServiceHolder.getInstance().getQueryParser().parse("order by " + orderBy, OrderBySyntax.class);
-				} catch (ParseException e) {
-					throw new QueryException(e.getMessage());
-				}
-
-				List<SortInfo> list = new ArrayList<SortInfo>();
-				if (q.getSortSpecList() != null && q.getSortSpecList().size() > 0) {
-					for (SortSpec s : q.getSortSpecList()) {
-						SortInfo i = new SortInfo();
-						i.setPropertyName(s.getSortKey().toString());
-						if (s.getType() != null) {
-							i.setSortType(s.getType().name());
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<SortInfo>>() {
+					@Override
+					public List<SortInfo> call() {
+						OrderBy q;
+						try {
+							q = QueryServiceHolder.getInstance()
+									.getQueryParser()
+									.parse("order by " + orderBy, OrderBySyntax.class);
+						} catch (ParseException e) {
+							throw new QueryException(e.getMessage());
 						}
-						list.add(i);
+
+						List<SortInfo> list = new ArrayList<SortInfo>();
+						if (q.getSortSpecList() != null && q.getSortSpecList()
+								.size() > 0) {
+							for (SortSpec s : q.getSortSpecList()) {
+								SortInfo i = new SortInfo();
+								i.setPropertyName(s.getSortKey()
+										.toString());
+								if (s.getType() != null) {
+									i.setSortType(s.getType()
+											.name());
+								}
+								list.add(i);
+							}
+						}
+						return list;
 					}
-				}
-				return list;
-			}
-		});
+				});
 	}
 
 	@Override
 	public List<EntityDefinition> getCrawlTargetEntityList(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<EntityDefinition>>() {
-			@Override
-			public List<EntityDefinition> call() {
-				List<EntityDefinition> rtnList = new ArrayList<EntityDefinition>();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<EntityDefinition>>() {
+					@Override
+					public List<EntityDefinition> call() {
+						List<EntityDefinition> rtnList = new ArrayList<EntityDefinition>();
 
-				for (String defName : edm.definitionList()) {
-					EntityDefinition def = edm.get(defName);
-					if (def != null && def.isCrawl()) {
-						rtnList.add(def);
+						for (String defName : edm.definitionList()) {
+							EntityDefinition def = edm.get(defName);
+							if (def != null && def.isCrawl()) {
+								rtnList.add(def);
+							}
+						}
+						return rtnList;
 					}
-				}
-				return rtnList;
-			}
 
-		});
+				});
 	}
 
 	@Override
 	public Map<String, List<String>> getCrawlTargetEntityViewMap(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Map<String, List<String>>>() {
-			@Override
-			public Map<String, List<String>> call() {
-				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-				Map<String, List<String>> viewsMap = new HashMap<String, List<String>>();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Map<String, List<String>>>() {
+					@Override
+					public Map<String, List<String>> call() {
+						EntityViewManager evm = ManagerLocator.getInstance()
+								.getManager(EntityViewManager.class);
+						Map<String, List<String>> viewsMap = new HashMap<String, List<String>>();
 
-				for (String defName : edm.definitionList()) {
-					EntityDefinition def = edm.get(defName);
-					if (def != null && def.isCrawl()) {
+						for (String defName : edm.definitionList()) {
+							EntityDefinition def = edm.get(defName);
+							if (def != null && def.isCrawl()) {
 
-						EntityView entityView = evm.get(defName);
+								EntityView entityView = evm.get(defName);
 
-						if (entityView == null || entityView.getSearchFormViewNames().length == 0) {
-							List<String> viewList = new ArrayList<String>();
-							viewList.add("(default)");
-							viewsMap.put(defName, viewList);
-						} else {
-							List<String> viewList = new ArrayList<String>();
-							for (String viewName : entityView.getSearchFormViewNames()) {
-								if (viewName.isEmpty()) {
+								if (entityView == null || entityView.getSearchFormViewNames().length == 0) {
+									List<String> viewList = new ArrayList<String>();
 									viewList.add("(default)");
+									viewsMap.put(defName, viewList);
 								} else {
-									viewList.add(viewName);
+									List<String> viewList = new ArrayList<String>();
+									for (String viewName : entityView.getSearchFormViewNames()) {
+										if (viewName.isEmpty()) {
+											viewList.add("(default)");
+										} else {
+											viewList.add(viewName);
+										}
+									}
+									viewsMap.put(defName, viewList);
 								}
 							}
-							viewsMap.put(defName, viewList);
 						}
+
+						return viewsMap;
 					}
-				}
 
-				return viewsMap;
-			}
-
-		});
+				});
 	}
 
-	/* ---------------------------------------
-	 * EntityView
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- EntityView ---------------------------------------
+	 */
 
 	@Override
 	public SearchFormView createDefaultSearchFormView(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<SearchFormView>() {
-			@Override
-			public SearchFormView call() {
-				auditLogger.logMetadata(MetaDataAction.CREATE, SearchFormView.class.getName(), "name:" + name);
-				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-				return evm.createDefaultSearchFormView(name);
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<SearchFormView>() {
+					@Override
+					public SearchFormView call() {
+						auditLogger.logMetadata(MetaDataAction.CREATE, SearchFormView.class.getName(), "name:" + name);
+						EntityViewManager evm = ManagerLocator.getInstance()
+								.getManager(EntityViewManager.class);
+						return evm.createDefaultSearchFormView(name);
+					}
+				});
 	}
 
 	@Override
 	public DetailFormView createDefaultDetailFormView(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DetailFormView>() {
-			@Override
-			public DetailFormView call() {
-				auditLogger.logMetadata(MetaDataAction.CREATE, DetailFormView.class.getName(), "name:" + name);
-				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-				return evm.createDefaultDetailFormView(name);
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DetailFormView>() {
+					@Override
+					public DetailFormView call() {
+						auditLogger.logMetadata(MetaDataAction.CREATE, DetailFormView.class.getName(), "name:" + name);
+						EntityViewManager evm = ManagerLocator.getInstance()
+								.getManager(EntityViewManager.class);
+						return evm.createDefaultDetailFormView(name);
+					}
+				});
 	}
 
 	@Override
 	public BulkFormView createDefaultBulkFormView(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<BulkFormView>() {
-			@Override
-			public BulkFormView call() {
-				auditLogger.logMetadata(MetaDataAction.CREATE, BulkFormView.class.getName(), "name:" + name);
-				EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-				return evm.createDefaultBulkFormView(name);
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<BulkFormView>() {
+					@Override
+					public BulkFormView call() {
+						auditLogger.logMetadata(MetaDataAction.CREATE, BulkFormView.class.getName(), "name:" + name);
+						EntityViewManager evm = ManagerLocator.getInstance()
+								.getManager(EntityViewManager.class);
+						return evm.createDefaultBulkFormView(name);
+					}
+				});
 	}
-
 
 	@Override
 	public List<Entity> getRoles(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Entity>>() {
-			@Override
-			public List<Entity> call() {
-				Query query = new Query().select(Entity.OID, Entity.NAME, "code").from("mtp.auth.Role").order(new SortSpec(Entity.NAME, SortType.ASC));
-				SearchResult<Entity> result = em.searchEntity(query);
-				return result.getList();
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Entity>>() {
+					@Override
+					public List<Entity> call() {
+						Query query = new Query().select(Entity.OID, Entity.NAME, "code")
+								.from("mtp.auth.Role")
+								.order(new SortSpec(Entity.NAME, SortType.ASC));
+						SearchResult<Entity> result = em.searchEntity(query);
+						return result.getList();
+					}
+				});
 	}
 
-	/* ---------------------------------------
-	 * Menu Item
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Menu Item ---------------------------------------
+	 */
 
 	@Override
 	public MenuItemHolder getMenuItemList(int tenantId) {
 
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
 				new AuthUtil.Callable<MenuItemHolder>() {
-			@Override
-			public MenuItemHolder call() {
+					@Override
+					public MenuItemHolder call() {
 
-				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
-				List<String> names = mm.definitionList();
+						MenuItemManager mm = ManagerLocator.getInstance()
+								.getManager(MenuItemManager.class);
+						List<String> names = mm.definitionList();
 
-				if (names == null) {
-					return null;
-				}
+						if (names == null) {
+							return null;
+						}
 
-				MenuItemHolder holder = new MenuItemHolder();
+						MenuItemHolder holder = new MenuItemHolder();
 
-				//TODO YK ここで一件一件取得しないとだめか
-				MenuItem item = null;
-				for (String name : names) {
-					item = mm.get(name);
-					if (item != null) {
-						holder.addMenuItem(item);
+						//TODO YK ここで一件一件取得しないとだめか
+						MenuItem item = null;
+						for (String name : names) {
+							item = mm.get(name);
+							if (item != null) {
+								holder.addMenuItem(item);
+							}
+						}
+						return holder;
 					}
-				}
-				return holder;
-			}
-		});
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult createMenuItem(int tenantId, final MenuItem definition) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				//検証
-				AdminDefinitionModifyResult validate = validateMenuItem(definition);
-				if (validate != null) {
-					return validate;
-				}
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						//検証
+						AdminDefinitionModifyResult validate = validateMenuItem(definition);
+						if (validate != null) {
+							return validate;
+						}
 
-				auditLogger.logMetadata(MetaDataAction.CREATE, MenuItem.class.getName(), "name:" + definition.getName());
-				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
-				DefinitionModifyResult ret = mm.create(definition);
-				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-			}
-		});
+						auditLogger.logMetadata(MetaDataAction.CREATE, MenuItem.class.getName(), "name:" + definition.getName());
+						MenuItemManager mm = ManagerLocator.getInstance()
+								.getManager(MenuItemManager.class);
+						DefinitionModifyResult ret = mm.create(definition);
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+					}
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult updateMenuItem(int tenantId, final MenuItem definition) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				//検証
-				AdminDefinitionModifyResult validate = validateMenuItem(definition);
-				if (validate != null) {
-					return validate;
-				}
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						//検証
+						AdminDefinitionModifyResult validate = validateMenuItem(definition);
+						if (validate != null) {
+							return validate;
+						}
 
-				auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + definition.getName());
-				MenuItemManager mm = ManagerLocator.getInstance().getManager(MenuItemManager.class);
-				DefinitionModifyResult ret = mm.update(definition);
-				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-			}
-		});
+						auditLogger.logMetadata(MetaDataAction.UPDATE, MenuItem.class.getName(), "name:" + definition.getName());
+						MenuItemManager mm = ManagerLocator.getInstance()
+								.getManager(MenuItemManager.class);
+						DefinitionModifyResult ret = mm.update(definition);
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+					}
+				});
 	}
 
 	private AdminDefinitionModifyResult validateMenuItem(final MenuItem definition) {
 		if (definition instanceof EntityMenuItem) {
-			EntityMenuItem emi = (EntityMenuItem)definition;
+			EntityMenuItem emi = (EntityMenuItem) definition;
 			//参照先Entity存在チェック
 			if (StringUtil.isEmpty(emi.getEntityDefinitionName())
 					|| edm.get(emi.getEntityDefinitionName()) == null) {
 				return new AdminDefinitionModifyResult(false, resourceString("notFoundEntity"));
 			}
 		} else if (definition instanceof ActionMenuItem) {
-			ActionMenuItem ami = (ActionMenuItem)definition;
+			ActionMenuItem ami = (ActionMenuItem) definition;
 			//参照先Action存在チェック
 			if (StringUtil.isEmpty(ami.getActionName())
 					|| amm.get(ami.getActionName()) == null) {
@@ -1206,101 +1312,105 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		return null;
 	}
 
-	/* ---------------------------------------
-	 * Template
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Template ---------------------------------------
+	 */
 
 	@Override
 	public DefinitionEntry getTemplateDefinitionEntry(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DefinitionEntry>() {
-			@Override
-			public DefinitionEntry call() {
-				DefinitionEntry entry = dm.getDefinitionEntry(TemplateDefinition.class, name);
-				if (entry.getDefinition() instanceof BinaryTemplateDefinition) {
-					//BinaryTemplateDefinitionのBinaryは編集では不要(設定されているかのみ知りたい)なので返さない
-					//(返すとRPCのシリアライズ対象になり、大きいファイルなど無駄)
-					BinaryTemplateDefinition btd = (BinaryTemplateDefinition)entry.getDefinition();
-					if (btd.getBinary() != null && btd.getBinary().length > 0) {
-						btd.setBinary(new byte[1]);
-					}
-					if (btd.getLocalizedBinaryList() != null) {
-						for (LocalizedBinaryDefinition local : btd.getLocalizedBinaryList()) {
-							if (local.getBinaryValue() != null && local.getBinaryValue().length > 0) {
-								local.setBinaryValue(new byte[1]);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DefinitionEntry>() {
+					@Override
+					public DefinitionEntry call() {
+						DefinitionEntry entry = dm.getDefinitionEntry(TemplateDefinition.class, name);
+						if (entry.getDefinition() instanceof BinaryTemplateDefinition) {
+							//BinaryTemplateDefinitionのBinaryは編集では不要(設定されているかのみ知りたい)なので返さない
+							//(返すとRPCのシリアライズ対象になり、大きいファイルなど無駄)
+							BinaryTemplateDefinition btd = (BinaryTemplateDefinition) entry.getDefinition();
+							if (btd.getBinary() != null && btd.getBinary().length > 0) {
+								btd.setBinary(new byte[1]);
+							}
+							if (btd.getLocalizedBinaryList() != null) {
+								for (LocalizedBinaryDefinition local : btd.getLocalizedBinaryList()) {
+									if (local.getBinaryValue() != null && local.getBinaryValue().length > 0) {
+										local.setBinaryValue(new byte[1]);
+									}
+								}
+							}
+						} else if (entry.getDefinition() instanceof ReportTemplateDefinition) {
+							//ReportTemplateDefinitionのBinaryは編集では不要(設定されているかのみ知りたい)なので返さない
+							//(返すとRPCのシリアライズ対象になり、大きいファイルなど無駄)
+							ReportTemplateDefinition rtd = (ReportTemplateDefinition) entry.getDefinition();
+							if (rtd.getBinary() != null && rtd.getBinary().length > 0) {
+								rtd.setBinary(new byte[1]);
+							}
+							if (rtd.getLocalizedReportList() != null) {
+								for (LocalizedReportDefinition local : rtd.getLocalizedReportList()) {
+									if (local.getBinary() != null && local.getBinary().length > 0) {
+										local.setBinary(new byte[1]);
+									}
+								}
 							}
 						}
+						return entry;
 					}
-				} else if (entry.getDefinition() instanceof ReportTemplateDefinition) {
-					//ReportTemplateDefinitionのBinaryは編集では不要(設定されているかのみ知りたい)なので返さない
-					//(返すとRPCのシリアライズ対象になり、大きいファイルなど無駄)
-					ReportTemplateDefinition rtd = (ReportTemplateDefinition)entry.getDefinition();
-					if (rtd.getBinary() != null && rtd.getBinary().length > 0) {
-						rtd.setBinary(new byte[1]);
-					}
-					if (rtd.getLocalizedReportList() != null) {
-						for (LocalizedReportDefinition local : rtd.getLocalizedReportList()) {
-							if (local.getBinary() != null && local.getBinary().length > 0) {
-								local.setBinary(new byte[1]);
-							}
-						}
-					}
-				}
-				return entry;
-			}
-		});
+				});
 	}
 
 	@Override
-	public AdminDefinitionModifyResult updateTemplateDefinition(int tenantId, final TemplateDefinition definition, final int currentVersion, final boolean checkVersion) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
+	public AdminDefinitionModifyResult updateTemplateDefinition(int tenantId, final TemplateDefinition definition, final int currentVersion,
+			final boolean checkVersion) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
 
-				// バージョンの最新チェック
-				MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(), currentVersion);
+						// バージョンの最新チェック
+						MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(), currentVersion);
 
-				//BinaryTemplateの場合、byteがうまく渡せないので一度検索
-				//BinaryTemplateでこのupdateが呼び出されるのはFileがアップロードされない場合
-				if (definition instanceof BinaryTemplateDefinition) {
-					TemplateDefinition cur = tdm.get(definition.getName());
-					//念のためチェック
-					if (cur != null && cur instanceof BinaryTemplateDefinition) {
-						((BinaryTemplateDefinition)definition).setBinary(
-								((BinaryTemplateDefinition)cur).getBinary());
+						//BinaryTemplateの場合、byteがうまく渡せないので一度検索
+						//BinaryTemplateでこのupdateが呼び出されるのはFileがアップロードされない場合
+						if (definition instanceof BinaryTemplateDefinition) {
+							TemplateDefinition cur = tdm.get(definition.getName());
+							//念のためチェック
+							if (cur != null && cur instanceof BinaryTemplateDefinition) {
+								((BinaryTemplateDefinition) definition).setBinary(
+										((BinaryTemplateDefinition) cur).getBinary());
+							}
+						} else if (definition instanceof ReportTemplateDefinition) {
+							TemplateDefinition cur = tdm.get(definition.getName());
+							//念のためチェック
+							if (cur != null && cur instanceof ReportTemplateDefinition) {
+								((ReportTemplateDefinition) definition).setBinary(
+										((ReportTemplateDefinition) cur).getBinary());
+							}
+						}
+						auditLogger.logMetadata(MetaDataAction.UPDATE, TemplateDefinition.class.getName(), "name:" + definition.getName());
+						DefinitionModifyResult ret = tdm.update(definition);
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
 					}
-				}else if (definition instanceof ReportTemplateDefinition) {
-					TemplateDefinition cur = tdm.get(definition.getName());
-					//念のためチェック
-					if (cur != null && cur instanceof ReportTemplateDefinition) {
-						((ReportTemplateDefinition)definition).setBinary(
-								((ReportTemplateDefinition)cur).getBinary());
-					}
-				}
-				auditLogger.logMetadata(MetaDataAction.UPDATE, TemplateDefinition.class.getName(), "name:" + definition.getName());
-				DefinitionModifyResult ret = tdm.update(definition);
-				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-			}
-		});
+				});
 	}
 
 	@Override
 	public List<Name> getReportTemplateDefinitionNameList(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Name>>() {
-			@Override
-			public List<Name> call() {
-				List<DefinitionSummary> defList = tdm.definitionSummaryList();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Name>>() {
+					@Override
+					public List<Name> call() {
+						List<DefinitionSummary> defList = tdm.definitionSummaryList();
 
-				List<Name> res = new ArrayList<Name>(defList.size());
-				for (DefinitionSummary def : defList) {
+						List<Name> res = new ArrayList<Name>(defList.size());
+						for (DefinitionSummary def : defList) {
 
-					if (tdm.get(def.getName()) instanceof ReportTemplateDefinition) {
-						res.add(new Name(def.getName(), def.getDisplayName()));
+							if (tdm.get(def.getName()) instanceof ReportTemplateDefinition) {
+								res.add(new Name(def.getName(), def.getDisplayName()));
+							}
+						}
+						return res;
 					}
-				}
-				return res;
-			}
-		});
+				});
 
 	}
 
@@ -1308,255 +1418,270 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	public List<org.iplass.mtp.web.template.report.definition.OutputFileType> getOutputFileTypeList(
 			int tenantId, final String type) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<OutputFileType>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<OutputFileType>>() {
 
-			@Override
-			public List<OutputFileType> call() {
-				// OutputFileTypeのList取得
-				List<OutputFileType> outputFileTypeList = ServiceRegistry.getRegistry().getService(ReportingEngineService.class).getOutputFileTypeList(type);
-				return outputFileTypeList;
-			}
+					@Override
+					public List<OutputFileType> call() {
+						// OutputFileTypeのList取得
+						List<OutputFileType> outputFileTypeList = ServiceRegistry.getRegistry()
+								.getService(ReportingEngineService.class)
+								.getOutputFileTypeList(type);
+						return outputFileTypeList;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public List<Name> getReportTypeList(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Name>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Name>>() {
 
-			@Override
-			public List<Name> call() {
-				List<Name> nameList = new ArrayList<Name>();
-				// ReportTypeのList取得
-				List<ReportingType> reportTypeList = ServiceRegistry.getRegistry().getService(ReportingEngineService.class).getReportTypeList();
-				for (ReportingType type : reportTypeList) {
-					Name name = new Name();
-					name.setName(type.getName());
-					name.setDisplayName(type.getDisplayName());
-					nameList.add(name);
-				}
+					@Override
+					public List<Name> call() {
+						List<Name> nameList = new ArrayList<Name>();
+						// ReportTypeのList取得
+						List<ReportingType> reportTypeList = ServiceRegistry.getRegistry()
+								.getService(ReportingEngineService.class)
+								.getReportTypeList();
+						for (ReportingType type : reportTypeList) {
+							Name name = new Name();
+							name.setName(type.getName());
+							name.setDisplayName(type.getDisplayName());
+							nameList.add(name);
+						}
 
-				return nameList;
-			}
+						return nameList;
+					}
 
-		});
+				});
 	}
 
-	/* ---------------------------------------
-	 * StaticResource
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- StaticResource ---------------------------------------
+	 */
 
 	// TODO 共通処理を呼ぶとエラーになる、transのDefinitionが一部コメント化されてるからか？
 
 	@Override
 	public List<Name> getStaticResourceDefinitionNameList(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Name>>() {
-			@Override
-			public List<Name> call() {
-				List<DefinitionSummary> defList = srdm.definitionSummaryList();
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<Name>>() {
+					@Override
+					public List<Name> call() {
+						List<DefinitionSummary> defList = srdm.definitionSummaryList();
 
-				List<Name> res = new ArrayList<Name>(defList.size());
-				for (DefinitionSummary def : defList) {
-					res.add(new Name(def.getName(), def.getDisplayName()));
-				}
-				return res;
-			}
-		});
+						List<Name> res = new ArrayList<Name>(defList.size());
+						for (DefinitionSummary def : defList) {
+							res.add(new Name(def.getName(), def.getDisplayName()));
+						}
+						return res;
+					}
+				});
 	}
 
 	@Override
 	public DefinitionEntry getStaticResourceDefinitionEntry(int tenantId, String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<DefinitionEntry>() {
-			@Override
-			public DefinitionEntry call() {
-				DefinitionEntry entry = dm.getDefinitionEntry(StaticResourceDefinition.class, name);
-				StaticResourceDefinition definition = (StaticResourceDefinition) entry.getDefinition();
-				StaticResourceInfo info = StaticResourceInfo.valueOf(definition);
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<DefinitionEntry>() {
+					@Override
+					public DefinitionEntry call() {
+						DefinitionEntry entry = dm.getDefinitionEntry(StaticResourceDefinition.class, name);
+						StaticResourceDefinition definition = (StaticResourceDefinition) entry.getDefinition();
+						StaticResourceInfo info = StaticResourceInfo.valueOf(definition);
 
-				// クライアント側のDefinitionはBinaryDefinitionを持たないのでBinaryDefinitionに関するマッピングはここで行う
-				BinaryDefinition resource = definition.getResource();
-				if (resource != null) {
-					//2.1.34までパスが設定されていたので除去
-					String binaryName =  FilenameUtils.getName(resource.getName());
-					info.setBinaryName(binaryName);
-					info.setStoredBinaryName(binaryName);
-					info.setFileType(resource instanceof ArchiveBinaryDefinition ? FileType.ARCHIVE : FileType.SIMPLE);
-				}
-				if (definition.getLocalizedResourceList() != null) {
-					List<LocalizedStaticResourceInfo> lsrInfoList = new ArrayList<LocalizedStaticResourceInfo>();
-					for (LocalizedStaticResourceDefinition lsrDef : definition.getLocalizedResourceList()) {
-						LocalizedStaticResourceInfo localeInfo = LocalizedStaticResourceInfo.valueOf(lsrDef);
-						localeInfo.setName(definition.getName());
-						BinaryDefinition localResource = lsrDef.getResource();
-						if (localResource != null) {
+						// クライアント側のDefinitionはBinaryDefinitionを持たないのでBinaryDefinitionに関するマッピングはここで行う
+						BinaryDefinition resource = definition.getResource();
+						if (resource != null) {
 							//2.1.34までパスが設定されていたので除去
-							String binaryName =  FilenameUtils.getName(localResource.getName());
-							localeInfo.setBinaryName(binaryName);
-							localeInfo.setStoredBinaryName(binaryName);
-							localeInfo.setFileType(localResource instanceof ArchiveBinaryDefinition ? FileType.ARCHIVE : FileType.SIMPLE);
+							String binaryName = FilenameUtils.getName(resource.getName());
+							info.setBinaryName(binaryName);
+							info.setStoredBinaryName(binaryName);
+							info.setFileType(resource instanceof ArchiveBinaryDefinition ? FileType.ARCHIVE : FileType.SIMPLE);
 						}
-						lsrInfoList.add(localeInfo);
-					}
-					info.setLocalizedResourceList(lsrInfoList);
-				}
+						if (definition.getLocalizedResourceList() != null) {
+							List<LocalizedStaticResourceInfo> lsrInfoList = new ArrayList<LocalizedStaticResourceInfo>();
+							for (LocalizedStaticResourceDefinition lsrDef : definition.getLocalizedResourceList()) {
+								LocalizedStaticResourceInfo localeInfo = LocalizedStaticResourceInfo.valueOf(lsrDef);
+								localeInfo.setName(definition.getName());
+								BinaryDefinition localResource = lsrDef.getResource();
+								if (localResource != null) {
+									//2.1.34までパスが設定されていたので除去
+									String binaryName = FilenameUtils.getName(localResource.getName());
+									localeInfo.setBinaryName(binaryName);
+									localeInfo.setStoredBinaryName(binaryName);
+									localeInfo.setFileType(localResource instanceof ArchiveBinaryDefinition ? FileType.ARCHIVE : FileType.SIMPLE);
+								}
+								lsrInfoList.add(localeInfo);
+							}
+							info.setLocalizedResourceList(lsrInfoList);
+						}
 
-				entry.setDefinition(info);
-				return entry;
-			}
-		});
+						entry.setDefinition(info);
+						return entry;
+					}
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult createStaticResourceDefinition(int tenantId, final DefinitionSummary definitionName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				StaticResourceDefinition definition = new StaticResourceDefinition();
-				definition.setName(definitionName.getName());
-				definition.setDisplayName(definitionName.getDisplayName());
-				definition.setDescription(definitionName.getDescription());
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						StaticResourceDefinition definition = new StaticResourceDefinition();
+						definition.setName(definitionName.getName());
+						definition.setDisplayName(definitionName.getDisplayName());
+						definition.setDescription(definitionName.getDescription());
 
-				auditLogger.logMetadata(MetaDataAction.CREATE, StaticResourceDefinition.class.getName(), "name:" + definition.getName());
-				DefinitionModifyResult ret = srdm.create(definition);
-				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-			}
-		});
+						auditLogger.logMetadata(MetaDataAction.CREATE, StaticResourceDefinition.class.getName(), "name:" + definition.getName());
+						DefinitionModifyResult ret = srdm.create(definition);
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+					}
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult deleteStaticResourceDefinition(int tenantId, final String name) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				auditLogger.logMetadata(MetaDataAction.DELETE, StaticResourceDefinition.class.getName(), "name:" + name);
-				DefinitionModifyResult ret = srdm.remove(name);
-				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						auditLogger.logMetadata(MetaDataAction.DELETE, StaticResourceDefinition.class.getName(), "name:" + name);
+						DefinitionModifyResult ret = srdm.remove(name);
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+					}
+				});
 	}
 
 	@Override
 	public AdminDefinitionModifyResult copyStaticResourceDefinition(int tenantId, final String sourceName, final DefinitionSummary newDefinitionName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AdminDefinitionModifyResult>() {
-			@Override
-			public AdminDefinitionModifyResult call() {
-				StaticResourceDefinition source = srdm.get(sourceName);
-				source.setName(newDefinitionName.getName());
-				source.setDisplayName(newDefinitionName.getDisplayName());
-				source.setDescription(newDefinitionName.getDescription());
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<AdminDefinitionModifyResult>() {
+					@Override
+					public AdminDefinitionModifyResult call() {
+						StaticResourceDefinition source = srdm.get(sourceName);
+						source.setName(newDefinitionName.getName());
+						source.setDisplayName(newDefinitionName.getDisplayName());
+						source.setDescription(newDefinitionName.getDescription());
 
-				auditLogger.logMetadata(MetaDataAction.CREATE, StaticResourceDefinition.class.getName(), "name:" + source.getName());
-				DefinitionModifyResult ret = srdm.create(source);
-				return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
-			}
-		});
+						auditLogger.logMetadata(MetaDataAction.CREATE, StaticResourceDefinition.class.getName(), "name:" + source.getName());
+						DefinitionModifyResult ret = srdm.create(source);
+						return new AdminDefinitionModifyResult(ret.isSuccess(), ret.getMessage());
+					}
+				});
 	}
 
-	/* ---------------------------------------
-	 * EntityWebApi
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- EntityWebApi ---------------------------------------
+	 */
 
 	@Override
 	public List<DefinitionEntry> getEntityWebApiDefinitionEntryList(final int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<DefinitionEntry>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<DefinitionEntry>>() {
 
-			@Override
-			public List<DefinitionEntry> call() {
+					@Override
+					public List<DefinitionEntry> call() {
 
-				// Entity定義の取得
-				List<DefinitionSummary> entityNameList = edm.definitionNameList();
+						// Entity定義の取得
+						List<DefinitionSummary> entityNameList = edm.definitionNameList();
 
-				List<DefinitionEntry> definitionEntryList = new ArrayList<DefinitionEntry>();
-				for (DefinitionSummary entityName : entityNameList) {
-					if (EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME.equals(entityName.getName())) {
-						continue;
+						List<DefinitionEntry> definitionEntryList = new ArrayList<DefinitionEntry>();
+						for (DefinitionSummary entityName : entityNameList) {
+							if (EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME.equals(entityName.getName())) {
+								continue;
+							}
+
+							// １つのEntity定義の不具合により取得できないことを避けるため、Catchする
+							EntityDefinition definition = null;
+							EntityWebApiDefinition ewDefinition = null;
+							DefinitionEntry entry = null;
+							try {
+								// Definition取得
+								definition = edm.get(entityName.getName());
+
+								// EntityWebApiDefinition情報取得
+								entry = dm.getDefinitionEntry(EntityWebApiDefinition.class, entityName.getName());
+
+							} catch (Exception e) {
+								logger.error("Entity情報の取得でエラーが発生しました。", e);
+							}
+
+							if (entry == null) {
+								entry = new DefinitionEntry();
+								ewDefinition = new EntityWebApiDefinition();
+								ewDefinition.setName(entityName.getName());
+								ewDefinition.setDisplayName(definition.getDisplayName());
+
+								// dummy
+								DefinitionInfo info = new DefinitionInfo();
+								info.setObjDefId("");
+								info.setVersion(-1);
+								entry.setDefinitionInfo(info);
+
+							} else {
+								ewDefinition = (EntityWebApiDefinition) entry.getDefinition();
+								ewDefinition.setDisplayName(definition.getDisplayName());
+							}
+							entry.setDefinition(ewDefinition);
+
+							definitionEntryList.add(entry);
+						}
+
+						return definitionEntryList;
 					}
 
-					// １つのEntity定義の不具合により取得できないことを避けるため、Catchする
-					EntityDefinition definition = null;
-					EntityWebApiDefinition ewDefinition = null;
-					DefinitionEntry entry = null;
-					try {
-						// Definition取得
-						definition = edm.get(entityName.getName());
-
-						// EntityWebApiDefinition情報取得
-						entry = dm.getDefinitionEntry(EntityWebApiDefinition.class, entityName.getName());
-
-					} catch (Exception e) {
-						logger.error("Entity情報の取得でエラーが発生しました。", e);
-					}
-
-					if (entry == null) {
-						entry = new DefinitionEntry();
-						ewDefinition = new EntityWebApiDefinition();
-						ewDefinition.setName(entityName.getName());
-						ewDefinition.setDisplayName(definition.getDisplayName());
-
-						// dummy
-						DefinitionInfo info = new DefinitionInfo();
-						info.setObjDefId("");
-						info.setVersion(-1);
-						entry.setDefinitionInfo(info);
-
-					} else {
-						ewDefinition = (EntityWebApiDefinition) entry.getDefinition();
-						ewDefinition.setDisplayName(definition.getDisplayName());
-					}
-					entry.setDefinition(ewDefinition);
-
-					definitionEntryList.add(entry);
-				}
-
-				return definitionEntryList;
-			}
-
-		});
+				});
 	}
 
 	@Override
-	public boolean registEntityWebApiDefinition(int tenantId,final List<DefinitionEntry> entryList, final boolean checkVersion) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Boolean>() {
-			@Override
-			public Boolean call() {
-				for (DefinitionEntry entry : entryList) {
+	public boolean registEntityWebApiDefinition(int tenantId, final List<DefinitionEntry> entryList, final boolean checkVersion) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Boolean>() {
+					@Override
+					public Boolean call() {
+						for (DefinitionEntry entry : entryList) {
 
-					EntityWebApiDefinition definition = (EntityWebApiDefinition) entry.getDefinition();
+							EntityWebApiDefinition definition = (EntityWebApiDefinition) entry.getDefinition();
 
-					EntityWebApiDefinition existDefinition = null;
-					try {
-						// EntityWebApiDefinition情報取得
-						existDefinition = ewdm.get(definition.getName());
+							EntityWebApiDefinition existDefinition = null;
+							try {
+								// EntityWebApiDefinition情報取得
+								existDefinition = ewdm.get(definition.getName());
 
-					} catch (Exception e) {
-						logger.error("EntityWebApiDefinition情報の取得でエラーが発生しました。", e);
-					}
+							} catch (Exception e) {
+								logger.error("EntityWebApiDefinition情報の取得でエラーが発生しました。", e);
+							}
 
-					if (existDefinition == null) {
-						auditLogger.logMetadata(MetaDataAction.CREATE, WebApiDefinition.class.getName(), "name:" + definition.getName());
-						DefinitionModifyResult result = ewdm.create(definition);
-						checkResult(result);
-					} else {
+							if (existDefinition == null) {
+								auditLogger.logMetadata(MetaDataAction.CREATE, WebApiDefinition.class.getName(), "name:" + definition.getName());
+								DefinitionModifyResult result = ewdm.create(definition);
+								checkResult(result);
+							} else {
 
-						// バージョンの最新チェック、2件目以降でチェックに該当した場合それまでも全件ロールバック
-						MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(), entry.getDefinitionInfo().getVersion());
+								// バージョンの最新チェック、2件目以降でチェックに該当した場合それまでも全件ロールバック
+								MetaDataVersionCheckUtil.versionCheck(checkVersion, definition.getClass(), definition.getName(),
+										entry.getDefinitionInfo()
+												.getVersion());
 
-						if (existDefinition.isInsert() != definition.isInsert()
-								|| existDefinition.isLoad() != definition.isLoad()
-								|| existDefinition.isQuery() != definition.isQuery()
-								|| existDefinition.isUpdate() != definition.isUpdate()
-								|| existDefinition.isDelete() != definition.isDelete()) {
-							auditLogger.logMetadata(MetaDataAction.UPDATE, WebApiDefinition.class.getName(), "name:" + definition.getName());
-							DefinitionModifyResult result = ewdm.update(definition);
-							checkResult(result);
+								if (existDefinition.isInsert() != definition.isInsert()
+										|| existDefinition.isLoad() != definition.isLoad()
+										|| existDefinition.isQuery() != definition.isQuery()
+										|| existDefinition.isUpdate() != definition.isUpdate()
+										|| existDefinition.isDelete() != definition.isDelete()) {
+									auditLogger.logMetadata(MetaDataAction.UPDATE, WebApiDefinition.class.getName(), "name:" + definition.getName());
+									DefinitionModifyResult result = ewdm.update(definition);
+									checkResult(result);
+								}
+							}
 						}
+						return true;
 					}
-				}
-				return true;
-			}
-		});
+				});
 	}
 
 	private void checkResult(DefinitionModifyResult result) {
@@ -1565,301 +1690,318 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		}
 	}
 
-
-	/* ---------------------------------------
-	 * AuthenticationPolicy
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- AuthenticationPolicy ---------------------------------------
+	 */
 
 	@Override
 	public List<String> getSelectableAuthProviderNameList(int tenantId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
 
-			@Override
-			public List<String> call() {
-				List<String> providers = new ArrayList<String>();
-				for (AuthenticationProvider provider : as.getAuthenticationProviders()) {
-					if (provider.isSelectableOnAuthPolicy()) {
-						providers.add(provider.getProviderName());
+					@Override
+					public List<String> call() {
+						List<String> providers = new ArrayList<String>();
+						for (AuthenticationProvider provider : as.getAuthenticationProviders()) {
+							if (provider.isSelectableOnAuthPolicy()) {
+								providers.add(provider.getProviderName());
+							}
+						}
+						return providers;
 					}
-				}
-				return providers;
-			}
 
-		});
+				});
 
 	}
 
-	/* ---------------------------------------
-	 * Queue
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Queue ---------------------------------------
+	 */
 
 	@Override
 	public List<String> getQueueNameList(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
 
-			@Override
-			public List<String> call() {
-				return rqs.getQueueNameList();
-			}
-		});
+					@Override
+					public List<String> call() {
+						return rqs.getQueueNameList();
+					}
+				});
 	}
 
 	@Override
 	public List<TaskSearchResultInfo> searchAsyncTaskInfo(int tenantId, final AsyncTaskInfoSearchCondtion cond) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<TaskSearchResultInfo>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<TaskSearchResultInfo>>() {
 
-			@Override
-			public List<TaskSearchResultInfo> call() {
-				List<AsyncTaskInfo> list = atm.searchAsyncTaskInfo(cond);
-				List<TaskSearchResultInfo> result = new ArrayList<TaskSearchResultInfo>();
-				for (AsyncTaskInfo info : list) {
-					TaskSearchResultInfo copy = new TaskSearchResultInfo();
-					copy.setExceptionHandlingMode(info.getExceptionHandlingMode());
-					copy.setGroupingKey(info.getGroupingKey());
-					copy.setQueue(info.getQueue());
-					copy.setResultInfo(info.getResult() != null ? info.getResult().toString() : null);
-					copy.setRetryCount(info.getRetryCount());
-					copy.setStatus(info.getStatus());
-					copy.setTaskId(info.getTaskId());
-					copy.setTaskInfo(info.getTask() != null ? info.getTask().toString() : null);
-					result.add(copy);
-				}
-				return result;
-			}
+					@Override
+					public List<TaskSearchResultInfo> call() {
+						List<AsyncTaskInfo> list = atm.searchAsyncTaskInfo(cond);
+						List<TaskSearchResultInfo> result = new ArrayList<TaskSearchResultInfo>();
+						for (AsyncTaskInfo info : list) {
+							TaskSearchResultInfo copy = new TaskSearchResultInfo();
+							copy.setExceptionHandlingMode(info.getExceptionHandlingMode());
+							copy.setGroupingKey(info.getGroupingKey());
+							copy.setQueue(info.getQueue());
+							copy.setResultInfo(info.getResult() != null ? info.getResult()
+									.toString() : null);
+							copy.setRetryCount(info.getRetryCount());
+							copy.setStatus(info.getStatus());
+							copy.setTaskId(info.getTaskId());
+							copy.setTaskInfo(info.getTask() != null ? info.getTask()
+									.toString() : null);
+							result.add(copy);
+						}
+						return result;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public TaskCancelResultInfo cancelAsyncTask(final int tenantId, final String queueName, final List<Long> taskIds) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<TaskCancelResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<TaskCancelResultInfo>() {
 
-			@Override
-			public TaskCancelResultInfo call() {
-				TaskCancelResultInfo info = new TaskCancelResultInfo();
+					@Override
+					public TaskCancelResultInfo call() {
+						TaskCancelResultInfo info = new TaskCancelResultInfo();
 
-				for (long taskId : taskIds) {
-					CancelResult result = new CancelResult();
-					result.setTaskId(taskId);
-					info.addResult(result);
+						for (long taskId : taskIds) {
+							CancelResult result = new CancelResult();
+							result.setTaskId(taskId);
+							info.addResult(result);
 
-					final AsyncTaskFuture<?> preResult = atm.getResult(taskId, queueName);
-					result.setBeforeStatus(preResult.getStatus());
+							final AsyncTaskFuture<?> preResult = atm.getResult(taskId, queueName);
+							result.setBeforeStatus(preResult.getStatus());
 
-					Boolean canceled = false;
+							Boolean canceled = false;
 //					try {
 //						preResult.get();
 
-						if (preResult != null) {
-							canceled = Transaction.requiresNew(t -> {
-								return preResult.cancel(true);
-							});
-						}
+							if (preResult != null) {
+								canceled = Transaction.requiresNew(t -> {
+									return preResult.cancel(true);
+								});
+							}
 //					} catch (InterruptedException | ExecutionException e) {
 //
 //					}
-					result.setCanceled(canceled);
+							result.setCanceled(canceled);
 
-					//一応ここで再度結果を取得
-					AsyncTaskFuture<?> afterResult = atm.getResult(taskId, queueName);
-					if (afterResult != null) {
-						try {
-							afterResult.get();
+							//一応ここで再度結果を取得
+							AsyncTaskFuture<?> afterResult = atm.getResult(taskId, queueName);
+							if (afterResult != null) {
+								try {
+									afterResult.get();
 
-							result.setResultStatus(afterResult.getStatus());
-						} catch (InterruptedException | ExecutionException e) {
+									result.setResultStatus(afterResult.getStatus());
+								} catch (InterruptedException | ExecutionException e) {
+								}
+							}
 						}
+
+						return info;
 					}
-				}
 
-				return info;
-			}
-
-		});
+				});
 	}
 
 	@Override
 	public TaskLoadResultInfo loadAsyncTaskInfo(int tenantId, final String queueName, final long taskId) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<TaskLoadResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<TaskLoadResultInfo>() {
 
-			@Override
-			public TaskLoadResultInfo call() {
+					@Override
+					public TaskLoadResultInfo call() {
 
-				TaskLoadResultInfo result = null;
-				AsyncTaskInfo info = atm.loadAsyncTaskInfo(taskId, queueName);
-				if (info != null) {
-					result = new TaskLoadResultInfo();
-					result.setExceptionHandlingMode(info.getExceptionHandlingMode());
-					result.setGroupingKey(info.getGroupingKey());
-					result.setQueue(info.getQueue());
-					result.setResultInfo(info.getResult() != null ? info.getResult().toString() : null);
-					result.setRetryCount(info.getRetryCount());
-					result.setStatus(info.getStatus());
-					result.setTaskId(info.getTaskId());
-					result.setTaskInfo(info.getTask() != null ? info.getTask().toString() : null);
-				}
+						TaskLoadResultInfo result = null;
+						AsyncTaskInfo info = atm.loadAsyncTaskInfo(taskId, queueName);
+						if (info != null) {
+							result = new TaskLoadResultInfo();
+							result.setExceptionHandlingMode(info.getExceptionHandlingMode());
+							result.setGroupingKey(info.getGroupingKey());
+							result.setQueue(info.getQueue());
+							result.setResultInfo(info.getResult() != null ? info.getResult()
+									.toString() : null);
+							result.setRetryCount(info.getRetryCount());
+							result.setStatus(info.getStatus());
+							result.setTaskId(info.getTaskId());
+							result.setTaskInfo(info.getTask() != null ? info.getTask()
+									.toString() : null);
+						}
 
-				return result;
-			}
+						return result;
+					}
 
-		});
+				});
 	}
 
 	@Override
 	public TaskForceDeleteResultInfo forceDeleteAsyncTask(final int tenantId, final String queueName, final List<Long> taskIds) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<TaskForceDeleteResultInfo>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<TaskForceDeleteResultInfo>() {
 
-			@Override
-			public TaskForceDeleteResultInfo call() {
-				TaskForceDeleteResultInfo info = new TaskForceDeleteResultInfo();
+					@Override
+					public TaskForceDeleteResultInfo call() {
+						TaskForceDeleteResultInfo info = new TaskForceDeleteResultInfo();
 
-				for (long taskId : taskIds) {
-					info.addTask(taskId);
+						for (long taskId : taskIds) {
+							info.addTask(taskId);
 
-					final long execTaskId = taskId;
+							final long execTaskId = taskId;
 
-					Transaction.requiresNew(t -> {
-						atm.forceDelete(execTaskId, queueName);
-					});
-				}
+							Transaction.requiresNew(t -> {
+								atm.forceDelete(execTaskId, queueName);
+							});
+						}
 
-				return info;
-			}
+						return info;
+					}
 
-		});
+				});
 	}
 
-	/* ---------------------------------------
-	 * Menu item
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Menu item ---------------------------------------
+	 */
 
 	@Override
 	public List<String> getImageColorList(int tenantId) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
 
-			@Override
-			public List<String> call() {
-				return gcs.getImageColorNames();
-			}
-		});
+					@Override
+					public List<String> call() {
+						return gcs.getImageColorNames();
+					}
+				});
 	}
 
 	private static String resourceString(String suffix, Object... arguments) {
 		return AdminResourceBundleUtil.resourceString("MetaDataServiceImpl." + suffix, arguments);
 	}
 
-	/* ---------------------------------------
-	 * OAuth
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- OAuth ---------------------------------------
+	 */
 
 	@Override
 	public String generateCredentialOAuthClient(final int tenantId, final String definitionName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
 
-			@Override
-			public String call() {
-				OAuthClientRuntime runtime = oacs.getRuntimeByName(definitionName);
-				if (runtime != null) {
-					Credential credential = runtime.generateCredential();
-					if (credential != null && credential instanceof IdPasswordCredential) {
-						return ((IdPasswordCredential)credential).getPassword();
+					@Override
+					public String call() {
+						OAuthClientRuntime runtime = oacs.getRuntimeByName(definitionName);
+						if (runtime != null) {
+							Credential credential = runtime.generateCredential();
+							if (credential != null && credential instanceof IdPasswordCredential) {
+								return ((IdPasswordCredential) credential).getPassword();
+							}
+						}
+						return null;
 					}
-				}
-				return null;
-			}
-		});
+				});
 	}
 
 	@Override
 	public void deleteOldCredentialOAuthClient(final int tenantId, final String definitionName) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				OAuthClientRuntime runtime = oacs.getRuntimeByName(definitionName);
-				if (runtime != null) {
-					runtime.deleteOldCredential();
-				}
-				return null;
-			}
-		});
+					@Override
+					public Void call() {
+						OAuthClientRuntime runtime = oacs.getRuntimeByName(definitionName);
+						if (runtime != null) {
+							runtime.deleteOldCredential();
+						}
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public String generateCredentialOAuthResourceServer(final int tenantId, final String definitionName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
 
-			@Override
-			public String call() {
-				OAuthResourceServerRuntime runtime = oars.getRuntimeByName(definitionName);
-				if (runtime != null) {
-					Credential credential = runtime.generateCredential();
-					if (credential != null && credential instanceof IdPasswordCredential) {
-						return ((IdPasswordCredential)credential).getPassword();
+					@Override
+					public String call() {
+						OAuthResourceServerRuntime runtime = oars.getRuntimeByName(definitionName);
+						if (runtime != null) {
+							Credential credential = runtime.generateCredential();
+							if (credential != null && credential instanceof IdPasswordCredential) {
+								return ((IdPasswordCredential) credential).getPassword();
+							}
+						}
+						return null;
 					}
-				}
-				return null;
-			}
-		});
+				});
 	}
 
 	@Override
 	public void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				OAuthResourceServerRuntime runtime = oars.getRuntimeByName(definitionName);
-				if (runtime != null) {
-					runtime.deleteOldCredential();
-				}
-				return null;
-			}
-		});
+					@Override
+					public Void call() {
+						OAuthResourceServerRuntime runtime = oars.getRuntimeByName(definitionName);
+						if (runtime != null) {
+							runtime.deleteOldCredential();
+						}
+						return null;
+					}
+				});
 	}
 
-	/* ---------------------------------------
-	 * OpenIDConnect
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- OpenIDConnect ---------------------------------------
+	 */
 	@Override
 	public void createClientSecret(final int tenantId, final String definitionName, final String clientSecret) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
 
-			@Override
-			public Void call() {
-				oicdm.saveClientSecret(definitionName, clientSecret);
-				return null;
-			}
-		});
+					@Override
+					public Void call() {
+						oicdm.saveClientSecret(definitionName, clientSecret);
+						return null;
+					}
+				});
 	}
 
-	/* ---------------------------------------
-	 * Webhook Endpoint Security Info
-	 --------------------------------------- */
+	/*
+	 * --------------------------------------- Webhook Endpoint Security Info ---------------------------------------
+	 */
 	@Override
 	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType) {
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
-			@Override
-			public Void call() {
-				wepdm.modifySecurityToken(tenantId, definitionName, secret, TokenType);
-				return null;
-			}
-		});
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<Void>() {
+					@Override
+					public Void call() {
+						wepdm.modifySecurityToken(tenantId, definitionName, secret, TokenType);
+						return null;
+					}
+				});
 	}
 
 	@Override
 	public String getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
-			@Override
-			public String call() {
-				return wheps.getSecurityToken(tenantId, definitionName, TokenType);
-			}
-		});
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<String>() {
+					@Override
+					public String call() {
+						return wheps.getSecurityToken(tenantId, definitionName, TokenType);
+					}
+				});
 	}
 
 	@Override
@@ -1871,18 +2013,19 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 *
 	 * returns a map of <defName,Url>
 	 * */
-	public Map<String, String> getEndpointFullListWithUrl(int tenantId){
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<HashMap<String, String>>() {
-			@Override
-			public HashMap<String, String> call() {
-				HashMap<String, String> endpointMap = new HashMap<String, String>();
-				List<Name> tempNameList = getDefinitionNameList(tenantId, WebhookEndpointDefinition.class.getName());
-				for (Name name : tempNameList) {
-					WebhookEndpointDefinition temp = getDefinition(tenantId,WebhookEndpointDefinition.class.getName(),name.getName());
-					endpointMap.put(name.getName(), temp.getUrl());
-				}
-				return endpointMap;
-			}
-		});
+	public Map<String, String> getEndpointFullListWithUrl(int tenantId) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<HashMap<String, String>>() {
+					@Override
+					public HashMap<String, String> call() {
+						HashMap<String, String> endpointMap = new HashMap<String, String>();
+						List<Name> tempNameList = getDefinitionNameList(tenantId, WebhookEndpointDefinition.class.getName());
+						for (Name name : tempNameList) {
+							WebhookEndpointDefinition temp = getDefinition(tenantId, WebhookEndpointDefinition.class.getName(), name.getName());
+							endpointMap.put(name.getName(), temp.getUrl());
+						}
+						return endpointMap;
+					}
+				});
 	}
 }

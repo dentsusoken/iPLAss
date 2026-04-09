@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 import org.iplass.mtp.util.StringUtil;
 
-
 public class MetaTemplateFactory implements
 		AnnotatableMetaDataFactory<Template, Object> {
 

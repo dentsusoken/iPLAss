@@ -88,7 +88,8 @@ public class CreateCalendarDialog extends MetaDataCreateDialog {
 			EntityCalendar definition = new EntityCalendar();
 
 			definition.setName(saveInfo.getName());
-			if (saveInfo.getDisplayName() == null || saveInfo.getDisplayName().isEmpty()) {
+			if (saveInfo.getDisplayName() == null || saveInfo.getDisplayName()
+					.isEmpty()) {
 				definition.setDisplayName(saveInfo.getName());
 			} else {
 				definition.setDisplayName(saveInfo.getDisplayName());

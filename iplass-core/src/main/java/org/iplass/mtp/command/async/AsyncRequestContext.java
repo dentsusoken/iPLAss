@@ -122,7 +122,8 @@ public class AsyncRequestContext implements RequestContext, Serializable {
 		if (vals == null) {
 			return null;
 		}
-		if (vals.getClass().getComponentType() == type) {
+		if (vals.getClass()
+				.getComponentType() == type) {
 			return (T[]) vals;
 		}
 		try {
@@ -199,7 +200,8 @@ public class AsyncRequestContext implements RequestContext, Serializable {
 		if (vals == null) {
 			return null;
 		}
-		if (vals.getClass().getComponentType() == type) {
+		if (vals.getClass()
+				.getComponentType() == type) {
 			return (T[]) vals;
 		}
 		try {
@@ -285,7 +287,8 @@ public class AsyncRequestContext implements RequestContext, Serializable {
 		if (param == null) {
 			return Collections.emptyListIterator();
 		} else {
-			return param.keySet().iterator();
+			return param.keySet()
+					.iterator();
 		}
 	}
 
@@ -310,7 +313,8 @@ public class AsyncRequestContext implements RequestContext, Serializable {
 
 	@Override
 	public Iterator<String> getAttributeNames() {
-		return attributeMap.keySet().iterator();
+		return attributeMap.keySet()
+				.iterator();
 	}
 
 	/**
