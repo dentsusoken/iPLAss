@@ -1360,7 +1360,7 @@ $(function() {
 				String unique = StringUtil.escapeJavaScript(uniquePropValue);
 %>
 		<%-- common.js --%>
-		addUniqueReference("<%=_viewAction%>", "<%=key%>", "<%=label%>", "<%=unique%>", "<%=_defName%>", propName, multiplicity, "ul_" + _propName, "<%=dummyRowId%>", false, "id_count_" + _propName);
+		addUniqueReference("<%=_viewAction%>", "<%=key%>", "<%=label%>", "<%=unique%>", "<%=_defName%>", propName, multiplicity, "ul_" + _propName, "<%=dummyRowId%>", false, "id_count_" + propName);
 <%
 			}
 		} else {
@@ -1372,7 +1372,7 @@ $(function() {
 %>
 		<%-- common.js --%>
 		<%-- リセットした後に、最低でも1行を表示します。 --%>
-		addUniqueReference("<%=_viewAction%>", "<%=key%>", "<%=label%>", "<%=unique%>", "<%=_defName%>", propName, multiplicity, "ul_" + _propName, "<%=dummyRowId%>", false, "id_count_" + _propName);
+		addUniqueReference("<%=_viewAction%>", "<%=key%>", "<%=label%>", "<%=unique%>", "<%=_defName%>", propName, multiplicity, "ul_" + _propName, "<%=dummyRowId%>", false, "id_count_" + propName);
 <%
 		}
 %>
