@@ -118,6 +118,9 @@ ext {
 		'org.apache.tika:tika-parser-text-module': '3.2.2',
 		// commons-compress は tika に関連した競合ライブラリの為、個別定義しバージョンを管理
 		'org.apache.commons:commons-compress': '1.28.0',
+
+		//jsoup (HTML sanitize)
+		'org.jsoup:jsoup': '1.21.1',
 		
 		'org.apache.poi:poi': '5.4.1',
 		'org.apache.poi:poi-scratchpad': '5.4.1',

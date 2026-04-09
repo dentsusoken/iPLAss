@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({
+		MetaHtmlSanitizer.class,
 		MetaICUTransliterator.class,
 		MetaJavaClassNormalizer.class,
 		MetaNewlineNormalizer.class,

@@ -40,6 +40,9 @@ dependencies {
 	runtimeOnly sharedLib('org.apache.poi:poi-scratchpad')
 	runtimeOnly sharedLib('org.apache.poi:poi-ooxml')
 
+	//jsoup (HTML sanitize)
+	implementation sharedLib('org.jsoup:jsoup')
+
 	//groovy
 	implementation 'org.apache.groovy:groovy'
 	implementation 'org.apache.groovy:groovy-templates'

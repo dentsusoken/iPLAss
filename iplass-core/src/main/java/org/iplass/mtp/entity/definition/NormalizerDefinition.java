@@ -22,6 +22,7 @@ package org.iplass.mtp.entity.definition;
 
 import java.io.Serializable;
 
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
@@ -44,6 +45,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  *
  */
 @XmlSeeAlso({
+		HtmlSanitizer.class,
 		ICUTransliterator.class,
 		JavaClassNormalizer.class,
 		NewlineNormalizer.class,

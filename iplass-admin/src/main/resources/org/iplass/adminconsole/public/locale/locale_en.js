@@ -673,6 +673,10 @@ LocaleInfo.ui_metadata_entity_property_ICUTransliteratorAttributePane_txtTransli
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtRegex = "Specify a regular expression.";
 LocaleInfo.ui_metadata_entity_property_RegexReplaceAttributePane_txtReplacement = "Specify the replacement character.";
 LocaleInfo.ui_metadata_entity_property_UnicodeNormalizerAttributePane_cboForm = "Specify the java.text.Normalizer.Form.";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizerAttributePane_selSafelist = "Select a jsoup Safelist preset. none: remove all tags, simpleText: text formatting only, basic: basic HTML, basicWithImages: basic + images, relaxed: wide range of HTML allowed.";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizerAttributePane_editScript = "Display a dialog to edit the Safelist customization script.";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizerAttributePane_scriptHint = "<p>Customize by operating on the binding variable <b>safelist</b> (org.jsoup.safety.Safelist).</p><p>Example:</p><pre>safelist.addTags('img')\nsafelist.addAttributes('img', 'src', 'alt')\nsafelist.addProtocols('img', 'src', 'https')</pre>";
+LocaleInfo.ui_metadata_entity_property_HtmlSanitizerAttributePane_txaCustomizeScript = "Customize the selected Safelist preset with a Groovy script. The binding variable safelist (org.jsoup.safety.Safelist) is available.";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_displayDialogEditScript = "Display a dialog to edit the script.";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptHint = "<p>This is implemented to return the normalized value.</p><p>The following variables are bound.</p><ul><li>entity: Entity</li><li>propertyName : Property Name</li><li>value : Property Value</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_property_ScriptingNormalizerAttributePane_scriptAsArray = "If the verification target is an array, it is passed to the value of the Normalizer script as it is without decomposition.";
