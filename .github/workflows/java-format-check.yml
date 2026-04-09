@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
@@ -36,4 +38,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Spotless Check
-        run: ./gradlew spotlessCheck --no-daemon
+        run: |
+          if [ -n "${{github.base_ref}}" ]; then
+            ./gradlew spotlessCheck --no-daemon -PdiffBase=origin/${{github.base_ref}}
+          else
+            ./gradlew spotlessCheck --no-daemon
+          fi
