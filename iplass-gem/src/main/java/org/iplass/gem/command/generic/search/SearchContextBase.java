@@ -576,7 +576,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * ソート設定が定義されているか
 	 * @return ソート設定が定義されているか
 	 */
-	protected boolean hasSortSetting() {
+	final boolean hasSortSetting() {
 		SearchConditionSection section = getConditionSection();
 		if (section != null) {
 			return !section.getSortSetting()
