@@ -97,13 +97,13 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		LinkedHashMap<String, String> opeValues = new LinkedHashMap<String, String>();
 		opeValues.put(OPERATION_VALUE_ALL_DELETE, "delete all records by delete condition.");
 		if (oids != null && oids.size() > 0) {
-			opeValues.put(OPERATION_VALUE_OID_DELETE, "delete selected records. " + "<b><font color=\"red\">" + oids.size() + "</font></b> records selected.");
+			opeValues.put(OPERATION_VALUE_OID_DELETE,
+					"delete selected records. " + "<b><font color=\"red\">" + oids.size() + "</font></b> records selected.");
 			operationField.setValue(OPERATION_VALUE_OID_DELETE);
 		} else {
 			operationField.setValue(OPERATION_VALUE_ALL_DELETE);
 		}
 		operationField.setValueMap(opeValues);
-
 
 		whereField = new TextAreaItem();
 		whereField.setTitle("Delete Condition");
@@ -114,9 +114,10 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		whereField.setValue(whereClause);
 
 		chkNotifyListenersField = new CheckboxItem();
-		chkNotifyListenersField.setTitle("execute EventListneres");
+		chkNotifyListenersField.setTitle("execute EventListeners");
 		chkNotifyListenersField.setValue(true);
-		SmartGWTUtil.addHoverToFormItem(chkNotifyListenersField, AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_runEventListenerDelet"));
+		SmartGWTUtil.addHoverToFormItem(chkNotifyListenersField,
+				AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_runEventListenerDelet"));
 
 		commitLimitField = new SelectItem();
 		commitLimitField.setTitle("Commit Count");
@@ -128,7 +129,8 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		commitValues.put("-1", "All");
 		commitLimitField.setDefaultValue("100");
 		commitLimitField.setValueMap(commitValues);
-		SmartGWTUtil.addHoverToFormItem(commitLimitField, AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_speCommitUnit"));
+		SmartGWTUtil.addHoverToFormItem(commitLimitField,
+				AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_speCommitUnit"));
 
 		final DynamicForm form = new DynamicForm();
 		form.setMargin(5);
@@ -149,13 +151,13 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 				SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_confirm"),
 						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_startDeleteConfirm"), new BooleanCallback() {
 
-					@Override
-					public void execute(Boolean value) {
-						if (value) {
-							deleteData();
-						}
-					}
-				});
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									deleteData();
+								}
+							}
+						});
 			}
 		});
 
@@ -213,19 +215,19 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		if (USER_ENTITY.equals(defName) && !isNotifyListeners) {
 			//削除の確認
 			SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_confirm"),
-					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_userDeleteNotExecListenerConfirm")
-					, new BooleanCallback() {
+					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_userDeleteNotExecListenerConfirm"),
+					new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						executeDelete();
-					} else {
-						disableComponent(false);
-						messageTabSet.setTabTitleNormal();
-					}
-				}
-			});
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								executeDelete();
+							} else {
+								disableComponent(false);
+								messageTabSet.setTabTitleNormal();
+							}
+						}
+					});
 		} else {
 			executeDelete();
 		}
@@ -234,7 +236,7 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 	private void executeDelete() {
 
-		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
+		EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 		if (OPERATION_VALUE_ALL_DELETE.equals(SmartGWTUtil.getStringValue(operationField))) {
 			//条件指定削除
 
@@ -251,22 +253,23 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 			}
 
 			//oid指定削除
-			service.deleteAllByOid(TenantInfoHolder.getId(), defName, oids, isNotifyListeners, commitLimit, new AsyncCallback<EntityDataDeleteResultInfo>() {
-				@Override
-				public void onSuccess(EntityDataDeleteResultInfo result) {
-					deleteComplete(result);
-				}
+			service.deleteAllByOid(TenantInfoHolder.getId(), defName, oids, isNotifyListeners, commitLimit,
+					new AsyncCallback<EntityDataDeleteResultInfo>() {
+						@Override
+						public void onSuccess(EntityDataDeleteResultInfo result) {
+							deleteComplete(result);
+						}
 
-				@Override
-				public void onFailure(Throwable caught) {
-					deleteError(caught);
-				}
-			});
+						@Override
+						public void onFailure(Throwable caught) {
+							deleteError(caught);
+						}
+					});
 		}
 	}
 
 	private void checkDataCount() {
-		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
+		EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 		final String whereClause = SmartGWTUtil.getStringValue(whereField);
 		service.getConditionDataCount(TenantInfoHolder.getId(), defName, whereClause, new AsyncCallback<EntityDataCountResultInfo>() {
 
@@ -304,19 +307,20 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 
 			//削除の確認
 			SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_confirm"),
-					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_targetDataCountConf", Integer.toString(result.getTargetCount()), Integer.toString(result.getAllCount()))
-					, new BooleanCallback() {
+					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_targetDataCountConf",
+							Integer.toString(result.getTargetCount()), Integer.toString(result.getAllCount())),
+					new BooleanCallback() {
 
-				@Override
-				public void execute(Boolean value) {
-					if (value) {
-						executeAllDelete(whereClause);
-					} else {
-						disableComponent(false);
-						messageTabSet.setTabTitleNormal();
-					}
-				}
-			});
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								executeAllDelete(whereClause);
+							} else {
+								disableComponent(false);
+								messageTabSet.setTabTitleNormal();
+							}
+						}
+					});
 		} else {
 			disableComponent(false);
 			messageTabSet.setTabTitleNormal();
@@ -324,25 +328,26 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 	}
 
 	private void executeAllDelete(String whereClause) {
-		EntityExplorerServiceAsync service =  EntityExplorerServiceFactory.get();
+		EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 		boolean isNotifyListeners = SmartGWTUtil.getBooleanValue(chkNotifyListenersField);
 		int commitLimit = -1;
 		if (SmartGWTUtil.getStringValue(commitLimitField) != null) {
 			commitLimit = Integer.parseInt(SmartGWTUtil.getStringValue(commitLimitField));
 		}
 
-		service.deleteAll(TenantInfoHolder.getId(), defName, whereClause, isNotifyListeners, commitLimit, new AsyncCallback<EntityDataDeleteResultInfo>() {
+		service.deleteAll(TenantInfoHolder.getId(), defName, whereClause, isNotifyListeners, commitLimit,
+				new AsyncCallback<EntityDataDeleteResultInfo>() {
 
-			@Override
-			public void onSuccess(EntityDataDeleteResultInfo result) {
-				deleteComplete(result);
-			}
+					@Override
+					public void onSuccess(EntityDataDeleteResultInfo result) {
+						deleteComplete(result);
+					}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				deleteError(caught);
-			}
-		});
+					@Override
+					public void onFailure(Throwable caught) {
+						deleteError(caught);
+					}
+				});
 	}
 
 	private void deleteComplete(EntityDataDeleteResultInfo result) {
@@ -376,7 +381,8 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		if (caught.getMessage() != null) {
 			messageTabSet.addErrorMessage(caught.getMessage());
 		} else {
-			messageTabSet.addErrorMessage(caught.getClass().getName());
+			messageTabSet.addErrorMessage(caught.getClass()
+					.getName());
 		}
 
 		disableComponent(false);
