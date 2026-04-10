@@ -570,15 +570,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return null;
 	}
 
-	/**
-	 * ソート設定が定義されているか
-	 * @return ソート設定が定義されているか
-	 * TODO: 削除。存在意義が薄い
-	 */
-	final boolean hasSortSetting() {
-		return !getSortSettings().isEmpty();
-	}
-
 	protected final Optional<String> getRequestSortKey() {
 		return Optional.ofNullable(getRequest().getParam(Constants.SEARCH_SORTKEY))
 				.filter(StringUtil::isNotBlank);

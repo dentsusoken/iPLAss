@@ -99,21 +99,21 @@ public class SearchNameListContext extends SearchContextBase {
 	public OrderBy getOrderBy() {
 		EntityFilterItem filter = getFilterItem();
 
-		OrderBy orderBy = null;
 		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
 			SyntaxService service = ServiceRegistry.getRegistry()
 					.getService(SyntaxService.class);
 			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
 					.getSyntax(OrderBySyntax.class);
-			ParseContext context = new ParseContext("order by " + filter.getSort());
 			try {
-				orderBy = syntax.parse(context);
+				return syntax.parse(new ParseContext("order by " + filter.getSort()));
 			} catch (ParseException e) {
 				throw new SystemException(e.getMessage(), e);
 			}
-		} else if (hasSortSetting()) {
-			List<SortSetting> setting = getSortSetting();
-			for (SortSetting ss : setting) {
+		}
+
+		if (!getSortSettings().isEmpty()) {
+			OrderBy orderBy = null;
+			for (SortSetting ss : getSortSetting()) {
 				if (ss.getSortKey() != null) {
 					String key = null;
 					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
@@ -130,11 +130,10 @@ public class SearchNameListContext extends SearchContextBase {
 					orderBy.add(key, type, nullOrderingSpec);
 				}
 			}
-		} else {
-			orderBy = new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
+			return orderBy;
 		}
+		return new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 
-		return orderBy;
 	}
 
 	@Override
