@@ -20,11 +20,14 @@
 
 package org.iplass.mtp.impl.csv;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.iplass.mtp.entity.TargetVersion;
 
-public class CsvUploadOption {
+public class CsvUploadOption implements Serializable {
+
+	private static final long serialVersionUID = -1934412869181443443L;
 
 	/** ユニークキー */
 	private String uniqueKey;
