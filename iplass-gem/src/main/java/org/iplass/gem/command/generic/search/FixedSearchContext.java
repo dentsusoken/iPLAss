@@ -94,11 +94,11 @@ public class FixedSearchContext extends SearchContextBase {
 			return null;
 		}
 
-		Stream<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? Stream.of(new SortSpec(Entity.OID, SortType.DESC))
-				: settingSortSpecs.stream();
+		List<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? List.of(new SortSpec(Entity.OID, SortType.DESC))
+				: settingSortSpecs;;
 
 		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortSpec.stream(), additionalSortSpec)
+		Stream.concat(requestSortSpec.stream(), additionalSortSpec.stream())
 				.forEach(orderBy::add);
 		return orderBy;
 	}
