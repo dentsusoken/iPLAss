@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -87,18 +88,13 @@ public class FixedSearchContext extends SearchContextBase {
 		Optional<SortSpec> requestSortSpec = getRequestSortKey().map(this::getRequestSortSpec);
 		List<SortSpec> settingSortSpecs = getSettingSortSpecs();
 
-		if (settingSortSpecs != null) {
-			OrderBy orderBy = new OrderBy();
-			Stream.concat(requestSortSpec.stream(), settingSortSpecs.stream())
-					.forEach(orderBy::add);
-			return orderBy;
-		}
-
-		if (!requestSortSpec.isPresent()) {
+		if (requestSortSpec.isEmpty() && settingSortSpecs.isEmpty()) {
 			return null;
 		}
+
 		OrderBy orderBy = new OrderBy();
-		orderBy.add(requestSortSpec.get());
+		Stream.concat(requestSortSpec.stream(), settingSortSpecs.stream())
+				.forEach(orderBy::add);
 		return orderBy;
 	}
 
@@ -128,7 +124,7 @@ public class FixedSearchContext extends SearchContextBase {
 				}
 			}
 		}
-		return null; //TODO: emptyを返したい
+		return Collections.emptyList();
 	}
 
 	private String getFilterName() {
