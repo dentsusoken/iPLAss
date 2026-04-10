@@ -538,7 +538,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
 	 * @return ソートキー
 	 */
-	protected String getSortKey() {
+	protected final String getSortKey() {
 		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
 
 		// 検索時のソートキー

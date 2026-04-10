@@ -184,11 +184,6 @@ public class SearchSelectListContext extends SearchContextBase {
 	}
 
 	@Override
-	protected String getSortKey() {
-		return context.getSortKey();
-	}
-
-	@Override
 	protected SortType getSortType() {
 		return context.getSortType();
 	}
