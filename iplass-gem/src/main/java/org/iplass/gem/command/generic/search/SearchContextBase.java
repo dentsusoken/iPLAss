@@ -229,8 +229,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	@Override
 	public OrderBy getOrderBy() {
-		Optional<String> requestSortKey = Optional.ofNullable(getRequest().getParam(Constants.SEARCH_SORTKEY))
-				.filter(StringUtil::isNotBlank);
+		Optional<String> requestSortKey = getRequestSortKey();
 		List<SortSetting> sortSettings = getSortSettings();
 
 		if (sortSettings.isEmpty() && requestSortKey.isEmpty()) {
@@ -579,22 +578,20 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return !getSortSettings().isEmpty();
 	}
 
+	final Optional<String> getRequestSortKey() {
+		return Optional.ofNullable(getRequest().getParam(Constants.SEARCH_SORTKEY))
+				.filter(StringUtil::isNotBlank);
+	}
+
 	/**
 	 * ソート設定を取得します。
-	 * TODO: 削除
+	 * TODO: 削除。リクエスト値も含めていおり、ミスリーディングのため。
 	 * @return ソート設定 
 	 */
 	final List<SortSetting> getSortSetting() {
-		List<SortSetting> setting = new ArrayList<>();
-
-		//画面でソート条件が指定されれば第1キーに
-		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
-		if (StringUtil.isNotBlank(sortKey)) {
-			setting.add(_getRequestSortSpec(sortKey));
-		}
-
-		setting.addAll(getSortSettings());
-		return setting;
+		return Stream.concat(getRequestSortKey().map(this::_getRequestSortSpec)
+				.stream(), getSortSettings().stream())
+				.toList();
 	}
 
 	final List<SortSetting> getSortSettings() {
@@ -606,7 +603,10 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	}
 
-	//TODO: 削除（共通化）
+	/**
+	 * TODO: 削除（共通化）
+	 * {@link #getRequestSortSpec(String)} を使うように。リクエスト値を設定objectに変換するのは不自然のため
+	 */
 	private SortSetting _getRequestSortSpec(String sortKey) {
 		//ロジック変更：ソート設定なし側に合わせる
 		if (Entity.OID.equals(sortKey)) {
