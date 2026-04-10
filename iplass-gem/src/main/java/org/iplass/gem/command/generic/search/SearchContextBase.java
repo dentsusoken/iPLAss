@@ -84,7 +84,6 @@ import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
-import org.iplass.mtp.view.generic.element.section.SearchConditionSection.ConditionSortType;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
@@ -575,17 +574,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.filter(StringUtil::isNotBlank);
 	}
 
-	/**
-	 * ソート設定を取得します。
-	 * TODO: 削除。リクエスト値も含めていおり、ミスリーディングのため。
-	 * @return ソート設定 
-	 */
-	final List<SortSetting> getSortSetting() {
-		return Stream.concat(getRequestSortKey().map(this::_getRequestSortSpec)
-				.stream(), getSortSettings().stream())
-				.toList();
-	}
-
 	protected final List<SortSetting> getSortSettings() {
 		SearchConditionSection section = getConditionSection();
 		if (section == null) {
@@ -593,43 +581,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 		return section.getSortSetting();
 
-	}
-
-	/**
-	 * TODO: 削除（共通化）
-	 * {@link #getRequestSortSpec(String)} を使うように。リクエスト値を設定objectに変換するのは不自然のため
-	 */
-	private SortSetting _getRequestSortSpec(String sortKey) {
-		//ロジック変更：ソート設定なし側に合わせる
-		if (Entity.OID.equals(sortKey)) {
-			SortSetting ss = new SortSetting();
-			ss.setSortKey(sortKey);
-			ss.setSortType(ConditionSortType.valueOf(getSortType().name()));
-			return ss;
-		}
-		PropertyColumn property = getLayoutPropertyColumn(sortKey);
-		if (property == null) {
-			throw new ApplicationException("invalid sort key: " + sortKey);
-		}
-		// SearchResultに定義されているPropertyのみ許可
-		SortSetting ss = new SortSetting();
-		if (property.getPropertyName()
-				.equals(sortKey)) {
-			// ソートキーが直接D&Dされた列の場合
-			ss.setSortKey(sortKey);
-		} else {
-			// ネストの存在確認
-			NestProperty np = getLayoutNestProperty(property, sortKey);
-			if (np == null) {
-				throw new ApplicationException("invalid sort key: " + sortKey);
-			}
-			ss.setSortKey(sortKey);
-		}
-
-		ss.setSortType(ConditionSortType.valueOf(getSortType().name()));
-		ss.setNullOrderType(property.getNullOrderType());
-
-		return ss;
 	}
 
 	/**

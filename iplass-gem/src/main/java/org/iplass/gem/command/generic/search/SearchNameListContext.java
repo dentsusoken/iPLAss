@@ -22,17 +22,16 @@ package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.definition.PropertyDefinition;
-import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -111,25 +110,15 @@ public class SearchNameListContext extends SearchContextBase {
 			}
 		}
 
-		if (!getSortSettings().isEmpty()) {
-			OrderBy orderBy = null;
-			for (SortSetting ss : getSortSetting()) {
-				if (ss.getSortKey() != null) {
-					String key = null;
-					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
-					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
-					}
-					SortType type = SortType.valueOf(ss.getSortType()
-							.name());
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null)
-						orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
-				}
-			}
+		List<SortSetting> sortSettings = getSortSettings();
+		if (!sortSettings.isEmpty()) {
+			Optional<SortSpec> requestSortSpec = getRequestSortKey().map(this::getRequestSortSpec);
+
+			OrderBy orderBy = new OrderBy();
+			Stream.concat(requestSortSpec.stream(), sortSettings.stream()
+					.map(this::getSettingSortSpec))
+					.forEach(orderBy::add);
+
 			return orderBy;
 		}
 		return new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
