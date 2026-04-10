@@ -22,6 +22,8 @@ package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
@@ -88,46 +90,51 @@ public class FixedSearchContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		OrderBy orderBy = null;
+		Optional<SortSpec> requestSortSpec = Optional.ofNullable(getSortSpec());
+		List<SortSpec> settingSortSpecs = getSettingSortSpecs();
+
+		if (settingSortSpecs != null) {
+			OrderBy orderBy = new OrderBy();
+			Stream.concat(requestSortSpec.stream(), settingSortSpecs.stream())
+					.forEach(orderBy::add);
+			return orderBy;
+		}
+
+		if (!requestSortSpec.isPresent()) {
+			return null;
+		}
+		OrderBy orderBy = new OrderBy();
+		orderBy.add(requestSortSpec.get());
+		return orderBy;
+	}
+
+	/**
+	 * ソート設定を取得します。
+	 */
+	private List<SortSpec> getSettingSortSpecs() {
 		EntityFilterManager efm = ManagerLocator.getInstance()
 				.getManager(EntityFilterManager.class);
 		EntityFilter entityFilter = efm.get(getDefName());
-		EntityFilterItem item = null;
 		String filterName = getFilterName();
+
 		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
-			item = entityFilter.getItem(filterName);
-		}
+			EntityFilterItem item = entityFilter.getItem(filterName);
+			// TODO: item がnullの場合はエラーとしたい
+			if (item != null && StringUtil.isNotEmpty(item.getSort())) {
+				SyntaxService service = ServiceRegistry.getRegistry()
+						.getService(SyntaxService.class);
+				OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+						.getSyntax(OrderBySyntax.class);
 
-		if (item != null && StringUtil.isNotEmpty(item.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry()
-					.getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-					.getSyntax(OrderBySyntax.class);
-
-			ParseContext context = new ParseContext("order by " + item.getSort());
-			try {
-				orderBy = syntax.parse(context);
-
-				//画面でソート指定された場合は、その項目を第1ソートキーに
-				SortSpec sortSpec = getSortSpec();
-				if (sortSpec != null) {
-					orderBy.getSortSpecList()
-							.add(0, sortSpec);
+				try {
+					return syntax.parse(new ParseContext("order by " + item.getSort()))
+							.getSortSpecList();
+				} catch (ParseException e) {
+					throw new SystemException(e.getMessage(), e);
 				}
-
-			} catch (ParseException e) {
-				throw new SystemException(e.getMessage(), e);
-			}
-		} else {
-			//画面でソート指定された場合は、その項目を第1ソートキーに
-			SortSpec sortSpec = getSortSpec();
-			if (sortSpec != null) {
-				orderBy = new OrderBy();
-				orderBy.add(sortSpec);
 			}
 		}
-
-		return orderBy;
+		return null; //TODO: emptyを返したい
 	}
 
 	/**
