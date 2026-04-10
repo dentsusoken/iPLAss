@@ -90,7 +90,7 @@ public class FixedSearchContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		Optional<SortSpec> requestSortSpec = Optional.ofNullable(getSortSpec());
+		Optional<SortSpec> requestSortSpec = getSortSpec();
 		List<SortSpec> settingSortSpecs = getSettingSortSpecs();
 
 		if (settingSortSpecs != null) {
@@ -142,14 +142,15 @@ public class FixedSearchContext extends SearchContextBase {
 	 * @return ソート設定
 	 * TODO: {@link #getRequestSortSpec(String)} と共通化してよいか？
 	 */
-	private SortSpec getSortSpec() {
-		//画面でソート条件が指定されれば第1キーに
-		SortSpec sortSpec = null;
-		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
-		if (StringUtil.isNotBlank(sortKey)) {
+	private Optional<SortSpec> getSortSpec() {
+		return getRequestSortKey().map(sortKey -> {
+			PropertyColumn property = getLayoutPropertyColumn(sortKey);
+			if (property == null) {
+				throw new RuntimeException();
+			}
 
-			String key = null;
 			PropertyDefinition pd = getPropertyDefinition(sortKey);
+			String key;
 			if (pd instanceof ReferenceProperty) {
 				key = sortKey + "." + Entity.OID;
 			} else {
@@ -157,21 +158,19 @@ public class FixedSearchContext extends SearchContextBase {
 			}
 
 			String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
-			SortType type = null;
+			SortType type;
 			if (StringUtil.isBlank(sortType)) {
 				type = SortType.DESC;
 			} else {
 				type = SortType.valueOf(sortType);
 			}
 
-			PropertyColumn property = getLayoutPropertyColumn(sortKey);
-			if (property != null) {
-				NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-				sortSpec = new SortSpec(key, type);
-				sortSpec.setNullOrderingSpec(nullOrderingSpec);
-			}
-		}
-		return sortSpec;
+			NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+			SortSpec sortSpec = new SortSpec(key, type);
+			sortSpec.setNullOrderingSpec(nullOrderingSpec);
+			return sortSpec;
+		});
+
 	}
 
 	private String getFilterName() {

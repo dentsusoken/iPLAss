@@ -253,7 +253,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * ソート設定からソート条件を取得します。
 	 */
-	final SortSpec getSettingSortSpec(SortSetting ss) {
+	protected final SortSpec getSettingSortSpec(SortSetting ss) {
 		String sortKey = ss.getSortKey();
 		EntityField field = switch (getPropertyDefinition(sortKey)) {
 		case ReferenceProperty ref -> {
@@ -280,7 +280,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * リクエストからソート条件を取得します。
 	 */
-	final SortSpec getRequestSortSpec(String sortKey) {
+	protected final SortSpec getRequestSortSpec(String sortKey) {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);
@@ -305,7 +305,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 
 	/**
-	 * 検索結果からソートキーに対応するEntityFieldを取得します。
+	 * 検索結果一覧プロパティからソートキーに対応するEntityFieldを取得します。
 	 */
 	private Optional<EntityField> findInSearchResult(String sortKey, PropertyColumn property, Supplier<EntityField> dndFieldGetter,
 			Function<NestProperty, EntityField> nestPropFieldGetter) {
@@ -578,7 +578,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return !getSortSettings().isEmpty();
 	}
 
-	final Optional<String> getRequestSortKey() {
+	protected final Optional<String> getRequestSortKey() {
 		return Optional.ofNullable(getRequest().getParam(Constants.SEARCH_SORTKEY))
 				.filter(StringUtil::isNotBlank);
 	}
