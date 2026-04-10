@@ -96,18 +96,9 @@ public class SearchNameListContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		EntityFilterItem filter = getFilterItem();
-
-		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry()
-					.getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-					.getSyntax(OrderBySyntax.class);
-			try {
-				return syntax.parse(new ParseContext("order by " + filter.getSort()));
-			} catch (ParseException e) {
-				throw new SystemException(e.getMessage(), e);
-			}
+		Optional<OrderBy> filterOrderBy = getOrderByFromFilterSortSetting();
+		if (filterOrderBy.isPresent()) {
+			return filterOrderBy.get();
 		}
 
 		List<SortSetting> sortSettings = getSortSettings();
@@ -123,6 +114,26 @@ public class SearchNameListContext extends SearchContextBase {
 		}
 		return new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 
+	}
+
+	/**
+	 * フィルタのソート設定からOrderByを取得します。
+	 */
+	private Optional<OrderBy> getOrderByFromFilterSortSetting() {
+		EntityFilterItem filter = getFilterItem();
+
+		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
+			SyntaxService service = ServiceRegistry.getRegistry()
+					.getService(SyntaxService.class);
+			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+					.getSyntax(OrderBySyntax.class);
+			try {
+				return Optional.of(syntax.parse(new ParseContext("order by " + filter.getSort())));
+			} catch (ParseException e) {
+				throw new SystemException(e.getMessage(), e);
+			}
+		}
+		return Optional.empty();
 	}
 
 	@Override
