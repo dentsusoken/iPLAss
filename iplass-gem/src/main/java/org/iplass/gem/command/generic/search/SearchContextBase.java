@@ -260,11 +260,22 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			}
 			return orderBy;
 		}
-		String sortKey = getSortKey();
-
-		if (sortKey == null) {
-			return null;
+		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
+		// 検索時のソートキー
+		if (StringUtil.isBlank(sortKey)) {
+			if (getConditionSection().isUnsorted()) {
+				return null;
+			}
+			// デフォルトはOID //TODO:
+			sortKey = Entity.OID;
+		} else {
+			PropertyDefinition pd = getPropertyDefinition(sortKey);
+			if (pd == null) {
+				//ソート項目が存在しない場合はOIDを設定 //TODO:
+				sortKey = Entity.OID;
+			}
 		}
+
 		if (Entity.OID.equals(sortKey)) {
 			OrderBy orderBy = new OrderBy();
 			orderBy.add(sortKey, getSortType());
@@ -531,32 +542,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	protected String getViewName() {
 		return request.getParam(Constants.VIEW_NAME);
-	}
-
-	/**
-	 * リクエストからソートキーを取得します。
-	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
-	 * @return ソートキー
-	 */
-	protected final String getSortKey() {
-		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
-
-		// 検索時のソートキー
-		if (StringUtil.isBlank(sortKey)) {
-			if (getConditionSection().isUnsorted()) {
-				return null;
-			}
-			// デフォルトはOID
-			return Entity.OID;
-		}
-
-		PropertyDefinition pd = getPropertyDefinition(sortKey);
-		if (pd == null) {
-			//ソート項目が存在しない場合はOIDを設定
-			return Entity.OID;
-		}
-
-		return sortKey;
 	}
 
 	/**
