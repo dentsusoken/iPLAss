@@ -35,6 +35,7 @@ import org.iplass.gem.command.common.SearchResultData;
 import org.iplass.gem.command.generic.search.handler.CheckPermissionLimitConditionOfEditLinkHandler;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEvent;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEventHandler;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
@@ -271,8 +272,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		} else {
 			PropertyDefinition pd = getPropertyDefinition(sortKey);
 			if (pd == null) {
-				//ソート項目が存在しない場合はOIDを設定 //TODO:
-				sortKey = Entity.OID;
+				throw new ApplicationException("invalid sort key: " + sortKey);
 			}
 		}
 
@@ -284,7 +284,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
 		if (property == null) {
-			return null;
+			throw new ApplicationException("invalid sort key: " + sortKey);
 		}
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		// 参照プロパティの場合、画面上の表示項目でソート
@@ -299,8 +299,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				if (np != null) {
 					sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
 				} else {
-					// 未設定の項目
-					sortKey = Entity.OID;
+					throw new ApplicationException("invalid sort key: " + sortKey);
 				}
 			}
 		} else {
@@ -309,8 +308,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
 				NestProperty np = getLayoutNestProperty(property, sortKey);
 				if (np == null) {
-					// 未設定の項目
-					sortKey = Entity.OID;
+					throw new ApplicationException("invalid sort key: " + sortKey);
 				}
 			}
 		}
