@@ -90,6 +90,9 @@ public class SearchListContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
+		// TODO: 「ソートしない」設定の考慮は？
+		// TODO: 補助ソート列の追加
+		// TODO: 2つのソート設定の扱い方を確認
 		Optional<String> requestSortKey = getRequestSortKey();
 
 		if (requestSortKey.isPresent()) {

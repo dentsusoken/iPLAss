@@ -96,6 +96,9 @@ public class SearchNameListContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
+		// TODO: 「ソートしない」設定の考慮は？
+		// TODO: 補助ソート列の追加
+		// TODO: 2つのソート設定の扱い方を確認
 		Optional<OrderBy> filterOrderBy = getOrderByFromFilterSortSetting();
 		if (filterOrderBy.isPresent()) {
 			return filterOrderBy.get();
