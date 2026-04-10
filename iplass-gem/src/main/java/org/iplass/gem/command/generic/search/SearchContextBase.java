@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.iplass.gem.command.CommandUtil;
@@ -298,27 +300,25 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	private EntityField findEntityFiled(String sortKey, PropertyDefinition pd, PropertyColumn property) {
 		// 参照プロパティの場合、画面上の表示項目でソート
 		if (pd instanceof ReferenceProperty) {
-			if (property.getPropertyName()
-					.equals(sortKey)) {
-				// ソートキーが直接D&Dされた列の場合
-				return new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor()));
-			}
-			// ネストの存在チェック
-			NestProperty np = getLayoutNestProperty(property, sortKey);
-			if (np != null) {
-				return new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor()));
-			}
+			return findEntityFiled(sortKey, property, () -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor())),
+					(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())));
+		}
+		return findEntityFiled(sortKey, property, () -> new EntityField(sortKey), (np) -> new EntityField(sortKey));
+	}
+
+	private EntityField findEntityFiled(String sortKey, PropertyColumn property, Supplier<EntityField> dndFieldGetter,
+			Function<NestProperty, EntityField> nestPropFieldGetter) {
+		if (property.getPropertyName()
+				.equals(sortKey)) {
+			// ソートキーが直接D&Dされた列の場合
+			return dndFieldGetter.get();
+		}
+		// ネストの存在チェック
+		NestProperty np = getLayoutNestProperty(property, sortKey);
+		if (np == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);
 		}
-		if (!property.getPropertyName()
-				.equals(sortKey)) {
-			// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
-			NestProperty np = getLayoutNestProperty(property, sortKey);
-			if (np == null) {
-				throw new ApplicationException("invalid sort key: " + sortKey);
-			}
-		}
-		return new EntityField(sortKey);
+		return nestPropFieldGetter.apply(np);
 	}
 
 	@Override
