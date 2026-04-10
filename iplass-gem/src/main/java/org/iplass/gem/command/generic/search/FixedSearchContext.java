@@ -28,14 +28,9 @@ import java.util.stream.Stream;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
-import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.definition.PropertyDefinition;
-import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
-import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
@@ -49,7 +44,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.filter.EntityFilterManager;
-import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 
 public class FixedSearchContext extends SearchContextBase {
 
@@ -90,7 +84,7 @@ public class FixedSearchContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		Optional<SortSpec> requestSortSpec = getSortSpec();
+		Optional<SortSpec> requestSortSpec = getRequestSortKey().map(this::getRequestSortSpec);
 		List<SortSpec> settingSortSpecs = getSettingSortSpecs();
 
 		if (settingSortSpecs != null) {
@@ -135,42 +129,6 @@ public class FixedSearchContext extends SearchContextBase {
 			}
 		}
 		return null; //TODO: emptyを返したい
-	}
-
-	/**
-	 * ソート設定を取得します。
-	 * @return ソート設定
-	 * TODO: {@link #getRequestSortSpec(String)} と共通化してよいか？
-	 */
-	private Optional<SortSpec> getSortSpec() {
-		return getRequestSortKey().map(sortKey -> {
-			PropertyColumn property = getLayoutPropertyColumn(sortKey);
-			if (property == null) {
-				throw new RuntimeException();
-			}
-
-			PropertyDefinition pd = getPropertyDefinition(sortKey);
-			String key;
-			if (pd instanceof ReferenceProperty) {
-				key = sortKey + "." + Entity.OID;
-			} else {
-				key = sortKey;
-			}
-
-			String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
-			SortType type;
-			if (StringUtil.isBlank(sortType)) {
-				type = SortType.DESC;
-			} else {
-				type = SortType.valueOf(sortType);
-			}
-
-			NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-			SortSpec sortSpec = new SortSpec(key, type);
-			sortSpec.setNullOrderingSpec(nullOrderingSpec);
-			return sortSpec;
-		});
-
 	}
 
 	private String getFilterName() {
