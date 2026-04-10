@@ -573,6 +573,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * ソート設定が定義されているか
 	 * @return ソート設定が定義されているか
+	 * TODO: 削除。存在意義が薄い
 	 */
 	final boolean hasSortSetting() {
 		return !getSortSettings().isEmpty();
@@ -594,7 +595,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.toList();
 	}
 
-	final List<SortSetting> getSortSettings() {
+	protected final List<SortSetting> getSortSettings() {
 		SearchConditionSection section = getConditionSection();
 		if (section == null) {
 			return Collections.emptyList();

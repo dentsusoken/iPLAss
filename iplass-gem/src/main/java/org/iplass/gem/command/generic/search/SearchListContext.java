@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.SystemException;
@@ -98,36 +99,27 @@ public class SearchListContext extends SearchContextBase {
 	 */
 	@Override
 	public OrderBy getOrderBy() {
-		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
-		String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
-		EntityFilterItem filter = getFilterItem();
+		Optional<String> requestSortKey = getRequestSortKey();
 
-		OrderBy orderBy = null;
-		if (StringUtil.isNotBlank(sortKey)) {
+		if (requestSortKey.isPresent()) {
+			String sortKey = requestSortKey.get();
 			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(sortKey, getEntityDefinition());
 			String propName = sortKey;
 			if (pd instanceof ReferenceProperty) {
 				propName = sortKey + "." + Entity.OID;
 			}
-			if (StringUtil.isBlank(sortType)) {
-				orderBy = new OrderBy().add(new SortSpec(propName, SortType.DESC));
-			} else {
-				orderBy = new OrderBy().add(new SortSpec(propName, SortType.valueOf(sortType)));
-			}
-		} else if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry()
-					.getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-					.getSyntax(OrderBySyntax.class);
-			ParseContext context = new ParseContext("order by " + filter.getSort());
-			try {
-				orderBy = syntax.parse(context);
-			} catch (ParseException e) {
-				throw new SystemException(e.getMessage(), e);
-			}
-		} else if (hasSortSetting()) {
-			List<SortSetting> setting = getSortSetting();
-			for (SortSetting ss : setting) {
+			return new OrderBy().add(new SortSpec(propName, getSortType()));
+		}
+
+		Optional<OrderBy> filterOrderBy = getOrderByFromFilterSortSetting();
+		if (filterOrderBy.isPresent()) {
+			return filterOrderBy.get();
+		}
+
+		if (!getSortSettings().isEmpty()) {
+			OrderBy orderBy = null;
+
+			for (SortSetting ss : getSortSettings()) {
 				if (ss.getSortKey() != null) {
 					String key = null;
 					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
@@ -144,11 +136,31 @@ public class SearchListContext extends SearchContextBase {
 					orderBy.add(key, type, nullOrderingSpec);
 				}
 			}
-		} else {
-			orderBy = new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
+			return orderBy;
 		}
+		return new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 
-		return orderBy;
+	}
+
+	/**
+	 * フィルタ設定のソート設定からOrderByを取得します。
+	 */
+	private Optional<OrderBy> getOrderByFromFilterSortSetting() {
+		EntityFilterItem filter = getFilterItem();
+
+		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
+			SyntaxService service = ServiceRegistry.getRegistry()
+					.getService(SyntaxService.class);
+			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+					.getSyntax(OrderBySyntax.class);
+			try {
+				return Optional.of(syntax.parse(new ParseContext("order by " + filter.getSort())));
+			} catch (ParseException e) {
+				throw new SystemException(e.getMessage(), e);
+			}
+		}
+		return Optional.empty();
+
 	}
 
 	@Override
