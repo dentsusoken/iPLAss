@@ -29,9 +29,11 @@ import java.util.stream.Stream;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
+import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
+import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
@@ -92,8 +94,11 @@ public class FixedSearchContext extends SearchContextBase {
 			return null;
 		}
 
+		Stream<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? Stream.of(new SortSpec(Entity.OID, SortType.DESC))
+				: settingSortSpecs.stream();
+
 		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortSpec.stream(), settingSortSpecs.stream())
+		Stream.concat(requestSortSpec.stream(), additionalSortSpec)
 				.forEach(orderBy::add);
 		return orderBy;
 	}
