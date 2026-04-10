@@ -231,19 +231,17 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		Optional<String> requestSortKey = getRequestSortKey();
 		List<SortSetting> sortSettings = getSortSettings();
 
-		if (sortSettings.isEmpty() && requestSortKey.isEmpty()) {
-			if (getConditionSection().isUnsorted()) {
-				return null;
-			}
-			return new OrderBy().add(Entity.OID, getSortType());
+		if (sortSettings.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
+			return null;
 		}
 
 		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getRequestSortSpec);
-		Stream<SortSpec> settingSortSpecs = sortSettings.stream()
-				.map(this::getSettingSortSpec);
+		Stream<SortSpec> additionalSortSpec = sortSettings.isEmpty() ? Stream.of(new SortSpec(Entity.OID, SortType.DESC))
+				: sortSettings.stream()
+						.map(this::getSettingSortSpec);
 
 		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortSpec.stream(), settingSortSpecs)
+		Stream.concat(requestSortSpec.stream(), additionalSortSpec)
 				.forEach(orderBy::add);
 
 		return orderBy;
