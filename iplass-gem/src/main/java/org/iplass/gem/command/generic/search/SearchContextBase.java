@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -227,10 +228,19 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	@Override
 	public OrderBy getOrderBy() {
+		Optional<String> requestSortKey = Optional.ofNullable(getRequest().getParam(Constants.SEARCH_SORTKEY))
+				.filter(StringUtil::isNotBlank);
+		List<SortSetting> sortSettings = getSortSettings();
+
+		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getSortSpec);
+
 		// ソート設定が存在する場合
-		if (hasSortSetting()) {
+		if (!sortSettings.isEmpty()) {
 			OrderBy orderBy = new OrderBy();
-			for (SortSetting ss : getSortSetting()) {
+			requestSortSpec.ifPresent(orderBy::add);
+
+			//画面でソート条件が指定されれば第1キーに
+			for (SortSetting ss : sortSettings) {
 				String sortKey = ss.getSortKey();
 				PropertyDefinition pd = getPropertyDefinition(sortKey);
 				// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
@@ -264,16 +274,15 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			}
 			return orderBy;
 		}
-		String requestSortKey = request.getParam(Constants.SEARCH_SORTKEY);
 		// 検索時のソートキー
-		if (StringUtil.isBlank(requestSortKey)) {
+		if (requestSortKey.isEmpty()) {
 			if (getConditionSection().isUnsorted()) {
 				return null;
 			}
 			return new OrderBy().add(Entity.OID, getSortType());
 		}
 
-		SortSpec sortSpec = getSortSpec(requestSortKey);
+		SortSpec sortSpec = getSortSpec(requestSortKey.get());
 		return new OrderBy().add(sortSpec);
 	}
 
@@ -577,17 +586,13 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return ソート設定が定義されているか
 	 */
 	final boolean hasSortSetting() {
-		SearchConditionSection section = getConditionSection();
-		if (section != null) {
-			return !section.getSortSetting()
-					.isEmpty();
-		}
-		return false;
+		return !getSortSettings().isEmpty();
 	}
 
 	/**
 	 * ソート設定を取得します。
-	 * @return ソート設定
+	 * TODO: 削除
+	 * @return ソート設定 
 	 */
 	final List<SortSetting> getSortSetting() {
 		List<SortSetting> setting = new ArrayList<>();
@@ -598,12 +603,17 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			setting.add(getRequestSortSpec(sortKey));
 		}
 
-		SearchConditionSection section = getConditionSection();
-		if (section != null && !section.getSortSetting()
-				.isEmpty()) {
-			setting.addAll(section.getSortSetting());
-		}
+		setting.addAll(getSortSettings());
 		return setting;
+	}
+
+	final List<SortSetting> getSortSettings() {
+		SearchConditionSection section = getConditionSection();
+		if (section == null) {
+			return Collections.emptyList();
+		}
+		return section.getSortSetting();
+
 	}
 
 	//TODO: 削除（共通化）
