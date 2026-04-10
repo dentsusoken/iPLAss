@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -45,7 +46,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
 
 public class SearchNameListContext extends SearchContextBase {
 
@@ -55,11 +55,11 @@ public class SearchNameListContext extends SearchContextBase {
 		this.filter = filter;
 	}
 
-	private EntityFilterItem getFilterItem() {
+	private Optional<EntityFilterItem> getFilterItem() {
 		if (filter == null) {
-			return null;
+			return Optional.empty();
 		}
-		return filter.getItem(getRequest().getParam(Constants.FILTER_NAME));
+		return Optional.ofNullable(filter.getItem(getRequest().getParam(Constants.FILTER_NAME)));
 	}
 
 	@Override
@@ -74,15 +74,17 @@ public class SearchNameListContext extends SearchContextBase {
 		Where where = new Where();
 
 		List<Condition> conditions = new ArrayList<>();
-		EntityFilterItem filter = getFilterItem();
+		Optional<EntityFilterItem> filter = getFilterItem();
 
-		if (filter != null && filter.getCondition() != null) {
-			conditions.add(new PreparedQuery(filter.getCondition()).condition(null));
+		if (filter.isPresent() && filter.get()
+				.getCondition() != null) {
+			conditions.add(new PreparedQuery(filter.get()
+					.getCondition()).condition(null));
 		}
 		Condition defaultCond = getDefaultCondition();
 		if (defaultCond != null) {
-			if (filter == null
-					|| (filter != null && getConditionSection().isUseDefaultConditionWithFilterDefinition())) {
+			if (filter.isEmpty()
+					|| (getConditionSection().isUseDefaultConditionWithFilterDefinition())) {
 				conditions.add(defaultCond);
 			}
 		}
@@ -94,49 +96,51 @@ public class SearchNameListContext extends SearchContextBase {
 		return where;
 	}
 
+	//TODO: SearchListContextのコピペなので共通化
 	@Override
 	public OrderBy getOrderBy() {
-		// TODO: 「ソートしない」設定の考慮は？
-		// TODO: 補助ソート列の追加
-		// TODO: 2つのソート設定の扱い方を確認
-		Optional<OrderBy> filterOrderBy = getOrderByFromFilterSortSetting();
-		if (filterOrderBy.isPresent()) {
-			return filterOrderBy.get();
+		Optional<String> requestSortKey = getRequestSortKey();
+		Optional<EntityFilterItem> filter = getFilterItem();
+
+		if (filter.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
+			return null;
 		}
 
-		List<SortSetting> sortSettings = getSortSettings();
-		if (!sortSettings.isEmpty()) {
-			Optional<SortSpec> requestSortSpec = getRequestSortKey().map(this::getRequestSortSpec);
+		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
+				.orElse(Collections.emptyList()))
+				.orElseGet(() -> getSortSettings().stream()
+						.map(this::getSettingSortSpec)
+						.toList());
+		List<SortSpec> additionalSortSpecs = settingSortSpecs.isEmpty() ? List.of(new SortSpec(Entity.UPDATE_DATE, SortType.DESC)) : settingSortSpecs;
 
-			OrderBy orderBy = new OrderBy();
-			Stream.concat(requestSortSpec.stream(), sortSettings.stream()
-					.map(this::getSettingSortSpec))
-					.forEach(orderBy::add);
+		OrderBy orderBy = new OrderBy();
+		Stream.concat(requestSortKey.stream()
+				.map(this::getRequestSortSpec), additionalSortSpecs.stream())
+				.forEach(orderBy::add);
 
-			return orderBy;
-		}
-		return new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
-
+		return orderBy;
 	}
 
 	/**
 	 * フィルタのソート設定からOrderByを取得します。
+	 * TODO: SearchListContextのコピペなので共通化
 	 */
-	private Optional<OrderBy> getOrderByFromFilterSortSetting() {
-		EntityFilterItem filter = getFilterItem();
+	private Optional<OrderBy> getOrderBy(EntityFilterItem filter) {
+		SyntaxService service = ServiceRegistry.getRegistry()
+				.getService(SyntaxService.class);
+		OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+				.getSyntax(OrderBySyntax.class);
 
-		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry()
-					.getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-					.getSyntax(OrderBySyntax.class);
-			try {
-				return Optional.of(syntax.parse(new ParseContext("order by " + filter.getSort())));
-			} catch (ParseException e) {
-				throw new SystemException(e.getMessage(), e);
-			}
-		}
-		return Optional.empty();
+		return Optional.ofNullable(filter.getSort())
+				.filter(StringUtil::isNotBlank)
+				.map(sort -> {
+					try {
+						return syntax.parse(new ParseContext("order by " + sort));
+					} catch (ParseException e) {
+						throw new SystemException(e.getMessage(), e);
+					}
+
+				});
 	}
 
 	@Override
