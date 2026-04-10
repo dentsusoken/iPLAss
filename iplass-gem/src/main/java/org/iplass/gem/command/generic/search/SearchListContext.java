@@ -32,7 +32,6 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -47,7 +46,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.generic.EntityViewUtil;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,26 +115,13 @@ public class SearchListContext extends SearchContextBase {
 		}
 
 		if (!getSortSettings().isEmpty()) {
-			OrderBy orderBy = null;
+			OrderBy orderBy = new OrderBy();
 
-			for (SortSetting ss : getSortSettings()) {
-				if (ss.getSortKey() != null) {
-					String key = null;
-					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
-					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
-					}
-					SortType type = SortType.valueOf(ss.getSortType()
-							.name());
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null)
-						orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
-				}
-			}
+			getSortSettings().stream()
+					.map(this::getSettingSortSpec)
+					.forEach(orderBy::add);
 			return orderBy;
+
 		}
 		return new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 
