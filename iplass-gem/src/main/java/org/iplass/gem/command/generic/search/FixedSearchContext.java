@@ -115,21 +115,30 @@ public class FixedSearchContext extends SearchContextBase {
 		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
 			EntityFilterItem item = entityFilter.getItem(filterName);
 			// TODO: item がnullの場合はエラーとしたい
-			if (item != null && StringUtil.isNotEmpty(item.getSort())) {
-				SyntaxService service = ServiceRegistry.getRegistry()
-						.getService(SyntaxService.class);
-				OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-						.getSyntax(OrderBySyntax.class);
-
-				try {
-					return syntax.parse(new ParseContext("order by " + item.getSort()))
-							.getSortSpecList();
-				} catch (ParseException e) {
-					throw new SystemException(e.getMessage(), e);
-				}
+			if (item != null) {
+				return getOrderBy(item).map(OrderBy::getSortSpecList)
+						.orElse(Collections.emptyList());
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	// TODO: SearchListContextのコピペなので共通化
+	private Optional<OrderBy> getOrderBy(EntityFilterItem item) {
+		SyntaxService service = ServiceRegistry.getRegistry()
+				.getService(SyntaxService.class);
+		OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+				.getSyntax(OrderBySyntax.class);
+
+		return Optional.ofNullable(item.getSort())
+				.filter(StringUtil::isNotEmpty)
+				.map(sort -> {
+					try {
+						return syntax.parse(new ParseContext("order by " + sort));
+					} catch (ParseException e) {
+						throw new SystemException(e.getMessage(), e);
+					}
+				});
 	}
 
 	private String getFilterName() {
