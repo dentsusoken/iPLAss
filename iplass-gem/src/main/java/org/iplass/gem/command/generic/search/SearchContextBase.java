@@ -795,6 +795,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return edm.get(rp.getObjectDefinitionName());
 	}
 
+	//TODO: EntityViewUtil.getPropertyDefinition() とロジックが重複
 	protected PropertyDefinition getPropertyDefinition(String propName) {
 		int firstDotIndex = propName.indexOf('.');
 		if (firstDotIndex > 0) {

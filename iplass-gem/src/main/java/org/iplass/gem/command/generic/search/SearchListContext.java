@@ -27,8 +27,6 @@ import java.util.Optional;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.definition.PropertyDefinition;
-import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.SortSpec;
@@ -45,7 +43,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
-import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,22 +88,12 @@ public class SearchListContext extends SearchContextBase {
 		return where;
 	}
 
-	/**
-	 * TODO: {@link #getRequestSortSpec(String)} を使うように
-	 * TODO: {@link #getSettingSortSpec(String)} を使うように
-	 */
 	@Override
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
 
 		if (requestSortKey.isPresent()) {
-			String sortKey = requestSortKey.get();
-			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(sortKey, getEntityDefinition());
-			String propName = sortKey;
-			if (pd instanceof ReferenceProperty) {
-				propName = sortKey + "." + Entity.OID;
-			}
-			return new OrderBy().add(new SortSpec(propName, getSortType()));
+			return new OrderBy().add(getRequestSortSpec(requestSortKey.get()));
 		}
 
 		Optional<OrderBy> filterOrderBy = getOrderByFromFilterSortSetting();
