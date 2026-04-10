@@ -253,7 +253,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * ソート設定からソート条件を取得します。
 	 */
-	private SortSpec getSettingSortSpec(SortSetting ss) {
+	final SortSpec getSettingSortSpec(SortSetting ss) {
 		String sortKey = ss.getSortKey();
 		EntityField field = switch (getPropertyDefinition(sortKey)) {
 		case ReferenceProperty ref -> {
@@ -280,7 +280,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * リクエストからソート条件を取得します。
 	 */
-	private SortSpec getRequestSortSpec(String sortKey) {
+	final SortSpec getRequestSortSpec(String sortKey) {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);

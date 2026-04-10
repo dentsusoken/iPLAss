@@ -92,6 +92,10 @@ public class SearchListContext extends SearchContextBase {
 		return where;
 	}
 
+	/**
+	 * TODO: {@link #getRequestSortSpec(String)} を使うように
+	 * TODO: {@link #getSettingSortSpec(String)} を使うように
+	 */
 	@Override
 	public OrderBy getOrderBy() {
 		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
