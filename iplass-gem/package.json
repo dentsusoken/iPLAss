@@ -13,10 +13,10 @@
   "dependencies": {},
   "devDependencies": {
     "del": "5.x",
-    "gulp": "3.9.x",
+    "gulp": "5.0.x",
     "gulp-concat": "2.x",
     "gulp-plumber": "1.x",
-    "gulp-sass": "4.x",
+    "gulp-sass": "6.x",
     "require-dir": "1.x",
     "run-sequence": "2.x"
   }
