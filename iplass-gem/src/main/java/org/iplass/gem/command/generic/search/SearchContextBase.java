@@ -55,6 +55,7 @@ import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -261,61 +262,63 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			}
 			return orderBy;
 		}
-		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
+		String requestSortKey = request.getParam(Constants.SEARCH_SORTKEY);
 		// 検索時のソートキー
-		if (StringUtil.isBlank(sortKey)) {
+		if (StringUtil.isBlank(requestSortKey)) {
 			if (getConditionSection().isUnsorted()) {
 				return null;
 			}
-			// デフォルトはOID //TODO:
-			sortKey = Entity.OID;
-		} else {
-			PropertyDefinition pd = getPropertyDefinition(sortKey);
-			if (pd == null) {
-				throw new ApplicationException("invalid sort key: " + sortKey);
-			}
+			return new OrderBy().add(Entity.OID, getSortType());
+		}
+
+		SortSpec sortSpec = getSortSpec(requestSortKey);
+		return new OrderBy().add(sortSpec);
+	}
+
+	private SortSpec getSortSpec(String sortKey) {
+		PropertyDefinition pd = getPropertyDefinition(sortKey);
+		if (pd == null) {
+			throw new ApplicationException("invalid sort key: " + sortKey);
 		}
 
 		if (Entity.OID.equals(sortKey)) {
-			OrderBy orderBy = new OrderBy();
-			orderBy.add(sortKey, getSortType());
-			return orderBy;
+			return new SortSpec(sortKey, getSortType());
 		}
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
 		if (property == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);
 		}
-		PropertyDefinition pd = getPropertyDefinition(sortKey);
+		EntityField field = findEntityFiled(sortKey, pd, property);
+
+		NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+		return new SortSpec(field, getSortType(), nullOrderingSpec);
+	}
+
+	private EntityField findEntityFiled(String sortKey, PropertyDefinition pd, PropertyColumn property) {
 		// 参照プロパティの場合、画面上の表示項目でソート
 		if (pd instanceof ReferenceProperty) {
 			if (property.getPropertyName()
 					.equals(sortKey)) {
 				// ソートキーが直接D&Dされた列の場合
-				sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
-			} else {
-				// ネストの存在チェック
-				NestProperty np = getLayoutNestProperty(property, sortKey);
-				if (np != null) {
-					sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
-				} else {
-					throw new ApplicationException("invalid sort key: " + sortKey);
-				}
+				return new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor()));
 			}
-		} else {
-			if (!property.getPropertyName()
-					.equals(sortKey)) {
-				// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
-				NestProperty np = getLayoutNestProperty(property, sortKey);
-				if (np == null) {
-					throw new ApplicationException("invalid sort key: " + sortKey);
-				}
+			// ネストの存在チェック
+			NestProperty np = getLayoutNestProperty(property, sortKey);
+			if (np != null) {
+				return new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor()));
+			}
+			throw new ApplicationException("invalid sort key: " + sortKey);
+		}
+		if (!property.getPropertyName()
+				.equals(sortKey)) {
+			// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
+			NestProperty np = getLayoutNestProperty(property, sortKey);
+			if (np == null) {
+				throw new ApplicationException("invalid sort key: " + sortKey);
 			}
 		}
-		OrderBy orderBy = new OrderBy();
-		NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-		orderBy.add(sortKey, getSortType(), nullOrderingSpec);
-		return orderBy;
+		return new EntityField(sortKey);
 	}
 
 	@Override
