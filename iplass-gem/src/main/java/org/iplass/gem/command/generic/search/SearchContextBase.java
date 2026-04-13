@@ -41,6 +41,7 @@ import org.iplass.gem.command.generic.search.handler.CreateSearchResultEvent;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEventHandler;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityRuntimeException;
@@ -61,9 +62,16 @@ import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
+import org.iplass.mtp.impl.parser.ParseContext;
+import org.iplass.mtp.impl.parser.ParseException;
+import org.iplass.mtp.impl.parser.SyntaxService;
+import org.iplass.mtp.impl.query.OrderBySyntax;
+import org.iplass.mtp.impl.query.QuerySyntaxRegister;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
+import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.EntityViewUtil;
@@ -314,6 +322,26 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		// ネストの存在チェック
 		return Optional.ofNullable(getLayoutNestProperty(property, sortKey))
 				.map(nestPropFieldGetter);
+	}
+
+	/**
+	 * フィルタ設定のソート設定からOrderByを取得します。
+	 */
+	protected final Optional<OrderBy> getOrderBy(EntityFilterItem item) {
+		SyntaxService service = ServiceRegistry.getRegistry()
+				.getService(SyntaxService.class);
+		OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
+				.getSyntax(OrderBySyntax.class);
+
+		return Optional.ofNullable(item.getSort())
+				.filter(StringUtil::isNotEmpty)
+				.map(sort -> {
+					try {
+						return syntax.parse(new ParseContext("order by " + sort));
+					} catch (ParseException e) {
+						throw new SystemException(e.getMessage(), e);
+					}
+				});
 	}
 
 	@Override
@@ -935,4 +963,5 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
+
 }

@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
-import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
@@ -37,13 +36,6 @@ import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
-import org.iplass.mtp.impl.parser.ParseContext;
-import org.iplass.mtp.impl.parser.ParseException;
-import org.iplass.mtp.impl.parser.SyntaxService;
-import org.iplass.mtp.impl.query.OrderBySyntax;
-import org.iplass.mtp.impl.query.QuerySyntaxRegister;
-import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.filter.EntityFilterManager;
@@ -121,24 +113,6 @@ public class FixedSearchContext extends SearchContextBase {
 			}
 		}
 		return Collections.emptyList();
-	}
-
-	// TODO: SearchListContextのコピペなので共通化
-	private Optional<OrderBy> getOrderBy(EntityFilterItem item) {
-		SyntaxService service = ServiceRegistry.getRegistry()
-				.getService(SyntaxService.class);
-		OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-				.getSyntax(OrderBySyntax.class);
-
-		return Optional.ofNullable(item.getSort())
-				.filter(StringUtil::isNotEmpty)
-				.map(sort -> {
-					try {
-						return syntax.parse(new ParseContext("order by " + sort));
-					} catch (ParseException e) {
-						throw new SystemException(e.getMessage(), e);
-					}
-				});
 	}
 
 	private String getFilterName() {

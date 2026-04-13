@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
@@ -37,13 +36,6 @@ import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
-import org.iplass.mtp.impl.parser.ParseContext;
-import org.iplass.mtp.impl.parser.ParseException;
-import org.iplass.mtp.impl.parser.SyntaxService;
-import org.iplass.mtp.impl.query.OrderBySyntax;
-import org.iplass.mtp.impl.query.QuerySyntaxRegister;
-import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 
@@ -96,7 +88,6 @@ public class SearchNameListContext extends SearchContextBase {
 		return where;
 	}
 
-	//TODO: SearchListContextのコピペなので共通化
 	@Override
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
@@ -119,28 +110,6 @@ public class SearchNameListContext extends SearchContextBase {
 				.forEach(orderBy::add);
 
 		return orderBy;
-	}
-
-	/**
-	 * フィルタのソート設定からOrderByを取得します。
-	 * TODO: SearchListContextのコピペなので共通化
-	 */
-	private Optional<OrderBy> getOrderBy(EntityFilterItem filter) {
-		SyntaxService service = ServiceRegistry.getRegistry()
-				.getService(SyntaxService.class);
-		OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-				.getSyntax(OrderBySyntax.class);
-
-		return Optional.ofNullable(filter.getSort())
-				.filter(StringUtil::isNotBlank)
-				.map(sort -> {
-					try {
-						return syntax.parse(new ParseContext("order by " + sort));
-					} catch (ParseException e) {
-						throw new SystemException(e.getMessage(), e);
-					}
-
-				});
 	}
 
 	@Override
