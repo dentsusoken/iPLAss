@@ -39,6 +39,7 @@ import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.filter.EntityFilterManager;
+import org.iplass.mtp.view.generic.element.section.SortSetting;
 
 public class FixedSearchContext extends SearchContextBase {
 
@@ -80,13 +81,23 @@ public class FixedSearchContext extends SearchContextBase {
 	@Override
 	public OrderBy getOrderBy() {
 		Optional<SortSpec> requestSortSpec = getRequestSortKey().map(this::getRequestSortSpec);
-		List<SortSpec> settingSortSpecs = getSettingSortSpecs();
+		Optional<EntityFilterItem> filter = getFilterItem();
+		List<SortSetting> sortSettings = Collections.emptyList();
+
+		SortSpec defaultSortSpec = new SortSpec(Entity.OID, SortType.DESC);
+
+		// TODO: base.getOrderBy() に共通化
+		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
+				.orElse(Collections.emptyList()))
+				.orElseGet(() -> sortSettings.stream()
+						.map(this::getSettingSortSpec)
+						.toList());
 
 		if (requestSortSpec.isEmpty() && settingSortSpecs.isEmpty()) {
 			return null;
 		}
 
-		List<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? List.of(new SortSpec(Entity.OID, SortType.DESC))
+		List<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? List.of(defaultSortSpec)
 				: settingSortSpecs;;
 
 		OrderBy orderBy = new OrderBy();
@@ -98,21 +109,17 @@ public class FixedSearchContext extends SearchContextBase {
 	/**
 	 * ソート設定を取得します。
 	 */
-	private List<SortSpec> getSettingSortSpecs() {
+	private Optional<EntityFilterItem> getFilterItem() {
 		EntityFilterManager efm = ManagerLocator.getInstance()
 				.getManager(EntityFilterManager.class);
 		EntityFilter entityFilter = efm.get(getDefName());
 		String filterName = getFilterName();
 
 		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
-			EntityFilterItem item = entityFilter.getItem(filterName);
 			// TODO: item がnullの場合はエラーとしたい
-			if (item != null) {
-				return getOrderBy(item).map(OrderBy::getSortSpecList)
-						.orElse(Collections.emptyList());
-			}
+			return Optional.ofNullable(entityFilter.getItem(filterName));
 		}
-		return Collections.emptyList();
+		return Optional.empty();
 	}
 
 	private String getFilterName() {

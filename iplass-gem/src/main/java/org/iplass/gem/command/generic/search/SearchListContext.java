@@ -21,10 +21,8 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.entity.Entity;
@@ -38,6 +36,7 @@ import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
+import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,25 +88,14 @@ public class SearchListContext extends SearchContextBase {
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
 		Optional<EntityFilterItem> filter = getFilterItem();
+		List<SortSetting> sortSettings = getSortSettings();
+		SortSpec defaultSortSpec = new SortSpec(Entity.UPDATE_DATE, SortType.DESC);
 
 		if (filter.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
 			return null;
 		}
 
-		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
-				.orElse(Collections.emptyList()))
-				.orElseGet(() -> getSortSettings().stream()
-						.map(this::getSettingSortSpec)
-						.toList());
-		List<SortSpec> additionalSortSpecs = settingSortSpecs.isEmpty() ? List.of(new SortSpec(Entity.UPDATE_DATE, SortType.DESC)) : settingSortSpecs;
-
-		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortKey.stream()
-				.map(this::getRequestSortSpec), additionalSortSpecs.stream())
-				.forEach(orderBy::add);
-
-		return orderBy;
-
+		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
 	}
 
 	@Override

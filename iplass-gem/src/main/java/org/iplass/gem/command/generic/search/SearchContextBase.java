@@ -237,19 +237,31 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	@Override
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
+		Optional<EntityFilterItem> filter = Optional.empty();
 		List<SortSetting> sortSettings = getSortSettings();
 
-		if (sortSettings.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
+		SortSpec defaultSortSpec = new SortSpec(Entity.OID, SortType.DESC);
+
+		if (filter.isEmpty() &&
+				sortSettings.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
 			return null;
 		}
 
-		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getRequestSortSpec);
-		Stream<SortSpec> additionalSortSpec = sortSettings.isEmpty() ? Stream.of(new SortSpec(Entity.OID, SortType.DESC))
-				: sortSettings.stream()
-						.map(this::getSettingSortSpec);
+		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
+	}
+
+	protected final OrderBy getOrderBy(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
+			List<SortSetting> sortSettings, SortSpec defaultSortSpec) {
+		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
+				.orElse(Collections.emptyList()))
+				.orElseGet(() -> sortSettings.stream()
+						.map(this::getSettingSortSpec)
+						.toList());
+		List<SortSpec> additionalSortSpecs = settingSortSpecs.isEmpty() ? List.of(defaultSortSpec) : settingSortSpecs;
 
 		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortSpec.stream(), additionalSortSpec)
+		Stream.concat(requestSortKey.map(this::getRequestSortSpec)
+				.stream(), additionalSortSpecs.stream())
 				.forEach(orderBy::add);
 
 		return orderBy;
