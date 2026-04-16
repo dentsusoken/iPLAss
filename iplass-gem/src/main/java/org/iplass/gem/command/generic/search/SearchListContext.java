@@ -91,7 +91,7 @@ public class SearchListContext extends SearchContextBase {
 		List<SortSetting> sortSettings = getSortSettings();
 		SortSpec defaultSortSpec = new SortSpec(Entity.UPDATE_DATE, SortType.DESC);
 
-		if (filter.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
+		if (filter.isEmpty() && requestSortKey.isEmpty() && sortSettings.isEmpty() && getConditionSection().isUnsorted()) {
 			return null;
 		}
 
