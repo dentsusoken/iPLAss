@@ -94,9 +94,7 @@ public class SearchNameListContext extends SearchContextBase {
 
 		SearchConditionSection conditionSection = getConditionSection();
 
-		SortSpec defaultSortSpec = new SortSpec(Entity.UPDATE_DATE, SortType.DESC);
-
-		return extracted(requestSortKey, filter, defaultSortSpec, Optional.ofNullable(conditionSection));
+		return getOrderBy(requestSortKey, filter, new SortSpec(Entity.UPDATE_DATE, SortType.DESC), Optional.of(conditionSection));
 	}
 
 	@Override

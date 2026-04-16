@@ -240,14 +240,12 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		Optional<EntityFilterItem> filter = Optional.empty();
 		SearchConditionSection conditionSection = getConditionSection();
 
-		SortSpec defaultSortSpec = new SortSpec(Entity.OID, SortType.DESC);
-
-		return extracted(requestSortKey, filter, defaultSortSpec, Optional.of(conditionSection));
+		return getOrderBy(requestSortKey, filter, new SortSpec(Entity.OID, SortType.DESC), Optional.of(conditionSection));
 	}
 
-	protected final OrderBy extracted(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
+	protected final OrderBy getOrderBy(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
 			SortSpec defaultSortSpec, Optional<SearchConditionSection> conditionSection) {
-		if (filter.isEmpty() && requestSortKey.isEmpty() && (conditionSection.isPresent() && conditionSection.get()
+		if (requestSortKey.isEmpty() && filter.isEmpty() && (conditionSection.isPresent() && conditionSection.get()
 				.getSortSetting()
 				.isEmpty()
 				&& conditionSection.get()
@@ -255,19 +253,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			return null;
 		}
 
-		List<SortSetting> sortSettings = conditionSection.isPresent() ? conditionSection.get()
-				.getSortSetting() : Collections.emptyList();
-
-		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
-	}
-
-	protected final OrderBy getOrderBy(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
-			List<SortSetting> sortSettings, SortSpec defaultSortSpec) {
 		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
 				.orElse(Collections.emptyList()))
-				.orElseGet(() -> sortSettings.stream()
+				.orElseGet(() -> conditionSection.map(c -> c.getSortSetting()
+						.stream()
 						.map(this::getSettingSortSpec)
-						.toList());
+						.toList())
+						.orElseGet(() -> Collections.emptyList()));
+
 		List<SortSpec> additionalSortSpecs = settingSortSpecs.isEmpty() ? List.of(defaultSortSpec) : settingSortSpecs;
 
 		OrderBy orderBy = new OrderBy();
