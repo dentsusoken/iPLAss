@@ -36,7 +36,7 @@ import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,14 +88,11 @@ public class SearchListContext extends SearchContextBase {
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
 		Optional<EntityFilterItem> filter = getFilterItem();
-		List<SortSetting> sortSettings = getSortSettings();
+		SearchConditionSection conditionSection = getConditionSection();
+
 		SortSpec defaultSortSpec = new SortSpec(Entity.UPDATE_DATE, SortType.DESC);
 
-		if (filter.isEmpty() && requestSortKey.isEmpty() && sortSettings.isEmpty() && getConditionSection().isUnsorted()) {
-			return null;
-		}
-
-		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
+		return extracted(requestSortKey, filter, defaultSortSpec, Optional.ofNullable(conditionSection));
 	}
 
 	@Override

@@ -238,14 +238,25 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
 		Optional<EntityFilterItem> filter = Optional.empty();
-		List<SortSetting> sortSettings = getSortSettings();
+		SearchConditionSection conditionSection = getConditionSection();
 
 		SortSpec defaultSortSpec = new SortSpec(Entity.OID, SortType.DESC);
 
-		if (filter.isEmpty() &&
-				sortSettings.isEmpty() && requestSortKey.isEmpty() && getConditionSection().isUnsorted()) {
+		return extracted(requestSortKey, filter, defaultSortSpec, Optional.of(conditionSection));
+	}
+
+	protected final OrderBy extracted(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
+			SortSpec defaultSortSpec, Optional<SearchConditionSection> conditionSection) {
+		if (filter.isEmpty() && requestSortKey.isEmpty() && (conditionSection.isPresent() && conditionSection.get()
+				.getSortSetting()
+				.isEmpty()
+				&& conditionSection.get()
+						.isUnsorted())) {
 			return null;
 		}
+
+		List<SortSetting> sortSettings = conditionSection.isPresent() ? conditionSection.get()
+				.getSortSetting() : Collections.emptyList();
 
 		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
 	}
@@ -404,6 +415,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @return 検索条件セクション
 	 */
 	protected SearchConditionSection getConditionSection() {
+		// TODO: これはnullを返すことがあるのか？ 利用側を見ると、nullチェックをしてないものがある。
 		return getForm() != null ? getForm().getCondSection() : null;
 	}
 

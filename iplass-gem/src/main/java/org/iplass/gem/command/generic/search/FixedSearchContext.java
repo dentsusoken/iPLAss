@@ -21,7 +21,6 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,6 @@ import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.filter.EntityFilterManager;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
 
 public class FixedSearchContext extends SearchContextBase {
 
@@ -81,11 +79,10 @@ public class FixedSearchContext extends SearchContextBase {
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
 		Optional<EntityFilterItem> filter = getFilterItem();
-		List<SortSetting> sortSettings = Collections.emptyList();
 
 		SortSpec defaultSortSpec = new SortSpec(Entity.OID, SortType.DESC);
 
-		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
+		return extracted(requestSortKey, filter, defaultSortSpec, Optional.empty());
 	}
 
 	/**
