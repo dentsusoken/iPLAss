@@ -90,7 +90,7 @@ public class SearchListContext extends SearchContextBase {
 		Optional<EntityFilterItem> filter = getFilterItem();
 		SearchConditionSection conditionSection = getConditionSection();
 
-		return getOrderBy(requestSortKey, filter, new SortSpec(Entity.UPDATE_DATE, SortType.DESC), Optional.of(conditionSection));
+		return getOrderBy(requestSortKey, filter, Optional.of(conditionSection), new SortSpec(Entity.UPDATE_DATE, SortType.DESC)).orElse(null);
 	}
 
 	@Override

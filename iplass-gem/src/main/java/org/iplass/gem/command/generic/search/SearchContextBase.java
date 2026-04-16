@@ -237,20 +237,22 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	@Override
 	public OrderBy getOrderBy() {
 		Optional<String> requestSortKey = getRequestSortKey();
-		Optional<EntityFilterItem> filter = Optional.empty();
 		SearchConditionSection conditionSection = getConditionSection();
 
-		return getOrderBy(requestSortKey, filter, new SortSpec(Entity.OID, SortType.DESC), Optional.of(conditionSection));
+		return getOrderBy(requestSortKey, Optional.empty(), Optional.of(conditionSection), new SortSpec(Entity.OID, SortType.DESC)).orElse(null);
 	}
 
-	protected final OrderBy getOrderBy(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
-			SortSpec defaultSortSpec, Optional<SearchConditionSection> conditionSection) {
+	/**
+	 * リクエスト値と設定値から、OrderByを決定します。
+	 */
+	protected final Optional<OrderBy> getOrderBy(Optional<String> requestSortKey, Optional<EntityFilterItem> filter,
+			Optional<SearchConditionSection> conditionSection, SortSpec defaultSortSpec) {
 		if (requestSortKey.isEmpty() && filter.isEmpty() && (conditionSection.isPresent() && conditionSection.get()
 				.getSortSetting()
 				.isEmpty()
 				&& conditionSection.get()
 						.isUnsorted())) {
-			return null;
+			return Optional.empty();
 		}
 
 		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
@@ -268,7 +270,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.stream(), additionalSortSpecs.stream())
 				.forEach(orderBy::add);
 
-		return orderBy;
+		return Optional.of(orderBy);
 	}
 
 	/**
