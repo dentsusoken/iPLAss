@@ -93,10 +93,6 @@ public class FixedSearchContext extends SearchContextBase {
 						.map(this::getSettingSortSpec)
 						.toList());
 
-		if (requestSortSpec.isEmpty() && settingSortSpecs.isEmpty()) {
-			return null;
-		}
-
 		List<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? List.of(defaultSortSpec)
 				: settingSortSpecs;;
 
