@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
@@ -80,26 +79,13 @@ public class FixedSearchContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		Optional<SortSpec> requestSortSpec = getRequestSortKey().map(this::getRequestSortSpec);
+		Optional<String> requestSortKey = getRequestSortKey();
 		Optional<EntityFilterItem> filter = getFilterItem();
 		List<SortSetting> sortSettings = Collections.emptyList();
 
 		SortSpec defaultSortSpec = new SortSpec(Entity.OID, SortType.DESC);
 
-		// TODO: base.getOrderBy() に共通化
-		List<SortSpec> settingSortSpecs = filter.map(f -> getOrderBy(f).map(OrderBy::getSortSpecList)
-				.orElse(Collections.emptyList()))
-				.orElseGet(() -> sortSettings.stream()
-						.map(this::getSettingSortSpec)
-						.toList());
-
-		List<SortSpec> additionalSortSpec = settingSortSpecs.isEmpty() ? List.of(defaultSortSpec)
-				: settingSortSpecs;;
-
-		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortSpec.stream(), additionalSortSpec.stream())
-				.forEach(orderBy::add);
-		return orderBy;
+		return getOrderBy(requestSortKey, filter, sortSettings, defaultSortSpec);
 	}
 
 	/**
