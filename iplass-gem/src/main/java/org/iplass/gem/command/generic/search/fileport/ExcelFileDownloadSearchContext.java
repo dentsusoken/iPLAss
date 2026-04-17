@@ -23,6 +23,7 @@ import org.iplass.gem.command.generic.search.EntityFileDownloadSearchContext;
 import org.iplass.gem.command.generic.search.SearchContextBase;
 import org.iplass.mtp.web.ResultStreamWriter;
 
+// TODO: 継承と移譲を併用しており、危険。
 public class ExcelFileDownloadSearchContext extends EntityFileDownloadSearchContext {
 
 	public ExcelFileDownloadSearchContext(SearchContextBase context) {

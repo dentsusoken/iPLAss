@@ -98,6 +98,7 @@ import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Metadata定義クラス（Entity/EntityView/Form/...）が持つべきロジックがこのクラスに漏れ出している（カプセル化ができない）
 public abstract class SearchContextBase implements SearchContext, CreateSearchResultEventHandler {
 
 	private static Logger log = LoggerFactory.getLogger(SearchContextBase.class);

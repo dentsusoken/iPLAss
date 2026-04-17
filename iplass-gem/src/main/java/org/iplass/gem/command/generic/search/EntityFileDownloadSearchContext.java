@@ -74,6 +74,7 @@ import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: 継承と移譲を併用しており、危険。
 public abstract class EntityFileDownloadSearchContext extends SearchContextBase {
 
 	private static Logger log = LoggerFactory.getLogger(EntityFileDownloadSearchContext.class);

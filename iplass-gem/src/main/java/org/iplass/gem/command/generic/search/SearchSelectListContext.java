@@ -50,6 +50,8 @@ import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
+// TODO: 継承と移譲を併用しており、危険。
+// 例）このクラス自身が持つRequestContextフィールド（in 親クラス）はnullだが、getRequest()はoverrideされている。危うい
 public class SearchSelectListContext extends SearchContextBase {
 
 	private SearchContextBase context;
