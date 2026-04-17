@@ -50,8 +50,11 @@ import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
-// TODO: 継承と移譲を併用しており、危険。
-// 例）このクラス自身が持つRequestContextフィールド（in 親クラス）はnullだが、getRequest()はoverrideされている。危うい
+// TODO: 継承と委譲を併用しており、危険。
+// 継承によって親クラスから引き継いだ自分自身のフィールド と 委譲先.フィールド の2つが存在することになり、混乱・バグの元になる。
+// 例）このクラス自身が持つRequestContextフィールド（in 親クラス）はnullだが、getRequest()はoverrideされている。つまり、2つの異なる状態が存在する
+// overrideすることで、親クラスへのフィールドアクセス経路を断つことにより、整合性を担保しようとしているように見えるが
+// もしoverride漏れがあった場合、気づけずバグにつながる
 public class SearchSelectListContext extends SearchContextBase {
 
 	private SearchContextBase context;

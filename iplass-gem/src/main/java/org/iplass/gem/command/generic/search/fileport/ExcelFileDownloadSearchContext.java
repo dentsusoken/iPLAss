@@ -23,7 +23,8 @@ import org.iplass.gem.command.generic.search.EntityFileDownloadSearchContext;
 import org.iplass.gem.command.generic.search.SearchContextBase;
 import org.iplass.mtp.web.ResultStreamWriter;
 
-// TODO: 継承と移譲を併用しており、危険。
+// TODO: 継承と委譲を併用しており、危険。
+// 継承によって引き継いだ自分自身のフィールド と 委譲先.フィールド の2つが存在することになり、混乱・バグの元になる。
 public class ExcelFileDownloadSearchContext extends EntityFileDownloadSearchContext {
 
 	public ExcelFileDownloadSearchContext(SearchContextBase context) {
