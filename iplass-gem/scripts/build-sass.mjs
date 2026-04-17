@@ -1,5 +1,6 @@
 import { compile } from 'sass';
 import fs from 'fs';
+import path from 'path';
 
 // sass ソースコードディレクトリ
 const SRC_SCSS_DIR='src/main/sass';
@@ -26,6 +27,7 @@ const compileSass = (src, dest) => {
     console.log('----------');
     console.log(`Compile ${src} to ${dest}.`);
     console.log('----------');
+    fs.mkdirSync(path.dirname(dest), { recursive: true })
     fs.rmSync(dest, { force: true });
     const result = compile(src, compileOption);
     fs.writeFileSync(dest, result.css);
