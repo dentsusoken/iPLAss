@@ -350,7 +350,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	private SortSpec getRequestSortSpec(String sortKey) {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
-			throw new ApplicationException("invalid sort key: " + sortKey);
+			throw new ApplicationException();
 		}
 
 		if (Entity.OID.equals(sortKey)) {
@@ -359,7 +359,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
 		if (property == null) {
-			throw new ApplicationException("invalid sort key: " + sortKey);
+			throw new ApplicationException();
 		}
 
 		return (switch (pd) {
@@ -368,7 +368,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())));
 		default -> findInSearchResult(sortKey, property, () -> new EntityField(sortKey), (np) -> new EntityField(sortKey));
 		}).map(field -> new SortSpec(field, getSortType(), getNullOrderingSpec(property.getNullOrderType())))
-				.orElseThrow(() -> new ApplicationException("invalid sort key: " + sortKey));
+				.orElseThrow(() -> new ApplicationException());
 	}
 
 	/**
