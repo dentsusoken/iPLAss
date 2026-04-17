@@ -242,6 +242,41 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		return getOrderBy(requestSortKey, Optional.empty(), Optional.of(conditionSection), new SortSpec(Entity.OID, SortType.DESC)).orElse(null);
 	}
 
+	@Override
+	public Limit getLimit() {
+		Limit limit = new Limit(getSearchLimit(), getOffset());
+		return limit;
+	}
+
+	@Override
+	public boolean isVersioned() {
+		if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
+			String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION);
+			return "1".equals(allVer);
+		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()) {
+			String referenceVer = getRequest().getParam(Constants.SEARCH_SAVED_VERSION);
+			return "1".equals(referenceVer);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isSearch() {
+		String isSearch = getRequest().getParam("isSearch");
+		return "true".equals(isSearch);
+	}
+
+	@Override
+	public boolean isCount() {
+		String isCount = getRequest().getParam("isCount");
+		return "true".equals(isCount);
+	}
+
+	@Override
+	public boolean validation() {
+		return true;
+	}
+
 	/**
 	 * リクエスト値と設定値から、OrderByを決定します。
 	 */
@@ -276,7 +311,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * ソート設定からソート条件を取得します。
 	 */
-	protected final SortSpec getSettingSortSpec(SortSetting ss) {
+	private SortSpec getSettingSortSpec(SortSetting ss) {
 		String sortKey = ss.getSortKey();
 		EntityField field = switch (getPropertyDefinition(sortKey)) {
 		case ReferenceProperty ref -> {
@@ -303,7 +338,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * リクエストからソート条件を取得します。
 	 */
-	protected final SortSpec getRequestSortSpec(String sortKey) {
+	private SortSpec getRequestSortSpec(String sortKey) {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
 			throw new ApplicationException("invalid sort key: " + sortKey);
@@ -345,7 +380,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	/**
 	 * フィルタ設定のソート設定からOrderByを取得します。
 	 */
-	protected final Optional<OrderBy> getOrderBy(EntityFilterItem item) {
+	private Optional<OrderBy> getOrderBy(EntityFilterItem item) {
 		SyntaxService service = ServiceRegistry.getRegistry()
 				.getService(SyntaxService.class);
 		OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
@@ -360,41 +395,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 						throw new SystemException(e.getMessage(), e);
 					}
 				});
-	}
-
-	@Override
-	public Limit getLimit() {
-		Limit limit = new Limit(getSearchLimit(), getOffset());
-		return limit;
-	}
-
-	@Override
-	public boolean isVersioned() {
-		if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
-			String allVer = getRequest().getParam(Constants.SEARCH_ALL_VERSION);
-			return "1".equals(allVer);
-		} else if (getForm().isCanVersionedReferenceSearchForNoneVersionedEntity()) {
-			String referenceVer = getRequest().getParam(Constants.SEARCH_SAVED_VERSION);
-			return "1".equals(referenceVer);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isSearch() {
-		String isSearch = getRequest().getParam("isSearch");
-		return "true".equals(isSearch);
-	}
-
-	@Override
-	public boolean isCount() {
-		String isCount = getRequest().getParam("isCount");
-		return "true".equals(isCount);
-	}
-
-	@Override
-	public boolean validation() {
-		return true;
 	}
 
 	protected SearchFormView getForm() {
