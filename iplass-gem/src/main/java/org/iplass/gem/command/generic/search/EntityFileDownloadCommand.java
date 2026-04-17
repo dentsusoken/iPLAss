@@ -31,7 +31,6 @@ import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.entity.definition.EntityDefinition;
-import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
@@ -66,11 +65,9 @@ public final class EntityFileDownloadCommand implements Command {
 	private static final String ENTITY_DISP_BINDING_NAME = "entityDisplayName";
 	private static final String VIEW_NAME_BINDING_NAME = "viewName";
 
-	private final EntityDefinitionManager edm;
 	private final EntityViewManager evm;
 
 	public EntityFileDownloadCommand() {
-		edm = ManagerLocator.manager(EntityDefinitionManager.class);
 		evm = ManagerLocator.manager(EntityViewManager.class);
 	}
 
