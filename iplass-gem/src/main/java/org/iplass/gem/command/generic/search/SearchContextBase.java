@@ -619,15 +619,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.filter(StringUtil::isNotBlank);
 	}
 
-	protected final List<SortSetting> getSortSettings() {
-		SearchConditionSection section = getConditionSection();
-		if (section == null) {
-			return Collections.emptyList();
-		}
-		return section.getSortSetting();
-
-	}
-
 	/**
 	 * 参照項目の表示ラベルを取得
 	 * @param editor
