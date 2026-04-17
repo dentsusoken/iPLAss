@@ -5,9 +5,9 @@ import path from 'path';
 // sass ソースコードディレクトリ
 const SRC_SCSS_DIR='src/main/sass';
 // css 出力先
-const DEST_SKIN_DIR='src/main/resources/META-INF/resources/styles/gem/skin';
+const DEST_SKIN_DIR=path.join('src', 'main', 'resources', 'META-INF', 'resources', 'styles', 'gem', 'skin');
 // errorhtml css 出力先
-const DEST_ERROR_HTML_DIR='src/main/resources/META-INF/resources/errorhtml/styles';
+const DEST_ERROR_HTML_DIR=path.join('src', 'main', 'resources', 'META-INF', 'resources', 'errorhtml', 'styles');
 // skin 種類
 const SKIN_TYPE = [ 'flat', 'horizontal', 'vertical' ];
 // イメージカラー種類（src/main/sass/{type}/structure/imagecolor/{imageColor}.scss）
@@ -36,30 +36,30 @@ const compileSass = (src, dest) => {
 
 const doBase = (type) => {
     // base, clear, module, structure をコンパイル
-    compileSass(`${SRC_SCSS_DIR}/${type}/base/base.scss`, `${DEST_SKIN_DIR}/${type}/base.css`);
-    compileSass(`${SRC_SCSS_DIR}/${type}/clear/clear.scss`, `${DEST_SKIN_DIR}/${type}/clear.css`);
-    compileSass(`${SRC_SCSS_DIR}/${type}/module/module.scss`, `${DEST_SKIN_DIR}/${type}/module.css`);
-    compileSass(`${SRC_SCSS_DIR}/${type}/structure/structure.scss`, `${DEST_SKIN_DIR}/${type}/structure.css`);
+    compileSass(path.join(SRC_SCSS_DIR, type, 'base', 'base.scss'), path.join(DEST_SKIN_DIR, type, 'base.css'));
+    compileSass(path.join(SRC_SCSS_DIR, type, 'clear', 'clear.scss'), path.join(DEST_SKIN_DIR, type, 'clear.css'));
+    compileSass(path.join(SRC_SCSS_DIR, type, 'module', 'module.scss'), path.join(DEST_SKIN_DIR, type, 'module.css'));
+    compileSass(path.join(SRC_SCSS_DIR, type, 'structure', 'structure.scss'), path.join(DEST_SKIN_DIR, type, 'structure.css'));
 };
 
 const doImageColor = (type) => {
     IMAGE_COLOR_TYPE.forEach(imageColor => {
         // styles/gem/skin/{type}/imagecolor/{imageColor}.css に出力
-        compileSass(`${SRC_SCSS_DIR}/${type}/structure/imagecolor/${imageColor}.scss`, `${DEST_SKIN_DIR}/${type}/imagecolor/${imageColor}.css`);
+        compileSass(path.join(SRC_SCSS_DIR, type, 'structure', 'imagecolor', `${imageColor}.scss`), path.join(DEST_SKIN_DIR, type, 'imagecolor', `${imageColor}.css`));
     });
 };
 
 const doTheme = (type) => {
     THEME_TYPE.forEach(theme => {
         // styles/gem/skin/{type}/theme/{theme}/color.css に出力
-        compileSass(`${SRC_SCSS_DIR}/${type}/theme/${theme}.scss`, `${DEST_SKIN_DIR}/${type}/theme/${theme}/color.css`);
+        compileSass(path.join(SRC_SCSS_DIR, type, 'theme', `${theme}.scss`), path.join(DEST_SKIN_DIR, type, 'theme', theme, 'color.css'));
     });
 };
 
 const doErrorHtml = () => {
     // errorhtml 用の css をコンパイル
-    compileSass(`${SRC_SCSS_DIR}/error/base/styles.scss`, `${DEST_ERROR_HTML_DIR}/base/styles.css`);
-    compileSass(`${SRC_SCSS_DIR}/error/flat/styles.scss`, `${DEST_ERROR_HTML_DIR}/flat/styles.css`);
+    compileSass(path.join(SRC_SCSS_DIR, 'error', 'base', 'styles.scss'), path.join(DEST_ERROR_HTML_DIR, 'base', 'styles.css'));
+    compileSass(path.join(SRC_SCSS_DIR, 'error', 'flat', 'styles.scss'), path.join(DEST_ERROR_HTML_DIR, 'flat', 'styles.css'));
 };
 
 if (isImageColorOnly) {
