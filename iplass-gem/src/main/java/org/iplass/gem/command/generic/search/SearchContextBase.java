@@ -301,9 +301,17 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 		List<SortSpec> additionalSortSpecs = settingSortSpecs.isEmpty() ? List.of(defaultSortSpec) : settingSortSpecs;
 
+		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getRequestSortSpec);
+
 		OrderBy orderBy = new OrderBy();
-		Stream.concat(requestSortKey.map(this::getRequestSortSpec)
-				.stream(), additionalSortSpecs.stream())
+
+		Stream.concat(
+				requestSortSpec.stream(),
+				additionalSortSpecs.stream()
+						.filter(spec -> requestSortSpec
+								.filter(r -> r.getSortKey()
+										.equals(spec.getSortKey()))
+								.isEmpty()))
 				.forEach(orderBy::add);
 
 		return Optional.of(orderBy);
