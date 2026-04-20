@@ -93,7 +93,7 @@ public class FixedSearchContext extends SearchContextBase {
 		String filterName = getFilterName();
 
 		if (entityFilter != null && filterName != null && !filterName.isEmpty()) {
-			// TODO: item がnullの場合はエラーとしたい
+			// TODO: item が見つからなかった場合はエラーとすべきでは？
 			return Optional.ofNullable(entityFilter.getItem(filterName));
 		}
 		return Optional.empty();
