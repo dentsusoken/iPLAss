@@ -39,7 +39,6 @@ import org.iplass.gem.command.common.SearchResultData;
 import org.iplass.gem.command.generic.search.handler.CheckPermissionLimitConditionOfEditLinkHandler;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEvent;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEventHandler;
-import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.command.RequestContext;
@@ -363,7 +362,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	private SortSpec getRequestSortSpec(String sortKey) {
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
-			throw new ApplicationException();
+			throw new SystemException("invalid sort key: " + sortKey);
 		}
 
 		if (Entity.OID.equals(sortKey)) {
@@ -372,7 +371,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		PropertyColumn property = getLayoutPropertyColumn(sortKey);
 		// OID以外はSearchResultに定義されているPropertyのみ許可
 		if (property == null) {
-			throw new ApplicationException();
+			throw new SystemException("invalid sort key: " + sortKey);
 		}
 
 		return (switch (pd) {
@@ -381,7 +380,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())));
 		default -> findInSearchResult(sortKey, property, () -> new EntityField(sortKey), (np) -> new EntityField(sortKey));
 		}).map(field -> new SortSpec(field, getSortType(), getNullOrderingSpec(property.getNullOrderType())))
-				.orElseThrow(() -> new ApplicationException());
+				.orElseThrow(() -> new SystemException("invalid sort key: " + sortKey));
 	}
 
 	/**
