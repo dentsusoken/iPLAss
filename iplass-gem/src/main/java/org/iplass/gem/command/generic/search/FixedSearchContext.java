@@ -133,6 +133,7 @@ public class FixedSearchContext extends SearchContextBase {
 	/**
 	 * ソート設定を取得します。
 	 * @return ソート設定
+	 * TODO: {@link #getRequestSortSpec(String)} と共通化してよいか？
 	 */
 	private SortSpec getSortSpec() {
 		//画面でソート条件が指定されれば第1キーに

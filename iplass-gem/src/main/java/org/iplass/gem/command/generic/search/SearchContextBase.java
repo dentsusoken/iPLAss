@@ -21,11 +21,15 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
@@ -35,6 +39,7 @@ import org.iplass.gem.command.common.SearchResultData;
 import org.iplass.gem.command.generic.search.handler.CheckPermissionLimitConditionOfEditLinkHandler;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEvent;
 import org.iplass.gem.command.generic.search.handler.CreateSearchResultEventHandler;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
@@ -54,6 +59,7 @@ import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -223,89 +229,94 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	@Override
 	public OrderBy getOrderBy() {
-		OrderBy orderBy = null;
-		// ソート設定が存在する場合
-		if (hasSortSetting()) {
-			orderBy = new OrderBy();
-			for (SortSetting ss : getSortSetting()) {
-				String sortKey = ss.getSortKey();
-				PropertyDefinition pd = getPropertyDefinition(sortKey);
-				// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
-				if (pd instanceof ReferenceProperty) {
-					PropertyColumn property = getLayoutPropertyColumn(sortKey);
-					// 当該項目が画面上表示される場合は、画面上の表示項目でソート
-					if (property != null) {
-						if (property.getPropertyName()
-								.equals(sortKey)) {
-							// ソートキーが直接D&Dされた列の場合
-							sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
-						} else {
-							// ネストの存在チェック
-							NestProperty np = getLayoutNestProperty(property, sortKey);
-							if (np != null) {
-								sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
-							} else {
-								// 画面上に表示されない場合は、Nameでソート
-								sortKey = sortKey + "." + Entity.NAME;
-							}
-						}
-					} else {
-						// 画面上に表示されない場合は、Nameでソート
-						sortKey = sortKey + "." + Entity.NAME;
-					}
-				}
-				SortType type = SortType.valueOf(ss.getSortType()
-						.name());
-				NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-				orderBy.add(sortKey, type, nullOrderingSpec);
+		Optional<String> requestSortKey = getRequestSortKey();
+		List<SortSetting> sortSettings = getSortSettings();
+
+		if (sortSettings.isEmpty() && requestSortKey.isEmpty()) {
+			if (getConditionSection().isUnsorted()) {
+				return null;
 			}
-		} else {
-			// ソート設定がない場合
-			String sortKey = getSortKey();
-			if (sortKey != null) {
-				if (Entity.OID.equals(sortKey)) {
-					orderBy = new OrderBy();
-					orderBy.add(sortKey, getSortType());
-				} else {
-					PropertyColumn property = getLayoutPropertyColumn(sortKey);
-					// OID以外はSearchResultに定義されているPropertyのみ許可
-					if (property != null) {
-						PropertyDefinition pd = getPropertyDefinition(sortKey);
-						// 参照プロパティの場合、画面上の表示項目でソート
-						if (pd instanceof ReferenceProperty) {
-							if (property.getPropertyName()
-									.equals(sortKey)) {
-								// ソートキーが直接D&Dされた列の場合
-								sortKey = sortKey + "." + getReferencePropertyDisplayName(property.getEditor());
-							} else {
-								// ネストの存在チェック
-								NestProperty np = getLayoutNestProperty(property, sortKey);
-								if (np != null) {
-									sortKey = sortKey + "." + getReferencePropertyDisplayName(np.getEditor());
-								} else {
-									// 未設定の項目
-									sortKey = Entity.OID;
-								}
-							}
-						} else {
-							if (!property.getPropertyName()
-									.equals(sortKey)) {
-								// ソートキーが直接D&Dされた列以外の場合、ネストの存在チェック
-								NestProperty np = getLayoutNestProperty(property, sortKey);
-								if (np == null) {
-									// 未設定の項目
-									sortKey = Entity.OID;
-								}
-							}
-						}
-						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-						orderBy = new OrderBy();
-						orderBy.add(sortKey, getSortType(), nullOrderingSpec);
-					}
-				}
-			}
+			return new OrderBy().add(Entity.OID, getSortType());
 		}
+
+		Optional<SortSpec> requestSortSpec = requestSortKey.map(this::getRequestSortSpec);
+		Stream<SortSpec> settingSortSpecs = sortSettings.stream()
+				.map(this::getSettingSortSpec);
+
+		OrderBy orderBy = new OrderBy();
+		Stream.concat(requestSortSpec.stream(), settingSortSpecs)
+				.forEach(orderBy::add);
+
 		return orderBy;
+	}
+
+	/**
+	 * ソート設定からソート条件を取得します。
+	 */
+	final SortSpec getSettingSortSpec(SortSetting ss) {
+		String sortKey = ss.getSortKey();
+		EntityField field = switch (getPropertyDefinition(sortKey)) {
+		case ReferenceProperty ref -> {
+			// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
+			PropertyColumn property = getLayoutPropertyColumn(sortKey);
+			EntityField fallbackField = new EntityField(sortKey + "." + Entity.NAME);
+
+			if (property == null) {
+				// 画面上に表示されない場合
+				yield fallbackField;
+			}
+			yield findInSearchResult(sortKey, property, () -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor())),
+					(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())))
+							.orElse(fallbackField);
+
+		}
+		default -> new EntityField(sortKey);
+		};
+
+		return new SortSpec(field, SortType.valueOf(ss.getSortType()
+				.name()), getNullOrderingSpec(ss.getNullOrderType()));
+	}
+
+	/**
+	 * リクエストからソート条件を取得します。
+	 */
+	final SortSpec getRequestSortSpec(String sortKey) {
+		PropertyDefinition pd = getPropertyDefinition(sortKey);
+		if (pd == null) {
+			throw new ApplicationException("invalid sort key: " + sortKey);
+		}
+
+		if (Entity.OID.equals(sortKey)) {
+			return new SortSpec(sortKey, getSortType());
+		}
+		PropertyColumn property = getLayoutPropertyColumn(sortKey);
+		// OID以外はSearchResultに定義されているPropertyのみ許可
+		if (property == null) {
+			throw new ApplicationException("invalid sort key: " + sortKey);
+		}
+
+		return (switch (pd) {
+		case ReferenceProperty ref -> findInSearchResult(sortKey, property,
+				() -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(property.getEditor())),
+				(np) -> new EntityField(sortKey + "." + getReferencePropertyDisplayName(np.getEditor())));
+		default -> findInSearchResult(sortKey, property, () -> new EntityField(sortKey), (np) -> new EntityField(sortKey));
+		}).map(field -> new SortSpec(field, getSortType(), getNullOrderingSpec(property.getNullOrderType())))
+				.orElseThrow(() -> new ApplicationException("invalid sort key: " + sortKey));
+	}
+
+	/**
+	 * 検索結果からソートキーに対応するEntityFieldを取得します。
+	 */
+	private Optional<EntityField> findInSearchResult(String sortKey, PropertyColumn property, Supplier<EntityField> dndFieldGetter,
+			Function<NestProperty, EntityField> nestPropFieldGetter) {
+		if (property.getPropertyName()
+				.equals(sortKey)) {
+			// ソートキーが直接D&Dされた列の場合
+			return Optional.of(dndFieldGetter.get());
+		}
+		// ネストの存在チェック
+		return Optional.ofNullable(getLayoutNestProperty(property, sortKey))
+				.map(nestPropFieldGetter);
 	}
 
 	@Override
@@ -533,32 +544,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 
 	/**
-	 * リクエストからソートキーを取得します。
-	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
-	 * @return ソートキー
-	 */
-	protected String getSortKey() {
-		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
-
-		// 検索時のソートキー
-		if (StringUtil.isBlank(sortKey)) {
-			if (getConditionSection().isUnsorted()) {
-				return null;
-			}
-			// デフォルトはOID
-			return Entity.OID;
-		}
-
-		PropertyDefinition pd = getPropertyDefinition(sortKey);
-		if (pd == null) {
-			//ソート項目が存在しない場合はOIDを設定
-			return Entity.OID;
-		}
-
-		return sortKey;
-	}
-
-	/**
 	 * リクエストからソートタイプを取得します。
 	 * ソート種別が指定されていない場合は検索画面のデフォルトソートタイプを取得します。
 	 * @return ソートタイプ
@@ -589,64 +574,70 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * ソート設定が定義されているか
 	 * @return ソート設定が定義されているか
 	 */
-	protected boolean hasSortSetting() {
-		SearchConditionSection section = getConditionSection();
-		if (section != null) {
-			return !section.getSortSetting()
-					.isEmpty();
-		}
-		return false;
+	final boolean hasSortSetting() {
+		return !getSortSettings().isEmpty();
+	}
+
+	final Optional<String> getRequestSortKey() {
+		return Optional.ofNullable(getRequest().getParam(Constants.SEARCH_SORTKEY))
+				.filter(StringUtil::isNotBlank);
 	}
 
 	/**
 	 * ソート設定を取得します。
-	 * @return ソート設定
+	 * TODO: 削除。リクエスト値も含めていおり、ミスリーディングのため。
+	 * @return ソート設定 
 	 */
-	protected List<SortSetting> getSortSetting() {
-		List<SortSetting> setting = new ArrayList<>();
+	final List<SortSetting> getSortSetting() {
+		return Stream.concat(getRequestSortKey().map(this::_getRequestSortSpec)
+				.stream(), getSortSettings().stream())
+				.toList();
+	}
 
-		//画面でソート条件が指定されれば第1キーに
-		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
-		if (StringUtil.isNotBlank(sortKey)) {
-			PropertyColumn property = getLayoutPropertyColumn(sortKey);
-			// SearchResultに定義されているPropertyのみ許可
-			if (property != null) {
-				SortSetting ss = null;
-				if (property.getPropertyName()
-						.equals(sortKey)) {
-					// ソートキーが直接D&Dされた列の場合
-					ss = new SortSetting();
-					ss.setSortKey(sortKey);
-				} else {
-					// ネストの存在確認
-					NestProperty np = getLayoutNestProperty(property, sortKey);
-					if (np != null) {
-						ss = new SortSetting();
-						ss.setSortKey(sortKey);
-					}
-				}
-
-				if (ss != null) {
-					String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
-					if (StringUtil.isBlank(sortType)) {
-						ss.setSortType(ConditionSortType.DESC);
-					} else {
-						ss.setSortType(ConditionSortType.valueOf(sortType));
-					}
-
-					ss.setNullOrderType(property.getNullOrderType());
-
-					setting.add(ss);
-				}
-			}
-		}
-
+	final List<SortSetting> getSortSettings() {
 		SearchConditionSection section = getConditionSection();
-		if (section != null && !section.getSortSetting()
-				.isEmpty()) {
-			setting.addAll(section.getSortSetting());
+		if (section == null) {
+			return Collections.emptyList();
 		}
-		return setting;
+		return section.getSortSetting();
+
+	}
+
+	/**
+	 * TODO: 削除（共通化）
+	 * {@link #getRequestSortSpec(String)} を使うように。リクエスト値を設定objectに変換するのは不自然のため
+	 */
+	private SortSetting _getRequestSortSpec(String sortKey) {
+		//ロジック変更：ソート設定なし側に合わせる
+		if (Entity.OID.equals(sortKey)) {
+			SortSetting ss = new SortSetting();
+			ss.setSortKey(sortKey);
+			ss.setSortType(ConditionSortType.valueOf(getSortType().name()));
+			return ss;
+		}
+		PropertyColumn property = getLayoutPropertyColumn(sortKey);
+		if (property == null) {
+			throw new ApplicationException("invalid sort key: " + sortKey);
+		}
+		// SearchResultに定義されているPropertyのみ許可
+		SortSetting ss = new SortSetting();
+		if (property.getPropertyName()
+				.equals(sortKey)) {
+			// ソートキーが直接D&Dされた列の場合
+			ss.setSortKey(sortKey);
+		} else {
+			// ネストの存在確認
+			NestProperty np = getLayoutNestProperty(property, sortKey);
+			if (np == null) {
+				throw new ApplicationException("invalid sort key: " + sortKey);
+			}
+			ss.setSortKey(sortKey);
+		}
+
+		ss.setSortType(ConditionSortType.valueOf(getSortType().name()));
+		ss.setNullOrderType(property.getNullOrderType());
+
+		return ss;
 	}
 
 	/**
