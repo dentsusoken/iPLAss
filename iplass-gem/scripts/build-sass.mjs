@@ -30,7 +30,8 @@ const compileSass = (src, dest) => {
     fs.mkdirSync(path.dirname(dest), { recursive: true })
     fs.rmSync(dest, { force: true });
     const result = compile(src, compileOption);
-    fs.writeFileSync(dest, result.css);
+    // css の最後に改行を入れる（ファイルの末尾に改行がないと、diff が見づらくなるため）
+    fs.writeFileSync(dest, result.css + '\n');
     console.log('done.');
 };
 
