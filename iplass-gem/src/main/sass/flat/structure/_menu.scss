@@ -1,3 +1,5 @@
+@use "sass:string";
+
 //@extend-elements
 //original selectors
 //#nav .sub-open p::before, #nav li:hover p::before
@@ -187,7 +189,7 @@
 			}
 		}
 		a::before {
-			content: '\25B6';
+			content: string.unquote("'\\25B6'");
 			display: inline-block;
 			position: absolute;
 			left: 0;
@@ -292,7 +294,7 @@
 		}
 	}
 	.menu-node > p > a::after {
-		content: '\2026';
+		content: string.unquote("'\\2026'");
 		display: block;
 		position: absolute;
 		top: 0;
@@ -336,7 +338,7 @@
 		}
 	}
 	#nav-menu::before {
-		content: '\2026';
+		content: string.unquote("'\\2026'");
 		display: block;
 		position: absolute;
 		top: 0;

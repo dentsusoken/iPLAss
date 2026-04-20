@@ -1,3 +1,5 @@
+@use "sass:string";
+
 //colors
 // $white: #fff;
 // $color_gallery_approx: #ededed;
@@ -51,7 +53,7 @@
 		}
 	}
 	a::after {
-		content: '\00BB';
+		content: string.unquote("'\\00BB'");
 		position: absolute;
 		right: 0;
 	}
