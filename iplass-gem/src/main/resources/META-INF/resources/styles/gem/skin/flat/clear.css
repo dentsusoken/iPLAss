@@ -37,4 +37,5 @@ div.box-search-01 .tabList:after,
   height: 0;
   visibility: hidden;
   content: ".";
-  font-size: 0; }
+  font-size: 0;
+}
