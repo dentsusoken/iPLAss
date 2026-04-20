@@ -80,7 +80,7 @@ public class FixedSearchContext extends SearchContextBase {
 		Optional<String> requestSortKey = getRequestSortKey();
 		Optional<EntityFilterItem> filter = getFilterItem();
 
-		return getOrderBy(requestSortKey, filter, Optional.empty(), new SortSpec(Entity.OID, SortType.DESC)).orElse(null);
+		return getOrderByWithFilter(requestSortKey, filter, new SortSpec(Entity.OID, SortType.DESC));
 	}
 
 	/**
