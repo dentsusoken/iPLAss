@@ -19,12 +19,10 @@
  */
 package org.iplass.gem.command.generic.search;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -32,9 +30,7 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
-import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.definition.EntityDefinition;
-import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
@@ -69,11 +65,9 @@ public final class EntityFileDownloadCommand implements Command {
 	private static final String ENTITY_DISP_BINDING_NAME = "entityDisplayName";
 	private static final String VIEW_NAME_BINDING_NAME = "viewName";
 
-	private final EntityDefinitionManager edm;
 	private final EntityViewManager evm;
 
 	public EntityFileDownloadCommand() {
-		edm = ManagerLocator.manager(EntityDefinitionManager.class);
 		evm = ManagerLocator.manager(EntityViewManager.class);
 	}
 
@@ -136,36 +130,16 @@ public final class EntityFileDownloadCommand implements Command {
 	}
 
 	private EntityFileDownloadSearchContext getContext(RequestContext request) {
-		SearchContext context = null;
 
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 
-		SearchCommandBase command = null;
-		if (Constants.SEARCH_TYPE_NORMAL.equals(searchType)) {
-			command = new NormalSearchCommand();
-		} else if (Constants.SEARCH_TYPE_DETAIL.equals(searchType)) {
-			command = new DetailSearchCommand();
-		} else if (Constants.SEARCH_TYPE_FIXED.equals(searchType)) {
-			command = new FixedSearchCommand();
-		}
-		try {
-			context = command.getContextClass()
-					.getDeclaredConstructor()
-					.newInstance();
-		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-			throw new EntityRuntimeException(resourceString("command.generic.search.EntityFileDownloadCommand.internalErr"), e);
-		}
-
-		if (context != null) {
-			context.setRequest(request);
-			context.setEntityDefinition(edm.get(context.getDefName()));
-			context.setEntityView(evm.get(context.getDefName()));
-		}
-
+		SearchCommandBase command = switch (searchType) {
+		case Constants.SEARCH_TYPE_NORMAL -> new NormalSearchCommand();
+		case Constants.SEARCH_TYPE_DETAIL -> new DetailSearchCommand();
+		case Constants.SEARCH_TYPE_FIXED -> new FixedSearchCommand();
+		default -> throw new IllegalArgumentException("Invalid search type: " + searchType);
+		};
+		SearchContext context = command.getContext(request);
 		return EntityFileDownloadSearchContext.getContext((SearchContextBase) context);
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
 }

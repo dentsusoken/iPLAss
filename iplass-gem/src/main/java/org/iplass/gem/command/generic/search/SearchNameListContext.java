@@ -22,31 +22,21 @@ package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.definition.PropertyDefinition;
-import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.SortSpec;
-import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
-import org.iplass.mtp.impl.parser.ParseContext;
-import org.iplass.mtp.impl.parser.ParseException;
-import org.iplass.mtp.impl.parser.SyntaxService;
-import org.iplass.mtp.impl.query.OrderBySyntax;
-import org.iplass.mtp.impl.query.QuerySyntaxRegister;
-import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 
 public class SearchNameListContext extends SearchContextBase {
 
@@ -56,11 +46,11 @@ public class SearchNameListContext extends SearchContextBase {
 		this.filter = filter;
 	}
 
-	private EntityFilterItem getFilterItem() {
+	private Optional<EntityFilterItem> getFilterItem() {
 		if (filter == null) {
-			return null;
+			return Optional.empty();
 		}
-		return filter.getItem(getRequest().getParam(Constants.FILTER_NAME));
+		return Optional.ofNullable(filter.getItem(getRequest().getParam(Constants.FILTER_NAME)));
 	}
 
 	@Override
@@ -75,15 +65,17 @@ public class SearchNameListContext extends SearchContextBase {
 		Where where = new Where();
 
 		List<Condition> conditions = new ArrayList<>();
-		EntityFilterItem filter = getFilterItem();
+		Optional<EntityFilterItem> filter = getFilterItem();
 
-		if (filter != null && filter.getCondition() != null) {
-			conditions.add(new PreparedQuery(filter.getCondition()).condition(null));
+		if (filter.isPresent() && filter.get()
+				.getCondition() != null) {
+			conditions.add(new PreparedQuery(filter.get()
+					.getCondition()).condition(null));
 		}
 		Condition defaultCond = getDefaultCondition();
 		if (defaultCond != null) {
-			if (filter == null
-					|| (filter != null && getConditionSection().isUseDefaultConditionWithFilterDefinition())) {
+			if (filter.isEmpty()
+					|| (getConditionSection().isUseDefaultConditionWithFilterDefinition())) {
 				conditions.add(defaultCond);
 			}
 		}
@@ -97,44 +89,16 @@ public class SearchNameListContext extends SearchContextBase {
 
 	@Override
 	public OrderBy getOrderBy() {
-		EntityFilterItem filter = getFilterItem();
+		Optional<String> requestSortKey = getRequestSortKey();
+		Optional<EntityFilterItem> filter = getFilterItem();
+		SearchConditionSection conditionSection = getConditionSection();
 
-		OrderBy orderBy = null;
-		if (filter != null && StringUtil.isNotBlank(filter.getSort())) {
-			SyntaxService service = ServiceRegistry.getRegistry()
-					.getService(SyntaxService.class);
-			OrderBySyntax syntax = service.getSyntaxContext(QuerySyntaxRegister.QUERY_CONTEXT)
-					.getSyntax(OrderBySyntax.class);
-			ParseContext context = new ParseContext("order by " + filter.getSort());
-			try {
-				orderBy = syntax.parse(context);
-			} catch (ParseException e) {
-				throw new SystemException(e.getMessage(), e);
-			}
-		} else if (hasSortSetting()) {
-			List<SortSetting> setting = getSortSetting();
-			for (SortSetting ss : setting) {
-				if (ss.getSortKey() != null) {
-					String key = null;
-					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
-					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
-					}
-					SortType type = SortType.valueOf(ss.getSortType()
-							.name());
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null)
-						orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
-				}
-			}
-		} else {
-			orderBy = new OrderBy().add(new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
+		if (filter.isPresent()) {
+			return getOrderByWithFilter(requestSortKey, filter, new SortSpec(Entity.UPDATE_DATE, SortType.DESC));
 		}
 
-		return orderBy;
+		return getOrderByWithConditionSection(requestSortKey, conditionSection, new SortSpec(Entity.UPDATE_DATE, SortType.DESC))
+				.orElse(null);
 	}
 
 	@Override

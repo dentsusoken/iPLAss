@@ -49,8 +49,12 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
-import org.iplass.mtp.view.generic.element.section.SortSetting;
 
+// TODO: 継承と委譲は併用しない方が無難。
+// 継承によって親クラスから引き継いだ自分自身のフィールド と 委譲先.フィールド の2つが存在することになり、混乱・バグの元になる。
+// 例）このクラス自身が持つRequestContextフィールド（in 親クラス）はnullだが、getRequest()はoverrideされている。つまり、2つの異なる状態が存在する
+// overrideすることで、親クラスへのフィールドアクセス経路を断つことにより、整合性を担保しようとしているように見えるが
+// もしoverride漏れがあった場合、気づけずバグにつながる
 public class SearchSelectListContext extends SearchContextBase {
 
 	private SearchContextBase context;
@@ -185,11 +189,6 @@ public class SearchSelectListContext extends SearchContextBase {
 	}
 
 	@Override
-	protected String getSortKey() {
-		return context.getSortKey();
-	}
-
-	@Override
 	protected SortType getSortType() {
 		return context.getSortType();
 	}
@@ -197,16 +196,6 @@ public class SearchSelectListContext extends SearchContextBase {
 	@Override
 	protected NullOrderingSpec getNullOrderingSpec(NullOrderType type) {
 		return context.getNullOrderingSpec(type);
-	}
-
-	@Override
-	protected boolean hasSortSetting() {
-		return context.hasSortSetting();
-	}
-
-	@Override
-	protected List<SortSetting> getSortSetting() {
-		return context.getSortSetting();
 	}
 
 	@Override
