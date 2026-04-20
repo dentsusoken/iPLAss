@@ -74,7 +74,7 @@ import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: 継承と委譲を併用しており、危険。
+// TODO: 継承と委譲は併用しない方が無難。
 // 継承によって親クラスから引き継いだ自分自身のフィールド と 委譲先.フィールド の2つが存在することになり、混乱・バグの元になる。
 // overrideすることで、親クラスへのフィールドアクセス経路を断つことにより、整合性を担保しようとしているように見えるが
 // もしoverride漏れがあった場合、気づけずバグにつながる
