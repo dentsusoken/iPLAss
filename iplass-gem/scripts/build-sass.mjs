@@ -2,11 +2,11 @@ import { compile } from 'sass';
 import fs from 'fs';
 import path from 'path';
 
-// sass ソースコードディレクトリ
-const SRC_SCSS_DIR='src/main/sass';
-// css 出力先
+// sass ソースコードディレクトリ (src/main/sass)
+const SRC_SCSS_DIR=path.join('src', 'main', 'sass');
+// css 出力先 (src/main/resource/META-INF/resources/styles/gem/skin)
 const DEST_SKIN_DIR=path.join('src', 'main', 'resources', 'META-INF', 'resources', 'styles', 'gem', 'skin');
-// errorhtml css 出力先
+// errorhtml css 出力先 (src/main/resource/META-INF/resources/errorhtml/styles)
 const DEST_ERROR_HTML_DIR=path.join('src', 'main', 'resources', 'META-INF', 'resources', 'errorhtml', 'styles');
 // skin 種類
 const SKIN_TYPE = [ 'flat', 'horizontal', 'vertical' ];
