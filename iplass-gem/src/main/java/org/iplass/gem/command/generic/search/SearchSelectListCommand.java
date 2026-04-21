@@ -105,11 +105,6 @@ public final class SearchSelectListCommand implements Command {
 		}
 
 		@Override
-		protected Class<? extends SearchContext> getContextClass() {
-			return command.getContextClass();
-		}
-
-		@Override
 		public SearchContext getContext(RequestContext request) {
 			SearchContext context = command.getContext(request);
 			return new SearchSelectListContext((SearchContextBase) context);
