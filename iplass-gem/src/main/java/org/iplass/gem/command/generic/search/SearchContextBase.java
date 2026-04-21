@@ -693,11 +693,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	 * @param propName セットするプロパティ名
 	 * @param nest 参照先Entityのプロパティ
 	 */
-	protected void addSearchProperty(ArrayList<String> select, String propName, NestProperty... nest) {
+	private void addSearchProperty(ArrayList<String> select, String propName, NestProperty... nest) {
 		addSearchProperty(select, propName, null, nest);
 	}
 
-	protected void addSearchProperty(ArrayList<String> select, String propName, PropertyEditor editor, NestProperty... nest) {
+	private void addSearchProperty(ArrayList<String> select, String propName, PropertyEditor editor, NestProperty... nest) {
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {
 			if (!select.contains(propName + "." + Entity.NAME)) {
