@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2026 DENTSU SOKEN INC. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,6 +17,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-.hgroup-01 .imgclr_red svg {
-  color: #f44336;
+
+package org.iplass.gem.command.generic.upload;
+
+import org.iplass.gem.command.GemWebApiParameter;
+
+public class EntityFileUploadStatusParam implements GemWebApiParameter {
+
+	private String defName;
+
+	private String viewName;
+
+	/**
+	 * @return defName
+	 */
+	public String getDefName() {
+		return defName;
+	}
+
+	/**
+	 * @param defName セットする defName
+	 */
+	public void setDefName(String defName) {
+		this.defName = defName;
+	}
+
+	/**
+	 * @return viewName
+	 */
+	public String getViewName() {
+		return viewName;
+	}
+
+	/**
+	 * @param viewName セットする viewName
+	 */
+	public void setViewName(String viewName) {
+		this.viewName = viewName;
+	}
+
 }
