@@ -1590,7 +1590,7 @@ function addTimestampSelectItem(ulId, multiplicity, dummyRowId, propName, countI
 			i++;
 		});
 		//inputのidを設定(非表示の場合の設定)
-		$(":hidden:not(:last)", $copy).each(function() {
+		$("input:hidden:not(:last)", $copy).each(function() {
 			$(this).attr("id", selId[i]);
 			i++;
 		});
