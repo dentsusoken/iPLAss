@@ -44,6 +44,7 @@ import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
+import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
@@ -205,6 +206,11 @@ public class SearchSelectListContext extends SearchContextBase {
 	@Override
 	protected Integer getOffset() {
 		return context.getOffset();
+	}
+
+	@Override
+	protected void addSearchProperty(ArrayList<String> select, String propName, NestProperty... nest) {
+		context.addSearchProperty(select, propName, nest);
 	}
 
 	@Override
