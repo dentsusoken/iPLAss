@@ -191,8 +191,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				}
 			}
 		}
-		List<EntityField> fieldSelection = select.stream()
-				.map(EntityField::new)
+		List<ValueExpression> fieldSelection = select.stream()
+				.<ValueExpression> map(EntityField::new)
 				.toList();
 		List<ValueExpression> orderBySelection = Optional.ofNullable(getOrderBy())
 				.stream()
@@ -202,7 +202,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.toList();
 
 		// ソート条件のデータを取得カラムにしておかないと、DistinctでSQLエラーになる。
-		return new Select(getConditionSection().isDistinct(), Stream.concat(fieldSelection.stream(), orderBySelection.stream())
+		boolean isDistinct = getConditionSection().isDistinct();
+		return new Select(isDistinct, (isDistinct ? Stream.concat(fieldSelection.stream(), orderBySelection.stream()) : fieldSelection.stream())
 				.distinct()
 				.toList());
 	}
