@@ -293,7 +293,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param dir 対象ディレクトリ
 	 * @return ファイル配列（nullにはならない）
 	 */
-	private File[] listFilesOrEmpty(File dir) {
+	private static File[] listFilesOrEmpty(File dir) {
 		File[] files = dir.listFiles();
 		if (files == null) {
 			logger.warn("Failed to list files in directory. path={}", dir.getPath());
@@ -310,7 +310,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param fileList ファイルリスト
 	 * @return 結合後のファイルリスト
 	 */
-	private List<LogFile> mergeFileLists(List<LogFile> dirList, List<LogFile> fileList) {
+	private static List<LogFile> mergeFileLists(List<LogFile> dirList, List<LogFile> fileList) {
 		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
 		list.addAll(dirList);
 		list.addAll(fileList);
@@ -325,7 +325,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @return LogFileオブジェクト
 	 */
-	private LogFile createLogFile(File file, String fileName, DateFormat dateFormat) {
+	private static LogFile createLogFile(File file, String fileName, DateFormat dateFormat) {
 		LogFile info = new LogFile();
 		info.setPath(file.getPath());
 		info.setFileName(fileName);
