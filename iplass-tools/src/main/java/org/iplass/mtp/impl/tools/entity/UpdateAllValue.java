@@ -21,19 +21,27 @@
 package org.iplass.mtp.impl.tools.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UpdateAllValue implements Serializable {
 
 	public enum UpdateAllValueType {
 		LITERAL,
-		VALUE_EXPRESSION
+		VALUE_EXPRESSION,
+		ARRAY,
+		ARRAY_INDEX
 	}
 
 	private static final long serialVersionUID = 3525495160618587524L;
 
-	private String propertyName;
-	private String value;
+	// 値の指定方式
 	private UpdateAllValueType valueType;
+	// プロパティ名
+	private String propertyName;
+	// LITERAL、VALUE_EXPRESSIONの場合の更新値
+	private String value;
+	// ARRAY、ARRAY_INDEXの場合の更新値
+	private List<UpdateAllArrayValue> arrayValues;
 
 	public UpdateAllValue() {
 	}
@@ -41,6 +49,12 @@ public class UpdateAllValue implements Serializable {
 	public UpdateAllValue(String propertyName, String value, UpdateAllValueType valueType) {
 		this.propertyName = propertyName;
 		this.value = value;
+		this.valueType = valueType;
+	}
+
+	public UpdateAllValue(String propertyName, List<UpdateAllArrayValue> arrayValues, UpdateAllValueType valueType) {
+		this.propertyName = propertyName;
+		this.arrayValues = arrayValues;
 		this.valueType = valueType;
 	}
 
@@ -67,4 +81,48 @@ public class UpdateAllValue implements Serializable {
 	public void setValueType(UpdateAllValueType valueType) {
 		this.valueType = valueType;
 	}
+
+	public List<UpdateAllArrayValue> getArrayValues() {
+		return arrayValues;
+	}
+
+	public void setArrayValues(List<UpdateAllArrayValue> arrayValues) {
+		this.arrayValues = arrayValues;
+	}
+
+	public static class UpdateAllArrayValue implements Serializable {
+
+		private static final long serialVersionUID = -5101617965626946637L;
+		// 値の指定方式（LITERAL、VALUE_EXPRESSION）
+		private UpdateAllValueType valueType;
+		// index値
+		private Integer index;
+		// 更新値
+		private String value;
+
+		public UpdateAllValueType getValueType() {
+			return valueType;
+		}
+
+		public void setValueType(UpdateAllValueType valueType) {
+			this.valueType = valueType;
+		}
+
+		public Integer getIndex() {
+			return index;
+		}
+
+		public void setIndex(Integer index) {
+			this.index = index;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+	}
+
 }
