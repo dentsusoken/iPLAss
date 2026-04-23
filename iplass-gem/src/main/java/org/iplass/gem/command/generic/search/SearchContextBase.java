@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -184,11 +185,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.<ValueExpression> map(EntityField::new)
 				.collect(Collectors.toList());
 		List<ValueExpression> orderBySelection = Optional.ofNullable(getOrderBy())
-				.stream()
-				.flatMap(orderBy -> orderBy.getSortSpecList()
+				.map(orderBy -> orderBy.getSortSpecList()
 						.stream()
-						.map(SortSpec::getSortKey))
-				.collect(Collectors.toList());
+						.<ValueExpression> map(SortSpec::getSortKey)
+						.collect(Collectors.toList()))
+				.orElse(Collections.emptyList());
 
 		// ソート条件のデータを取得カラムにしておかないと、DistinctでSQLエラーになる。
 		boolean isDistinct = getConditionSection().isDistinct();
