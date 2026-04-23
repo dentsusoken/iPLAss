@@ -207,7 +207,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		File logsDir = new File(path);
 		if (logsDir.exists() && logsDir.isDirectory()) {
-			File[] logs = logsDir.listFiles();
+			File[] logs = listFilesOrEmpty(logsDir);
 			for (File file : logs) {
 				if (file.isDirectory()) {
 					dirList.addAll(searchStaticLogFile(home, file.getPath(), filterPatterns,
@@ -217,12 +217,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 					boolean isMatch = isMatchFile(file, checkName, filterPatterns, fileNamePattern, lastModifiedPattern, dateFormat);
 					if (isMatch) {
-						LogFile info = new LogFile();
-						info.setPath(file.getPath());
-						info.setFileName(checkName);
-						info.setLastModified(dateFormat.format(new Timestamp(file.lastModified())));
-						info.setSize(file.length());
-						fileList.add(info);
+						fileList.add(createLogFile(file, checkName, dateFormat));
 					}
 				}
 			}
@@ -230,12 +225,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 			logger.debug("either logsDir doesn't exist or is not a folder. path=" + path);
 		}
 
-		// サブdirectory配下->fileの順番で
-		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
-		list.addAll(dirList);
-		list.addAll(fileList);
-
-		return list;
+		return mergeFileLists(dirList, fileList);
 	}
 
 	/**
@@ -260,7 +250,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 		File logsDir = new File(path);
 		if (logsDir.exists() && logsDir.isDirectory()) {
-			File[] logs = logsDir.listFiles();
+			File[] logs = listFilesOrEmpty(logsDir);
 			for (File file : logs) {
 				if (file.isDirectory()) {
 					if (index < homePaths.length) {
@@ -285,12 +275,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 					boolean isMatch = isMatchFile(file, checkName, filterPatterns, fileNamePattern, lastModifiedPattern, dateFormat);
 					if (isMatch) {
-						LogFile info = new LogFile();
-						info.setPath(file.getPath());
-						info.setFileName(checkName);
-						info.setLastModified(dateFormat.format(new Timestamp(file.lastModified())));
-						info.setSize(file.length());
-						fileList.add(info);
+						fileList.add(createLogFile(file, checkName, dateFormat));
 					}
 				}
 			}
@@ -298,12 +283,55 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 			logger.debug("either logsDir doesn't exist or is not a folder. path=" + path);
 		}
 
-		// サブdirectory配下->fileの順番で
+		return mergeFileLists(dirList, fileList);
+	}
+
+	/**
+	 * <p>ディレクトリ配下のファイル一覧を返す。</p>
+	 * <p>{@link File#listFiles()} はI/Oエラー時にnullを返すため、その場合は空配列を返す。</p>
+	 *
+	 * @param dir 対象ディレクトリ
+	 * @return ファイル配列（nullにはならない）
+	 */
+	private File[] listFilesOrEmpty(File dir) {
+		File[] files = dir.listFiles();
+		if (files == null) {
+			logger.warn("Failed to list files in directory. path={}", dir.getPath());
+			return new File[0];
+		}
+		return files;
+	}
+
+	/**
+	 * <p>サブディレクトリ配下のファイルリストとファイルリストを結合する</p>
+	 * <p>サブdirectory配下->fileの順番で結合</p>
+	 *
+	 * @param dirList サブディレクトリ配下のファイルリスト
+	 * @param fileList ファイルリスト
+	 * @return 結合後のファイルリスト
+	 */
+	private List<LogFile> mergeFileLists(List<LogFile> dirList, List<LogFile> fileList) {
 		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
 		list.addAll(dirList);
 		list.addAll(fileList);
-
 		return list;
+	}
+
+	/**
+	 * <p>LogFileオブジェクトを生成</p>
+	 *
+	 * @param file ログファイル
+	 * @param fileName 表示用ファイル名
+	 * @param dateFormat 最終更新日時変換用Format
+	 * @return LogFileオブジェクト
+	 */
+	private LogFile createLogFile(File file, String fileName, DateFormat dateFormat) {
+		LogFile info = new LogFile();
+		info.setPath(file.getPath());
+		info.setFileName(fileName);
+		info.setLastModified(dateFormat.format(new Timestamp(file.lastModified())));
+		info.setSize(file.length());
+		return info;
 	}
 
 	/**
