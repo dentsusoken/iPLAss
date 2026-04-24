@@ -290,7 +290,6 @@
 	}
 	
 	String viewType = Constants.VIEW_TYPE_DETAIL;
-	
 	if (outputType == OutputType.BULK) {
 		viewType = Constants.VIEW_TYPE_BULK;
 	}
