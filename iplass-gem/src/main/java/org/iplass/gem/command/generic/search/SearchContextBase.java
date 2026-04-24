@@ -21,11 +21,13 @@
 package org.iplass.gem.command.generic.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
@@ -54,6 +56,8 @@ import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
 import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.value.ValueExpression;
+import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -177,18 +181,21 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				}
 			}
 		}
+		List<ValueExpression> fieldSelection = select.stream()
+				.<ValueExpression> map(EntityField::new)
+				.collect(Collectors.toList());
+		List<ValueExpression> orderBySelection = Optional.ofNullable(getOrderBy())
+				.map(orderBy -> orderBy.getSortSpecList()
+						.stream()
+						.<ValueExpression> map(SortSpec::getSortKey)
+						.collect(Collectors.toList()))
+				.orElse(Collections.emptyList());
+
 		// ソート条件のデータを取得カラムにしておかないと、DistinctでSQLエラーになる。
-		OrderBy orderBy = getOrderBy();
-		if (orderBy != null) {
-			for (SortSpec sortSpec : orderBy.getSortSpecList()) {
-				String sortKey = sortSpec.getSortKey().toString();
-				if (!select.contains(sortKey)) addSearchProperty(select, sortKey);
-			}
-		}
-		boolean distinct = getConditionSection().isDistinct();
-		Select s = new Select().add(select.toArray());
-		s.setDistinct(distinct);
-		return s;
+		boolean isDistinct = getConditionSection().isDistinct();
+		return new Select(isDistinct, (isDistinct ? Stream.concat(fieldSelection.stream(), orderBySelection.stream()) : fieldSelection.stream())
+				.distinct()
+				.collect(Collectors.toList()));
 	}
 
 	@Override
