@@ -289,10 +289,10 @@
 		pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Edit.pleaseSelect");
 	}
 	
+	// MEMO: BulkLayout利用時にはREFCOMBOを設定できないため
+	// viewTypeはdetailかbulkの2種類のみ。multiBulkは考慮不要。
 	String viewType = Constants.VIEW_TYPE_DETAIL;
-	if (outputType == OutputType.BULK) {
-		viewType = Constants.VIEW_TYPE_BULK;
-	}
+	if (outputType == OutputType.BULK) viewType = Constants.VIEW_TYPE_BULK;
 
 	if (pd.getMultiplicity() == 1) {
 		Entity refEntity = propValue instanceof Entity ? (Entity) propValue : null;
