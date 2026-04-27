@@ -291,14 +291,15 @@
 	
 	// MEMO: BulkLayout利用時にはREFCOMBOを設定できないため
 	// viewTypeはdetailかbulkの2種類のみだが、念のためmultiBulkの場合の分岐を実施
-	String viewType = Constants.VIEW_TYPE_DETAIL;
-	Boolean useBulkView = (Boolean) request.getAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW);
-	if (useBulkView == null) useBulkView = false;
-	
-	if (outputType == OutputType.BULK && !useBulkView) {
-		viewType = Constants.VIEW_TYPE_BULK;
-	} else if (outputType == OutputType.BULK && useBulkView) {
-		viewType = Constants.VIEW_TYPE_MULTI_BULK;
+	String viewType;
+	if (outputType == OutputType.BULK) {
+		viewType = Boolean.TRUE.equals(
+			request.getAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW)
+		)
+			? Constants.VIEW_TYPE_MULTI_BULK
+			: Constants.VIEW_TYPE_BULK;
+	} else {
+	   viewType = Constants.VIEW_TYPE_DETAIL;
 	}
 
 	if (pd.getMultiplicity() == 1) {
