@@ -299,7 +299,7 @@
 			? Constants.VIEW_TYPE_MULTI_BULK
 			: Constants.VIEW_TYPE_BULK;
 	} else {
-	   viewType = Constants.VIEW_TYPE_DETAIL;
+		viewType = Constants.VIEW_TYPE_DETAIL;
 	}
 
 	if (pd.getMultiplicity() == 1) {
