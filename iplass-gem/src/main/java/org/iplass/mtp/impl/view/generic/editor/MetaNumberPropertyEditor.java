@@ -284,6 +284,7 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		pe.setHideSearchConditionFrom(hideSearchConditionFrom);
 		pe.setHideSearchConditionTo(hideSearchConditionTo);
 		pe.setHideSearchConditionRangeSymbol(hideSearchConditionRangeSymbol);
+		pe.setMaxlength(maxlength);
 		pe.setInsertWithLabelValue(insertWithLabelValue);
 		pe.setUpdateWithLabelValue(updateWithLabelValue);
 	}
