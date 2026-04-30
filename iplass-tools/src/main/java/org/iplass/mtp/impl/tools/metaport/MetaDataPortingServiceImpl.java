@@ -20,10 +20,6 @@
 
 package org.iplass.mtp.impl.tools.metaport;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.sax.SAXSource;
-
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -33,6 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.iplass.mtp.ManagerLocator;

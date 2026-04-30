@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.HtmlSanitizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.ICUTransliteratorAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.JavaClassNormalizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.NewLineNormalizerAttributePane;
@@ -31,6 +32,7 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.Scr
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.UnicodeNormalizerAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.normalizer.WhiteSpaceTrimmerAttributePane;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
+import org.iplass.mtp.entity.definition.normalizers.HtmlSanitizer;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
@@ -85,6 +87,12 @@ public class NormalizerListGridRecord extends ListGridRecord {
 			@Override
 			public NormalizerAttributePane attributePane() {
 				return new JavaClassNormalizerAttributePane();
+			}
+		},
+		HTML_SANITIZER("HTML Sanitizer") {
+			@Override
+			public NormalizerAttributePane attributePane() {
+				return new HtmlSanitizerAttributePane();
 			}
 		};
 
@@ -209,6 +217,11 @@ public class NormalizerListGridRecord extends ListGridRecord {
 		} else if (definition instanceof WhiteSpaceTrimmer) {
 			setType(NormalizerType.TRIM_WHITE_SPACE);
 			setGeneralPurpus(null);
+		} else if (definition instanceof HtmlSanitizer) {
+			HtmlSanitizer impl = (HtmlSanitizer) definition;
+			setType(NormalizerType.HTML_SANITIZER);
+			setGeneralPurpus(impl.getSafelistType()
+					.name());
 		}
 	}
 

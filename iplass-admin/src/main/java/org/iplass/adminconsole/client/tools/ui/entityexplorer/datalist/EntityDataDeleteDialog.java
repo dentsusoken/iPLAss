@@ -118,7 +118,7 @@ public class EntityDataDeleteDialog extends AbstractWindow {
 		whereField.setValue(whereClause);
 
 		chkNotifyListenersField = new CheckboxItem();
-		chkNotifyListenersField.setTitle("execute EventListneres");
+		chkNotifyListenersField.setTitle("execute EventListeners");
 		chkNotifyListenersField.setValue(true);
 		SmartGWTUtil.addHoverToFormItem(chkNotifyListenersField,
 				AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataDeleteDialog_runEventListenerDelet"));

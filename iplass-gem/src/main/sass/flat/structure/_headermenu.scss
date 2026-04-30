@@ -1,3 +1,5 @@
+@use "sass:string";
+
 //@extend-elements
 //original selectors
 //#account-01 p span::before, #account-01 p span::after
@@ -296,7 +298,7 @@
 			}
 			> span {
 				&.txt::after {
-					content: '\25B6';
+					content: string.unquote("'\\25B6'");
 					display: inline-block;
 					position: absolute;
 					right: 10px;
