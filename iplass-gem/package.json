@@ -4,20 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "sass:build": "npm ci && gulp build",
-    "sass:rebuild": "npm ci && npm rebuild node-sass && gulp build",
-    "sass:buildImageColor": "npm ci && gulp buildImageColor"
+    "sass:build": "npm ci && node scripts/build-sass.mjs",
+    "sass:buildImageColor": "npm ci && node scripts/build-sass.mjs --image-color-only"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "del": "5.x",
-    "gulp": "3.9.x",
-    "gulp-concat": "2.x",
-    "gulp-plumber": "1.x",
-    "gulp-sass": "4.x",
-    "require-dir": "1.x",
-    "run-sequence": "2.x"
+    "sass": "~1.91.0"
   }
 }

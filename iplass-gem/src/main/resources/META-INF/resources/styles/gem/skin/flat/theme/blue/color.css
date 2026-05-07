@@ -18,69 +18,92 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 .ui-widget-header {
-  background: #3f51b5; }
+  background: #3f51b5;
+}
 
 .flat-block-top {
-  border-top: 2px solid #3f51b5; }
+  border-top: 2px solid #3f51b5;
+}
 
 .ui-accordion .ui-state-active {
-  border: 1px solid #3f51b5; }
-
+  border: 1px solid #3f51b5;
+}
 .ui-accordion .ui-widget-content .ui-state-active {
-  border: 1px solid #3f51b5; }
-  .ui-accordion .ui-widget-content .ui-state-active.ui-state-hover {
-    border: 1px solid #3f51b5; }
-
+  border: 1px solid #3f51b5;
+}
+.ui-accordion .ui-widget-content .ui-state-active.ui-state-hover {
+  border: 1px solid #3f51b5;
+}
 .ui-accordion .ui-widget-header .ui-state-active {
-  border: 1px solid #3f51b5; }
-  .ui-accordion .ui-widget-header .ui-state-active.ui-state-hover {
-    border: 1px solid #3f51b5; }
+  border: 1px solid #3f51b5;
+}
+.ui-accordion .ui-widget-header .ui-state-active.ui-state-hover {
+  border: 1px solid #3f51b5;
+}
 
 .tabList {
-  border-top: 2px solid #3f51b5; }
-  .tabList .tab-menu li::after {
-    border-top: 11px solid #3f51b5; }
-  .tabList .tab-menu li.current {
-    background: #3f51b5; }
-    .tabList .tab-menu li.current a {
-      background: #3f51b5; }
+  border-top: 2px solid #3f51b5;
+}
+.tabList .tab-menu li::after {
+  border-top: 11px solid #3f51b5;
+}
+.tabList .tab-menu li.current {
+  background: #3f51b5;
+}
+.tabList .tab-menu li.current a {
+  background: #3f51b5;
+}
 
 .formArchive {
-  border-top: 2px solid #3f51b5; }
+  border-top: 2px solid #3f51b5;
+}
 
 input[type=button].gr-btn {
-  background-color: #3f51b5; }
-  input[type=button].gr-btn:hover {
-    background-color: #303f9f; }
+  background-color: #3f51b5;
+}
+input[type=button].gr-btn:hover {
+  background-color: #303f9f;
+}
 
 input[type=submit].gr-btn {
-  background-color: #3f51b5; }
-  input[type=submit].gr-btn:hover {
-    background-color: #303f9f; }
+  background-color: #3f51b5;
+}
+input[type=submit].gr-btn:hover {
+  background-color: #303f9f;
+}
 
 ul.jqtree-tree .jqtree-element.hover {
-  background: #c5cae9; }
-
+  background: #c5cae9;
+}
 ul.jqtree-tree li.jqtree-selected > .jqtree-element {
-  background: #c5cae9; }
-  ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
-    background: #c5cae9; }
+  background: #c5cae9;
+}
+ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+  background: #c5cae9;
+}
 
 .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {
-  background-color: #c5cae9 !important; }
-  .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell::selection {
-    background-color: #c5cae9 !important; }
+  background-color: #c5cae9 !important;
+}
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell::selection {
+  background-color: #c5cae9 !important;
+}
 
 #header-container #header {
-  background: #3f51b5; }
+  background: #3f51b5;
+}
 
 body.nomenu-layout #header-container .cms-title {
-  background-color: #3f51b5; }
+  background-color: #3f51b5;
+}
 
 h3.hgroup-02-01::before {
-  background: #448aff; }
+  background: #448aff;
+}
 
 button.dialog-csvdl-btn {
-  background-color: #3f51b5 !important; }
-  button.dialog-csvdl-btn:hover {
-    background-color: #303f9f !important; }
+  background-color: #3f51b5 !important;
+}
+button.dialog-csvdl-btn:hover {
+  background-color: #303f9f !important;
+}

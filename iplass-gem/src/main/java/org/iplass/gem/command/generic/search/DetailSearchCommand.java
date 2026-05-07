@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.search;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.view.filter.expression.UnsupportedFilterOperationException;
@@ -36,8 +37,13 @@ public final class DetailSearchCommand extends SearchCommandBase {
 	private static Logger log = LoggerFactory.getLogger(DetailSearchCommand.class);
 
 	@Override
-	protected Class<? extends SearchContext> getContextClass() {
-		return DetailSearchContext.class;
+	public SearchContext getContext(RequestContext request) {
+		SearchContext context = new DetailSearchContext();
+		context.setRequest(request);
+		context.setEntityDefinition(edm.get(context.getDefName()));
+		context.setEntityView(evm.get(context.getDefName()));
+
+		return context;
 	}
 
 	@Override
@@ -64,4 +70,5 @@ public final class DetailSearchCommand extends SearchCommandBase {
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
+
 }

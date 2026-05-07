@@ -134,21 +134,17 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 		DateFormat dateFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat()
 				.getOutputDatetimeSecFormat(), true);
 		for (String logHome : logHomes) {
-			logFiles.addAll(searchLogFile(logHome, filterPatterns, fileNamePattern, lastModifiedPattern,
-					logFiles.size(), logFileCondition.getLimit(), dateFormat, logHomes.size() > 1));
-
-			// checkLimit
-			if (logFileCondition.getLimit() > 0 && logFiles.size() >= logFileCondition.getLimit()) {
-				break;
-			}
+			logFiles.addAll(searchLogFile(logHome, filterPatterns, fileNamePattern, lastModifiedPattern, dateFormat, logHomes.size() > 1));
 		}
 
 		if (logFiles.isEmpty()) {
 			logger.debug("log file is not found. log home="
 					+ ToStringBuilder.reflectionToString(logHomes.toArray(new String[] {}), ToStringStyle.SIMPLE_STYLE));
 		} else {
+			// 全収集後にパス入りファイル名ソート→limit適用
 			logFiles = logFiles.stream()
 					.sorted(Comparator.comparing((LogFile logFile) -> logFile.getFileName()))
+					.limit(logFileCondition.getLimit() > 0 ? logFileCondition.getLimit() : Long.MAX_VALUE)
 					.collect(Collectors.toList());
 		}
 		return logFiles;
@@ -161,14 +157,12 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param filterPatterns ファイル名に対するconfig定義のFilter
 	 * @param fileNamePattern ファイル名に対するFilter
 	 * @param lastModifiedPattern 最終更新日時に対するFilter
-	 * @param count 現在の対象ファイル数
-	 * @param limit 取得上限数
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @param multiHomes Logホームが複数設定されているか
 	 * @return ログファイル情報
 	 */
 	private List<LogFile> searchLogFile(String home, List<Pattern> filterPatterns,
-			Pattern fileNamePattern, Pattern lastModifiedPattern, int count, int limit, DateFormat dateFormat, boolean multiHomes) {
+			Pattern fileNamePattern, Pattern lastModifiedPattern, DateFormat dateFormat, boolean multiHomes) {
 
 		if (home.contains("/*/")) {
 			//*を含む場合は、パスを分解。固定部分の抽出
@@ -186,10 +180,10 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 				rootPath += path + "/";
 			}
 			return searchDynamicLogFile(rootPath, homePaths, index, rootPath, filterPatterns,
-					fileNamePattern, lastModifiedPattern, count, limit, dateFormat, multiHomes);
+					fileNamePattern, lastModifiedPattern, dateFormat, multiHomes);
 		} else {
 			// *が含まれない場合は単純に検索(こっちのほうが無駄な処理はない)
-			return searchStaticLogFile(home, home, filterPatterns, fileNamePattern, lastModifiedPattern, count, limit, dateFormat, multiHomes);
+			return searchStaticLogFile(home, home, filterPatterns, fileNamePattern, lastModifiedPattern, dateFormat, multiHomes);
 		}
 	}
 
@@ -201,54 +195,37 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param filterPatterns ファイル名に対するconfig定義のFilter
 	 * @param fileNamePattern ファイル名に対するFilter
 	 * @param lastModifiedPattern 最終更新日時に対するFilter
-	 * @param count 現在の対象ファイル数
-	 * @param limit 取得上限数
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @param multiHomes Logホームが複数設定されているか
 	 * @return ログファイル情報
 	 */
 	private List<LogFile> searchStaticLogFile(String home, String path, List<Pattern> filterPatterns,
-			Pattern fileNamePattern, Pattern lastModifiedPattern, int count, int limit, DateFormat dateFormat, boolean multiHomes) {
+			Pattern fileNamePattern, Pattern lastModifiedPattern, DateFormat dateFormat, boolean multiHomes) {
 
 		List<LogFile> dirList = new ArrayList<>();
 		List<LogFile> fileList = new ArrayList<>();
 
 		File logsDir = new File(path);
 		if (logsDir.exists() && logsDir.isDirectory()) {
-			File[] logs = logsDir.listFiles();
+			File[] logs = listFilesOrEmpty(logsDir);
 			for (File file : logs) {
 				if (file.isDirectory()) {
 					dirList.addAll(searchStaticLogFile(home, file.getPath(), filterPatterns,
-							fileNamePattern, lastModifiedPattern, count + dirList.size() + fileList.size(), limit, dateFormat, multiHomes));
+							fileNamePattern, lastModifiedPattern, dateFormat, multiHomes));
 				} else {
 					String checkName = getFileName(home, file, multiHomes);
 
 					boolean isMatch = isMatchFile(file, checkName, filterPatterns, fileNamePattern, lastModifiedPattern, dateFormat);
 					if (isMatch) {
-						LogFile info = new LogFile();
-						info.setPath(file.getPath());
-						info.setFileName(checkName);
-						info.setLastModified(dateFormat.format(new Timestamp(file.lastModified())));
-						info.setSize(file.length());
-						fileList.add(info);
+						fileList.add(createLogFile(file, checkName, dateFormat));
 					}
-				}
-
-				// checkLimit
-				if (limit > 0 && count + dirList.size() + fileList.size() >= limit) {
-					break;
 				}
 			}
 		} else {
 			logger.debug("either logsDir doesn't exist or is not a folder. path=" + path);
 		}
 
-		// サブdirectory配下->fileの順番で
-		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
-		list.addAll(dirList);
-		list.addAll(fileList);
-
-		return list;
+		return mergeFileLists(dirList, fileList);
 	}
 
 	/**
@@ -261,21 +238,19 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 * @param filterPatterns ファイル名に対するconfig定義のFilter
 	 * @param fileNamePattern ファイル名に対するFilter
 	 * @param lastModifiedPattern 最終更新日時に対するFilter
-	 * @param count 現在の対象ファイル数
-	 * @param limit 取得上限数
 	 * @param dateFormat 最終更新日時変換用Format
 	 * @param multiHomes Logホームが複数設定されているか
 	 * @return ログファイル情報
 	 */
 	private List<LogFile> searchDynamicLogFile(String fixedPath, String[] homePaths, int index, String path, List<Pattern> filterPatterns,
-			Pattern fileNamePattern, Pattern lastModifiedPattern, int count, int limit, DateFormat dateFormat, boolean multiHomes) {
+			Pattern fileNamePattern, Pattern lastModifiedPattern, DateFormat dateFormat, boolean multiHomes) {
 
 		List<LogFile> dirList = new ArrayList<>();
 		List<LogFile> fileList = new ArrayList<>();
 
 		File logsDir = new File(path);
 		if (logsDir.exists() && logsDir.isDirectory()) {
-			File[] logs = logsDir.listFiles();
+			File[] logs = listFilesOrEmpty(logsDir);
 			for (File file : logs) {
 				if (file.isDirectory()) {
 					if (index < homePaths.length) {
@@ -289,7 +264,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 						}
 					}
 					dirList.addAll(searchDynamicLogFile(fixedPath, homePaths, index + 1, file.getPath(), filterPatterns,
-							fileNamePattern, lastModifiedPattern, count + dirList.size() + fileList.size(), limit, dateFormat, multiHomes));
+							fileNamePattern, lastModifiedPattern, dateFormat, multiHomes));
 				} else {
 					if (index < homePaths.length) {
 						//階層として、対象外
@@ -300,30 +275,63 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 
 					boolean isMatch = isMatchFile(file, checkName, filterPatterns, fileNamePattern, lastModifiedPattern, dateFormat);
 					if (isMatch) {
-						LogFile info = new LogFile();
-						info.setPath(file.getPath());
-						info.setFileName(checkName);
-						info.setLastModified(dateFormat.format(new Timestamp(file.lastModified())));
-						info.setSize(file.length());
-						fileList.add(info);
+						fileList.add(createLogFile(file, checkName, dateFormat));
 					}
-				}
-
-				// checkLimit
-				if (limit > 0 && count + dirList.size() + fileList.size() >= limit) {
-					break;
 				}
 			}
 		} else {
 			logger.debug("either logsDir doesn't exist or is not a folder. path=" + path);
 		}
 
-		// サブdirectory配下->fileの順番で
+		return mergeFileLists(dirList, fileList);
+	}
+
+	/**
+	 * <p>ディレクトリ配下のファイル一覧を返す。</p>
+	 * <p>{@link File#listFiles()} はI/Oエラー時にnullを返すため、その場合は空配列を返す。</p>
+	 *
+	 * @param dir 対象ディレクトリ
+	 * @return ファイル配列（nullにはならない）
+	 */
+	private static File[] listFilesOrEmpty(File dir) {
+		File[] files = dir.listFiles();
+		if (files == null) {
+			logger.warn("Failed to list files in directory. path={}", dir.getPath());
+			return new File[0];
+		}
+		return files;
+	}
+
+	/**
+	 * <p>サブディレクトリ配下のファイルリストとファイルリストを結合する</p>
+	 * <p>サブdirectory配下->fileの順番で結合</p>
+	 *
+	 * @param dirList サブディレクトリ配下のファイルリスト
+	 * @param fileList ファイルリスト
+	 * @return 結合後のファイルリスト
+	 */
+	private static List<LogFile> mergeFileLists(List<LogFile> dirList, List<LogFile> fileList) {
 		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
 		list.addAll(dirList);
 		list.addAll(fileList);
-
 		return list;
+	}
+
+	/**
+	 * <p>LogFileオブジェクトを生成</p>
+	 *
+	 * @param file ログファイル
+	 * @param fileName 表示用ファイル名
+	 * @param dateFormat 最終更新日時変換用Format
+	 * @return LogFileオブジェクト
+	 */
+	private static LogFile createLogFile(File file, String fileName, DateFormat dateFormat) {
+		LogFile info = new LogFile();
+		info.setPath(file.getPath());
+		info.setFileName(fileName);
+		info.setLastModified(dateFormat.format(new Timestamp(file.lastModified())));
+		info.setSize(file.length());
+		return info;
 	}
 
 	/**

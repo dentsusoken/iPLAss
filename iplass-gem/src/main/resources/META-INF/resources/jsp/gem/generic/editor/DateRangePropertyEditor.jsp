@@ -74,6 +74,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	nest = (nest != null) ? nest : false;
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
+	String displayLabel = (String)request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 
 	String prefix = "";
 	String fromName = editor.getPropertyName();
@@ -132,6 +133,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 		request.setAttribute(Constants.EDITOR_EDITOR, toEditor);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);
+		request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 		String toKey = toEditor.getPropertyName().replaceAll("\\.", "_");
 %>
 <span class="range-symbol">&nbsp;${m:rs('mtp-gem-messages', 'generic.editor.common.rangeSymbol')}&nbsp;</span>

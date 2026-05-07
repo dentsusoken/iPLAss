@@ -21,13 +21,13 @@ package org.iplass.mtp.impl.webapi.command.entity;
 
 import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.command.RequestContext;

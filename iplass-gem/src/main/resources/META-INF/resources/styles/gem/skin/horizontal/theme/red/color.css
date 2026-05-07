@@ -19,19 +19,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 /*赤*/
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, #ui-datepicker-div .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-focus, #ui-datepicker-div .ui-state-focus {
+#ui-datepicker-div .ui-state-focus, #ui-datepicker-div .ui-widget-content .ui-state-focus, #ui-datepicker-div .ui-widget-content .ui-state-hover, #ui-datepicker-div .ui-state-hover, .ui-widget-header .ui-state-active, .ui-widget-content .ui-state-active, .ui-state-active {
   background-color: #ffffff;
   background-image: none;
   border-color: #f5b8b8;
-  color: #cc0000; }
+  color: #cc0000;
+}
 
-.ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight, .ui-state-highlight {
+.ui-state-highlight, .ui-widget-header .ui-state-highlight, .ui-widget-content .ui-state-highlight {
   background-color: #fce6e6;
   background-image: none;
-  border-color: #d5d5d5; }
+  border-color: #d5d5d5;
+}
 
 #header-container {
-  border-top: 5px solid #cc0000; }
+  border-top: 5px solid #cc0000;
+}
 
 #nav-menu li.current a {
   border: none;
@@ -39,31 +42,40 @@
   border-right: 1px solid #ffffff;
   color: #ffffff;
   background: #7e2020;
-  background: linear-gradient(#7e2020 0, #d43539 100%); }
+  background: linear-gradient(#7e2020 0, #d43539 100%);
+}
 
 #header #user-nav .search-submit {
-  background: url(../../../../../../images/gem/skin/horizontal/theme/red/btn-submit-01.png) no-repeat left top; }
-  #header #user-nav .search-submit:hover {
-    background: url(../../../../../../images/gem/skin/horizontal/theme/red/btn-submit-01_o.png) no-repeat left top; }
+  background: url(../../../../../../images/gem/skin/horizontal/theme/red/btn-submit-01.png) no-repeat left top;
+}
+#header #user-nav .search-submit:hover {
+  background: url(../../../../../../images/gem/skin/horizontal/theme/red/btn-submit-01_o.png) no-repeat left top;
+}
 
 .hgroup-01 svg {
-  color: #ed6f6b; }
+  color: #ed6f6b;
+}
 
 .tabList .tab-menu li.current a {
   background: #7f2020;
   background: linear-gradient(#7f2020 0, #d5363a 100%) repeat 0 0;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 input.gr-btn {
   border: 1px solid #976161;
   background: #831f1f;
-  background: linear-gradient(#d6363a 0, #831f1f 100%); }
-  input.gr-btn:hover {
-    border: 1px solid #976161;
-    background: #983535;
-    background: linear-gradient(#f05459 0, #983535 100%); }
+  background: linear-gradient(#d6363a 0, #831f1f 100%);
+}
+input.gr-btn:hover {
+  border: 1px solid #976161;
+  background: #983535;
+  background: linear-gradient(#f05459 0, #983535 100%);
+}
 
 button.dialog-csvdl-btn {
-  background: linear-gradient(#d6363a 0, #831f1f 100%); }
-  button.dialog-csvdl-btn:hover {
-    background: linear-gradient(#f05459 0, #983535 100%); }
+  background: linear-gradient(#d6363a 0, #831f1f 100%);
+}
+button.dialog-csvdl-btn:hover {
+  background: linear-gradient(#f05459 0, #983535 100%);
+}

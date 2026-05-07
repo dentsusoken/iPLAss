@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.search;
 
+import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 
 @CommandClass(name = NormalSearchCommand.CMD_NAME, displayName = "通常検索")
@@ -28,7 +29,12 @@ public final class NormalSearchCommand extends SearchCommandBase {
 	public static final String CMD_NAME = "gem/generic/search/NormalSearchCommand";
 
 	@Override
-	protected Class<? extends SearchContext> getContextClass() {
-		return NormalSearchContext.class;
+	public SearchContext getContext(RequestContext request) {
+		SearchContext context = new NormalSearchContext();
+		context.setRequest(request);
+		context.setEntityDefinition(edm.get(context.getDefName()));
+		context.setEntityView(evm.get(context.getDefName()));
+
+		return context;
 	}
 }

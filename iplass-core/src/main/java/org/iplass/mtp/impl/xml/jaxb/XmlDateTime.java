@@ -20,12 +20,12 @@
 
 package org.iplass.mtp.impl.xml.jaxb;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.GregorianCalendar;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.XmlValue;

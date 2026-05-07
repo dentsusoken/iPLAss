@@ -20,10 +20,10 @@
 
 package org.iplass.mtp.impl.auth.authenticate.ldap;
 
-import javax.security.auth.login.LoginContext;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.security.auth.login.LoginContext;
 
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.login.IdPasswordCredential;

@@ -1,3 +1,5 @@
+@use "sass:string";
+
 //colors
 // $color_gallery_approx: #ededed;
 // $color_quill_gray_approx: #d4d4d4;
@@ -65,11 +67,11 @@ $url_gc_1: url(../../../../images/gem/skin/flat/icon-search.png);
 			}
 		}
 		.unclickable::before {
-			content: '\00AB';
+			content: string.unquote("'\\00AB'");
 			margin-right: 10px;
 		}
 		.clickable a::before {
-			content: '\00AB';
+			content: string.unquote("'\\00AB'");
 			margin-right: 10px;
 		}
 	}
@@ -92,11 +94,11 @@ $url_gc_1: url(../../../../images/gem/skin/flat/icon-search.png);
 			}
 		}
 		.unclickable::after {
-			content: '\00BB';
+			content: string.unquote("'\\00BB'");
 			margin-left: 10px;
 		}
 		.clickable a::after {
-			content: '\00BB';
+			content: string.unquote("'\\00BB'");
 			margin-left: 10px;
 		}
 	}

@@ -51,6 +51,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 
 <%!
 	private EntityDefinitionManager edm =  ManagerLocator.manager(EntityDefinitionManager.class);
@@ -262,6 +263,8 @@
 	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
 	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
 	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
+	
+	OutputType outputType = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
 
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	if (nest == null) nest = false;
@@ -284,6 +287,19 @@
 	String pleaseSelectLabel = "";
 	if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
 		pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.reference.ReferencePropertyEditor_Edit.pleaseSelect");
+	}
+	
+	// MEMO: BulkLayout利用時にはREFCOMBOを設定できないため
+	// viewTypeはdetailかbulkの2種類のみだが、念のためmultiBulkの場合の分岐を実施
+	String viewType;
+	if (outputType == OutputType.BULK) {
+		viewType = Boolean.TRUE.equals(
+			request.getAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW)
+		)
+			? Constants.VIEW_TYPE_MULTI_BULK
+			: Constants.VIEW_TYPE_BULK;
+	} else {
+	   viewType = Constants.VIEW_TYPE_DETAIL;
 	}
 
 	if (pd.getMultiplicity() == 1) {
@@ -310,7 +326,7 @@
  data-defName="<c:out value="<%=rootDefName%>"/>"
  data-viewName="<%=viewName %>" 
  data-propName="<c:out value="<%=propertyName%>"/>" 
- data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" 
+ data-viewType="<%=viewType %>" 
  data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" 
  data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
@@ -353,7 +369,7 @@
  data-defName="<c:out value="<%=rootDefName%>"/>"
  data-viewName="<%=viewName %>" 
  data-propName="<c:out value="<%=propertyName%>"/>" 
- data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" 
+ data-viewType="<%=viewType %>" 
  data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" 
  data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
@@ -386,7 +402,7 @@
  data-defName="<c:out value="<%=rootDefName%>"/>"
  data-viewName="<%=viewName %>" 
  data-propName="<c:out value="<%=propertyName%>"/>"
- data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" 
+ data-viewType="<%=viewType %>" 
  data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" 
  data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"

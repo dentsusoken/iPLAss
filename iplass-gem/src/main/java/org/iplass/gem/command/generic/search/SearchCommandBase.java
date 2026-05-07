@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
@@ -35,7 +34,6 @@ import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.permission.EntityPermission;
@@ -123,26 +121,7 @@ public abstract class SearchCommandBase implements Command {
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	public SearchContext getContext(RequestContext request) {
-		SearchContext context = null;
-		try {
-			context = getContextClass().newInstance();
-		} catch (InstantiationException e) {
-			throw new EntityRuntimeException(resourceString("command.generic.search.SearchCommandBase.internalErr"), e);
-		} catch (IllegalAccessException e) {
-			throw new EntityRuntimeException(resourceString("command.generic.search.SearchCommandBase.internalErr"), e);
-		}
-
-		if (context != null) {
-			context.setRequest(request);
-			context.setEntityDefinition(edm.get(context.getDefName()));
-			context.setEntityView(evm.get(context.getDefName()));
-		}
-
-		return context;
-	}
-
-	protected abstract Class<? extends SearchContext> getContextClass();
+	public abstract SearchContext getContext(RequestContext request);
 
 	protected Query toQuery(SearchContext context) {
 
@@ -336,9 +315,5 @@ public abstract class SearchCommandBase implements Command {
 
 		context.getRequest()
 				.setAttribute("count", count);
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
 }
