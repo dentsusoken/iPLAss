@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ObjectSchema;
@@ -79,12 +80,24 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 		 * @return 配列型の場合 true
 		 */
 		boolean isArray() {
-			var isContainsArray = schema.getTypes() != null && schema.getTypes()
-					.contains(ARRAY);
-			var isTypeArray = ARRAY.equals(schema.getType());
-			var isNotEmptyArrayRef = StringUtil.isNotEmpty(schema.getItems() != null ? schema.getItems()
-					.get$ref() : null);
-			return isContainsArray || isTypeArray || isNotEmptyArrayRef;
+			if (ARRAY.equals(schema.getType())) {
+				// type が array の場合
+				return true;
+			}
+
+			if (schema.getTypes() != null && schema.getTypes()
+					.contains(ARRAY)) {
+				// types に array が含まれている場合
+				return true;
+			}
+
+			if (schema.getItems() != null && StringUtil.isNotEmpty(schema.getItems()
+					.get$ref())) {
+				// items に $ref が設定されている場合は、配列型の可能性があるため true を返す
+				return true;
+			}
+
+			return false;
 		}
 
 		/**
@@ -92,11 +105,23 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 		 * @return オブジェクト型の場合 true
 		 */
 		boolean isObject() {
-			var isContainsObject = schema.getTypes() != null && schema.getTypes()
-					.contains(OBJECT);
-			var isTypeObject = OBJECT.equals(schema.getType());
-			var isNotEmptyObjectRef = StringUtil.isNotEmpty(schema.get$ref());
-			return isContainsObject || isTypeObject || isNotEmptyObjectRef;
+			if (OBJECT.equals(schema.getType())) {
+				// type が object の場合
+				return true;
+			}
+
+			if (schema.getTypes() != null && schema.getTypes()
+					.contains(OBJECT)) {
+				// types に object が含まれている場合
+				return true;
+			}
+
+			if (StringUtil.isNotEmpty(schema.get$ref())) {
+				// $ref が設定されている場合は、オブジェクト型の可能性があるため true を返す
+				return true;
+			}
+
+			return false;
 		}
 	}
 

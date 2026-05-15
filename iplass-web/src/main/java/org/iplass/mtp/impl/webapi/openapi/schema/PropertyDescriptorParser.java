@@ -69,7 +69,7 @@ class PropertyDescriptorParser {
 	 * @throws SystemException クラスのプロパティ記述子の取得に失敗した場合
 	 */
 	private PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
-		if (null == clazz) {
+		if (clazz == null) {
 			throw new IllegalArgumentException("Class must not be null.");
 		}
 
