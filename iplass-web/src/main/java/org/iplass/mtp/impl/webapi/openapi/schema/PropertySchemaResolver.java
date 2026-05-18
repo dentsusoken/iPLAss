@@ -49,7 +49,7 @@ import io.swagger.v3.oas.models.media.StringSchema;
  * @author SEKIGUCHI Naoya
  */
 public class PropertySchemaResolver {
-	/** 何も設定されていない ClassPropertySchemaResolver インスタンス */
+	/** 何も設定されていない PropertySchemaResolver インスタンス */
 	public static final PropertySchemaResolver EMPTY_SETTING = new PropertySchemaResolver();
 
 	/** クラス・プロパティの組み合わせでスキーマを保持するマップ（クラス名 -> プロパティ名 -> スキーマ） */
@@ -59,30 +59,30 @@ public class PropertySchemaResolver {
 
 	/**
 	 * コンストラクタ
-	 * @param classPropertySchemas クラス・プロパティスキーマのリスト
+	 * @param propertySchemas クラス・プロパティスキーマのリスト
 	 */
-	public PropertySchemaResolver(List<PropertySchema> classPropertySchemas) {
-		Objects.requireNonNull(classPropertySchemas, "classPropertySchemas must not be null.");
+	public PropertySchemaResolver(List<PropertySchema> propertySchemas) {
+		Objects.requireNonNull(propertySchemas, "classPropertySchemas must not be null.");
 
 		classPropertySchemaMap = new HashMap<>();
 		propertySchemaMap = new HashMap<>();
 
-		for (var schema : classPropertySchemas) {
+		for (var schema : propertySchemas) {
 			// スキーマがnullでないことを確認
 			if (schema == null) {
-				throw new IllegalArgumentException("ClassPropertySchema must not be null.");
+				throw new IllegalArgumentException(PropertySchema.class.getSimpleName() + " must not be null.");
 			}
 
 			// プロパティ名は必須
 			if (StringUtil.isEmpty(schema.getPropertyName())) {
 				throw new IllegalArgumentException(
-						"ClassPropertySchema must have non-empty propertyName. className=" + schema.getClassName());
+						PropertySchema.class.getSimpleName() + " must have non-empty propertyName. className=" + schema.getClassName());
 			}
 
 			// スキーマタイプは必須
 			if (schema.getSchemaType() == null) {
 				throw new IllegalArgumentException(
-						"ClassPropertySchema must have non-null schemaType. className=" + schema.getClassName()
+						PropertySchema.class.getSimpleName() + " must have non-null schemaType. className=" + schema.getClassName()
 								+ ", propertyName=" + schema.getPropertyName());
 			}
 

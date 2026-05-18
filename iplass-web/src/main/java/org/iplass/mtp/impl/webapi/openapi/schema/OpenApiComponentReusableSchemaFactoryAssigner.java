@@ -53,7 +53,7 @@ public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiCom
 
 	@Override
 	public void setPropertySchemaResolver(PropertySchemaResolver resolver) {
-		// ClassPropertySchemaResolverAware を実装している factory に対して、ClassPropertySchemaResolver を設定する
+		// 保持している factory に対して、PropertySchemaResolver を設定する
 		for (var factory : factoryList) {
 			factory.setPropertySchemaResolver(resolver);
 		}
