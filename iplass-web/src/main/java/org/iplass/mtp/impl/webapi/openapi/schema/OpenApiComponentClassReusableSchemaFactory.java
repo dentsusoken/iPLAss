@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ObjectSchema;
@@ -43,7 +44,7 @@ import io.swagger.v3.oas.models.media.Schema;
  * @author SEKIGUCHI Naoya
  */
 public class OpenApiComponentClassReusableSchemaFactory
-		implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget, ClassPropertySchemaResolverAware {
+implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget, ClassPropertySchemaResolverAware {
 	/** 再利用可能なスキーマの参照プレフィックス */
 	private static final String DEFS = "$defs";
 
@@ -236,7 +237,9 @@ public class OpenApiComponentClassReusableSchemaFactory
 				if (fixedSchema.isPresent()) {
 					// 固定のスキーマが設定されている場合は、解析したスキーマを上書きする
 					props.put(key, fixedSchema.get());
-					logger.trace("property schema is overridden by fixed schema. class={}, property={}, schema={}", clazz, key, schema.toString());
+					if (logger.isTraceEnabled()) {
+						logger.trace("property schema is overridden by fixed schema. class={}, property={}, schema={}", clazz, key, schema.toString());
+					}
 					continue;
 				}
 
