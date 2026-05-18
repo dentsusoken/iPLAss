@@ -62,7 +62,7 @@ public class PropertySchemaResolver {
 	 * @param propertySchemas クラス・プロパティスキーマのリスト
 	 */
 	public PropertySchemaResolver(List<PropertySchema> propertySchemas) {
-		Objects.requireNonNull(propertySchemas, "classPropertySchemas must not be null.");
+		Objects.requireNonNull(propertySchemas, "propertySchemas must not be null.");
 
 		classPropertySchemaMap = new HashMap<>();
 		propertySchemaMap = new HashMap<>();
