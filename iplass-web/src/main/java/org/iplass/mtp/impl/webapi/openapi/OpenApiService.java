@@ -30,6 +30,9 @@ import java.util.List;
 import org.iplass.mtp.impl.util.RequestPathUtil;
 import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiOpenApiEntry;
 import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiOpenApiMapper;
+import org.iplass.mtp.impl.webapi.openapi.schema.ClassPropertySchema;
+import org.iplass.mtp.impl.webapi.openapi.schema.ClassPropertySchemaResolver;
+import org.iplass.mtp.impl.webapi.openapi.schema.ClassPropertySchemaResolverAware;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactory;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactoryAssigner;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolver;
@@ -84,6 +87,12 @@ public class OpenApiService implements Service {
 		this.infoTitleOfExport = config.getValue("infoTitleOfExport");
 		this.infoVersionOfExport = config.getValue("infoVersionOfExport");
 		this.infoDescriptionOfExport = config.getValue("infoDescriptionOfExport");
+
+		var classPropertySchemaList = config.getValues("classPropertySchemaList", ClassPropertySchema.class, List.of());
+		var classPropertySchemaResolver = new ClassPropertySchemaResolver(classPropertySchemaList);
+		if (this.reusableSchemaFactory instanceof ClassPropertySchemaResolverAware resolverAware) {
+			resolverAware.setClassPropertySchemaResolver(classPropertySchemaResolver);
+		}
 	}
 
 	@Override

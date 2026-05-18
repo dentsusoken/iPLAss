@@ -30,7 +30,7 @@ import io.swagger.v3.oas.models.OpenAPI;
  * </p>
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiComponentReusableSchemaFactory<Object> {
+public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiComponentReusableSchemaFactory<Object>, ClassPropertySchemaResolverAware {
 	/** OpenAPIスキーマ生成クラスリスト */
 	@SuppressWarnings("rawtypes")
 	private List<OpenApiComponentReusableSchemaFactory> factoryList = createFactoryList();
@@ -49,6 +49,16 @@ public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiCom
 
 		throw new IllegalArgumentException("Unsupported object type: " + object.getClass()
 				.getName());
+	}
+
+	@Override
+	public void setClassPropertySchemaResolver(ClassPropertySchemaResolver resolver) {
+		// ClassPropertySchemaResolverAware を実装している factory に対して、ClassPropertySchemaResolver を設定する
+		for (var factory : factoryList) {
+			if (factory instanceof ClassPropertySchemaResolverAware awareFactory) {
+				awareFactory.setClassPropertySchemaResolver(resolver);
+			}
+		}
 	}
 
 	/**

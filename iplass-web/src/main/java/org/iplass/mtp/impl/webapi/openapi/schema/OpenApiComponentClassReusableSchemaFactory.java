@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ObjectSchema;
@@ -42,7 +43,8 @@ import io.swagger.v3.oas.models.media.Schema;
  * OpenAPI の components/schemas に再利用可能なクラススキーマを追加するファクトリクラス
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentClassReusableSchemaFactory implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget {
+public class OpenApiComponentClassReusableSchemaFactory
+implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget, ClassPropertySchemaResolverAware {
 	/** 再利用可能なスキーマの参照プレフィックス */
 	private static final String DEFS = "$defs";
 
@@ -50,6 +52,8 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentClassReusableSchemaFactory.class);
 	/** JSON Schema ジェネレータ */
 	private ClassSchemaGenerator schemaGenerator;
+	/** クラス・プロパティスキーマ解決機能 */
+	private ClassPropertySchemaResolver schemaResolver = ClassPropertySchemaResolver.EMPTY_SETTING;
 
 	/**
 	 * スキーマタイプ検出器
@@ -170,6 +174,11 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 		this.schemaGenerator = schemaGenerator;
 	}
 
+	@Override
+	public void setClassPropertySchemaResolver(ClassPropertySchemaResolver resolver) {
+		this.schemaResolver = resolver;
+	}
+
 	/**
 	 * クラスから ObjectSchema を生成します。
 	 * @param clazz スキーマに変換するクラス
@@ -220,7 +229,19 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 			@SuppressWarnings("rawtypes")
 			Map<String, Schema> props = openApiSchema.getProperties();
 			var parser = new PropertyDescriptorParser(clazz);
-			props.forEach((key, schema) -> {
+			for (var entry : props.entrySet()) {
+				var key = entry.getKey();
+				var schema = entry.getValue();
+
+				var fixedSchema = schemaResolver.resolve(clazz, key);
+				if (fixedSchema.isPresent()) {
+					// 固定のスキーマが設定されている場合は、解析したスキーマを上書きする
+					props.put(key, fixedSchema.get());
+					logger.trace("property schema is overridden by fixed schema. class={}, property={}, schema={}", clazz, key, schema.toString());
+					continue;
+				}
+
+				// 固定のスキーマが存在しない場合は、解析したスキーマを元に配列型やオブジェクト型を判定し、適切なスキーマを設定する
 				var detector = new SchemaTypeDetector(schema);
 
 				if (logger.isTraceEnabled()) {
@@ -274,7 +295,7 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 						schema.setProperties(null);
 					}
 				}
-			});
+			}
 
 			return openApiSchema;
 
