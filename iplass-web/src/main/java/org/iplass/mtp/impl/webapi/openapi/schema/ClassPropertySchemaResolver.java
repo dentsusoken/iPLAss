@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.iplass.mtp.util.StringUtil;
 
@@ -73,7 +74,7 @@ public class ClassPropertySchemaResolver {
 			}
 
 			// プロパティ名は必須
-			if (schema.getPropertyName() == null) {
+			if (StringUtil.isEmpty(schema.getPropertyName())) {
 				throw new IllegalArgumentException(
 						"ClassPropertySchema must have non-null propertyName. className=" + schema.getClassName());
 			}
@@ -146,8 +147,20 @@ public class ClassPropertySchemaResolver {
 		case DATETIME -> new DateTimeSchema();
 		};
 
-		openApiSchema.setDescription(classPropertySchema.getDescription());
-		openApiSchema.setFormat(classPropertySchema.getFormat());
+		applyIfNotEmpty(classPropertySchema.getDescription(), openApiSchema::setDescription);
+		applyIfNotEmpty(classPropertySchema.getFormat(), openApiSchema::setFormat);
+
 		return openApiSchema;
+	}
+
+	/**
+	 * 値が空でない場合に、指定されたセッターを呼び出して値を設定します。
+	 * @param value 設定する値
+	 * @param setter 値を設定するセッター
+	 */
+	private static void applyIfNotEmpty(String value, Consumer<String> setter) {
+		if (StringUtil.isNotEmpty(value)) {
+			setter.accept(value);
+		}
 	}
 }
