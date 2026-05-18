@@ -82,7 +82,7 @@ public class ClassPropertySchemaResolver {
 			if (schema.getSchemaType() == null) {
 				throw new IllegalArgumentException(
 						"ClassPropertySchema must have non-null schemaType. className=" + schema.getClassName()
-						+ ", propertyName=" + schema.getPropertyName());
+								+ ", propertyName=" + schema.getPropertyName());
 			}
 
 			// スキーマを作成
@@ -91,8 +91,8 @@ public class ClassPropertySchemaResolver {
 			if (StringUtil.isNotEmpty(schema.getClassName())) {
 				// クラス名がある場合は、クラス・プロパティの組み合わせでスキーマを登録
 				classPropertySchemaMap
-				.computeIfAbsent(schema.getClassName(), k -> new HashMap<>())
-				.put(schema.getPropertyName(), openApiSchema);
+						.computeIfAbsent(schema.getClassName(), k -> new HashMap<>())
+						.put(schema.getPropertyName(), openApiSchema);
 			} else {
 				// クラス名がない場合は、プロパティ名のみでスキーマを登録
 				propertySchemaMap.put(schema.getPropertyName(), openApiSchema);
