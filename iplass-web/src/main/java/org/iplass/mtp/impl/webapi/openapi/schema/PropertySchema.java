@@ -42,7 +42,7 @@ public class PropertySchema {
 	public static enum SchemaType {
 		/** 文字列 */
 		STRING,
-		/** 数値 */
+		/** 整数 */
 		INTEGER,
 		/** 真偽値 */
 		BOOLEAN,
@@ -52,7 +52,7 @@ public class PropertySchema {
 		DATETIME;
 	}
 
-	/** クラス名 */
+	/** 完全修飾クラス名 */
 	private String className;
 	/** プロパティ名 */
 	private String propertyName;
@@ -65,18 +65,18 @@ public class PropertySchema {
 	private String format;
 
 	/**
-	 * クラス名を取得します。
+	 * 完全修飾クラス名を取得します。
 	 *
-	 * @return クラス名
+	 * @return 完全修飾クラス名
 	 */
 	public String getClassName() {
 		return className;
 	}
 
 	/**
-	 * クラス名を設定します。
+	 * 完全修飾クラス名を設定します。
 	 *
-	 * @param className クラス名
+	 * @param className 完全修飾クラス名
 	 */
 	public void setClassName(String className) {
 		this.className = className;
