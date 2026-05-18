@@ -232,12 +232,14 @@ public class OpenApiComponentClassReusableSchemaFactory
 				var key = entry.getKey();
 				var schema = entry.getValue();
 
-				var fixedSchema = schemaResolver.resolve(clazz, key);
-				if (fixedSchema.isPresent()) {
+				var overrideSchemaOpt = schemaResolver.resolve(clazz, key);
+				if (overrideSchemaOpt.isPresent()) {
 					// 固定のスキーマが設定されている場合は、解析したスキーマを上書きする
-					props.put(key, fixedSchema.get());
+					var overrideSchema = overrideSchemaOpt.get();
+					props.put(key, overrideSchema);
 					if (logger.isTraceEnabled()) {
-						logger.trace("property schema is overridden by fixed schema. class={}, property={}, schema={}", clazz, key, schema.toString());
+						logger.trace("property schema is overridden by fixed schema. class={}, property={}, schema={}",
+								clazz, key, overrideSchema.toString());
 					}
 					continue;
 				}
