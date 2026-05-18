@@ -125,7 +125,7 @@ public class OpenApiService implements Service {
 		}
 
 		openApiResolver.getObjectWriter(fileType, version)
-		.writeValue(out, openApi);
+				.writeValue(out, openApi);
 	}
 
 	/**
@@ -150,13 +150,13 @@ public class OpenApiService implements Service {
 						var webApiPath = webApiDefinition == null ? "Not Import." : webApiDefinition.getName();
 						return new OpenApiImportResult(
 								r.getMapInfo()
-								.getOpenApiPath(),
+										.getOpenApiPath(),
 								webApiPath,
 								r.getMapInfo()
-								.getUpdateType()
-								.name(),
+										.getUpdateType()
+										.name(),
 								r.getUpdateResult()
-								.name());
+										.name());
 					})
 					.toList();
 		}
