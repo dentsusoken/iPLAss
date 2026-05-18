@@ -76,7 +76,7 @@ public class ClassPropertySchemaResolver {
 			// プロパティ名は必須
 			if (StringUtil.isEmpty(schema.getPropertyName())) {
 				throw new IllegalArgumentException(
-						"ClassPropertySchema must have non-null propertyName. className=" + schema.getClassName());
+						"ClassPropertySchema must have non-empty propertyName. className=" + schema.getClassName());
 			}
 
 			// スキーマタイプは必須
