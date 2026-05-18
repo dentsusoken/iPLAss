@@ -34,7 +34,7 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
  * @author SEKIGUCHI Naoya
  */
 public class OpenApiComponentEntityDefinitionReusableSchemaFactory
-		implements OpenApiComponentReusableSchemaFactory<EntityDefinition>, OpenApiComponentTarget {
+implements OpenApiComponentReusableSchemaFactory<EntityDefinition>, OpenApiComponentTarget {
 	/** ログ */
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentEntityDefinitionReusableSchemaFactory.class);
 	/** エンティティ定義プロパティのJSONスキーマ解決クラス */
@@ -102,6 +102,10 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory
 		this.entityPropertyResolver = entityPropertyResolver;
 	}
 
+	@Override
+	public void setPropertySchemaResolver(PropertySchemaResolver resolver) {
+		// 利用しないため実装無し
+	}
 	/**
 	 * エンティティ定義から ObjectSchema を生成します。
 	 * @param entityDefinition エンティティ定義
@@ -143,5 +147,4 @@ public class OpenApiComponentEntityDefinitionReusableSchemaFactory
 
 		return components;
 	}
-
 }

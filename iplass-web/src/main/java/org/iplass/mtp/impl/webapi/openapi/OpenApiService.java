@@ -30,13 +30,12 @@ import java.util.List;
 import org.iplass.mtp.impl.util.RequestPathUtil;
 import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiOpenApiEntry;
 import org.iplass.mtp.impl.webapi.openapi.entity.EntityWebApiOpenApiMapper;
-import org.iplass.mtp.impl.webapi.openapi.schema.ClassPropertySchema;
-import org.iplass.mtp.impl.webapi.openapi.schema.ClassPropertySchemaResolver;
-import org.iplass.mtp.impl.webapi.openapi.schema.ClassPropertySchemaResolverAware;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactory;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactoryAssigner;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolver;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolverImpl;
+import org.iplass.mtp.impl.webapi.openapi.schema.PropertySchema;
+import org.iplass.mtp.impl.webapi.openapi.schema.PropertySchemaResolver;
 import org.iplass.mtp.impl.webapi.openapi.webapi.OpenApiMappedWebApiUpdater;
 import org.iplass.mtp.impl.webapi.openapi.webapi.WebApiOpenApiMapper;
 import org.iplass.mtp.spi.Config;
@@ -88,11 +87,9 @@ public class OpenApiService implements Service {
 		this.infoVersionOfExport = config.getValue("infoVersionOfExport");
 		this.infoDescriptionOfExport = config.getValue("infoDescriptionOfExport");
 
-		var classPropertySchemas = config.getValues("classPropertySchema", ClassPropertySchema.class, List.of());
-		var classPropertySchemaResolver = new ClassPropertySchemaResolver(classPropertySchemas);
-		if (this.reusableSchemaFactory instanceof ClassPropertySchemaResolverAware resolverAware) {
-			resolverAware.setClassPropertySchemaResolver(classPropertySchemaResolver);
-		}
+		var propertySchemas = config.getValues("propertySchema", PropertySchema.class, List.of());
+		var propertySchemaResolver = new PropertySchemaResolver(propertySchemas);
+		this.reusableSchemaFactory.setPropertySchemaResolver(propertySchemaResolver);
 	}
 
 	@Override
@@ -125,7 +122,7 @@ public class OpenApiService implements Service {
 		}
 
 		openApiResolver.getObjectWriter(fileType, version)
-				.writeValue(out, openApi);
+		.writeValue(out, openApi);
 	}
 
 	/**
@@ -150,13 +147,13 @@ public class OpenApiService implements Service {
 						var webApiPath = webApiDefinition == null ? "Not Import." : webApiDefinition.getName();
 						return new OpenApiImportResult(
 								r.getMapInfo()
-										.getOpenApiPath(),
+								.getOpenApiPath(),
 								webApiPath,
 								r.getMapInfo()
-										.getUpdateType()
-										.name(),
+								.getUpdateType()
+								.name(),
 								r.getUpdateResult()
-										.name());
+								.name());
 					})
 					.toList();
 		}

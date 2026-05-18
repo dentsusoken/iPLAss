@@ -36,7 +36,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 
 /**
- * クラス・プロパティスキーマ解決機能
+ * プロパティスキーマ解決機能
  * <p>
  * クラス・プロパティの組み合わせまたはプロパティ名のみで、スキーマ情報を解決する機能を提供します。
  * </p>
@@ -48,9 +48,9 @@ import io.swagger.v3.oas.models.media.StringSchema;
  *
  * @author SEKIGUCHI Naoya
  */
-public class ClassPropertySchemaResolver {
+public class PropertySchemaResolver {
 	/** 何も設定されていない ClassPropertySchemaResolver インスタンス */
-	public static final ClassPropertySchemaResolver EMPTY_SETTING = new ClassPropertySchemaResolver();
+	public static final PropertySchemaResolver EMPTY_SETTING = new PropertySchemaResolver();
 
 	/** クラス・プロパティの組み合わせでスキーマを保持するマップ（クラス名 -> プロパティ名 -> スキーマ） */
 	private final Map<String, Map<String, Schema<?>>> classPropertySchemaMap;
@@ -61,7 +61,7 @@ public class ClassPropertySchemaResolver {
 	 * コンストラクタ
 	 * @param classPropertySchemas クラス・プロパティスキーマのリスト
 	 */
-	public ClassPropertySchemaResolver(List<ClassPropertySchema> classPropertySchemas) {
+	public PropertySchemaResolver(List<PropertySchema> classPropertySchemas) {
 		Objects.requireNonNull(classPropertySchemas, "classPropertySchemas must not be null.");
 
 		classPropertySchemaMap = new HashMap<>();
@@ -83,7 +83,7 @@ public class ClassPropertySchemaResolver {
 			if (schema.getSchemaType() == null) {
 				throw new IllegalArgumentException(
 						"ClassPropertySchema must have non-null schemaType. className=" + schema.getClassName()
-								+ ", propertyName=" + schema.getPropertyName());
+						+ ", propertyName=" + schema.getPropertyName());
 			}
 
 			// スキーマを作成
@@ -92,8 +92,8 @@ public class ClassPropertySchemaResolver {
 			if (StringUtil.isNotEmpty(schema.getClassName())) {
 				// クラス名がある場合は、クラス・プロパティの組み合わせでスキーマを登録
 				classPropertySchemaMap
-						.computeIfAbsent(schema.getClassName(), k -> new HashMap<>())
-						.put(schema.getPropertyName(), openApiSchema);
+				.computeIfAbsent(schema.getClassName(), k -> new HashMap<>())
+				.put(schema.getPropertyName(), openApiSchema);
 			} else {
 				// クラス名がない場合は、プロパティ名のみでスキーマを登録
 				propertySchemaMap.put(schema.getPropertyName(), openApiSchema);
@@ -101,7 +101,13 @@ public class ClassPropertySchemaResolver {
 		}
 	}
 
-	private ClassPropertySchemaResolver() {
+	/**
+	 * デフォルトコンストラクタ
+	 * <p>
+	 * クラス・プロパティスキーマが設定されていない状態のインスタンスを作成します。
+	 * </p>
+	 */
+	private PropertySchemaResolver() {
 		this(List.of());
 	}
 
@@ -135,11 +141,11 @@ public class ClassPropertySchemaResolver {
 
 	/**
 	 * クラス・プロパティスキーマから OpenAPI の Schema を作成します。
-	 * @param classPropertySchema クラス・プロパティスキーマ
+	 * @param propertySchema クラス・プロパティスキーマ
 	 * @return OpenAPI の Schema
 	 */
-	private static Schema<?> createSchema(ClassPropertySchema classPropertySchema) {
-		var openApiSchema = switch (classPropertySchema.getSchemaType()) {
+	private static Schema<?> createSchema(PropertySchema propertySchema) {
+		var openApiSchema = switch (propertySchema.getSchemaType()) {
 		case STRING -> new StringSchema();
 		case INTEGER -> new IntegerSchema();
 		case BOOLEAN -> new BooleanSchema();
@@ -147,8 +153,8 @@ public class ClassPropertySchemaResolver {
 		case DATETIME -> new DateTimeSchema();
 		};
 
-		applyIfNotEmpty(classPropertySchema.getDescription(), openApiSchema::setDescription);
-		applyIfNotEmpty(classPropertySchema.getFormat(), openApiSchema::setFormat);
+		applyIfNotEmpty(propertySchema.getDescription(), openApiSchema::setDescription);
+		applyIfNotEmpty(propertySchema.getFormat(), openApiSchema::setFormat);
 
 		return openApiSchema;
 	}

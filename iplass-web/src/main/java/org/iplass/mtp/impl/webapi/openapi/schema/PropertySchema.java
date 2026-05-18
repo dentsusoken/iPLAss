@@ -35,7 +35,7 @@ package org.iplass.mtp.impl.webapi.openapi.schema;
  *
  * @author SEKIGUCHI Naoya
  */
-public class ClassPropertySchema {
+public class PropertySchema {
 	/**
 	 * スキーマタイプ
 	 */

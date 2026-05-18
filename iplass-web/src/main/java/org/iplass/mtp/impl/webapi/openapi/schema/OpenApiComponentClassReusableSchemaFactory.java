@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ObjectSchema;
@@ -42,8 +43,7 @@ import io.swagger.v3.oas.models.media.Schema;
  * OpenAPI の components/schemas に再利用可能なクラススキーマを追加するファクトリクラス
  * @author SEKIGUCHI Naoya
  */
-public class OpenApiComponentClassReusableSchemaFactory
-		implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget, ClassPropertySchemaResolverAware {
+public class OpenApiComponentClassReusableSchemaFactory implements OpenApiComponentReusableSchemaFactory<Class<?>>, OpenApiComponentTarget {
 	/** 再利用可能なスキーマの参照プレフィックス */
 	private static final String DEFS = "$defs";
 
@@ -51,8 +51,8 @@ public class OpenApiComponentClassReusableSchemaFactory
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentClassReusableSchemaFactory.class);
 	/** JSON Schema ジェネレータ */
 	private ClassSchemaGenerator schemaGenerator;
-	/** クラス・プロパティスキーマ解決機能 */
-	private ClassPropertySchemaResolver schemaResolver = ClassPropertySchemaResolver.EMPTY_SETTING;
+	/** プロパティスキーマ解決機能 */
+	private PropertySchemaResolver propertySchemaResolver = PropertySchemaResolver.EMPTY_SETTING;
 
 	/**
 	 * スキーマタイプ検出器
@@ -174,8 +174,8 @@ public class OpenApiComponentClassReusableSchemaFactory
 	}
 
 	@Override
-	public void setClassPropertySchemaResolver(ClassPropertySchemaResolver resolver) {
-		this.schemaResolver = resolver;
+	public void setPropertySchemaResolver(PropertySchemaResolver resolver) {
+		this.propertySchemaResolver = resolver;
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class OpenApiComponentClassReusableSchemaFactory
 				var key = entry.getKey();
 				var schema = entry.getValue();
 
-				var overrideSchemaOpt = schemaResolver.resolve(clazz, key);
+				var overrideSchemaOpt = propertySchemaResolver.resolve(clazz, key);
 				if (overrideSchemaOpt.isPresent()) {
 					// 固定のスキーマが設定されている場合は、解析したスキーマを上書きする
 					var overrideSchema = overrideSchemaOpt.get();
