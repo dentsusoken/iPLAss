@@ -391,6 +391,11 @@ public class MetaEntityListParts extends MetaTemplateParts {
 
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
+				RequestContext request = WebUtil.getRequestContext();
+				request.removeAttribute("entityListParts");
+				request.removeAttribute("listPartsSearchFormView");
+				request.removeAttribute("title");
+				request.removeAttribute("partsCnt");
 			}
 
 			private boolean checkEntity() {
