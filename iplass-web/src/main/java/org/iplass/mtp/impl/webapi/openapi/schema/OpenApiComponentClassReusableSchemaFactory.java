@@ -50,6 +50,8 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 	private Logger logger = LoggerFactory.getLogger(OpenApiComponentClassReusableSchemaFactory.class);
 	/** JSON Schema ジェネレータ */
 	private ClassSchemaGenerator schemaGenerator;
+	/** プロパティスキーマ解決機能 */
+	private PropertySchemaResolver propertySchemaResolver = PropertySchemaResolver.EMPTY_SETTING;
 
 	/**
 	 * スキーマタイプ検出器
@@ -170,6 +172,11 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 		this.schemaGenerator = schemaGenerator;
 	}
 
+	@Override
+	public void setPropertySchemaResolver(PropertySchemaResolver resolver) {
+		this.propertySchemaResolver = resolver;
+	}
+
 	/**
 	 * クラスから ObjectSchema を生成します。
 	 * @param clazz スキーマに変換するクラス
@@ -220,7 +227,23 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 			@SuppressWarnings("rawtypes")
 			Map<String, Schema> props = openApiSchema.getProperties();
 			var parser = new PropertyDescriptorParser(clazz);
-			props.forEach((key, schema) -> {
+			for (var entry : props.entrySet()) {
+				var key = entry.getKey();
+				var schema = entry.getValue();
+
+				var overrideSchemaOpt = propertySchemaResolver.resolve(clazz, key);
+				if (overrideSchemaOpt.isPresent()) {
+					// 固定のスキーマが設定されている場合は、解析したスキーマを上書きする
+					var overrideSchema = overrideSchemaOpt.get();
+					props.put(key, overrideSchema);
+					if (logger.isTraceEnabled()) {
+						logger.trace("property schema is overridden by fixed schema. class={}, property={}, schema={}",
+								clazz, key, overrideSchema.toString());
+					}
+					continue;
+				}
+
+				// 固定のスキーマが存在しない場合は、解析したスキーマを元に配列型やオブジェクト型を判定し、適切なスキーマを設定する
 				var detector = new SchemaTypeDetector(schema);
 
 				if (logger.isTraceEnabled()) {
@@ -274,7 +297,7 @@ public class OpenApiComponentClassReusableSchemaFactory implements OpenApiCompon
 						schema.setProperties(null);
 					}
 				}
-			});
+			}
 
 			return openApiSchema;
 

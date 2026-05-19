@@ -34,6 +34,8 @@ import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaF
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiComponentReusableSchemaFactoryAssigner;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolver;
 import org.iplass.mtp.impl.webapi.openapi.schema.OpenApiStandardClassSchemaResolverImpl;
+import org.iplass.mtp.impl.webapi.openapi.schema.PropertySchema;
+import org.iplass.mtp.impl.webapi.openapi.schema.PropertySchemaResolver;
 import org.iplass.mtp.impl.webapi.openapi.webapi.OpenApiMappedWebApiUpdater;
 import org.iplass.mtp.impl.webapi.openapi.webapi.WebApiOpenApiMapper;
 import org.iplass.mtp.spi.Config;
@@ -84,6 +86,10 @@ public class OpenApiService implements Service {
 		this.infoTitleOfExport = config.getValue("infoTitleOfExport");
 		this.infoVersionOfExport = config.getValue("infoVersionOfExport");
 		this.infoDescriptionOfExport = config.getValue("infoDescriptionOfExport");
+
+		var propertySchemas = config.getValues("propertySchema", PropertySchema.class, List.of());
+		var propertySchemaResolver = new PropertySchemaResolver(propertySchemas);
+		this.reusableSchemaFactory.setPropertySchemaResolver(propertySchemaResolver);
 	}
 
 	@Override
