@@ -385,7 +385,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 				}
 
 				request.setAttribute("entityListParts", currentConfig());
-				request.setAttribute("searchFormView", form);
+				request.setAttribute("listPartsSearchFormView", form);
 				request.setAttribute("title", title);
 			}
 

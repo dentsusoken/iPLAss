@@ -62,7 +62,7 @@
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
-	SearchFormView form = (SearchFormView) request.getAttribute("searchFormView");
+	SearchFormView form = (SearchFormView) request.getAttribute("listPartsSearchFormView");
 
 	String topViewListOffsetInfo = request.getParameter(Constants.TOPVIEW_LIST_OFFSET);
 

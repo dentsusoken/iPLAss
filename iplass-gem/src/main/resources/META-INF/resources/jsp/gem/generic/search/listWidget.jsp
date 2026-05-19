@@ -41,7 +41,7 @@
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
-	SearchFormView form = (SearchFormView) request.getAttribute("searchFormView");
+	SearchFormView form = (SearchFormView) request.getAttribute("listPartsSearchFormView");
 
 	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), parts.getViewNameForLink());
 	String searchViewAction = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
