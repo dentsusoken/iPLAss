@@ -396,9 +396,9 @@ public class MetaEntityListParts extends MetaTemplateParts {
 				request.removeAttribute("listPartsSearchFormView");
 				request.removeAttribute("title");
 				// partsCnt は削除NG（∵ 呼び出し元 TopViewHandler.loadParts() がHttpServletRequest 経由で参照するため）
-				// TODO: とは言え、この対応はその場しのぎに見える（∵ clearAttribute() の本来の責務は setAttribute() でセットした属性のクリーンアップのはず）
+				// TODO: とは言え、この対応は「その場しのぎ」に見える（∵ clearAttribute() の本来の責務は setAttribute() でセットした属性のクリーンアップのはず）
 				// 使われる側が呼び出し元の実装に依存するのは、設計上好ましくない
-				// partsCnt を管理する責務を負うのは HttpServletRequest？RequestContext？設計が曖昧では？
+				// partsCnt を管理する責務を負うのは HttpServletRequest？RequestContext？設計が曖昧な可能性あり
 			}
 
 			private boolean checkEntity() {
