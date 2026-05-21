@@ -24,6 +24,8 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
+import org.iplass.mtp.SystemException;
+
 /**
  * プロパティ記述子を解析するクラス
  * @author SEKIGUCHI Naoya
@@ -40,15 +42,16 @@ class PropertyDescriptorParser {
 	 */
 	public PropertyDescriptorParser(Class<?> clazz) {
 		this.clazz = clazz;
-		this.descriptors = getPropertyDesctiptors(clazz);
+		this.descriptors = getPropertyDescriptors(clazz);
 	}
 
 	/**
 	 * プロパティ名に一致する PropertyDescriptor インスタンスを取得します
 	 * @param propertyName プロパティ名
 	 * @return PropertyDescriptor インスタンス
+	 * @throws SystemException プロパティが見つからない場合
 	 */
-	public PropertyDescriptor getPropertyDesctiptor(String propertyName) {
+	public PropertyDescriptor getPropertyDescriptor(String propertyName) {
 		for (PropertyDescriptor descriptor : descriptors) {
 			if (descriptor.getName()
 					.equals(propertyName)) {
@@ -56,16 +59,17 @@ class PropertyDescriptorParser {
 			}
 		}
 		// プロパティが見つからない場合は例外をスロー
-		throw new RuntimeException("Property '" + propertyName + "' not found in class " + clazz.getName());
+		throw new SystemException("Property '" + propertyName + "' not found in class " + clazz.getName());
 	}
 
 	/**
 	 * クラスのプロパティ記述子を取得します。
 	 * @param clazz クラス
 	 * @return プロパティ記述子の配列
+	 * @throws SystemException クラスのプロパティ記述子の取得に失敗した場合
 	 */
-	private PropertyDescriptor[] getPropertyDesctiptors(Class<?> clazz) {
-		if (null == clazz) {
+	private PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
+		if (clazz == null) {
 			throw new IllegalArgumentException("Class must not be null.");
 		}
 
@@ -74,7 +78,7 @@ class PropertyDescriptorParser {
 			return beanInfo.getPropertyDescriptors();
 
 		} catch (IntrospectionException e) {
-			throw new RuntimeException("Failed to get property descriptor for " + clazz.getName() + " class.", e);
+			throw new SystemException("Failed to get property descriptor for " + clazz.getName() + " class.", e);
 		}
 	}
 

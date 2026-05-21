@@ -51,6 +51,14 @@ public class OpenApiComponentReusableSchemaFactoryAssigner implements OpenApiCom
 				.getName());
 	}
 
+	@Override
+	public void setPropertySchemaResolver(PropertySchemaResolver resolver) {
+		// 保持している factory に対して、PropertySchemaResolver を設定する
+		for (var factory : factoryList) {
+			factory.setPropertySchemaResolver(resolver);
+		}
+	}
+
 	/**
 	 * OpenAPI の components/schemas に再利用可能なスキーマを追加するファクトリクラスを作成します。スキーマファクトリを生成します。
 	 * <p>

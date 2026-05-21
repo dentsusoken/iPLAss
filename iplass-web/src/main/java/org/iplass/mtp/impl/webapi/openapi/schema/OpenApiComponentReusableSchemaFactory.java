@@ -41,4 +41,10 @@ public interface OpenApiComponentReusableSchemaFactory<T> {
 	 * @return スキーマの参照文字列
 	 */
 	String addReusableSchema(T object, OpenAPI openApi, OpenApiJsonSchemaType schemaType);
+
+	/**
+	 * プロパティスキーマ解決機能を設定します。
+	 * @param resolver プロパティスキーマ解決機能
+	 */
+	void setPropertySchemaResolver(PropertySchemaResolver resolver);
 }
