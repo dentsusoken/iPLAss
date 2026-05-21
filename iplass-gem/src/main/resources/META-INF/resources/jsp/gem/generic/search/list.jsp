@@ -62,7 +62,7 @@
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
-	SearchFormView form = (SearchFormView) request.getAttribute("listPartsSearchFormView");
+	SearchFormView form = (SearchFormView) request.getAttribute("MetaEntityListParts_searchFormView");
 
 	String topViewListOffsetInfo = request.getParameter(Constants.TOPVIEW_LIST_OFFSET);
 
@@ -144,7 +144,7 @@
 <div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" style="display:none;">
 <h3 class="hgroup-02">
 ${entityListParts.iconTag}
-${m:esc(title)}
+${m:esc(MetaEntityListParts_title)}
 </h3>
 <%
 	String id = ((int)(Math.random() * 1000) + "_" + new Date().getTime());

@@ -41,7 +41,7 @@
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
-	SearchFormView form = (SearchFormView) request.getAttribute("listPartsSearchFormView");
+	SearchFormView form = (SearchFormView) request.getAttribute("MetaEntityListParts_searchFormView");
 
 	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), parts.getViewNameForLink());
 	String searchViewAction = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
@@ -74,7 +74,7 @@
  data-limit="<%=limit%>" data-prevLabel="<c:out value="<%=prevLabel%>"/>" data-nextLabel="<c:out value="<%=nextLabel%>"/>">
 <div class="lyt-shortcut-01 mb05">
 ${entityListParts.iconTag}
-<p class="title">${m:esc(title)}</p>
+<p class="title">${m:esc(MetaEntityListParts_title)}</p>
 <div class="widget-contents" style="<%=styleAttr%>">
 <ul class="list-entity-name" data-webapiName="<%=SearchNameListCommand.WEBAPI_NAME%>" data-viewAction="<c:out value="<%=viewAction%>" />">
 </ul>
