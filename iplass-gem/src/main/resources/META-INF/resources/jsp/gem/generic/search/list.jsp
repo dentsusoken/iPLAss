@@ -59,7 +59,7 @@
 	}
 %>
 <%
-	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
+	EntityListParts parts = (EntityListParts) request.getAttribute("MetaEntityListParts_entityListParts");
 	if (parts == null) return;
 
 	SearchFormView form = (SearchFormView) request.getAttribute("MetaEntityListParts_searchFormView");
@@ -143,7 +143,7 @@
 %>
 <div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" style="display:none;">
 <h3 class="hgroup-02">
-${entityListParts.iconTag}
+${MetaEntityListParts_entityListParts.iconTag}
 ${m:esc(MetaEntityListParts_title)}
 </h3>
 <%
@@ -429,7 +429,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 		var sortKey = $table.attr("data-sortKey");
 		var sortType = $table.attr("data-sortType");
-		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(entityListParts.defName)}", "${m:escJs(entityListParts.viewName)}", "${m:escJs(entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(list) {
+		searchEntityList("<%=SearchListCommand.WEBAPI_NAME%>", "${m:escJs(MetaEntityListParts_entityListParts.defName)}", "${m:escJs(MetaEntityListParts_entityListParts.viewName)}", "${m:escJs(MetaEntityListParts_entityListParts.filterName)}", offset, sortKey, sortType, "<%=searchAsync%>", function(list) {
 			$pager.setPage(offset, list.length, null);
 			// listのサイズを表示件数設定に従い補正
 			if (list.length > limit) {

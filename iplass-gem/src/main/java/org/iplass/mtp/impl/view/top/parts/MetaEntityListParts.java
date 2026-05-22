@@ -384,7 +384,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 					}
 				}
 
-				request.setAttribute("entityListParts", currentConfig());
+				request.setAttribute("MetaEntityListParts_entityListParts", currentConfig());
 				request.setAttribute("MetaEntityListParts_searchFormView", form);
 				request.setAttribute("MetaEntityListParts_title", title);
 			}
@@ -392,7 +392,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
 				RequestContext request = WebUtil.getRequestContext();
-				request.removeAttribute("entityListParts");
+				request.removeAttribute("MetaEntityListParts_entityListParts");
 				request.removeAttribute("MetaEntityListParts_searchFormView");
 				request.removeAttribute("MetaEntityListParts_title");
 				// partsCnt は削除NG（∵ 呼び出し元 TopViewHandler.loadParts() がHttpServletRequest 経由で参照するため）

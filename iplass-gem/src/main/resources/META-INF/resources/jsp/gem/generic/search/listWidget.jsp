@@ -38,7 +38,7 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
 	String contextPath = TemplateUtil.getStaticContentPath();
-	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
+	EntityListParts parts = (EntityListParts) request.getAttribute("MetaEntityListParts_entityListParts");
 	if (parts == null) return;
 
 	SearchFormView form = (SearchFormView) request.getAttribute("MetaEntityListParts_searchFormView");
@@ -70,10 +70,10 @@
 	//パーツの高さスタイル属性
 	String styleAttr = ViewUtil.buildHeightStyleAttr(parts.getMaxHeight());
 %>
-<div class="<c:out value="<%=style %>"/>" data-defName="${m:escJs(entityListParts.defName)}" data-viewName="${m:escJs(entityListParts.viewName)}" data-filterName="${m:escJs(entityListParts.filterName)}"
+<div class="<c:out value="<%=style %>"/>" data-defName="${m:escJs(MetaEntityListParts_entityListParts.defName)}" data-viewName="${m:escJs(MetaEntityListParts_entityListParts.viewName)}" data-filterName="${m:escJs(MetaEntityListParts_entityListParts.filterName)}"
  data-limit="<%=limit%>" data-prevLabel="<c:out value="<%=prevLabel%>"/>" data-nextLabel="<c:out value="<%=nextLabel%>"/>">
 <div class="lyt-shortcut-01 mb05">
-${entityListParts.iconTag}
+${MetaEntityListParts_entityListParts.iconTag}
 <p class="title">${m:esc(MetaEntityListParts_title)}</p>
 <div class="widget-contents" style="<%=styleAttr%>">
 <ul class="list-entity-name" data-webapiName="<%=SearchNameListCommand.WEBAPI_NAME%>" data-viewAction="<c:out value="<%=viewAction%>" />">
