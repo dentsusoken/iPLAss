@@ -384,13 +384,21 @@ public class MetaEntityListParts extends MetaTemplateParts {
 					}
 				}
 
-				request.setAttribute("entityListParts", currentConfig());
-				request.setAttribute("searchFormView", form);
-				request.setAttribute("title", title);
+				request.setAttribute("MetaEntityListParts_entityListParts", currentConfig());
+				request.setAttribute("MetaEntityListParts_searchFormView", form);
+				request.setAttribute("MetaEntityListParts_title", title);
 			}
 
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
+				RequestContext request = WebUtil.getRequestContext();
+				request.removeAttribute("MetaEntityListParts_entityListParts");
+				request.removeAttribute("MetaEntityListParts_searchFormView");
+				request.removeAttribute("MetaEntityListParts_title");
+				// partsCnt は削除NG（∵ 呼び出し元 TopViewHandler.loadParts() がHttpServletRequest 経由で参照するため）
+				// TODO: とは言え、この対応は「その場しのぎ」に見える（∵ clearAttribute() の本来の責務は setAttribute() でセットした属性のクリーンアップのはず）
+				// 使われる側が呼び出し元の実装に依存するのは、設計上好ましくない
+				// partsCnt を管理する責務を負うのは HttpServletRequest？RequestContext？設計が曖昧な可能性あり
 			}
 
 			private boolean checkEntity() {
