@@ -1120,8 +1120,9 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String deleteItem = "deleteItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+				String deleteItem = "deleteUniqueRefItem(" 
+					+ "'" + StringUtil.escapeJavaScript(liId) + "'"
+					+ ", " + isMultiple
 					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
@@ -1184,8 +1185,9 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String deleteItem = "deleteItem(" 
+				String deleteItem = "deleteUniqueRefItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+					+ ", " + isMultiple
 					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
@@ -1227,6 +1229,11 @@ $(function() {
 
 		if (length == 0) {
 			String liId = "li_" + propName + "0";
+
+			String deleteItem = "deleteUniqueRefItem(" 
+				+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+				+ ", " + isMultiple
+				+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1254,21 +1261,8 @@ $(function() {
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
-<%
-			if (isMultiple) {
-				String deleteItem = "deleteItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
-					+ ")";
-%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
-<%
-			} else {
-%>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"/>
-<%
-			}
-%>
 </span>
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value=""/>
 </li>
