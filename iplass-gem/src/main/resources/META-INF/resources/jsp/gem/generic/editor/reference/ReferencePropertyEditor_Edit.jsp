@@ -1487,7 +1487,7 @@ $(function() {
 				String deleteItem = "deleteUniqueRefItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'"
 					+ ", " + isMultiple
-					+ ", " + toggleAddBtnFunc
+					+ ", " + (isMultiple ? toggleAddBtnFunc : null)
 					+ ")";
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
