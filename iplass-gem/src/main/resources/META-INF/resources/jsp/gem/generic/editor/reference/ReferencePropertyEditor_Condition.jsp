@@ -288,6 +288,14 @@
 			return actions.contains(actionType);
 		}
 	}
+	
+	// UniqueRefItemの削除関数呼び出し文字列を生成
+	String getDeleteUniqueRefItemFunc(String liId, boolean isMultiple) {
+		return "deleteUniqueRefItem(" 
+				+ "'" + StringUtil.escapeJavaScript(liId) + "'"
+				+ ", " + isMultiple
+				+ ")";
+	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -1152,10 +1160,7 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String deleteItem = "deleteUniqueRefItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'"
-					+ ", " + isMultiple
-					+ ")";
+				String deleteItem = getDeleteUniqueRefItemFunc(liId,isMultiple);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1217,10 +1222,7 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String deleteItem = "deleteUniqueRefItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'"
-					+ ", " + isMultiple
-					+ ")";
+				String deleteItem = getDeleteUniqueRefItemFunc(liId,isMultiple);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1262,10 +1264,7 @@ $(function() {
 		if (length == 0) {
 			String liId = "li_" + propName + "0";
 
-			String deleteItem = "deleteUniqueRefItem(" 
-				+ "'" + StringUtil.escapeJavaScript(liId) + "'"
-				+ ", " + isMultiple
-				+ ")";
+			String deleteItem = getDeleteUniqueRefItemFunc(liId,isMultiple);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
