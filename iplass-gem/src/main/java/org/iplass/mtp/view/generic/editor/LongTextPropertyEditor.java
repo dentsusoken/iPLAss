@@ -36,7 +36,10 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
 		@Jsp(path = "/jsp/gem/generic/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM),
-		@Jsp(path = "/jsp/gem/aggregation/unit/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
+		@Jsp(path = "/jsp/gem/aggregation/unit/editor/StringPropertyEditor.jsp", key = ViewConst.DESIGN_TYPE_GEM_AGGREGATION),
+		@Jsp(
+				path = "/jsp/gem/spreadsheet/element/section/editor/SpreadSheetFilterStringPropertyEditor.jsp",
+				key = ViewConst.DESIGN_TYPE_GEM_SPREADSHEET)
 })
 @IgnoreField({ "searchInRange", "hideSearchConditionFrom", "hideSearchConditionTo", "hideSearchConditionRangeSymbol", "searchExactMatchCondition" })
 public class LongTextPropertyEditor extends StringPropertyEditor {
