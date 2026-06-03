@@ -288,6 +288,14 @@
 			return actions.contains(actionType);
 		}
 	}
+	
+	// UniqueRefItemの削除関数呼び出し文字列を生成
+	String getDeleteUniqueRefItemFunc(String liId, boolean isMultiple) {
+		return "deleteUniqueRefItem(" 
+				+ "'" + StringUtil.escapeJavaScript(liId) + "'"
+				+ ", " + isMultiple
+				+ ")";
+	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -1152,9 +1160,7 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String deleteItem = "deleteItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
-					+ ")";
+				String deleteItem = getDeleteUniqueRefItemFunc(liId,isMultiple);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1216,9 +1222,7 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String deleteItem = "deleteItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
-					+ ")";
+				String deleteItem = getDeleteUniqueRefItemFunc(liId,isMultiple);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1259,6 +1263,8 @@ $(function() {
 
 		if (length == 0) {
 			String liId = "li_" + propName + "0";
+
+			String deleteItem = getDeleteUniqueRefItemFunc(liId,isMultiple);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1286,21 +1292,8 @@ $(function() {
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
-<%
-			if (isMultiple) {
-				String deleteItem = "deleteItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
-					+ ")";
-%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
-<%
-			} else {
-%>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"/>
-<%
-			}
-%>
 </span>
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value=""/>
 </li>
