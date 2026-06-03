@@ -1171,25 +1171,6 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, de
 }
 
 /**
- * 検索画面、編集画面 参照プロパティ ユニーク項目削除
- *
- * @param liId 参照アイテムのID
- * @param isMultiple 多重度複数を許可するか
- * @param delCallback 削除時のCallback
- */
-function deleteUniqueRefItem(liId, isMultiple, delCallback) {
-	if (isMultiple) {
-		// 多重度が複数の場合はアイテムを削除
-		deleteItem(liId, delCallback);
-	} else {
-		// 多重度が1の場合は値をクリア
-		const $txt = $("#uniq_txt_" + es(liId));
-		$txt.val("");
-		$txt.change();
-	}
-}
-
-/**
  * 参照画面 ユニーク項目追加
  *
  * @param ulId
@@ -1245,8 +1226,8 @@ function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, fun
 
 		//selectボタンにidを設定
 		$selBtn.attr("id", "sel_btn_" + newId);
-		//削除ボタンのclickを設定(追加可能なので多重度複数)
-		$delBtn.click(function() {deleteUniqueRefItem(copyId, true, delCallback);});
+		//削除ボタンのclickを設定
+		$delBtn.click(function() {deleteItem(copyId, delCallback);});
 
 		$copy.css("display", "");
 		$copy.refUnique();

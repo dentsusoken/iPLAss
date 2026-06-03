@@ -1484,15 +1484,30 @@ $(function() {
 
 			if (!hideDeleteButton && updatable) {
 
-				String deleteItem = "deleteUniqueRefItem(" 
-					+ "'" + StringUtil.escapeJavaScript(liId) + "'"
-					+ ", " + isMultiple
-					+ ", " + (isMultiple ? toggleAddBtnFunc : null)
-					+ ")";
+				if (isMultiple) {
+					String deleteItem = "deleteItem(" 
+						+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
+						+ ", " + toggleAddBtnFunc
+						+ ")";
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
 <%
+				} else {
+					// 多重度が1の場合は、削除ではなく値をクリアする
+					String clearUniqueRefFunc = "clearUniqueBtn_" + StringUtil.escapeJavaScript(propName);
+%>
+<script type="text/javascript">
+function <%=clearUniqueRefFunc%>() {
+	const $txt = $("#uniq_txt_" + es("<%=StringUtil.escapeJavaScript(liId)%>"));
+	$txt.val("");
+	$txt.change();
+}
+</script>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
+ onclick="<c:out value="<%=clearUniqueRefFunc %>"/>()"/>
+<%
+				}
 			}
 %>
 </span>
