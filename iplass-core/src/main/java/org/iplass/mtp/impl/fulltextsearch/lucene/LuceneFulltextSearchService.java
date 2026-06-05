@@ -518,9 +518,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSearchService {
 						.getIndexDir(eh.getMetaData()
 								.getId());
 				if (dir != null) {
-					try (IndexWriter writer = new IndexWriter(dir.getDirectory(),
-							new IndexWriterConfig(analyzerSetting.getAnalyzer(tenantId, eh.getMetaData()
-									.getName())))) {
+					try (EntityIndexWriter writer = new EntityIndexWriter(tenantId, eh.getMetaData())) {
 						Term term = new Term("tenant_id", String.valueOf(tenantId));
 						writer.deleteDocuments(term);
 					} catch (IOException e) {
