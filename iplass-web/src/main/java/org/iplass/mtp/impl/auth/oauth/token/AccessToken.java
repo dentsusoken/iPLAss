@@ -19,11 +19,19 @@
  */
 package org.iplass.mtp.impl.auth.oauth.token;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.iplass.mtp.auth.User;
 
-public abstract class AccessToken {
+/**
+ * AccessToken
+ *
+ * @author DENTSU SOKEN INC.
+ */
+public abstract class AccessToken implements Serializable {
+	/** SerialVersionUID */
+	private static final long serialVersionUID = -5246481800150962189L;
 	
 	public abstract RefreshToken getRefreshToken();
 	public abstract List<String> getGrantedScopes();

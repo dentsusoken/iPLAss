@@ -29,7 +29,14 @@ import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
+/**
+ * OpaqueAccessToken
+ *
+ * @author DENTSU SOKEN INC.
+ */
 public class OpaqueAccessToken extends AccessToken {
+	/** SerialVersionUID */
+	private static final long serialVersionUID = 6843788849936194079L;
 	
 	private String series;
 	private String tokenEncoded;

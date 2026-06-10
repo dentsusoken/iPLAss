@@ -19,7 +19,16 @@
  */
 package org.iplass.mtp.impl.auth.oauth.token;
 
-public abstract class RefreshToken {
+import java.io.Serializable;
+
+/**
+ * RefreshToken
+ *
+ * @author DENTSU SOKEN INC.
+ */
+public abstract class RefreshToken implements Serializable {
+	/** SerialVersionUID */
+	private static final long serialVersionUID = 6799651154697085030L;
 	
 	public abstract String getTokenEncoded();
 	public abstract long getExpiresIn();

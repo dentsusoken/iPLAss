@@ -22,7 +22,14 @@ package org.iplass.mtp.impl.auth.oauth.token.opaque;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
+/**
+ * OpaqueRefreshToken
+ *
+ * @author DENTSU SOKEN INC.
+ */
 public class OpaqueRefreshToken extends RefreshToken {
+	/** SerialVersionUID */
+	private static final long serialVersionUID = -7991698445157501978L;
 	
 	private String series;
 	private String tokenEncoded;
