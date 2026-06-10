@@ -26,7 +26,14 @@ import org.iplass.mtp.auth.User;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
+/**
+ * RemoteAccessToken
+ *
+ * @author DENTSU SOKEN INC.
+ */
 public class RemoteAccessToken extends AccessToken {
+	/** SerialVersionUID */
+	private static final long serialVersionUID = 5425823644475667735L;
 	
 	private String tokenEncoded;
 	private User user;
