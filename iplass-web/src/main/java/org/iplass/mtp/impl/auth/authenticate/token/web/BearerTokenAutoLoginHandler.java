@@ -96,7 +96,14 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 		if (bearerTokenHeaderOnly) {
 			return false;
 		}
-		if (!"application/x-www-form-urlencoded".equals(tokenSupplier.getContentType())) {
+
+		var contentType = tokenSupplier.getContentType();
+		if (contentType == null) {
+			return false;
+		}
+		// application/x-www-form-urlencoded; charset=UTF-8 のように、セミコロンで区切られた場合があるため、区切った最初の部分を検査する。
+		var baseContentType = contentType.split(";", 2)[0].trim();
+		if (!"application/x-www-form-urlencoded".equals(baseContentType)) {
 			return false;
 		}
 		if (tokenSupplier.methodType() == null || tokenSupplier.methodType() == MethodType.GET) {//reject DELETE?
@@ -162,7 +169,7 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			} else {
 				AuthToken token = new AuthToken(tokenStr);
 				logger.warn("login session is avaliable, but another bearer token is specified. currentUser:" + user.getAccount()
-						.getUnmodifiableUniqueKey() + ", token:" + token.getType() + "." + token.getSeries() + "...");
+				.getUnmodifiableUniqueKey() + ", token:" + token.getType() + "." + token.getSeries() + "...");
 			}
 
 			return AutoLoginInstruction.THROUGH;
