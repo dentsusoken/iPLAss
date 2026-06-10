@@ -169,7 +169,7 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			} else {
 				AuthToken token = new AuthToken(tokenStr);
 				logger.warn("login session is avaliable, but another bearer token is specified. currentUser:" + user.getAccount()
-				.getUnmodifiableUniqueKey() + ", token:" + token.getType() + "." + token.getSeries() + "...");
+						.getUnmodifiableUniqueKey() + ", token:" + token.getType() + "." + token.getSeries() + "...");
 			}
 
 			return AutoLoginInstruction.THROUGH;
