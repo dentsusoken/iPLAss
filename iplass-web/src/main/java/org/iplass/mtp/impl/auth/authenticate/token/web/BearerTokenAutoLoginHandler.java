@@ -46,6 +46,7 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(BearerTokenAutoLoginHandler.class);
 
+	@Deprecated(forRemoval = true, since = "4.1.0")
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 	public static final String AUTH_SCHEME_BEARER = "Bearer";
 	public static final String PARAM_ACCESS_TOKEN = "access_token";
@@ -191,9 +192,11 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			Credential cre = authTokenHandler.toCredential(token);
 			if (!(cre instanceof TokenCredential)) {
 				// TokenCredential を実装していない Credential が返却された場合は、ログに警告を出す。
-				var clessName = (cre != null) ? cre.getClass()
+				var className = (cre != null) ? cre.getClass()
 						.getName() : "null";
-				logger.warn("Created credential does not implement TokenCredential. class: {}.", clessName);
+				logger.warn(
+						"Created credential does not implement TokenCredential.  class: {}. If rejectAmbiguousRequest=true, the token verification will fail.",
+						className);
 			}
 
 			return new AutoLoginInstruction(cre);

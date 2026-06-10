@@ -31,7 +31,7 @@ import org.iplass.mtp.webapi.definition.MethodType;
  */
 public interface BearerTokenSupplier {
 	/** Authorizationヘッダーのキー名 */
-	static final String HEADER_AUTHORIZATION = BearerTokenAutoLoginHandler.HEADER_AUTHORIZATION;
+	static final String HEADER_AUTHORIZATION = "Authorization";
 
 	/**
 	 * BearerTokenをサポートするかどうかを返します。
