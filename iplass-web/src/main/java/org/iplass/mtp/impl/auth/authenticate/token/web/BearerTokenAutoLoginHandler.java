@@ -98,7 +98,8 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 		if (!"application/x-www-form-urlencoded".equals(tokenSupplier.getContentType())) {
 			return false;
 		}
-		if (tokenSupplier.methodType() == MethodType.GET) {//reject DELETE?
+		if (tokenSupplier.methodType() == null || tokenSupplier.methodType() == MethodType.GET) {//reject DELETE?
+			// null もしくは GET は、フォームパラメータを受け取ることができないため、フォームパラメータからのトークン取得は行わない。
 			return false;
 		}
 		return true;
@@ -188,6 +189,13 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			}
 
 			Credential cre = authTokenHandler.toCredential(token);
+			if (!(cre instanceof TokenCredential)) {
+				// TokenCredential を実装していない Credential が返却された場合は、ログに警告を出す。
+				var clessName = (cre != null) ? cre.getClass()
+						.getName() : "null";
+				logger.warn("Created credential does not implement TokenCredential. class: {}.", clessName);
+			}
+
 			return new AutoLoginInstruction(cre);
 		}
 	}
@@ -197,8 +205,9 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 		if (!sessionService.isSessionStateless()) {
 			//sessionにtokenを保存。
 			Session s = sessionService.getSession(false);
-			if (s != null) {
-				s.setAttribute(SESSION_ATTRIBUTE_BEARER_TOKEN, ((TokenCredential) ali.getCredential()).getToken());
+			var credential = ali.getCredential();
+			if (s != null && credential instanceof TokenCredential tokenCredential) {
+				s.setAttribute(SESSION_ATTRIBUTE_BEARER_TOKEN, tokenCredential.getToken());
 			}
 		}
 	}
