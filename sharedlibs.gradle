@@ -168,6 +168,8 @@ ext {
 		'net.sf.jasperreports:jasperreports': '7.0.7',
 		'net.sf.jasperreports:jasperreports-excel-poi': '7.0.7',
 		'net.sf.jasperreports:jasperreports-pdf': '7.0.7',
+		// NOTE groovy をサポートする場合は、以下のライブラリが必要。テンプレート中で groovy を利用しない場合不要。
+		'net.sf.jasperreports:jasperreports-groovy': '7.0.7',
 		'com.github.librepdf:openpdf': '2.0.2',
 
 		// FIXME Milestone version used. Delete this comment when you change to the release version.

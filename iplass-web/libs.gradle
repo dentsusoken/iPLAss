@@ -51,6 +51,9 @@ dependencies {
 		// openpdf は必要な修正が含まれているバージョンを利用する
 		exclude group: 'com.github.librepdf', module: 'openpdf'
 	}
+	// TODO groovy をサポートする場合は、以下のライブラリが必要。テンプレート中で groovy を利用しない場合不要。
+	// 推移依存の整理は実施していないので調整が必要
+	implementation (sharedLib('net.sf.jasperreports:jasperreports-groovy'))
 	// batik ( for use jasperrreports )
 	runtimeOnly ('org.apache.xmlgraphics:batik-anim:1.19') {
 		exclude group: 'org.apache.xmlgraphics', module: 'batik-dom'
