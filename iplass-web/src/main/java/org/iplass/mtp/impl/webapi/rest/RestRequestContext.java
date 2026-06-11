@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.webapi.rest;
 
+import org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenSupplier;
 import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.web.WebRequestConstants;
@@ -31,7 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Request;
 
-public class RestRequestContext extends WebRequestContext {
+public class RestRequestContext extends WebRequestContext implements BearerTokenSupplier {
 	static final String WEB_API_RUNTIME_NAME = "mtp.restRequestContext.webApiRuntime";;
 	static final String MAX_BODY_SIZE = "mtp.restRequestContext.maxBodySize";;
 
@@ -69,6 +70,7 @@ public class RestRequestContext extends WebRequestContext {
 		this.requestType = requestType;
 	}
 
+	@Override
 	public boolean supportBearerToken() {
 		return supportBearerToken;
 	}
@@ -77,6 +79,7 @@ public class RestRequestContext extends WebRequestContext {
 		return rsRequest;
 	}
 
+	@Override
 	public MethodType methodType() {
 		return methodType;
 	}
@@ -125,5 +128,19 @@ public class RestRequestContext extends WebRequestContext {
 		default:
 			super.setAttribute(name, value);
 		}
+	}
+
+	@Override
+	public String getAuthorizationHeaderValue() {
+		return getServletRequest().getHeader(HEADER_AUTHORIZATION);
+	}
+
+	@Override
+	public String getContentType() {
+		return getServletRequest().getContentType();
+	}
+
+	private HttpServletRequest getServletRequest() {
+		return (HttpServletRequest) getAttribute(WebRequestConstants.SERVLET_REQUEST);
 	}
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2018 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,15 +23,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplass.mtp.auth.login.Credential;
+import org.iplass.mtp.auth.login.TokenCredential;
 
 /**
  * OAuth2のアクセストークンを表現するCredential。
- * 
+ *
  * @author K.Higuchi
  *
  */
-public class AccessTokenCredential implements Credential, Serializable {
+public class AccessTokenCredential implements TokenCredential, Serializable {
 	//for internal use
 
 	private static final long serialVersionUID = -191370831048492625L;
@@ -57,6 +57,7 @@ public class AccessTokenCredential implements Credential, Serializable {
 		return id;
 	}
 
+	@Override
 	public String getToken() {
 		return token;
 	}
@@ -76,7 +77,7 @@ public class AccessTokenCredential implements Credential, Serializable {
 	@Override
 	public void setAuthenticationFactor(String name, Object value) {
 		if (additionalAuthenticationFactor == null) {
-			additionalAuthenticationFactor = new HashMap<String, Object>();
+			additionalAuthenticationFactor = new HashMap<>();
 		}
 		additionalAuthenticationFactor.put(name, value);
 	}
