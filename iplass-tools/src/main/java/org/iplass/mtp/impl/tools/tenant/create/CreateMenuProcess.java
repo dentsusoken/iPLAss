@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2018 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,10 @@ import org.iplass.mtp.view.menu.MenuItemManager;
 import org.iplass.mtp.view.menu.MenuTree;
 import org.iplass.mtp.view.menu.MenuTreeManager;
 
+/**
+ * テナントメニュー作成プロセス
+ * @author DENTSU SOKEN INC.
+ */
 public class CreateMenuProcess implements TenantCreateProcess {
 
 	/** 初期メニュー用の定義名 */
@@ -42,7 +46,7 @@ public class CreateMenuProcess implements TenantCreateProcess {
 	/** 権限情報Node子アイテム名	 */
 	private static final String[] PERMISSION_NODE_CHILDREN = {
 			"mtp/auth/Role", "mtp/auth/ActionPermission", "mtp/auth/WebApiPermission", "mtp/auth/EntityPermission", "mtp/auth/WorkflowPermission",
-			"mtp/auth/CubePermission" };
+			"mtp/auth/CubePermission", "mtp/auth/McpPermission" };
 
 	/** 基本情報Node名	 */
 	private static final String STANDARD_NODE_NAME = "standard_node";
