@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2018 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -21,7 +21,7 @@ package org.iplass.mtp.impl.auth.authenticate.token.web;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.login.Credential;
-import org.iplass.mtp.auth.login.token.SimpleAuthTokenCredential;
+import org.iplass.mtp.auth.login.TokenCredential;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.UserContext;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginHandler;
@@ -31,18 +31,14 @@ import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.impl.session.Session;
 import org.iplass.mtp.impl.session.SessionService;
-import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 /**
  * RFC6750ベースのAutoLoginHandler。
- * 
+ *
  * @author K.Higuchi
  *
  */
@@ -50,6 +46,7 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(BearerTokenAutoLoginHandler.class);
 
+	@Deprecated(forRemoval = true, since = "4.1.0")
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 	public static final String AUTH_SCHEME_BEARER = "Bearer";
 	public static final String PARAM_ACCESS_TOKEN = "access_token";
@@ -95,35 +92,43 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 		this.authTokenHandler = authTokenHandler;
 	}
 
-	private boolean isForm(HttpServletRequest sr, RestRequestContext rrc) {
+	private boolean isForm(BearerTokenSupplier tokenSupplier) {
 		if (bearerTokenHeaderOnly) {
 			return false;
 		}
-		if (!"application/x-www-form-urlencoded".equals(sr.getContentType())) {
+
+		var contentType = tokenSupplier.getContentType();
+		if (contentType == null) {
 			return false;
 		}
-		if (rrc.methodType() == MethodType.GET) {//reject DELETE?
+		// application/x-www-form-urlencoded; charset=UTF-8 のように、セミコロンで区切られた場合があるため、区切った最初の部分を検査する。
+		var baseContentType = contentType.split(";", 2)[0].trim();
+		if (!"application/x-www-form-urlencoded".equals(baseContentType)) {
+			return false;
+		}
+		if (tokenSupplier.methodType() == null || tokenSupplier.methodType() == MethodType.GET) {//reject DELETE?
+			// null もしくは GET は、フォームパラメータを受け取ることができないため、フォームパラメータからのトークン取得は行わない。
 			return false;
 		}
 		return true;
 	}
 
-	private String tokenFromRequest(RequestContext req) {
+	private String tokenFromRequest(RequestContext req, BearerTokenSupplier tokenSupplier) {
 		String token = null;
-		HttpServletRequest sr = (HttpServletRequest) req.getAttribute(WebRequestConstants.SERVLET_REQUEST);
-		String authHeaderValue = sr.getHeader(HEADER_AUTHORIZATION);
+		String authHeaderValue = tokenSupplier.getAuthorizationHeaderValue();
 		if (authHeaderValue != null && authHeaderValue.regionMatches(true, 0, AUTH_SCHEME_BEARER + " ", 0, AUTH_SCHEME_BEARER.length() + 1)) {
 			token = authHeaderValue.substring(AUTH_SCHEME_BEARER.length() + 1)
 					.trim();
 			logger.debug("handle bearer token from HTTP header");
 		} else {
-			if (isForm(sr, (RestRequestContext) req)) {
+			if (isForm(tokenSupplier)) {
 				token = req.getParam(PARAM_ACCESS_TOKEN);
 				if (token != null) {
 					logger.debug("handle bearer token from body(form parameter)");
 				}
 			}
 		}
+
 		if (token != null && token.length() > 0) {
 			return token;
 		} else {
@@ -135,17 +140,17 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 	public AutoLoginInstruction handle(RequestContext req, boolean isLogined, UserContext user) {
 		if (isLogined) {
 			//WebAPIに限定
-			if (!(req instanceof RestRequestContext)) {
+			if (!(req instanceof BearerTokenSupplier)) {
 				return AutoLoginInstruction.ERROR;
 			}
 
 			//BearerTokenをサポートしているWebAPIに限定
-			RestRequestContext restReq = (RestRequestContext) req;
-			if (!restReq.supportBearerToken()) {
+			BearerTokenSupplier tokenSupplier = (BearerTokenSupplier) req;
+			if (!tokenSupplier.supportBearerToken()) {
 				return AutoLoginInstruction.ERROR;
 			}
 
-			String tokenStr = tokenFromRequest(req);
+			String tokenStr = tokenFromRequest(req, tokenSupplier);
 			if (tokenStr == null) {
 				return AutoLoginInstruction.THROUGH;
 			}
@@ -169,17 +174,17 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 
 			return AutoLoginInstruction.THROUGH;
 		} else {
-			if (!(req instanceof RestRequestContext)) {
+			if (!(req instanceof BearerTokenSupplier)) {
 				return AutoLoginInstruction.THROUGH;
 			}
 
 			//BearerTokenをサポートしているWebAPIに限定
-			RestRequestContext restReq = (RestRequestContext) req;
-			if (!restReq.supportBearerToken()) {
+			BearerTokenSupplier tokenSupplier = (BearerTokenSupplier) req;
+			if (!tokenSupplier.supportBearerToken()) {
 				return AutoLoginInstruction.THROUGH;
 			}
 
-			String tokenStr = tokenFromRequest(req);
+			String tokenStr = tokenFromRequest(req, tokenSupplier);
 			if (tokenStr == null) {
 				return AutoLoginInstruction.THROUGH;
 			}
@@ -192,6 +197,15 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			}
 
 			Credential cre = authTokenHandler.toCredential(token);
+			if (!(cre instanceof TokenCredential)) {
+				// TokenCredential を実装していない Credential が返却された場合は、ログに警告を出す。
+				var className = (cre != null) ? cre.getClass()
+						.getName() : "null";
+				logger.warn(
+						"Created credential does not implement TokenCredential.  class: {}. If rejectAmbiguousRequest=true, the token verification will fail.",
+						className);
+			}
+
 			return new AutoLoginInstruction(cre);
 		}
 	}
@@ -201,8 +215,9 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 		if (!sessionService.isSessionStateless()) {
 			//sessionにtokenを保存。
 			Session s = sessionService.getSession(false);
-			if (s != null) {
-				s.setAttribute(SESSION_ATTRIBUTE_BEARER_TOKEN, ((SimpleAuthTokenCredential) ali.getCredential()).getToken());
+			var credential = ali.getCredential();
+			if (s != null && credential instanceof TokenCredential tokenCredential) {
+				s.setAttribute(SESSION_ATTRIBUTE_BEARER_TOKEN, tokenCredential.getToken());
 			}
 		}
 	}
