@@ -96,7 +96,7 @@ ext {
 		'org.apache.commons:commons-text': '1.15.0',
 		'org.apache.commons:commons-collections4': '4.5.0',
 		'org.apache.commons:commons-pool2': '2.13.1',
-		'commons-io:commons-io': '2.20.0',
+		'commons-io:commons-io': '2.22.0',
 		'commons-beanutils:commons-beanutils': '1.11.0',
 		'commons-codec:commons-codec': '1.19.0',
 		
