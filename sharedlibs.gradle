@@ -132,7 +132,8 @@ ext {
 		// by bom
 		'org.apache.groovy:groovy-bom': '4.0.32',
 		
-		'com.fasterxml.jackson:jackson-bom': '2.21.1',//by bom
+		// by bom
+		'com.fasterxml.jackson:jackson-bom': '2.21.4',
 		
 		'net.sf.supercsv:super-csv': '2.4.0',
 		
