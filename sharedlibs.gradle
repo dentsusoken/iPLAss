@@ -184,7 +184,7 @@ ext {
 		// google
 		'com.google.auth:google-auth-library-oauth2-http': '1.24.1',
 		
-		'org.junit:junit-bom': '5.14.1',
+		'org.junit:junit-bom': '5.14.4',
 		
 		//webjars(admin)
 		'org.webjars.npm:ace-builds': '1.35.3',
