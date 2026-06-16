@@ -143,7 +143,7 @@ ext {
 		'org.slf4j:jcl-over-slf4j': '2.0.18',
 		'org.slf4j:log4j-over-slf4j': '2.0.18',
 		'org.apache.logging.log4j:log4j-to-slf4j': '2.26.0',
-		'ch.qos.logback:logback-classic': '1.5.18',
+		'ch.qos.logback:logback-classic': '1.5.34',
 		'net.logstash.logback:logstash-logback-encoder': '8.1',
 		
 		'org.bouncycastle:bcjmail-jdk18on': '1.84',
