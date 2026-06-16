@@ -132,15 +132,16 @@ ext {
 		// by bom
 		'org.apache.groovy:groovy-bom': '4.0.32',
 		
-		'com.fasterxml.jackson:jackson-bom': '2.21.1',//by bom
+		// by bom
+		'com.fasterxml.jackson:jackson-bom': '2.21.4',
 		
 		'net.sf.supercsv:super-csv': '2.4.0',
 		
 		'com.github.ben-manes.caffeine:caffeine': '3.1.8',
 		
-		'org.slf4j:slf4j-api': '2.0.17',
-		'org.slf4j:jcl-over-slf4j': '2.0.17',
-		'org.slf4j:log4j-over-slf4j': '2.0.17',
+		'org.slf4j:slf4j-api': '2.0.18',
+		'org.slf4j:jcl-over-slf4j': '2.0.18',
+		'org.slf4j:log4j-over-slf4j': '2.0.18',
 		'org.apache.logging.log4j:log4j-to-slf4j': '2.26.0',
 		'ch.qos.logback:logback-classic': '1.5.18',
 		'net.logstash.logback:logstash-logback-encoder': '8.1',
