@@ -78,7 +78,7 @@ ext {
 		// Jakarta JSP - tomcat bundled
 		// apache tomcat bundled
 		// for jsp compilation
-		'org.apache.tomcat:tomcat-jasper': '10.1.26',
+		'org.apache.tomcat:tomcat-jasper': '10.1.55',
 
 		// Jakarta jstl
 		'org.glassfish.web:jakarta.servlet.jsp.jstl': '3.0.1',
