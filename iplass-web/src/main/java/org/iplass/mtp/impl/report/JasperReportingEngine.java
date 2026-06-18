@@ -22,7 +22,6 @@ package org.iplass.mtp.impl.report;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,14 +50,14 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.pdf.JRPdfExporter;
+import net.sf.jasperreports.pdf.SimplePdfExporterConfiguration;
+import net.sf.jasperreports.poi.export.JRXlsExporter;
 
 public class JasperReportingEngine implements ReportingEngine {
 
@@ -96,7 +95,7 @@ public class JasperReportingEngine implements ReportingEngine {
 
 		OutputFileType outputType = OutputFileType.convertOutputFileType(jasperModel.getType());
 
-		HashMap<String, Object> params = new HashMap<String, Object>();
+		HashMap<String, Object> params = new HashMap<>();
 		params.put(REQUEST_STR, request);
 		params.put(SESSION_STR, request.getSession());
 
@@ -168,14 +167,14 @@ public class JasperReportingEngine implements ReportingEngine {
 		}
 
 		// JasperPrintインスタンス生成
-		List<JasperPrint> jrList = new ArrayList<JasperPrint>();
+		List<JasperPrint> jrList = new ArrayList<>();
 		// 複数指定すれば、1つのPDFファイル上に複数の帳票が出力されるが現状、１ファイルのみ。
 		jrList.add(JasperFillManager.fillReport(jasperModel.getJrMain(), params, dataSource));
 
 		//Input
 		SimpleExporterInput input = SimpleExporterInput.getInstance(jrList);
 		//Output
-		SimpleOutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput((OutputStream) context.getResponse()
+		SimpleOutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput(context.getResponse()
 				.getOutputStream());
 
 		//出力形式毎に処理実施
@@ -242,6 +241,7 @@ public class JasperReportingEngine implements ReportingEngine {
 	 * supportFilesを取得します。
 	 * @return supportFiles
 	 */
+	@Override
 	public String[] getSupportFiles() {
 		return supportFiles;
 	}
