@@ -170,7 +170,7 @@ ext {
 		'io.netty:netty-resolver-dns': '4.1.132.Final',
 
 		'net.sf.jasperreports:jasperreports': '6.21.3',
-		'com.github.librepdf:openpdf': '2.0.2',
+		'com.github.librepdf:openpdf': '2.2.5',
 
 		// FIXME Milestone version used. Delete this comment when you change to the release version.
 		'org.apache.commons:commons-fileupload2-jakarta-servlet6': '2.0.0-M4',
