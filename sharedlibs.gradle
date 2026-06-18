@@ -127,8 +127,9 @@ ext {
 		'org.apache.poi:poi-scratchpad': '5.5.1',
 		'org.apache.poi:poi-ooxml': '5.5.1',
 		
-		'org.jxls:jxls': '3.0.0',
-		'org.jxls:jxls-poi': '3.0.0',
+		// Jxls
+		'org.jxls:jxls': '3.1.0',
+		'org.jxls:jxls-poi': '3.1.0',
 		
 		// by bom
 		'org.apache.groovy:groovy-bom': '4.0.32',
@@ -173,7 +174,7 @@ ext {
 		'net.sf.jasperreports:jasperreports-excel-poi': '7.0.7',
 		'net.sf.jasperreports:jasperreports-pdf': '7.0.7',
 		'net.sf.jasperreports:jasperreports-groovy': '7.0.7',
-		'com.github.librepdf:openpdf': '2.0.2',
+		'com.github.librepdf:openpdf': '2.2.5',
 
 		// FIXME Milestone version used. Delete this comment when you change to the release version.
 		'org.apache.commons:commons-fileupload2-jakarta-servlet6': '2.0.0-M4',
