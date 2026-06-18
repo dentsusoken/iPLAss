@@ -169,7 +169,11 @@ ext {
 		'io.netty:netty-transport': '4.1.132.Final',
 		'io.netty:netty-resolver-dns': '4.1.132.Final',
 
-		'net.sf.jasperreports:jasperreports': '6.21.3',
+		// jasperreports
+		'net.sf.jasperreports:jasperreports': '7.0.7',
+		'net.sf.jasperreports:jasperreports-excel-poi': '7.0.7',
+		'net.sf.jasperreports:jasperreports-pdf': '7.0.7',
+		'net.sf.jasperreports:jasperreports-groovy': '7.0.7',
 		'com.github.librepdf:openpdf': '2.2.5',
 
 		// FIXME Milestone version used. Delete this comment when you change to the release version.
