@@ -2,8 +2,7 @@ configurations {
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
 
-	// JasperReports 7 系の推移依存で xml-apis が含まれるが、JDK に含まれており種類によっては動作不良を起こすため除外する
-	// corretto21 jdk では動作不良を起こすことを確認した。
+	// JasperReports 7 系の推移依存で xml-apis が含まれるが、JDK に含まれており動作不良を起こすため除外する
 	all*.exclude group: 'xml-apis', module: 'xml-apis' 
 }
 
