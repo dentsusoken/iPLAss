@@ -43,6 +43,7 @@ dependencies {
 		// openpdf は 2 系のバージョンを利用する
 		exclude group: 'com.github.librepdf', module: 'openpdf'
 	}
+	implementation sharedLib('net.sf.jasperreports:jasperreports-jdt')
 	implementation sharedLib('net.sf.jasperreports:jasperreports-groovy')
 	// openpdf (for use jasperreports-pdf) 
 	runtimeOnly sharedLib('com.github.librepdf:openpdf')
