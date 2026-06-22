@@ -173,6 +173,7 @@ ext {
 		'net.sf.jasperreports:jasperreports': '7.0.7',
 		'net.sf.jasperreports:jasperreports-excel-poi': '7.0.7',
 		'net.sf.jasperreports:jasperreports-pdf': '7.0.7',
+		'net.sf.jasperreports:jasperreports-jdt': '7.0.7',
 		'net.sf.jasperreports:jasperreports-groovy': '7.0.7',
 		'com.github.librepdf:openpdf': '2.2.5',
 
