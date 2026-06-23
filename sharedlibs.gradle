@@ -104,10 +104,10 @@ ext {
 		'org.apache.httpcomponents.core5:httpcore5': '5.4.2',
 		'org.apache.httpcomponents.core5:httpcore5-h2': '5.4.2',
 		
-		//lucene
-		'org.apache.lucene:lucene-queryparser': '9.11.1',
-		'org.apache.lucene:lucene-analysis-kuromoji': '9.11.1',
-		'org.apache.lucene:lucene-backward-codecs': '9.11.1',
+		// lucene
+		'org.apache.lucene:lucene-queryparser': '10.4.0',
+		'org.apache.lucene:lucene-analysis-kuromoji': '10.4.0',
+		'org.apache.lucene:lucene-backward-codecs': '10.4.0',
 		
 		//tika
 		'org.apache.tika:tika-core': '3.2.2',
