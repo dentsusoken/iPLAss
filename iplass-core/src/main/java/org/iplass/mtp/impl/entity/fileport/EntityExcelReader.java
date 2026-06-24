@@ -221,6 +221,14 @@ public class EntityExcelReader extends EntityFileReader<EntityExcelReader> {
 		if (propertyDefinition != null && propertyDefinition.getType() == PropertyDefinitionType.BOOLEAN) {
 			return ConvertUtil.convertToString((int) cell.getNumericCellValue());
 		}
+		// セルタイプがNUMERICで、整数値の場合でも小数点がつく（100が100.0になる等）ので対応
+		if (propertyDefinition != null && propertyDefinition.getType() == PropertyDefinitionType.INTEGER) {
+			// 入力値が整数値の場合のみ整数値を文字列に変換する
+			double value = cell.getNumericCellValue();
+			if (value == (long) value) {
+				return ConvertUtil.convertToString((long) value);
+			}
+		}
 
 		// 上記以外は数値を返す
 		return ConvertUtil.convertToString(cell.getNumericCellValue());
