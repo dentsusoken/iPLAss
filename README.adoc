@@ -38,14 +38,14 @@ https://iplass.org/downloads/
 
 gradleでの定義例：
 
- implementation 'org.iplass:iplass-gem:4.0.20'
+ implementation 'org.iplass:iplass-gem:4.1.0'
 
 mavenでの設定例：
 
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>4.0.20</version>
+   <version>4.1.0</version>
    <type>pom</type>
  </dependency>
 
@@ -107,12 +107,17 @@ FCM経由でプッシュ通知を送信可能です。
 ## Branches
 
 ### master
-現在の最新のバージョン4.0.xのソースはmasterブランチです。
+現在の最新のバージョン4.1.xのソースはmasterブランチです。
+
+NOTE: Java21 / JakartaEE10ベースです
+
+### 4.0.x
+以前の安定版4.0.xのソースは4.0.xブランチです。
 
 NOTE: Java21 / JakartaEE10ベースです
 
 ### 3.2.x
-以前の最新の安定版3.2.xのソースは3.2.xブランチです。
+過去の安定版3.2.xのソースは3.2.xブランチです。
 
 NOTE: (Java8 | Java11 | Java17) / JakartaEE8(JavaEE8)ベースです
 
