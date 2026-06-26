@@ -1,6 +1,6 @@
 // https://github.com/jiakuan/gwt-gradle-plugin/issues/75
 plugins {
-  id "org.docstr.gwt" version "1.1.30"
+  id "org.docstr.gwt" version "2.2.9"
 }
 
 apply from: 'libs.gradle'
@@ -11,14 +11,21 @@ dependencies {
 	implementation project(':iplass-tools')
 }
 
-apply plugin: 'gwt-compiler'
+//apply plugin: 'org.docstr.gwt'
 apply plugin: 'eclipse'
 
 eclipse {
 
 	//gwtSdkをClassPathに追加
+	// TODO gwtDev と gwtDevRuntimeClasspath があるので、どちらが必要かは確認すること
 	classpath {
-		plusConfigurations += [ configurations.gwtSdk ]
+		plusConfigurations += [ configurations.gwtDev ]
+	}
+}
+
+configurations {
+	gwtDev {
+		canBeResolved = true
 	}
 }
 
@@ -56,16 +63,18 @@ def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
 def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 
 gwt {
-	src = files(buildSrcGwt)
-	// TODO gwt plugin jakarta-servlet 版に対応していないので、バージョンを指定し依存関係を設定しない
-	//gwtVersion = this.gwtVersion
-	modules 'org.iplass.adminconsole.AdminConsole'
+	extraSourceDirs = files(buildSrcGwt)
+	gwtVersion = this.gwtVersion
+	modules = ['org.iplass.adminconsole.AdminConsole']
 	minHeapSize = '512M'
 	maxHeapSize = '2048M'
 	logLevel = 'INFO'
 	sourceLevel = 'auto'
 	compiler.strict = true
+	jakarta = true
 }
+
+test {}
 
 jar {
 	dependsOn('compileGwt')
@@ -91,7 +100,7 @@ task processGwtResources(type: Sync) {
 	from buildSrcGwtTrans
 	into buildSrcGwt
 }
-tasks.compileGwt.dependsOn processGwtResources
+//tasks.gwtCompile.dependsOn processGwtResources
 
 task copyGwtTransSrc(type: Sync) {
 
