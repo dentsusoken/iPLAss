@@ -155,10 +155,10 @@ ext {
 		// gwt
 		// https://github.com/jiakuan/gwt-gradle-plugin
 		// https://github.com/jiakuan/gwt-gradle-plugin/blob/main/src/main/java/org/docstr/gradle/plugins/gwt/GwtBasePlugin.java
-		'org.gwtproject:gwt-dev': '2.11.0',
-		'org.gwtproject:gwt-user': '2.11.0',
-		'org.gwtproject:gwt-servlet-jakarta': '2.11.0',
-		'org.gwtproject:gwt-codeserver': '2.11.0',
+		'org.gwtproject:gwt-dev': '2.13.1',
+		'org.gwtproject:gwt-user': '2.13.1',
+		'org.gwtproject:gwt-servlet-jakarta': '2.13.1',
+		'org.gwtproject:gwt-codeserver': '2.13.1',
 
 		'org.infinispan:infinispan-core': '15.0.4.Final',
 		

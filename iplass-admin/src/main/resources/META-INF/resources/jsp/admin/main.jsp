@@ -86,7 +86,8 @@
 %>
 
 <%
-	String scVersion = "13.0p_2022-11-05.js";				//SmartGWT変更時に設定
+	// SmartGWT変更時バージョン設定（ com.smartgwt.client.Version.getSCVersionNumber() を参照 ）
+	String scVersion = "14.1p_2026-06-24.js";
 
 	String scVersionParam = toHexString(scVersion.getBytes());
 
