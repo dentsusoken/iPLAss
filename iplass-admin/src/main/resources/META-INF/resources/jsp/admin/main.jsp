@@ -89,7 +89,7 @@
 	// SmartGWT変更時バージョン設定（ com.smartgwt.client.Version.getSCVersionNumber() を参照 ）
 	String scVersion = "14.1p_2026-06-24.js";
 
-	String scVersionParam = toHexString(scVersion.getBytes());
+	String scVersionParam = toHexString(scVersion.getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
 	//テナント
 	Tenant tenant = TemplateUtil.getTenant();
