@@ -735,6 +735,15 @@ function setData(list, count) {
 		grid.addRowData(index + 1, this);
 	});
 
+<%
+	if (section.getDispHeight() > 0) {
+%>
+	//データ描画後に幅を再計算してjqGridにスクロールバー幅を確保させる(列幅・横スクロールは保持)。
+	grid.jqGrid("setGridWidth", $("#gbox_searchResult").width(), false);
+<%
+	}
+%>
+
 	if ($("audio, video").length > 0) {
 		$('audio, video').mediaelementplayer({
 			success: function(player, node) {
