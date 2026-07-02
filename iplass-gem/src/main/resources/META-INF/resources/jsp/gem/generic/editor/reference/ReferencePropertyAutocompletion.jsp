@@ -101,8 +101,10 @@ var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
 
+if (value.length > 0) {
+	$("#ul_" + _propName).children("li").remove();
+}
 for (var i = 0; i < value.length; i++) {
-	$("#li_" + _propName + i).remove();
 	if (!value[i]) {
 		continue;
 	}
@@ -157,8 +159,10 @@ var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
 
+if (value.length > 0) {
+	$("#ul_" + _propName).children("li").remove();
+}
 for (var i = 0; i < value.length; i++) {
-	$("#li_" + _propName + i).remove();
 	if (!value[i]) {
 		continue;
 	}
@@ -170,26 +174,42 @@ toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 %>
+<%-- Dummy行が存在するので multiplicity + 1。ただし無制限(-1)は-1のまま(canAddItemの無制限判定を壊さない) --%>
+var uniqueMultiplicity = (multiplicity == -1 ? -1 : multiplicity + 1);
 var callback = function() {
-	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+	toggleRefInsertBtn("ul_" + _propName, uniqueMultiplicity, "id_addBtn_" + _propName);
 };
 
-if (value.length > 0) {
-	$("#ul_" + _propName).children(":visible").remove();
-}
+<%-- 設定すべき実値(非null)が1件でもあるか --%>
+var hasValue = false;
 for (var i = 0; i < value.length; i++) {
-	if (!value[i]) {
-		continue;
+	if (value[i]) {
+		hasValue = true;
+		break;
 	}
-	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
-	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	var unique = <%="value[i]." + editor.getUniqueItem() %>;
-	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + propName + "Dummmy", <%=refEdit%>, "id_count_" + propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
 }
-<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+
+if (value.length == 0) {
+	<%-- 空配列(対象データなし) → 既存値を維持するため何もしない(他表示形式の多数派に合わせる) --%>
+} else if (!hasValue) {
+	<%-- null(該当なし)返却 → 入力行は消さず値のみクリアして入力可能な状態を維持する --%>
+	$("#ul_" + _propName).children(":visible").each(function() {
+		$(":text", this).val("").change();
+	});
+} else {
+	<%-- 実値あり → 可視の入力行を全消しして返却結果で作り直す --%>
+	$("#ul_" + _propName).children(":visible").remove();
+	for (var i = 0; i < value.length; i++) {
+		if (!value[i]) {
+			continue;
+		}
+		var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+		var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+		var unique = <%="value[i]." + editor.getUniqueItem() %>;
+		addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, uniqueMultiplicity, "ul_" + _propName, "id_li_" + propName + "Dummmy", <%=refEdit%>, "id_count_" + propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
+	}
+}
+toggleRefInsertBtn("ul_" + _propName, uniqueMultiplicity, "id_addBtn_" + _propName);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
 %>
