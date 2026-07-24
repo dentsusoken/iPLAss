@@ -22,7 +22,6 @@ package org.iplass.mtp.web.staticresource.definition;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ JavaClassEntryPathTranslatorDefinition.class,
