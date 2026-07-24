@@ -33,7 +33,6 @@ import org.iplass.mtp.view.generic.element.Button;
 import org.iplass.mtp.view.generic.element.section.Section;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
