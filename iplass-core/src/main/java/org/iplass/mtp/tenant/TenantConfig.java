@@ -22,6 +22,9 @@ package org.iplass.mtp.tenant;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class TenantConfig implements Serializable {
 
 	private static final long serialVersionUID = 4561276221061883816L;
