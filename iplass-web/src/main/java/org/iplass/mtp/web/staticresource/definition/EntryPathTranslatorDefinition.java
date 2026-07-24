@@ -21,11 +21,13 @@ package org.iplass.mtp.web.staticresource.definition;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ JavaClassEntryPathTranslatorDefinition.class,
 		PrefixEntryPathTranslatorDefinition.class,
 		ScriptingEntryPathTranslatorDefinition.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class EntryPathTranslatorDefinition implements Serializable {
 	private static final long serialVersionUID = -6417327445573147737L;
 

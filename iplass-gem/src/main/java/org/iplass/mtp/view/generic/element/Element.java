@@ -28,6 +28,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.property.PropertyBase;
 import org.iplass.mtp.view.generic.element.section.Section;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
@@ -39,6 +40,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ Section.class, PropertyBase.class, Button.class,
 		TemplateElement.class, ScriptingElement.class, Link.class, BlankSpace.class, VirtualPropertyItem.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class Element implements Refrectable {
 
 	public enum EditDisplayType {
