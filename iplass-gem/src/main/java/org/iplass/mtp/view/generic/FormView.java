@@ -32,6 +32,8 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.element.Button;
 import org.iplass.mtp.view.generic.element.section.Section;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
@@ -45,6 +47,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ DetailFormView.class, SearchFormView.class, BulkFormView.class })
 @FieldOrder(manual = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class FormView implements Refrectable {
 
 	/** シリアルバージョンID */
@@ -158,8 +161,9 @@ public abstract class FormView implements Refrectable {
 	 * @return セクション
 	 */
 	public List<Section> getSections() {
-		if (this.sections == null)
+		if (this.sections == null) {
 			this.sections = new ArrayList<Section>();
+		}
 		return sections;
 	}
 
@@ -264,8 +268,9 @@ public abstract class FormView implements Refrectable {
 	 * @return ボタン
 	 */
 	public List<Button> getButtons() {
-		if (this.buttons == null)
+		if (this.buttons == null) {
 			this.buttons = new ArrayList<Button>();
+		}
 		return buttons;
 	}
 
