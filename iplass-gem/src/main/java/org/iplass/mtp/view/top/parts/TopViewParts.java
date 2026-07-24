@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 /**
@@ -32,6 +33,7 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  */
 @XmlSeeAlso({ TopViewContentParts.class, ScriptParts.class, UserMaintenanceParts.class, FulltextSearchViewParts.class,
 		CsvDownloadSettingsParts.class, ApplicationMaintenanceParts.class, PreviewDateParts.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public abstract class TopViewParts implements Serializable {
 
 	/** SerialVersionUID */
