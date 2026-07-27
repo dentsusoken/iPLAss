@@ -9,6 +9,8 @@ excludeAgent: "coding-agent"
 
 - `org.iplass.mtp.*` のシグネチャでは公開型のみ使用する（`impl.*` を含めない）
 - service-config.xmlのプロパティおよびMetaData属性は後方互換性を維持
+- Definitionのフィールド型となる多態な抽象クラス/インタフェースには `@JsonTypeInfo(use = Id.CLASS)` を付与する（JSONデシリアライズに必須。`@XmlSeeAlso` はJSON無効）
+- 多態な抽象型に具象サブタイプを追加したら基底の `@XmlSeeAlso({...})` にも登録する（XML(JAXB)シリアライズに必須。手動列挙のため漏れやすい）
 
 ## MetaData / Runtime パターン
 
