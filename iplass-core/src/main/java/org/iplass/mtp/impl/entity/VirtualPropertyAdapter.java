@@ -217,6 +217,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 
 	private SearchResultIterator iterator;
 
+	//SELECT DISTINCT時に、ORDER BYで指定したSELECT型項目のソート用CASE式を、
+	//SELECT句にも追加するか否か（PostgreSQLやSQL Serverなど、ORDER BYの式自体がSELECT句に
+	//含まれていないとエラーとなるRDB向けの対応）
+	private boolean addOrderByCaseToSelectOnDistinct;
+	//上記の追加対象となったCASE式（transformedQueryのSelect句へ追加する為に退避しておく）
+	private List<Case> additionalSelectCasesForDistinctOrderBy;
+
 	public VirtualPropertyAdapter(Query query, EntityContext ec, EntityHandler eh) {
 		selectFieldMap = new HashMap<ValueExpression, FieldMapping>();
 		selectFieldList = new ArrayList<>(query.getSelect()
@@ -225,6 +232,8 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		this.query = query;
 		this.ec = ec;
 		this.eh = eh;
+		this.addOrderByCaseToSelectOnDistinct = eh.getDataStore()
+				.isRequireOrderByExpressionInSelectForDistinct();
 		loadAdaptorMap = new HashMap<>();
 	}
 
@@ -292,6 +301,14 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	public Query getTransformedQuery() {
 		if (transformedQuery == null) {
 			transformedQuery = (Query) query.accept(this);
+
+			//DISTINCT時にORDER BYの式をSELECT句に要求するRDB向けに退避しておいたCASE式を追加
+			if (additionalSelectCasesForDistinctOrderBy != null) {
+				for (Case cs : additionalSelectCasesForDistinctOrderBy) {
+					transformedQuery.getSelect()
+							.add(cs);
+				}
+			}
 
 			//subqueryのon内のReference名指定（もしくはTHIS指定）をoidでの結合に変換する。
 			transformedQuery.accept(new ThisRefNormalizer(ec, eh, null));
@@ -624,11 +641,48 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 								.getValue(), false)), new Literal(Long.valueOf(i), false));
 					}
 					cs.elseClause(new Literal(null, false));
+
+					//PostgreSQLやSQL Serverなど、SELECT DISTINCT時にORDER BYで指定した式自体が
+					//SELECT句に含まれていないとエラーとなるRDBの為、対象プロパティが既にSELECT句に
+					//含まれている場合（＝CASE式を追加してもDISTINCTの結果件数が変わらない場合）に限り、
+					//ソート用のCASE式をSELECT句にも追加する。
+					//（top-levelのクエリのみ対象。サブクエリは非対応。）
+					if (!isSubQuery && addOrderByCaseToSelectOnDistinct
+							&& query.getSelect().isDistinct()
+							&& isSelectedField((EntityField) order.getSortKey())) {
+						if (additionalSelectCasesForDistinctOrderBy == null) {
+							additionalSelectCasesForDistinctOrderBy = new ArrayList<>();
+						}
+						//ORDER BY側とは別インスタンスとする為copyする
+						additionalSelectCasesForDistinctOrderBy.add((Case) cs.copy());
+					}
+
 					return new SortSpec(cs, order.getType(), order.getNullOrderingSpec());
 				}
 			}
 		}
 		return super.visit(order);
+	}
+
+	/**
+	 * SELECT句に、指定のEntityField（プロパティ名・配列添字が一致するもの）が
+	 * 含まれているかを判定する。
+	 *
+	 * @param sortKey 判定対象のEntityField
+	 * @return 含まれている場合<code>true</code>
+	 */
+	private boolean isSelectedField(EntityField sortKey) {
+		List<ValueExpression> selectValues = query.getSelect()
+				.getSelectValues();
+		if (selectValues == null) {
+			return false;
+		}
+		for (ValueExpression v : selectValues) {
+			if (v instanceof EntityField && v.equals(sortKey)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
