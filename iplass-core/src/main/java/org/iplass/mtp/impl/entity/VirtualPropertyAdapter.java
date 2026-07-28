@@ -648,7 +648,8 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 					//ソート用のCASE式をSELECT句にも追加する。
 					//（top-levelのクエリのみ対象。サブクエリは非対応。）
 					if (!isSubQuery && addOrderByCaseToSelectOnDistinct
-							&& query.getSelect().isDistinct()
+							&& query.getSelect()
+									.isDistinct()
 							&& isSelectedField((EntityField) order.getSortKey())) {
 						if (additionalSelectCasesForDistinctOrderBy == null) {
 							additionalSelectCasesForDistinctOrderBy = new ArrayList<>();
