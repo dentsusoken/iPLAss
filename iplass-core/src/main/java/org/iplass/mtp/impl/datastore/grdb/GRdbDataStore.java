@@ -56,6 +56,7 @@ public class GRdbDataStore extends RdbDataStore {
 	private Map<String, String> overwriteTableNamePostfixMap;
 
 	private Integer stringTypeLengthOnQuery;
+	private boolean requireOrderByExpressionInSelectForDistinct;
 
 	/** 強制的なテーブル名接尾辞の再生成（true の場合に再生成する） */
 	private boolean forceRegenerateTableNamePostfix;
@@ -172,6 +173,9 @@ public class GRdbDataStore extends RdbDataStore {
 
 		entityStore = new GRdbEntityStoreStrategy(this, rdb, cs);
 		applyMeta = new GRdbApplyMetaDataStrategy(this, rdb);
+
+		//RDB毎で判断するものとする
+		requireOrderByExpressionInSelectForDistinct = rdb.isRequireOrderByExpressionInSelectForDistinct();
 	}
 
 	@Override
@@ -221,4 +225,10 @@ public class GRdbDataStore extends RdbDataStore {
 		StorageSpaceMap ssm = getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) metaStoreMapping);
 		return ssm.getVarcharColumnLength();
 	}
+
+	@Override
+	public boolean isRequireOrderByExpressionInSelectForDistinct() {
+		return requireOrderByExpressionInSelectForDistinct;
+	}
+
 }

@@ -689,4 +689,18 @@ public abstract class RdbAdapter {
 	public String getMultiTableTrickClauseForUpdate() {
 		return null;
 	}
+
+	/**
+	 * SELECT DISTINCT時に、ORDER BYで指定した式（列そのものでなく式自体）がSELECT句に
+	 * 含まれていないとエラーとなるRDBの場合に<code>true</code>を返します。
+	 * <p>
+	 * PostgreSQLやSQL Serverが該当します（Oracleは、ORDER BYの式内で参照している列がSELECT句に
+	 * 含まれていれば、式自体が含まれていなくてもエラーとならない為、対象外です）。
+	 * </p>
+	 *
+	 * @return 該当する場合は<code>true</code>を返します。
+	 */
+	public boolean isRequireOrderByExpressionInSelectForDistinct() {
+		return false;
+	}
 }
