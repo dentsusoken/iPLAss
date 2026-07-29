@@ -844,4 +844,9 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 		}
 	}
 
+	@Override
+	public boolean isRequireOrderByExpressionInSelectForDistinct() {
+		return true;
+	}
+
 }

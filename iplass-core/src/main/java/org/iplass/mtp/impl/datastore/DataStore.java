@@ -36,4 +36,10 @@ public abstract class DataStore implements ServiceInitListener<StoreService> {
 	public abstract Class<? extends MetaEntityStore> getEntityStoreType();
 
 	public abstract int stringPropertyStoreMaxLength(MetaStoreMapping metaStoreMapping);
+
+	/**
+	 * SELECT DISTINCT時に、ORDER BYで指定した式（列そのものでなく式自体）がSELECT句に
+	 * 含まれていないとエラーとなるDataStoreを利用している場合に<code>true</code>を返却。
+	 */
+	public abstract boolean isRequireOrderByExpressionInSelectForDistinct();
 }

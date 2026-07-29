@@ -866,4 +866,9 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 
 		return sb.toString();
 	}
+
+	@Override
+	public boolean isRequireOrderByExpressionInSelectForDistinct() {
+		return true;
+	}
 }
