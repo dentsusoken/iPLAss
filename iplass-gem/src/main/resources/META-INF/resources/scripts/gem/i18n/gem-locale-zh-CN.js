@@ -49,6 +49,7 @@ scriptContext.gem.locale.reference.deleteBtn = "删除";
 scriptContext.gem.locale.reference.deleteLabel = "删除";
 scriptContext.gem.locale.reference.detail = "详细";
 scriptContext.gem.locale.reference.duplicateData = "重复的数据。";
+scriptContext.gem.locale.reference.notSelectedData = "未选择目标数据。";
 scriptContext.gem.locale.reference.edit = "编辑";
 scriptContext.gem.locale.reference.noResult = "没找到数据。";
 scriptContext.gem.locale.reference.pleaseSelectAny = "请选择 {0}";

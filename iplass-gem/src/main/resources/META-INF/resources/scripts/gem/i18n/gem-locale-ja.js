@@ -50,6 +50,7 @@ scriptContext.gem.locale.reference.deleteBtn = "削除";
 scriptContext.gem.locale.reference.deleteLabel = "削除";
 scriptContext.gem.locale.reference.detail = "詳細";
 scriptContext.gem.locale.reference.duplicateData = "重複のデータ。";
+scriptContext.gem.locale.reference.notSelectedData = "対象データが未選択です。";
 scriptContext.gem.locale.reference.edit = "編集";
 scriptContext.gem.locale.reference.noResult = "データが見つかりません。";
 scriptContext.gem.locale.reference.pleaseSelectAny = "{0} を選択してください";

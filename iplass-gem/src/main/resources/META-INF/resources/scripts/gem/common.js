@@ -2885,6 +2885,11 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		});
 
 		var key = selectArray[0];
+		if (typeof key === "undefined" || key == null || key === "") {
+			alert(scriptContext.gem.locale.reference.notSelectedData);
+			return;
+		}
+
 		// 重複チェック （自分を除く）
 		if (key in refs && !$(refs[key]).is("#" + _id)) {
 			alert(scriptContext.gem.locale.reference.duplicateData);
