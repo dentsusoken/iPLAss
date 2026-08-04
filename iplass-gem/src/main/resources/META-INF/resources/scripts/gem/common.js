@@ -2885,7 +2885,9 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		});
 
 		var key = selectArray[0];
-		if (typeof key === "undefined" || key == null || key === "") {
+		
+		// 未選択の場合は処理を中断する
+		if (key == null || key === "") {
 			alert(scriptContext.gem.locale.reference.notSelectedData);
 			return;
 		}
