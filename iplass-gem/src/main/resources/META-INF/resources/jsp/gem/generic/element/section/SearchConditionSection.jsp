@@ -1150,7 +1150,7 @@ $(function() {
 					var ret = false;
 					$opt.each(function() {
 						var val = $(this).parents("td").next().next().children(":text").val();
-						if (typeof val !== "undeined" && val != null && val != "") {
+						if (val != null && val != "") {
 							ret = true;
 							return false;
 						}
