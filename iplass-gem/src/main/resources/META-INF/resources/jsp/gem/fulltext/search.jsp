@@ -214,7 +214,7 @@ function execSearch(param) {
 					setData(grid, "list" + i, entityResult.values, entityResult.viewAction, entityResult.detailAction, entityResult.showDetailLink);
 				}
 				var message = commandResult.message;
-				if (typeof message !== "undeined" && message != null) {
+				if (message != null) {
 					$("div.message-block").append(message);
 					$("div.message-block").show();
 				}
@@ -238,7 +238,7 @@ function execSearch(param) {
 			} catch (e) {
 			}
 
-			if (typeof res !== "undeined" && res != null
+			if (res != null
 					&& res.exceptionType == "org.iplass.mtp.auth.NoPermissionException") {
 				alert(scriptContext.gem.locale.error.permissionErrOccurred);
 			} else {
