@@ -50,6 +50,7 @@ scriptContext.gem.locale.reference.deleteBtn = "ลบ";
 scriptContext.gem.locale.reference.deleteLabel = "ลบ";
 scriptContext.gem.locale.reference.detail = "รายละเอียด";
 scriptContext.gem.locale.reference.duplicateData = "ข้อมูลที่ซ้ำกัน";
+scriptContext.gem.locale.reference.notSelectedData = "ยังไม่ได้เลือกข้อมูลเป้าหมาย";
 scriptContext.gem.locale.reference.edit = "แก้ไข";
 scriptContext.gem.locale.reference.noResult = "ไม่พบข้อมูล";
 scriptContext.gem.locale.reference.pleaseSelectAny = "กรุณาเลือก {0}";

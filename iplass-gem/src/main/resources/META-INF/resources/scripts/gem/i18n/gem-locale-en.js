@@ -50,6 +50,7 @@ scriptContext.gem.locale.reference.deleteBtn = "Delete";
 scriptContext.gem.locale.reference.deleteLabel = "Delete";
 scriptContext.gem.locale.reference.detail = "Detail";
 scriptContext.gem.locale.reference.duplicateData = "Duplicate data.";
+scriptContext.gem.locale.reference.notSelectedData = "Target data has not been selected.";
 scriptContext.gem.locale.reference.edit = "Edit";
 scriptContext.gem.locale.reference.noResult = "Data not found.";
 scriptContext.gem.locale.reference.pleaseSelectAny = "Please Select {0}";

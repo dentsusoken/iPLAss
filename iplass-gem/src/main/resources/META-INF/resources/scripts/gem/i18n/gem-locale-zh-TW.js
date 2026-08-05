@@ -50,6 +50,7 @@ scriptContext.gem.locale.reference.deleteBtn = "刪除";
 scriptContext.gem.locale.reference.deleteLabel = "刪除";
 scriptContext.gem.locale.reference.detail = "詳細";
 scriptContext.gem.locale.reference.duplicateData = "重複的數據。";
+scriptContext.gem.locale.reference.notSelectedData = "未選擇目標數據。";
 scriptContext.gem.locale.reference.edit = "編輯";
 scriptContext.gem.locale.reference.noResult = "沒找到數據。";
 scriptContext.gem.locale.reference.pleaseSelectAny = "請選擇 {0}";
