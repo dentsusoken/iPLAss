@@ -577,7 +577,7 @@ public final class EntityFileSampleDownloadCommand implements Command {
 			}
 
 			if (value instanceof Boolean) {
-				value = (boolean) value ? "1" : "0";
+				return (boolean) value ? "1" : "0";
 			}
 			if (value instanceof Timestamp) {
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
