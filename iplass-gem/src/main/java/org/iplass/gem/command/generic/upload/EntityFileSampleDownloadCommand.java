@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,6 +73,7 @@ import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption;
 import org.iplass.mtp.impl.entity.fileport.EntityCsvWriter;
 import org.iplass.mtp.impl.entity.fileport.EntityExcelWriteOption;
 import org.iplass.mtp.impl.entity.fileport.EntityExcelWriter;
+import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -416,11 +419,15 @@ public final class EntityFileSampleDownloadCommand implements Command {
 					}
 					continue;
 				} else if (pd instanceof DateTimeProperty) {
+					Timestamp currentDatetime = Timestamp.valueOf(
+							DateUtil.getCurrentTimestamp()
+									.toLocalDateTime()
+									.truncatedTo(ChronoUnit.SECONDS));
 					if (pd.getMultiplicity() == 1) {
-						entity.setValue(propName, DateUtil.getCurrentTimestamp());
+						entity.setValue(propName, currentDatetime);
 					} else {
 						entity.setValue(propName,
-								new Timestamp[] { DateUtil.getCurrentTimestamp(), DateUtil.getCurrentTimestamp() });
+								new Timestamp[] { currentDatetime, currentDatetime });
 					}
 					continue;
 				} else if (pd instanceof DecimalProperty) {
@@ -549,10 +556,11 @@ public final class EntityFileSampleDownloadCommand implements Command {
 				String oidValue = "";
 				int cnt = 0;
 				for (String propName : ed.getOidPropertyName()) {
+					Object value = entity.getValue(propName);
 					if (cnt == 0) {
-						oidValue = entity.getValue(propName);
+						oidValue = convertToOid(value);
 					} else {
-						oidValue = oidValue + "-" + entity.getValue(propName);
+						oidValue = oidValue + "-" + convertToOid(value);
 					}
 					cnt++;
 				}
@@ -560,6 +568,23 @@ public final class EntityFileSampleDownloadCommand implements Command {
 					entity.setOid(oidValue);
 				}
 			}
+		}
+
+		private String convertToOid(Object value) {
+
+			if (value == null) {
+				return null;
+			}
+
+			if (value instanceof Boolean) {
+				value = (boolean) value ? "1" : "0";
+			}
+			if (value instanceof Timestamp) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				return format.format(value);
+			}
+
+			return ConvertUtil.convertToString(value);
 		}
 
 	}
