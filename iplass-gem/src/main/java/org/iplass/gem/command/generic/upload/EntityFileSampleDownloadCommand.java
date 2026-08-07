@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -552,28 +553,27 @@ public final class EntityFileSampleDownloadCommand implements Command {
 
 		private void setOidValue(Entity entity) {
 			if (ed.getOidPropertyName() != null) {
+				SimpleDateFormat timestampFormat = DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", true);
 				String oidValue = ed.getOidPropertyName()
 						.stream()
-						.map(propName -> convertToOid(entity.getValue(propName)))
+						.map(propName -> {
+							Object object = entity.getValue(propName);
+							if (object == null) {
+								return "";
+							}
+							if (object instanceof Boolean value) {
+								return value ? "1" : "0";
+							}
+							if (object instanceof Timestamp value) {
+								return timestampFormat.format(value);
+							}
+							return ConvertUtil.convertToString(object);
+						})
 						.collect(Collectors.joining("-"));
 				if (StringUtil.isNotEmpty(oidValue)) {
 					entity.setOid(oidValue);
 				}
 			}
-		}
-
-		private static String convertToOid(Object value) {
-			if (value == null) {
-				return null;
-			}
-			if (value instanceof Boolean oidValue) {
-				return oidValue ? "1" : "0";
-			}
-			if (value instanceof Timestamp oidValue) {
-				return DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", true)
-						.format(oidValue);
-			}
-			return ConvertUtil.convertToString(value);
 		}
 	}
 
