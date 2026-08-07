@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -571,7 +570,8 @@ public final class EntityFileSampleDownloadCommand implements Command {
 				return oidValue ? "1" : "0";
 			}
 			if (value instanceof Timestamp oidValue) {
-				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(oidValue);
+				return DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", true)
+						.format(oidValue);
 			}
 			return ConvertUtil.convertToString(value);
 		}
