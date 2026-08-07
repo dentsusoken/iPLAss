@@ -26,12 +26,15 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.iplass.gem.GemConfigService;
@@ -71,6 +74,7 @@ import org.iplass.mtp.impl.entity.fileport.EntityCsvWriteOption;
 import org.iplass.mtp.impl.entity.fileport.EntityCsvWriter;
 import org.iplass.mtp.impl.entity.fileport.EntityExcelWriteOption;
 import org.iplass.mtp.impl.entity.fileport.EntityExcelWriter;
+import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
@@ -416,11 +420,15 @@ public final class EntityFileSampleDownloadCommand implements Command {
 					}
 					continue;
 				} else if (pd instanceof DateTimeProperty) {
+					Timestamp currentDatetime = Timestamp.valueOf(
+							DateUtil.getCurrentTimestamp()
+									.toLocalDateTime()
+									.truncatedTo(ChronoUnit.SECONDS));
 					if (pd.getMultiplicity() == 1) {
-						entity.setValue(propName, DateUtil.getCurrentTimestamp());
+						entity.setValue(propName, currentDatetime);
 					} else {
 						entity.setValue(propName,
-								new Timestamp[] { DateUtil.getCurrentTimestamp(), DateUtil.getCurrentTimestamp() });
+								new Timestamp[] { currentDatetime, currentDatetime });
 					}
 					continue;
 				} else if (pd instanceof DecimalProperty) {
@@ -544,24 +552,29 @@ public final class EntityFileSampleDownloadCommand implements Command {
 		}
 
 		private void setOidValue(Entity entity) {
-
 			if (ed.getOidPropertyName() != null) {
-				String oidValue = "";
-				int cnt = 0;
-				for (String propName : ed.getOidPropertyName()) {
-					if (cnt == 0) {
-						oidValue = entity.getValue(propName);
-					} else {
-						oidValue = oidValue + "-" + entity.getValue(propName);
-					}
-					cnt++;
-				}
+				SimpleDateFormat timestampFormat = DateUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", true);
+				String oidValue = ed.getOidPropertyName()
+						.stream()
+						.map(propName -> {
+							Object object = entity.getValue(propName);
+							if (object == null) {
+								return "";
+							}
+							if (object instanceof Boolean value) {
+								return value ? "1" : "0";
+							}
+							if (object instanceof Timestamp value) {
+								return timestampFormat.format(value);
+							}
+							return ConvertUtil.convertToString(object);
+						})
+						.collect(Collectors.joining("-"));
 				if (StringUtil.isNotEmpty(oidValue)) {
 					entity.setOid(oidValue);
 				}
 			}
 		}
-
 	}
 
 	private class CsvDownloadSampleWriter extends FileDownloadSampleWriter {
