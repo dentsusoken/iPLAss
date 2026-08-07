@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.iplass.gem.GemConfigService;
@@ -551,42 +552,29 @@ public final class EntityFileSampleDownloadCommand implements Command {
 		}
 
 		private void setOidValue(Entity entity) {
-
 			if (ed.getOidPropertyName() != null) {
-				String oidValue = "";
-				int cnt = 0;
-				for (String propName : ed.getOidPropertyName()) {
-					Object value = entity.getValue(propName);
-					if (cnt == 0) {
-						oidValue = convertToOid(value);
-					} else {
-						oidValue = oidValue + "-" + convertToOid(value);
-					}
-					cnt++;
-				}
+				String oidValue = ed.getOidPropertyName()
+						.stream()
+						.map(propName -> convertToOid(entity.getValue(propName)))
+						.collect(Collectors.joining("-"));
 				if (StringUtil.isNotEmpty(oidValue)) {
 					entity.setOid(oidValue);
 				}
 			}
 		}
 
-		private String convertToOid(Object value) {
-
+		private static String convertToOid(Object value) {
 			if (value == null) {
 				return null;
 			}
-
-			if (value instanceof Boolean) {
-				return (boolean) value ? "1" : "0";
+			if (value instanceof Boolean oidValue) {
+				return oidValue ? "1" : "0";
 			}
-			if (value instanceof Timestamp) {
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-				return format.format(value);
+			if (value instanceof Timestamp oidValue) {
+				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(oidValue);
 			}
-
 			return ConvertUtil.convertToString(value);
 		}
-
 	}
 
 	private class CsvDownloadSampleWriter extends FileDownloadSampleWriter {
