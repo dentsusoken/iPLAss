@@ -94,6 +94,11 @@ if (multiplicity == 1) {
 }
 
 var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+var clearReferenceItems = function() {
+	if (value.length > 0) {
+		$("#ul_" + _propName).children("li").remove();
+	}
+};
 <%
 	if (editor.getDisplayType() == ReferenceDisplayType.LINK) {
 %>
@@ -101,9 +106,7 @@ var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
 
-if (value.length > 0) {
-	$("#ul_" + _propName).children("li").remove();
-}
+clearReferenceItems();
 for (var i = 0; i < value.length; i++) {
 	if (!value[i]) {
 		continue;
@@ -159,9 +162,7 @@ var callback = function() {
 	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 };
 
-if (value.length > 0) {
-	$("#ul_" + _propName).children("li").remove();
-}
+clearReferenceItems();
 for (var i = 0; i < value.length; i++) {
 	if (!value[i]) {
 		continue;
