@@ -176,8 +176,17 @@ public class WarmupStatusServlet extends HttpServlet {
 				logger.error("Warmup failed.", e);
 				ServiceRegistry.getRegistry()
 						.getService(WarmupService.class)
-						.changeStatus(WarmupStatus.FAILED);;
-				throw e;
+						.changeStatus(WarmupStatus.FAILED);
+
+				if (e instanceof Exception) {
+					throw (Exception) e;
+				}
+
+				if (e instanceof Error) {
+					throw (Error) e;
+				}
+
+				throw new RuntimeException(e);
 			}
 		}
 
