@@ -1,5 +1,5 @@
 /* drop/create OBJ_STORE */
-DROP TABLE "OBJ_STORE${tableNamePostfix}" CASCADE CONSTRAINT;
+DROP TABLE "OBJ_STORE${tableNamePostfix}" CASCADE CONSTRAINTS;
 
 CREATE TABLE "OBJ_STORE${tableNamePostfix}"
 (

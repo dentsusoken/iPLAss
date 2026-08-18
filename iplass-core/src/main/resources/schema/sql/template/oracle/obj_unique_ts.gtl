@@ -1,5 +1,5 @@
 /* drop/create OBJ_UNIQUE_TS */
-DROP TABLE "OBJ_UNIQUE_TS${tableNamePostfix}" CASCADE CONSTRAINT;
+DROP TABLE "OBJ_UNIQUE_TS${tableNamePostfix}" CASCADE CONSTRAINTS;
 
 CREATE TABLE "OBJ_UNIQUE_TS${tableNamePostfix}"
 (
