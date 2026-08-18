@@ -136,6 +136,7 @@ public class WarmupStatusServlet extends HttpServlet {
 	 * ウォームアップタスク実行
 	 * <p>
 	 * サーブレットの初期化処理で非同期実行されるウォームアップ処理のエントリポイントです。
+	 * エントリポイントでは Throwable で例外をキャッチし、例外をキャッチした場合はステータスを失敗に変更します。
 	 * </p>
 	 */
 	protected static class WarmupTaskExecutor implements Callable<Void> {
@@ -171,8 +172,11 @@ public class WarmupStatusServlet extends HttpServlet {
 
 				return null;
 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error("Warmup failed.", e);
+				ServiceRegistry.getRegistry()
+						.getService(WarmupService.class)
+						.changeStatus(WarmupStatus.FAILED);;
 				throw e;
 			}
 		}
