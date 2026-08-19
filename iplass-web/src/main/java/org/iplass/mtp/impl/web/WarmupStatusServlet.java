@@ -184,15 +184,11 @@ public class WarmupStatusServlet extends HttpServlet {
 					logger.error("Failed to change warmup status to FAILED.", e);
 				}
 
-				if (t instanceof Exception e) {
-					throw e;
+				switch (t) {
+				case Exception e -> throw e;
+				case Error e -> throw e;
+				default -> throw new RuntimeException(t);
 				}
-
-				if (t instanceof Error e) {
-					throw e;
-				}
-
-				throw new RuntimeException(t);
 			}
 		}
 
