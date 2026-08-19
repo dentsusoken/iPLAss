@@ -1,5 +1,5 @@
 /* drop/create OBJ_INDEX_TS */
-DROP TABLE "OBJ_INDEX_TS${tableNamePostfix}"  CASCADE CONSTRAINT;
+DROP TABLE "OBJ_INDEX_TS${tableNamePostfix}"  CASCADE CONSTRAINTS;
 
 CREATE TABLE "OBJ_INDEX_TS${tableNamePostfix}" 
 (       "TENANT_ID" NUMBER(7,0) NOT NULL, 
