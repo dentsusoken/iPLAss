@@ -29,6 +29,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinDataInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
@@ -217,6 +218,8 @@ public interface EntityExplorerService extends XsrfProtectedService, EntityDataT
 	public boolean isUseFulltextSearch(int tenantId);
 
 	public List<RecycleBinEntityInfo> getRecycleBinInfoList(int tenantId, Timestamp ts, boolean isGetCount);
+
+	public List<RecycleBinDataInfo> getRecycleBinDataList(int tenantId, String defName, Timestamp ts);
 
 	public List<String> cleanRecycleBin(int tenantId, String defName, Timestamp ts);
 

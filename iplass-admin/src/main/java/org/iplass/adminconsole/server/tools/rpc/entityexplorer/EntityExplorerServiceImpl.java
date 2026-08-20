@@ -42,6 +42,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinDataInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
@@ -1298,6 +1299,30 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 							messages.add("error start clean recycle bin. defName = " + defName);
 						}
 						return messages;
+					}
+				});
+	}
+
+	@Override
+	public List<RecycleBinDataInfo> getRecycleBinDataList(int tenantId, String defName, Timestamp ts) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<RecycleBinDataInfo>>() {
+
+					@Override
+					public List<RecycleBinDataInfo> call() {
+						List<RecycleBinDataInfo> dataList = new ArrayList<>();
+						em.getRecycleBin(defName, entity -> {
+							Timestamp recycleDate = entity.getUpdateDate();
+							if (recycleDate != null && (ts == null || recycleDate.before(ts))) {
+								RecycleBinDataInfo info = new RecycleBinDataInfo();
+								info.setRecycleBinId(entity.getRecycleBinId());
+								info.setName(entity.getName());
+								info.setRecycleDate(recycleDate);
+								dataList.add(info);
+							}
+							return true;
+						});
+						return dataList;
 					}
 				});
 	}
