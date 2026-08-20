@@ -221,6 +221,10 @@ public interface EntityExplorerService extends XsrfProtectedService, EntityDataT
 
 	public List<RecycleBinDataInfo> getRecycleBinDataList(int tenantId, String defName, Timestamp ts);
 
+	public List<String> purgeRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds);
+
+	public List<String> restoreRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds);
+
 	public List<String> cleanRecycleBin(int tenantId, String defName, Timestamp ts);
 
 }

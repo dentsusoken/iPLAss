@@ -224,6 +224,10 @@ public interface EntityExplorerServiceAsync {
 
 	void getRecycleBinDataList(int tenantId, String defName, Timestamp ts, AsyncCallback<List<RecycleBinDataInfo>> callback);
 
+	void purgeRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds, AsyncCallback<List<String>> callback);
+
+	void restoreRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds, AsyncCallback<List<String>> callback);
+
 	void cleanRecycleBin(int tenantId, String defName, Timestamp ts, AsyncCallback<List<String>> callback);
 
 }

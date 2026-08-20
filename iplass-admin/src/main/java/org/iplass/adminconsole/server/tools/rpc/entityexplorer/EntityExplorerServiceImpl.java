@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
@@ -84,6 +85,7 @@ import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.impl.tools.entity.EntityUpdateAllCondition;
 import org.iplass.mtp.impl.tools.entity.EntityUpdateAllResultInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
@@ -1323,6 +1325,70 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 							return true;
 						});
 						return dataList;
+					}
+				});
+	}
+
+	@Override
+	public List<String> purgeRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
+
+					@Override
+					public List<String> call() {
+						List<String> messages = new ArrayList<>();
+						if (recycleBinIds == null) {
+							return messages;
+						}
+
+						for (Long recycleBinId : recycleBinIds) {
+							if (recycleBinId == null) {
+								continue;
+							}
+							try {
+								Consumer<Transaction> operation = transaction -> {
+									em.purge(recycleBinId, defName);
+								};
+								Transaction.requiresNew(operation);
+								messages.add("Cleared recycle bin data. recycleBinId=" + recycleBinId);
+							} catch (Exception e) {
+								logger.error("Failed to clear recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
+								messages.add("Failed to clear recycle bin data. recycleBinId=" + recycleBinId);
+							}
+						}
+						return messages;
+					}
+				});
+	}
+
+	@Override
+	public List<String> restoreRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+				new AuthUtil.Callable<List<String>>() {
+
+					@Override
+					public List<String> call() {
+						List<String> messages = new ArrayList<>();
+						if (recycleBinIds == null) {
+							return messages;
+						}
+
+						for (Long recycleBinId : recycleBinIds) {
+							if (recycleBinId == null) {
+								continue;
+							}
+							try {
+								Consumer<Transaction> operation = transaction -> {
+									em.restore(recycleBinId, defName);
+								};
+								Transaction.requiresNew(operation);
+								messages.add("Restored recycle bin data. recycleBinId=" + recycleBinId);
+							} catch (Exception e) {
+								logger.error("Failed to restore recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
+								messages.add("Failed to restore recycle bin data. recycleBinId=" + recycleBinId);
+							}
+						}
+						return messages;
 					}
 				});
 	}
