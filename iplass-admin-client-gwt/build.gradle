@@ -1,6 +1,5 @@
-// https://github.com/jiakuan/gwt-gradle-plugin/issues/75
 plugins {
-  id "org.docstr.gwt" version "1.1.30"
+  id "org.docstr.gwt" version '2.2.9'
 }
 
 apply from: 'libs.gradle'
@@ -9,23 +8,35 @@ dependencies {
 	implementation project(':iplass-web')
 	implementation project(':iplass-gem')
 	implementation project(':iplass-tools')
-	implementation project(':iplass-admin')
 }
 
-apply plugin: 'gwt-compiler'
+//apply plugin: 'gwt'
 apply plugin: 'eclipse'
 
 eclipse {
 
 	//gwtSdkをClassPathに追加
 	classpath {
-		plusConfigurations += [ configurations.gwtSdk ]
+		plusConfigurations += [ configurations.gwtDev ]
 	}
 }
+
+configurations {
+	gwtDev {
+		canBeResolved = true
+	}
+}
+
+def adminSrcMainJava = project(':iplass-admin').layout.projectDirectory.dir('src/main/java')
 
 sourceSets {
 	main {
 		java {
+			// iplass-admin プロジェクトの shared パッケージを GWT コンパイル対象に追加する
+			// NOTE implementation 等で project(':iplass-admin') を指定した場合、iplass-admin:jar タスク完了前に gwtComple タスクを実行することができなくなってしまう
+			srcDirs adminSrcMainJava
+			exclude 'com/google/**'
+			exclude 'org/iplass/adminconsole/server/**'
 			exclude 'org/iplass/adminconsole/trans/**'
 		}
 	}
@@ -36,36 +47,40 @@ processResources {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+// NOTE org.docstr.gwt の依存関係として test タスクが必要
+test {
+}
+
 def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
 def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 
 gwt {
-	src = files(buildSrcGwt)
-	// TODO gwt plugin jakarta-servlet 版に対応していないので、バージョンを指定し依存関係を設定しない
-	//gwtVersion = this.gwtVersion
-	modules 'org.iplass.adminconsole.AdminConsole'
+	gwtVersion = this.gwtVersion
+	//src = files(buildSrcGwt)
+	extraSourceDirs = files(buildSrcGwt)
+	modules = ['org.iplass.adminconsole.AdminConsole']
 	minHeapSize = '512M'
 	maxHeapSize = '2048M'
 	logLevel = 'INFO'
 	sourceLevel = 'auto'
+	jakarta = true
 	compiler.strict = true
 }
 
 task processGwtResources(type: Sync) {
 	dependsOn('copyGwtTransSrc')
 
-	from ('src/main/java')
+	//from ('src/main/java')
 	from ('src/main/resources')
 	from buildSrcGwtTrans
 	into buildSrcGwt
 }
-tasks.compileGwt.dependsOn processGwtResources
+tasks.compileJava {
+	dependsOn processGwtResources
+	mustRunAfter processGwtResources
+}
 
 task copyGwtTransSrc(type: Sync) {
-
-	from ('../iplass-admin/src/main/java/org/iplass') {
-		include 'adminconsole/shared/**'
-	}
 	
 	from ('../iplass-core/src/main/java/org/iplass') {
 

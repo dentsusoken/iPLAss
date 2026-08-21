@@ -20,7 +20,7 @@ processResources {
 
 def adminClientGwtCompileResult = project(':iplass-admin-client-gwt').layout.buildDirectory.dir('gwt/out/mtpadmin')
 jar {
-	dependsOn ':iplass-admin-client-gwt:compileGwt'
+	dependsOn ':iplass-admin-client-gwt:gwtCompile'
 	includeEmptyDirs = false;
 
 	// META-INF配下にgwtコンパイル結果をコピー
