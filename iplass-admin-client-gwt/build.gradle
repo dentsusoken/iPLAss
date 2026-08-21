@@ -9,6 +9,7 @@ dependencies {
 	implementation project(':iplass-web')
 	implementation project(':iplass-gem')
 	implementation project(':iplass-tools')
+	implementation project(':iplass-admin')
 }
 
 apply plugin: 'gwt-compiler'
@@ -30,24 +31,7 @@ sourceSets {
 	}
 }
 
-compileJava {
-	//compile時はclient系のファイルを除外
-	source = fileTree('src/main/java') {
-		exclude 'org/iplass/adminconsole/client/**'
-		exclude 'org/iplass/adminconsole/trans/**'
-		exclude 'edu/ycp/cs/dh/acegwt/client/**'
-//		exclude 'com/google/gwt/user/client/**'  //これはサーバでも必要
-	}
-}
-
 processResources {
-	//compile時はclient系のファイルを除外
-	from 'src/main/resources'
-	exclude 'org/iplass/adminconsole/**/*.gwt.xml'
-	exclude 'org/iplass/adminconsole/public/**'
-	exclude 'edu/ycp/cs/dh/acegwt/**/*.gwt.xml'
-	exclude 'edu/ycp/cs/dh/acegwt/public/**'
-
 	// 重複ファイル設定（コピーされたファイルを正とする）
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
@@ -67,27 +51,11 @@ gwt {
 	compiler.strict = true
 }
 
-jar {
-	dependsOn('compileGwt')
-
-	includeEmptyDirs = false;
-
-	// META-INF配下にgwtコンパイル結果をコピー
-	into('META-INF/resources/admin/mtpadmin') { from(layout.buildDirectory.dir('gwt/out/mtpadmin')) }
-
-}
-
 task processGwtResources(type: Sync) {
 	dependsOn('copyGwtTransSrc')
 
-	//GWTの対象からserverを除外
-	from ('src/main/java') {
-		exclude 'org/iplass/adminconsole/server/**'
-		exclude 'com/google/gwt/user/server/**/*.*'
-	}
-	from ('src/main/resources') {
-		exclude 'META-INF/**'
-	}
+	from ('src/main/java')
+	from ('src/main/resources')
 	from buildSrcGwtTrans
 	into buildSrcGwt
 }
@@ -95,6 +63,10 @@ tasks.compileGwt.dependsOn processGwtResources
 
 task copyGwtTransSrc(type: Sync) {
 
+	from ('../iplass-admin/src/main/java/org/iplass') {
+		include 'adminconsole/shared/**'
+	}
+	
 	from ('../iplass-core/src/main/java/org/iplass') {
 
 		include 'mtp/ApplicationException.java'
@@ -513,29 +485,4 @@ task copyGwtTransSrc(type: Sync) {
 	}
 
 	into "${file(buildSrcGwtTrans)}/org/iplass/adminconsole/trans/org/iplass"
-}
-
-task copyStaticResources(type: Sync) {
-	dependsOn('processResources')
-
-	//静的リソースをコピー
-	from layout.buildDirectory.dir('resources/main')
-	//jar内のwebjarsフォルダ配下をコピー
-	from (configurations.wjRuntime.collect {it.isDirectory() ? it : zipTree(it)}) {
-		exclude 'META-INF/maven/'
-		exclude 'META-INF/MANIFEST.MF'
-	}
-	into layout.buildDirectory.dir('tmp/staticresources')
-	includeEmptyDirs = false
-}
-
-task archiveStaticResources(type: Zip) {
-	dependsOn('copyStaticResources')
-
-	archiveAppendix = 'staticresources'
-
-	//META-INF/resourcesをZIP圧縮
-	from (layout.buildDirectory.dir('tmp/staticresources/META-INF/resources')) {
-		exclude 'jsp'
-	}
 }

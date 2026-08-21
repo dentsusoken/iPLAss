@@ -4,36 +4,15 @@ ext {
 }
 
 configurations {
-	wjRuntime
-
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
-	runtimeOnly.extendsFrom(wjRuntime)
 }
 
 dependencies {
-	//supercsv
-	implementation sharedLib('net.sf.supercsv:super-csv')
-
-	// commons-lang
-	implementation sharedLib('org.apache.commons:commons-lang3')
-
-	// commons-io
-	implementation sharedLib('commons-io:commons-io')
-	
-	// commons-fileupload
-	implementation sharedLib('org.apache.commons:commons-fileupload2-jakarta-servlet6')
-	
-	//jackson
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
-
-	wjRuntime sharedLib('org.webjars.npm:ace-builds')
-
 	//smart gwt has no public maven repository
 	compileOnly fileTree(rootProject.ext.localLibDir) {
 		include 'smartgwt/**/*.jar'
 	}
-
 }
 
 // FIXME gwt plugin が gwt-servlet-jakarta に対応するまで以下のような設定を実施する
