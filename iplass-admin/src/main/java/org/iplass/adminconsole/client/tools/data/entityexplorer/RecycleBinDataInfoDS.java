@@ -22,6 +22,12 @@ import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+/**
+ * EntityExplorerのRecycleBinに登録された削除データを取得するDataSourceです。
+ * <p>
+ * Entity名とPurge対象日時を指定して生成し、Fetch要求ごとに対象Entityの削除データを
+ * サーバから取得します。追加・更新・削除はサポートしません。
+ */
 public class RecycleBinDataInfoDS extends AbstractAdminDataSource {
 
 	private static final EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();

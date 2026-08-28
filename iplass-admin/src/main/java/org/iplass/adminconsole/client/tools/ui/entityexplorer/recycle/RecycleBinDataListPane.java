@@ -32,6 +32,12 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 
+/**
+ * EntityExplorerのRecycleBinにおけるEntity別の削除データ一覧画面です。
+ * <p>
+ * 指定されたEntityの削除データを一覧表示し、選択したデータのリストアまたは完全削除を
+ * 実行します。RecycleBinMainPaneがEntity選択時に生成し、一覧画面へ戻る際に破棄します。
+ */
 public class RecycleBinDataListPane extends VLayout {
 
 	private static final String RESOURCE_PREFIX = "ui_tools_entityexplorer_RecycleBinDataListPane_";
