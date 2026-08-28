@@ -142,6 +142,9 @@ public class RecycleBinDataListPane extends VLayout {
 		messageTabSet = new MessageTabSet();
 		messageTabSet.setHeight(120);
 
+		grid.setShowResizeBar(true);
+		grid.setResizeBarTarget("next");
+
 		addMember(toolStrip);
 		addMember(grid);
 		addMember(messageTabSet);
