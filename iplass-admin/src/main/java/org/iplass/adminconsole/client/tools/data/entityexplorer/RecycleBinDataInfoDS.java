@@ -16,7 +16,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
-import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.SC;
@@ -49,11 +48,9 @@ public class RecycleBinDataInfoDS extends AbstractAdminDataSource {
 		this.entityName = entityName;
 		this.purgeTargetDate = purgeTargetDate;
 
-		DataSourceField recycleBinIdField = new DataSourceTextField(FIELD_NAME.RECYCLE_BIN_ID.name());
-		recycleBinIdField.setPrimaryKey(true);
-		DataSourceField nameField = new DataSourceTextField(FIELD_NAME.NAME.name());
-		DataSourceField recycleDateField = new DataSourceTextField(FIELD_NAME.RECYCLE_DATE.name());
-		setFields(recycleBinIdField, nameField, recycleDateField);
+		setFields(new DataSourceTextField(FIELD_NAME.RECYCLE_BIN_ID.name()).setPrimaryKey(true),
+				new DataSourceTextField(FIELD_NAME.NAME.name()),
+				new DataSourceTextField(FIELD_NAME.RECYCLE_DATE.name()));
 	}
 
 	@Override
