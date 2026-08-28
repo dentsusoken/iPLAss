@@ -178,7 +178,8 @@ public class RecycleBinListPane extends VLayout {
 
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				if (event.getRecord().getAttributeAsBoolean(RecycleBinEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
+				if (event.getRecord()
+						.getAttributeAsBoolean(RecycleBinEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 					return;
 				}
 
@@ -188,7 +189,8 @@ public class RecycleBinListPane extends VLayout {
 					return;
 				}
 
-				String entityName = event.getRecord().getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name());
+				String entityName = event.getRecord()
+						.getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name());
 				mainPane.showDataListPane(entityName, new Timestamp(purgeTimeDate.getTime()));
 			}
 		});

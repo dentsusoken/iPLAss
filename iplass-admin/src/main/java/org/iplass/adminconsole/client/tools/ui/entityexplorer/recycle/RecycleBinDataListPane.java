@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.client.base.ui.widget.MtpListGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.RecycleBinDataInfoDS;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceFactory;
@@ -177,13 +177,13 @@ public class RecycleBinDataListPane extends VLayout {
 
 		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"),
 				AdminClientMessageUtil.getString(RESOURCE_PREFIX + "restoreConfirm"), new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					executeRestore(recycleBinIds);
-				}
-			}
-		});
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							executeRestore(recycleBinIds);
+						}
+					}
+				});
 	}
 
 	private void clearSelectedData() {
@@ -195,13 +195,13 @@ public class RecycleBinDataListPane extends VLayout {
 
 		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"),
 				AdminClientMessageUtil.getString(RESOURCE_PREFIX + "clearConfirm"), new BooleanCallback() {
-			@Override
-			public void execute(Boolean value) {
-				if (value) {
-					executeClear(recycleBinIds);
-				}
-			}
-		});
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							executeClear(recycleBinIds);
+						}
+					}
+				});
 	}
 
 	private List<Long> getSelectedRecycleBinIds() {
