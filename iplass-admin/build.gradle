@@ -47,6 +47,9 @@ def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
 def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 def buildGwtDir = layout.buildDirectory.dir('gwt').get()
 
+def availableProcessors = Runtime.runtime.availableProcessors()
+def gwtCompileWorkers = availableProcessors > 1 ? availableProcessors - 1 : 1
+
 def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	group = 'build'
 	description = 'Compile GWT modules'
@@ -67,10 +70,22 @@ def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 		'-logLevel', 'INFO',
 		'-war', buildGwtDir.dir('out').asFile,
 		'-workDir', buildGwtDir.dir('work').asFile,
-		'-localWorkers', '6',
+	]
+
+	// processor 数が1より大きければローカルワーカーを設定する
+	if (gwtCompileWorkers > 1) {
+		args += ['-localWorkers', gwtCompileWorkers]
+	}
+
+	args += [
 		'-strict',
 		'org.iplass.adminconsole.AdminConsole',
 	]
+
+	doFirst {
+		// gwt args を出力する
+		println "GWT Compile Args: ${args.join(' ')}"
+	}
 }
 
 jar {
