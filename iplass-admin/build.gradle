@@ -47,8 +47,9 @@ def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
 def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 def buildGwtDir = layout.buildDirectory.dir('gwt').get()
 
+final def MIN_PROCESSORS = 6
 def availableProcessors = Runtime.runtime.availableProcessors()
-def gwtCompileWorkers = availableProcessors > 1 ? availableProcessors - 1 : 1
+def gwtCompileWorkers = availableProcessors > MIN_PROCESSORS ? availableProcessors - 1 : 1
 
 def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	group = 'build'
@@ -73,7 +74,7 @@ def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	]
 
 	// processor 数が1より大きければローカルワーカーを設定する
-	if (gwtCompileWorkers > 1) {
+	if (gwtCompileWorkers > MIN_PROCESSORS) {
 		args += ['-localWorkers', gwtCompileWorkers]
 	}
 
