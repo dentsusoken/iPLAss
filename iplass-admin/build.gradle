@@ -57,6 +57,9 @@ def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	description = 'Compile GWT modules'
 	dependsOn tasks.named('processGwtResources')
 
+	inputs.files(files(buildSrcGwt))
+	outputs.dir(buildGwtDir.dir('out'))
+
 	// jvm arguments
 	minHeapSize = "512m"
 	maxHeapSize = "2g"
