@@ -47,9 +47,10 @@ def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
 def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
 def buildGwtDir = layout.buildDirectory.dir('gwt').get()
 
-final def MIN_PROCESSORS = 6
+// 最小のGWTコンパイルワーカー数の指定の下限。この値以下のワーカー数を設定するとエラーが発生することがある。
+final def MIN_GWT_WORKERS = 6
 def availableProcessors = Runtime.runtime.availableProcessors()
-def gwtCompileWorkers = availableProcessors > MIN_PROCESSORS ? availableProcessors - 1 : 1
+def gwtCompileWorkers = availableProcessors > MIN_GWT_WORKERS ? availableProcessors - 1 : 1
 
 def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	group = 'build'
@@ -73,8 +74,8 @@ def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 		'-workDir', buildGwtDir.dir('work').asFile,
 	]
 
-	// processor 数が1より大きければローカルワーカーを設定する
-	if (gwtCompileWorkers > MIN_PROCESSORS) {
+	if (gwtCompileWorkers >= MIN_GWT_WORKERS) {
+		// worker 設定可能数が MIN_GWT_WORKERS 以上の場合は、-localWorkers オプションを追加する
 		args += ['-localWorkers', gwtCompileWorkers]
 	}
 
@@ -85,7 +86,7 @@ def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 
 	doFirst {
 		// gwt args を出力する
-		println "GWT Compile Args: ${args.join(' ')}"
+		logger.lifecycle("GWT Compile Args: ${args.join(' ')}")
 	}
 }
 
