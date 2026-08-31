@@ -50,13 +50,13 @@ def buildGwtDir = layout.buildDirectory.dir('gwt').get()
 def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	group = 'build'
 	description = 'Compile GWT modules'
-	dependsOn processGwtResources
+	dependsOn tasks.named('processGwtResources')
 
 	// jvm arguments
 	minHeapSize = "512m"
 	maxHeapSize = "2g"
 	jvmArgs = [
-		"-Dgwt.persistentunitcachedir=${buildGwtDir.dir('cache')}"
+		"-Dgwt.persistentunitcachedir=${buildGwtDir.dir('cache').asFile}"
 	]
 	mainClass.set('com.google.gwt.dev.Compiler')
 	classpath += files(buildSrcGwt)
@@ -65,8 +65,8 @@ def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
 	args = [
 		'-sourceLevel', 'auto',
 		'-logLevel', 'INFO',
-		'-war', buildGwtDir.dir('out'),
-		'-workDir', buildGwtDir.dir('work'),
+		'-war', buildGwtDir.dir('out').asFile,
+		'-workDir', buildGwtDir.dir('work').asFile,
 		'-localWorkers', '6',
 		'-strict',
 		'org.iplass.adminconsole.AdminConsole',
