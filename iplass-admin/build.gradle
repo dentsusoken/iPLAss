@@ -1,24 +1,15 @@
-// https://github.com/jiakuan/gwt-gradle-plugin/issues/75
-plugins {
-  id "org.docstr.gwt" version "1.1.30"
-}
-
 apply from: 'libs.gradle'
 dependencies {
 	implementation project(':iplass-core')
 	implementation project(':iplass-web')
 	implementation project(':iplass-gem')
 	implementation project(':iplass-tools')
-}
 
-apply plugin: 'gwt-compiler'
-apply plugin: 'eclipse'
-
-eclipse {
-
-	//gwtSdkをClassPathに追加
-	classpath {
-		plusConfigurations += [ configurations.gwtSdk ]
+	// 'iplass-' から始まる依存関係はプロジェクト参照。プロジェクト参照の sourceSets.main.output を gwtCompileOnly に追加する
+	configurations.implementation.dependencies.each {
+		if (it.name.startsWith('iplass-')) {
+			add('gwtCompileOnly', project(":${it.name}").sourceSets.main.output)
+		}
 	}
 }
 
@@ -35,7 +26,7 @@ compileJava {
 	source = fileTree('src/main/java') {
 		exclude 'org/iplass/adminconsole/client/**'
 		exclude 'org/iplass/adminconsole/trans/**'
-		exclude 'edu/ycp/cs/dh/acegwt/client/**'
+		exclude 'org/iplass/gwt/ace/client/**'
 //		exclude 'com/google/gwt/user/client/**'  //これはサーバでも必要
 	}
 }
@@ -45,8 +36,8 @@ processResources {
 	from 'src/main/resources'
 	exclude 'org/iplass/adminconsole/**/*.gwt.xml'
 	exclude 'org/iplass/adminconsole/public/**'
-	exclude 'edu/ycp/cs/dh/acegwt/**/*.gwt.xml'
-	exclude 'edu/ycp/cs/dh/acegwt/public/**'
+	exclude 'org/iplass/gwt/ace/**/*.gwt.xml'
+	exclude 'org/iplass/gwt/ace/public/**'
 
 	// 重複ファイル設定（コピーされたファイルを正とする）
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -54,27 +45,43 @@ processResources {
 
 def buildSrcGwt = layout.buildDirectory.dir('src/gwt')
 def buildSrcGwtTrans = layout.buildDirectory.dir('src/gwt-trans')
+def buildGwtDir = layout.buildDirectory.dir('gwt').get()
 
-gwt {
-	src = files(buildSrcGwt)
-	// TODO gwt plugin jakarta-servlet 版に対応していないので、バージョンを指定し依存関係を設定しない
-	//gwtVersion = this.gwtVersion
-	modules 'org.iplass.adminconsole.AdminConsole'
-	minHeapSize = '512M'
-	maxHeapSize = '2048M'
-	logLevel = 'INFO'
-	sourceLevel = 'auto'
-	compiler.strict = true
+def gwtCompileTask = tasks.register('gwtCompile', JavaExec) {
+	group = 'build'
+	description = 'Compile GWT modules'
+	dependsOn processGwtResources
+
+	// jvm arguments
+	minHeapSize = "512m"
+	maxHeapSize = "2g"
+	jvmArgs = [
+		"-Dgwt.persistentunitcachedir=${buildGwtDir.dir('cache')}"
+	]
+	mainClass.set('com.google.gwt.dev.Compiler')
+	classpath += files(buildSrcGwt)
+	classpath += configurations.gwtCompileOnly
+
+	args = [
+		'-sourceLevel', 'auto',
+		'-logLevel', 'INFO',
+		'-war', buildGwtDir.dir('out'),
+		'-workDir', buildGwtDir.dir('work'),
+		'-localWorkers', '6',
+		'-strict',
+		'org.iplass.adminconsole.AdminConsole',
+	]
 }
 
 jar {
-	dependsOn('compileGwt')
+	dependsOn gwtCompileTask
 
 	includeEmptyDirs = false;
 
 	// META-INF配下にgwtコンパイル結果をコピー
-	into('META-INF/resources/admin/mtpadmin') { from(layout.buildDirectory.dir('gwt/out/mtpadmin')) }
-
+	into('META-INF/resources/admin/mtpadmin') { 
+		from buildGwtDir.dir('out/mtpadmin')
+	}
 }
 
 task processGwtResources(type: Sync) {
@@ -91,7 +98,6 @@ task processGwtResources(type: Sync) {
 	from buildSrcGwtTrans
 	into buildSrcGwt
 }
-tasks.compileGwt.dependsOn processGwtResources
 
 task copyGwtTransSrc(type: Sync) {
 
