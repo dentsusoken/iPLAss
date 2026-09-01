@@ -1,18 +1,6 @@
-
-//Release
-buildscript {
-	repositories {
-		maven {
-			url = uri('https://plugins.gradle.org/m2/')
-		}
-	}
-	dependencies {
-		classpath "net.researchgate:gradle-release:${gradleReleasePluginVersion}"
-	}
-}
-
 plugins {
     id 'com.diffplug.spotless' version "${spotlessPluginVersion}" apply false
+	id 'net.researchgate.release' version "${gradleReleasePluginVersion}" apply false
 }
 
 ext.localLibDir = file(localLibDirPath)
