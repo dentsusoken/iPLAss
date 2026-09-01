@@ -3,9 +3,10 @@ plugins {
 	id 'net.researchgate.release' version "${gradleReleasePluginVersion}" apply false
 }
 
-ext.localLibDir = file(localLibDirPath)
-ext.javaVersion = "${javaVersion}"
-ext.javadocLang = System.properties['user.language']
+ext.localLibDir = rootProject.layout.projectDirectory.dir(providers.gradleProperty('localLibDirPath').orNull)
+
+def javaVersion = providers.gradleProperty('javaVersion').orNull
+def javadocLang = System.properties['user.language']
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -68,7 +69,7 @@ allprojects {
 
 subprojects { subproject ->
 	apply from: '../sharedlibs.gradle'
-	
+
 	configurations.all {
 		globalExcludes.each {
 			exclude group: it.group, module: it.module

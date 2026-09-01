@@ -4,12 +4,12 @@ dependencies {
 	implementation project(':iplass-web')
 	implementation project(':iplass-gem')
 	implementation project(':iplass-tools')
+}
 
-	// 'iplass-' から始まる依存関係はプロジェクト参照。プロジェクト参照の sourceSets.main.output を gwtCompileOnly に追加する
-	configurations.implementation.dependencies.each {
-		if (it.name.startsWith('iplass-')) {
-			add('gwtCompileOnly', project(":${it.name}").sourceSets.main.output)
-		}
+// 'iplass-' から始まる依存関係はプロジェクト参照。プロジェクト参照の sourceSets.main.output を gwtCompileOnly に追加する
+configurations.implementation.dependencies.each {
+	if (it.name.startsWith('iplass-')) {
+		dependencies.add('gwtCompileOnly', project(":${it.name}").sourceSets.main.output)
 	}
 }
 
