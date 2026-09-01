@@ -3,7 +3,7 @@
 buildscript {
 	repositories {
 		maven {
-			url 'https://plugins.gradle.org/m2/'
+			url = uri('https://plugins.gradle.org/m2/')
 		}
 	}
 	dependencies {
@@ -39,7 +39,7 @@ allprojects {
 allprojects {
 	apply plugin: 'java-library'
 
-	group "org.iplass"
+	group = "org.iplass"
 
 	java {
 		sourceCompatibility = javaVersion
@@ -109,7 +109,7 @@ subprojects { subproject ->
 		from sourceSets['main'].allJava
 		into buildJavadocSourceLangDir
 
-		filteringCharset 'UTF-8'
+		filteringCharset = 'UTF-8'
 		filter { String line ->
 			line.replaceAll('<([\\$])', '%lt;$1')
 				.replaceAll('\\$([\\{])', '\\\\\\$$1')
@@ -139,7 +139,7 @@ subprojects { subproject ->
 
 	task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
 		source buildJavadocSourceLangDir
-		destinationDir file(buildJavadocLangDir)
+		destinationDir = file(buildJavadocLangDir)
 
 		options.encoding = 'UTF-8'
 		options.docEncoding = 'UTF-8'
@@ -195,7 +195,7 @@ task copyJavadocJava(type: Copy) {
 	exclude 'org/iplass/gem/**'
 	exclude '**/impl/**'
 
-	filteringCharset 'UTF-8'
+	filteringCharset = 'UTF-8'
 	filter { String line ->
 		line.replaceAll('<([\\$])', '%lt;$1')
 			.replaceAll('\\$([\\{])', '\\\\\\$$1')
@@ -226,7 +226,7 @@ task processJavadocJava(dependsOn: copyJavadocJava) {
 task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
 	source rootBuildJavadocSourceLangDir
 	exclude('**/impl/**')
-	destinationDir file(rootBuildJavadocLangDir)
+	destinationDir = file(rootBuildJavadocLangDir)
 
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
