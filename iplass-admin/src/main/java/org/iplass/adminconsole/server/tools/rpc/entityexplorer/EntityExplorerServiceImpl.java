@@ -1409,7 +1409,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 										em.restore(recycleBinId, defName);
 									} catch (ApplicationException e) {
 										transaction.rollback();
-										logger.error("Failed to restore recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
+										logger.error("Failed to restore recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId,
+												e);
 										messages.add("Failed to restore recycle bin data. recycleBinId=" + recycleBinId);
 										return false;
 									}
