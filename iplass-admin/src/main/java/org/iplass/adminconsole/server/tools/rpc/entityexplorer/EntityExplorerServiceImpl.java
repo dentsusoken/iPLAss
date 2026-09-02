@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
@@ -48,6 +47,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityI
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerService;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
@@ -100,6 +100,7 @@ import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet implements EntityExplorerService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EntityExplorerServiceImpl.class);
+	private static final int RECYCLE_BIN_BATCH_SIZE = 100;
 
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = -3459617043325559477L;
@@ -1341,19 +1342,37 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 							return messages;
 						}
 
-						for (Long recycleBinId : recycleBinIds) {
-							if (recycleBinId == null) {
-								continue;
+						int batchCount = recycleBinIds.size() / RECYCLE_BIN_BATCH_SIZE;
+						if (recycleBinIds.size() % RECYCLE_BIN_BATCH_SIZE > 0) {
+							batchCount++;
+						}
+						for (int batchIndex = 0; batchIndex < batchCount; batchIndex++) {
+							int current = batchIndex * RECYCLE_BIN_BATCH_SIZE;
+							int last = Math.min(current + RECYCLE_BIN_BATCH_SIZE, recycleBinIds.size());
+							List<Long> subList = recycleBinIds.subList(current, last);
+							Boolean succeeded = Transaction.requiresNew(transaction -> {
+								for (Long recycleBinId : subList) {
+									if (recycleBinId == null) {
+										continue;
+									}
+									try {
+										em.purge(recycleBinId, defName);
+									} catch (ApplicationException e) {
+										transaction.rollback();
+										logger.error("Failed to clear recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
+										messages.add("Failed to clear recycle bin data. recycleBinId=" + recycleBinId);
+										return false;
+									}
+								}
+								return true;
+							});
+							if (!succeeded) {
+								break;
 							}
-							try {
-								Consumer<Transaction> operation = transaction -> {
-									em.purge(recycleBinId, defName);
-								};
-								Transaction.requiresNew(operation);
-								messages.add("Cleared recycle bin data. recycleBinId=" + recycleBinId);
-							} catch (Exception e) {
-								logger.error("Failed to clear recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
-								messages.add("Failed to clear recycle bin data. recycleBinId=" + recycleBinId);
+							for (Long recycleBinId : subList) {
+								if (recycleBinId != null) {
+									messages.add("Cleared recycle bin data. recycleBinId=" + recycleBinId);
+								}
 							}
 						}
 						return messages;
@@ -1373,19 +1392,37 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 							return messages;
 						}
 
-						for (Long recycleBinId : recycleBinIds) {
-							if (recycleBinId == null) {
-								continue;
+						int batchCount = recycleBinIds.size() / RECYCLE_BIN_BATCH_SIZE;
+						if (recycleBinIds.size() % RECYCLE_BIN_BATCH_SIZE > 0) {
+							batchCount++;
+						}
+						for (int batchIndex = 0; batchIndex < batchCount; batchIndex++) {
+							int current = batchIndex * RECYCLE_BIN_BATCH_SIZE;
+							int last = Math.min(current + RECYCLE_BIN_BATCH_SIZE, recycleBinIds.size());
+							List<Long> subList = recycleBinIds.subList(current, last);
+							Boolean succeeded = Transaction.requiresNew(transaction -> {
+								for (Long recycleBinId : subList) {
+									if (recycleBinId == null) {
+										continue;
+									}
+									try {
+										em.restore(recycleBinId, defName);
+									} catch (ApplicationException e) {
+										transaction.rollback();
+										logger.error("Failed to restore recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
+										messages.add("Failed to restore recycle bin data. recycleBinId=" + recycleBinId);
+										return false;
+									}
+								}
+								return true;
+							});
+							if (!succeeded) {
+								break;
 							}
-							try {
-								Consumer<Transaction> operation = transaction -> {
-									em.restore(recycleBinId, defName);
-								};
-								Transaction.requiresNew(operation);
-								messages.add("Restored recycle bin data. recycleBinId=" + recycleBinId);
-							} catch (Exception e) {
-								logger.error("Failed to restore recycle bin data. definitionName={}, recycleBinId={}", defName, recycleBinId, e);
-								messages.add("Failed to restore recycle bin data. recycleBinId=" + recycleBinId);
+							for (Long recycleBinId : subList) {
+								if (recycleBinId != null) {
+									messages.add("Restored recycle bin data. recycleBinId=" + recycleBinId);
+								}
 							}
 						}
 						return messages;

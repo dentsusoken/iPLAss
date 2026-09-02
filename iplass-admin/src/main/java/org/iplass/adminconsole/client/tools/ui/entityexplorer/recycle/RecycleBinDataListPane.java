@@ -236,9 +236,16 @@ public class RecycleBinDataListPane extends VLayout {
 			public void onSuccess(List<String> result) {
 				SmartGWTUtil.hideProgress();
 				refreshGrid();
+				if (hasOperationError(result)) {
+					executeErrorCallback(result);
+					finishExecute();
+					SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
+							formatOperationMessages(result));
+					return;
+				}
 				executeStatusCallback(createCompletedMessages(result));
 				finishExecute();
-				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"), formatOperationMessages(result));
+				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"));
 			}
 		});
 	}
@@ -264,9 +271,16 @@ public class RecycleBinDataListPane extends VLayout {
 			public void onSuccess(List<String> result) {
 				SmartGWTUtil.hideProgress();
 				refreshGrid();
+				if (hasOperationError(result)) {
+					executeErrorCallback(result);
+					finishExecute();
+					SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
+							formatOperationMessages(result));
+					return;
+				}
 				executeStatusCallback(createCompletedMessages(result));
 				finishExecute();
-				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"), formatOperationMessages(result));
+				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"));
 			}
 		});
 	}
@@ -286,6 +300,18 @@ public class RecycleBinDataListPane extends VLayout {
 
 	private void executeErrorCallback(List<String> messages) {
 		messageTabSet.addErrorMessage(messages);
+	}
+
+	private boolean hasOperationError(List<String> result) {
+		if (result == null) {
+			return false;
+		}
+		for (String message : result) {
+			if (message != null && message.startsWith("Failed to ")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<String> createCompletedMessages(List<String> result) {
