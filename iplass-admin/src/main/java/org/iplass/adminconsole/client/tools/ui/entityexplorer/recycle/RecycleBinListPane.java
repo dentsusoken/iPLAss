@@ -32,6 +32,8 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.DataArrivedEvent;
 import com.smartgwt.client.widgets.grid.events.DataArrivedHandler;
+import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
+import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
@@ -44,12 +46,12 @@ public class RecycleBinListPane extends VLayout {
 	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
 	private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
 
-	private DateItem purgeTargetDateItem;
-	private CheckboxItem showCountItem;
-	private Label countLabel;
-	private ListGrid grid;
+	private final DateItem purgeTargetDateItem;
+	private final CheckboxItem showCountItem;
+	private final Label countLabel;
+	private final ListGrid grid;
 
-	private MessageTabSet messageTabSet;
+	private final MessageTabSet messageTabSet;
 
 	public RecycleBinListPane(RecycleBinMainPane mainPane) {
 		// レイアウト設定
@@ -172,6 +174,26 @@ public class RecycleBinListPane extends VLayout {
 				finishClean();
 			}
 		});
+		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+
+			@Override
+			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+				if (event.getRecord()
+						.getAttributeAsBoolean(RecycleBinEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
+					return;
+				}
+
+				Date purgeTimeDate = getPurgeTargetDate();
+				if (purgeTimeDate == null) {
+					SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "specifyPurgeTargetDate"));
+					return;
+				}
+
+				String entityName = event.getRecord()
+						.getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name());
+				mainPane.showDataListPane(entityName, new Timestamp(purgeTimeDate.getTime()));
+			}
+		});
 		grid.setShowResizeBar(true); // リサイズ可能
 		grid.setResizeBarTarget("next"); // リサイズバーをダブルクリックした際、下を収縮
 
@@ -248,7 +270,7 @@ public class RecycleBinListPane extends VLayout {
 
 	private void refreshGrid() {
 
-		Date purgeTimeDate = SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
+		Date purgeTimeDate = getPurgeTargetDate();
 		if (purgeTimeDate == null) {
 			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "specifyPurgeTargetDate"));
 			return;
@@ -276,6 +298,10 @@ public class RecycleBinListPane extends VLayout {
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField);
 
 		grid.fetchData();
+	}
+
+	private Date getPurgeTargetDate() {
+		return SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
 	}
 
 	private void startClean() {

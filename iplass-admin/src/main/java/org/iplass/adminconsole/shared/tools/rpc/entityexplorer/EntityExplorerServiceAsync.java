@@ -29,6 +29,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinDataInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
@@ -220,6 +221,12 @@ public interface EntityExplorerServiceAsync {
 	void isUseFulltextSearch(int tenantId, AsyncCallback<Boolean> callback);
 
 	void getRecycleBinInfoList(int tenantId, Timestamp ts, boolean isGetCount, AsyncCallback<List<RecycleBinEntityInfo>> callback);
+
+	void getRecycleBinDataList(int tenantId, String defName, Timestamp ts, AsyncCallback<List<RecycleBinDataInfo>> callback);
+
+	void purgeRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds, AsyncCallback<List<String>> callback);
+
+	void restoreRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds, AsyncCallback<List<String>> callback);
 
 	void cleanRecycleBin(int tenantId, String defName, Timestamp ts, AsyncCallback<List<String>> callback);
 
