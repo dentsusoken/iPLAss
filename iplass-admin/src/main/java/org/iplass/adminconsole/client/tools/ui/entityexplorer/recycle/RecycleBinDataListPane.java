@@ -48,12 +48,12 @@ public class RecycleBinDataListPane extends VLayout {
 	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
 	private static final EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 
-	private RecycleBinMainPane mainPane;
-	private String entityName;
-	private Timestamp purgeTargetDate;
-	private ListGrid grid;
-	private Label countLabel;
-	private MessageTabSet messageTabSet;
+	private final RecycleBinMainPane mainPane;
+	private final String entityName;
+	private final Timestamp purgeTargetDate;
+	private final ListGrid grid;
+	private final Label countLabel;
+	private final MessageTabSet messageTabSet;
 
 	public RecycleBinDataListPane(RecycleBinMainPane mainPane, String entityName, Timestamp purgeTargetDate) {
 		this.mainPane = mainPane;

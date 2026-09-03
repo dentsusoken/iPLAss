@@ -46,12 +46,12 @@ public class RecycleBinListPane extends VLayout {
 	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
 	private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
 
-	private DateItem purgeTargetDateItem;
-	private CheckboxItem showCountItem;
-	private Label countLabel;
-	private ListGrid grid;
+	private final DateItem purgeTargetDateItem;
+	private final CheckboxItem showCountItem;
+	private final Label countLabel;
+	private final ListGrid grid;
 
-	private MessageTabSet messageTabSet;
+	private final MessageTabSet messageTabSet;
 
 	public RecycleBinListPane(RecycleBinMainPane mainPane) {
 		// レイアウト設定

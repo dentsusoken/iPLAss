@@ -107,14 +107,14 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 //	private static final String USER_ENTITY = "mtp.auth.User";
 
-	private EntityManager em = AdminEntityManager.getInstance();
-	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+	private final EntityManager em = AdminEntityManager.getInstance();
+	private final EntityDefinitionManager edm = ManagerLocator.getInstance()
 			.getManager(EntityDefinitionManager.class);
-	private EntityService ehs = ServiceRegistry.getRegistry()
+	private final EntityService ehs = ServiceRegistry.getRegistry()
 			.getService(EntityService.class);
-	private FulltextSearchManager fsm = ManagerLocator.getInstance()
+	private final FulltextSearchManager fsm = ManagerLocator.getInstance()
 			.getManager(FulltextSearchManager.class);
-	private RdbAdapter rdb = ServiceRegistry.getRegistry()
+	private final RdbAdapter rdb = ServiceRegistry.getRegistry()
 			.getService(RdbAdapterService.class)
 			.getRdbAdapter();
 

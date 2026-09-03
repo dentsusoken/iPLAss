@@ -14,7 +14,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
  */
 public class RecycleBinMainPane extends VLayout {
 
-	private EntityExplorerMainPane owner;
+	private final EntityExplorerMainPane owner;
 	private RecycleBinListPane recycleBinListPane;
 	private RecycleBinDataListPane recycleBinDataListPane;
 
