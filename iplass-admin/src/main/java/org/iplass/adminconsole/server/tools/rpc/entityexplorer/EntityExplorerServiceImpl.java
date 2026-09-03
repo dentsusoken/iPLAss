@@ -1218,7 +1218,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	@Override
 	public List<RecycleBinEntityInfo> getRecycleBinInfoList(int tenantId, Timestamp ts, boolean isGetCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<RecycleBinEntityInfo>>() {
 
 					@Override
@@ -1280,7 +1280,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public List<String> cleanRecycleBin(int tenantId, String defName, Timestamp ts) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), getThreadLocalRequest(), getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<String>>() {
 					@Override
 					public List<String> call() {
@@ -1308,7 +1308,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public List<RecycleBinDataInfo> getRecycleBinDataList(int tenantId, String defName, Timestamp ts) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<RecycleBinDataInfo>>() {
 
 					@Override
@@ -1332,7 +1332,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public List<String> purgeRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<String>>() {
 
 					@Override
@@ -1382,7 +1382,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public List<String> restoreRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<String>>() {
 
 					@Override
@@ -1429,6 +1429,10 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 						return messages;
 					}
 				});
+	}
+
+	private <R> R authCheckAndInvoke(int tenantId, AuthUtil.Callable<R> callback) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, callback);
 	}
 
 	private void doCleanRecycleBinInfoList(String defName, Timestamp ts) {
