@@ -215,56 +215,45 @@ public class RecycleBinDataListPane extends VLayout {
 		return recycleBinIds;
 	}
 
-	private void executeRestore(final List<Long> recycleBinIds) {
-		startExecute();
-		SmartGWTUtil.showProgress(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "restoring"));
-		service.restoreRecycleBinData(TenantInfoHolder.getId(), entityName, recycleBinIds, new AsyncCallback<List<String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				SmartGWTUtil.hideProgress();
-				GWT.log("Failed to restore recycle bin data.", caught);
-				List<String> messages = new ArrayList<>();
-				messages.add(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "restoreFailed"));
-				messages.add("Cause:" + caught.getMessage());
-				executeErrorCallback(messages);
-				finishExecute();
-				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
-						AdminClientMessageUtil.getString(RESOURCE_PREFIX + "restoreFailed"));
-			}
+	private interface RecycleBinDataOperation {
+		void execute(List<Long> recycleBinIds, AsyncCallback<List<String>> callback);
+	}
 
+	private void executeRestore(final List<Long> recycleBinIds) {
+		executeRecycleBinDataOperation(recycleBinIds, new RecycleBinDataOperation() {
 			@Override
-			public void onSuccess(List<String> result) {
-				SmartGWTUtil.hideProgress();
-				refreshGrid();
-				if (hasOperationError(result)) {
-					executeErrorCallback(result);
-					finishExecute();
-					SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
-							formatOperationMessages(result));
-					return;
-				}
-				executeStatusCallback(createCompletedMessages(result));
-				finishExecute();
-				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"));
+			public void execute(List<Long> recycleBinIds, AsyncCallback<List<String>> callback) {
+				service.restoreRecycleBinData(TenantInfoHolder.getId(), entityName, recycleBinIds, callback);
 			}
-		});
+		}, "restoring", "restoreFailed", "Failed to restore recycle bin data.");
 	}
 
 	private void executeClear(final List<Long> recycleBinIds) {
+		executeRecycleBinDataOperation(recycleBinIds, new RecycleBinDataOperation() {
+			@Override
+			public void execute(List<Long> recycleBinIds, AsyncCallback<List<String>> callback) {
+				service.purgeRecycleBinData(TenantInfoHolder.getId(), entityName, recycleBinIds, callback);
+			}
+		}, "clearing", "clearFailed", "Failed to clear recycle bin data.");
+	}
+
+	private void executeRecycleBinDataOperation(final List<Long> recycleBinIds,
+			RecycleBinDataOperation operation, final String progressResourceSuffix,
+			final String failureResourceSuffix, final String failureLogMessage) {
 		startExecute();
-		SmartGWTUtil.showProgress(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "clearing"));
-		service.purgeRecycleBinData(TenantInfoHolder.getId(), entityName, recycleBinIds, new AsyncCallback<List<String>>() {
+		SmartGWTUtil.showProgress(AdminClientMessageUtil.getString(RESOURCE_PREFIX + progressResourceSuffix));
+		operation.execute(recycleBinIds, new AsyncCallback<List<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				SmartGWTUtil.hideProgress();
-				GWT.log("Failed to clear recycle bin data.", caught);
+				GWT.log(failureLogMessage, caught);
 				List<String> messages = new ArrayList<>();
-				messages.add(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "clearFailed"));
+				messages.add(AdminClientMessageUtil.getString(RESOURCE_PREFIX + failureResourceSuffix));
 				messages.add("Cause:" + caught.getMessage());
 				executeErrorCallback(messages);
 				finishExecute();
 				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
-						AdminClientMessageUtil.getString(RESOURCE_PREFIX + "clearFailed"));
+						AdminClientMessageUtil.getString(RESOURCE_PREFIX + failureResourceSuffix));
 			}
 
 			@Override
