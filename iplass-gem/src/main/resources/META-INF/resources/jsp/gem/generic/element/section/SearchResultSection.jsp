@@ -940,18 +940,30 @@ function adjustResultGridHeight() {
 		}
 	});
 
-	var height = Math.floor(viewportBottom - gridTop - belowHeight);
+	//gbox全体に割当て可能な高さ
+	var gboxHeight = Math.floor(viewportBottom - gridTop - belowHeight);
+	var $bdiv = $(grid[0].grid.bDiv);
+	var outsideBodyHeight = $gbox.outerHeight(true) - $bdiv.outerHeight(true);
+	if (outsideBodyHeight < 0) outsideBodyHeight = 0;
+
+	var height = gboxHeight - outsideBodyHeight;
 	if (height < RESULT_GRID_MIN_HEIGHT) height = RESULT_GRID_MIN_HEIGHT;
 
 	grid.jqGrid("setGridHeight", height);
 	//スクロールバー出現後の横幅再計算(列幅・横スクロールは保持: 既存dispHeight>0時と同じ考慮)
 	grid.jqGrid("setGridWidth", $("#gbox_searchResult").width(), false);
 }
+var resultGridResizeTimerId = null;
 $(window).on("resize", function() {
-	//ウィンドウリサイズ時も高さを再調節
-	if (fitToViewportMode) {
-		setTimeout(adjustResultGridHeight, 200);
+	//ウィンドウリサイズ時も高さを再調節(連続発火による過剰実行を抑止するためデバウンス)
+	if (!fitToViewportMode) return;
+	if (resultGridResizeTimerId != null) {
+		clearTimeout(resultGridResizeTimerId);
 	}
+	resultGridResizeTimerId = setTimeout(function() {
+		resultGridResizeTimerId = null;
+		adjustResultGridHeight();
+	}, 200);
 });
 var loadingOff = null;
 loadingOff = function(event, src) {
