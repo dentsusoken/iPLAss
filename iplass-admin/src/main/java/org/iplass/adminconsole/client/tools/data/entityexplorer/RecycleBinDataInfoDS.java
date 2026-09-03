@@ -37,14 +37,10 @@ public class RecycleBinDataInfoDS extends AbstractAdminDataSource {
 		RECYCLE_DATE,
 	}
 
-	public static RecycleBinDataInfoDS getInstance(String entityName, Timestamp purgeTargetDate) {
-		return new RecycleBinDataInfoDS(entityName, purgeTargetDate);
-	}
-
 	private final String entityName;
 	private final Timestamp purgeTargetDate;
 
-	private RecycleBinDataInfoDS(String entityName, Timestamp purgeTargetDate) {
+	public RecycleBinDataInfoDS(String entityName, Timestamp purgeTargetDate) {
 		this.entityName = entityName;
 		this.purgeTargetDate = purgeTargetDate;
 

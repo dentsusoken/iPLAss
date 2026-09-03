@@ -164,7 +164,7 @@ public class RecycleBinDataListPane extends VLayout {
 	}
 
 	private void refreshGrid() {
-		grid.setDataSource(RecycleBinDataInfoDS.getInstance(entityName, purgeTargetDate));
+		grid.setDataSource(new RecycleBinDataInfoDS(entityName, purgeTargetDate));
 
 		grid.setFields(
 				new ListGridField(RecycleBinDataInfoDS.FIELD_NAME.NAME.name(), "Name"),
