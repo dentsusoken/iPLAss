@@ -41,6 +41,7 @@ import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 public class RecycleBinDataListPane extends VLayout {
 
 	private static final String RESOURCE_PREFIX = "ui_tools_entityexplorer_RecycleBinDataListPane_";
+	private static final String OPERATION_ERROR_PREFIX = "Failed to ";
 
 	private static final String BACK_ICON = "[SKIN]/actions/back.png";
 	private static final String CLEAR_ICON = "[SKIN]/actions/remove.png";
@@ -296,7 +297,7 @@ public class RecycleBinDataListPane extends VLayout {
 			return false;
 		}
 		for (String message : result) {
-			if (message != null && message.startsWith("Failed to ")) {
+			if (message != null && message.startsWith(OPERATION_ERROR_PREFIX)) {
 				return true;
 			}
 		}

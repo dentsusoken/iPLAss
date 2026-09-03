@@ -102,6 +102,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	private static final Logger logger = LoggerFactory.getLogger(EntityExplorerServiceImpl.class);
 	private static final int RECYCLE_BIN_BATCH_SIZE = 100;
+	private static final String OPERATION_ERROR_PREFIX = "Failed to ";
 
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = -3459617043325559477L;
@@ -1382,7 +1383,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					} catch (ApplicationException e) {
 						transaction.rollback();
 						logger.error("Failed to {} recycle bin data. definitionName={}, recycleBinId={}", operationName, defName, recycleBinId, e);
-						messages.add("Failed to " + operationName + " recycle bin data. recycleBinId=" + recycleBinId);
+						messages.add(OPERATION_ERROR_PREFIX + operationName + " recycle bin data. recycleBinId=" + recycleBinId);
 						return false;
 					}
 				}
