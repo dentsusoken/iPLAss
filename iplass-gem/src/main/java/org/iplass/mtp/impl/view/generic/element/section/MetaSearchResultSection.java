@@ -42,6 +42,7 @@ import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyColumn;
 import org.iplass.mtp.view.generic.PagingPosition;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.AutoHeightAdjustMode;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.BulkUpdateAllCommandTransactionType;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.DeleteAllCommandTransactionType;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
@@ -64,6 +65,9 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/** 表示TABLEの高さ */
 	private int dispHeight;
+
+	/** テーブル高さの自動調節モード */
+	private AutoHeightAdjustMode autoHeightAdjustMode;
 
 	/** 検索結果をまとめる設定 */
 	private boolean groupingData;
@@ -170,6 +174,22 @@ public class MetaSearchResultSection extends MetaSection {
 	 */
 	public void setDispHeight(int dispHeight) {
 		this.dispHeight = dispHeight;
+	}
+
+	/**
+	 * テーブル高さの自動調節モードを取得します。
+	 * @return テーブル高さの自動調節モード（未設定の場合 null）
+	 */
+	public AutoHeightAdjustMode getAutoHeightAdjustMode() {
+		return autoHeightAdjustMode;
+	}
+
+	/**
+	 * テーブル高さの自動調節モードを設定します。
+	 * @param autoHeightAdjustMode テーブル高さの自動調節モード
+	 */
+	public void setAutoHeightAdjustMode(AutoHeightAdjustMode autoHeightAdjustMode) {
+		this.autoHeightAdjustMode = autoHeightAdjustMode;
 	}
 
 	/**
@@ -579,6 +599,7 @@ public class MetaSearchResultSection extends MetaSection {
 		SearchResultSection section = (SearchResultSection) element;
 		this.dispRowCount = section.getDispRowCount();
 		this.dispHeight = section.getDispHeight();
+		this.autoHeightAdjustMode = section.getAutoHeightAdjustMode();
 		this.groupingData = section.isGroupingData();
 		this.hideDetailLink = section.isHideDetailLink();
 		this.checkEntityPermissionLimitConditionOfEditLink = section.isCheckEntityPermissionLimitConditionOfEditLink();
@@ -628,6 +649,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setScriptKey(scriptKey);
 		section.setDispRowCount(this.dispRowCount);
 		section.setDispHeight(this.dispHeight);
+		section.setAutoHeightAdjustMode(this.autoHeightAdjustMode);
 		section.setGroupingData(this.isGroupingData());
 		section.setHideDetailLink(hideDetailLink);
 		section.setCheckEntityPermissionLimitConditionOfEditLink(checkEntityPermissionLimitConditionOfEditLink);

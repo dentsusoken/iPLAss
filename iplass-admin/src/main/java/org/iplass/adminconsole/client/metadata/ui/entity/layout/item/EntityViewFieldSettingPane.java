@@ -41,6 +41,7 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
@@ -151,7 +152,33 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 						});
 			}
 		}
+		//SearchResultSectionのテーブル高さ自動調節モードは「検索結果TABLEの高さ」が0の場合のみ変更可能
+		if (getOwner().getValue() instanceof SearchResultSection) {
+			FormItem dispHeightItem = form.getItem("dispHeight");
+			FormItem modeItem = form.getItem("autoHeightAdjustMode");
+			if (dispHeightItem != null && modeItem != null) {
+				updateAutoHeightAdjustModeEnabled(dispHeightItem, modeItem);
+				dispHeightItem.addChangedHandler(new ChangedHandler() {
+
+					@Override
+					public void onChanged(ChangedEvent event) {
+						updateAutoHeightAdjustModeEnabled(dispHeightItem, modeItem);
+					}
+				});
+			}
+		}
 		triggerdPropertyList.clear();
+	}
+
+	/**
+	 * 「検索結果TABLEの高さ」が0より大きい場合、テーブル高さ自動調節モードを変更不可とする。
+	 * 0の場合はフィールド値がnull(未設定)でも選択可能とし、保存時にnullが維持される前提
+	 * (ServiceConfig既定値の活かしが「保存即固化」で壊れないようにするため、値の強制設定は行わない)。
+	 */
+	private void updateAutoHeightAdjustModeEnabled(FormItem dispHeightItem, FormItem modeItem) {
+		Integer dispHeight = SmartGWTUtil.getIntegerValue(dispHeightItem);
+		boolean fixedHeight = dispHeight != null && dispHeight.intValue() > 0;
+		modeItem.setDisabled(fixedHeight);
 	}
 
 	@Override
