@@ -63,6 +63,17 @@ public class SearchResultSection extends Section {
 		WHEN_SEARCH
 	}
 
+	/** テーブル高さの自動調節モード */
+	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
+	public enum AutoHeightAdjustMode {
+
+		/** 検索結果の表示件数に応じて調節（既定・既存挙動） */
+		FIT_TO_ROW_COUNT,
+
+		/** 画面内にテーブル全体が表示されるよう調節 */
+		FIT_TO_VIEWPORT
+	}
+
 	/** 一括削除コミットトランザクション制御設定 */
 	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum DeleteAllCommandTransactionType {
@@ -103,6 +114,21 @@ public class SearchResultSection extends Section {
 			descriptionKey = "generic_element_section_SearchResultSection_dispHeightDescriptionKey"
 	)
 	private int dispHeight;
+
+	/** テーブル高さの自動調節モード（「検索結果TABLEの高さ」が 0 の場合のみ有効） */
+	@MetaFieldInfo(
+			displayName = "テーブル高さの自動調節モード",
+			displayNameKey = "generic_element_section_SearchResultSection_autoHeightAdjustModeDisplayNameKey",
+			inputType = InputType.ENUM,
+			enumClass = AutoHeightAdjustMode.class,
+			displayOrder = 206,
+			description = "「検索結果TABLEの高さ」が 0 の場合の、テーブル高さの自動調節モードを指定します。<br>" +
+					"<b>FIT_TO_ROW_COUNT :</b> 検索結果の表示件数に応じて調節します。(既定)<br>" +
+					"<b>FIT_TO_VIEWPORT :</b> テーブル全体が画面内に表示されるよう調節します。<br>" +
+					"※「検索結果TABLEの高さ」が 0 の場合のみ設定可能です。",
+			descriptionKey = "generic_element_section_SearchResultSection_autoHeightAdjustModeDescriptionKey"
+	)
+	private AutoHeightAdjustMode autoHeightAdjustMode;
 
 	/** 検索結果をまとめる */
 	@MetaFieldInfo(
@@ -446,6 +472,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setDispHeight(int dispHeight) {
 		this.dispHeight = dispHeight;
+	}
+
+	/**
+	 * テーブル高さの自動調節モードを取得します。
+	 * @return テーブル高さの自動調節モード（未設定の場合 null）
+	 */
+	public AutoHeightAdjustMode getAutoHeightAdjustMode() {
+		return autoHeightAdjustMode;
+	}
+
+	/**
+	 * テーブル高さの自動調節モードを設定します。
+	 * @param autoHeightAdjustMode テーブル高さの自動調節モード
+	 */
+	public void setAutoHeightAdjustMode(AutoHeightAdjustMode autoHeightAdjustMode) {
+		this.autoHeightAdjustMode = autoHeightAdjustMode;
 	}
 
 	/**

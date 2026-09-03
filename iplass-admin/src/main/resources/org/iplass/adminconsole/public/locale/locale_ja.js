@@ -2602,6 +2602,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplayNameKe
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "検索結果の一覧に表示する件数を指定します。";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplayNameKey = "検索結果TABLEの高さ";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "検索結果TABLEの高さを指定します。<br>0を指定した場合、高さを自動とします。";
+LocaleInfo.generic_element_section_SearchResultSection_autoHeightAdjustModeDisplayNameKey = "テーブル高さの自動調節モード";
+LocaleInfo.generic_element_section_SearchResultSection_autoHeightAdjustModeDescriptionKey = "「検索結果TABLEの高さ」が 0 の場合の、テーブル高さの自動調節モードを指定します。<br><b>FIT_TO_ROW_COUNT :</b> 検索結果の表示件数に応じて調節します。(既定)<br><b>FIT_TO_VIEWPORT :</b> テーブル全体が画面内に表示されるよう調節します。<br>※「検索結果TABLEの高さ」が 0 の場合のみ設定可能です。";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplayNameKey = "検索結果をまとめる";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "検索結果をまとめて表示します。<br>OIDとVersionが同じであるレコードをまとめます。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplayNameKey = "編集リンクを非表示";

@@ -155,6 +155,13 @@
 	//Limit件数
 	int limit = ViewUtil.getSearchLimit(section);
 
+	//テーブル高さの自動調節モード(section未設定時はServiceConfig既定値)
+	SearchResultSection.AutoHeightAdjustMode autoHeightAdjustMode = ViewUtil.getAutoHeightAdjustMode(section);
+	//高さ自動調節(画面fit)は「検索結果TABLEの高さ」が0かつ一般検索画面の場合のみ有効(dispHeight>0は固定高優先)
+	boolean fitToViewport = section.getDispHeight() == 0
+			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_VIEWPORT
+			&& OutputType.SEARCHRESULT == type;
+
 	//一括詳細表示アクション
 	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
 	if (section.isUseBulkView()) {
@@ -862,6 +869,7 @@ function setData(list, count) {
 	}
 
 	$(".fixHeight").fixHeight();
+	adjustResultGridHeight();
 }
 function applyGridSelection(onselectrow) {
 	$("#searchResult tr[id]").each(function() {
@@ -912,6 +920,39 @@ var setRowHighlight = function (rowIndex) {
 	if (rowIndex >= $rows.length) return;
 	$rows.eq(rowIndex).addClass("ui-state-highlight");
 }
+var fitToViewportMode = <%=fitToViewport%>;
+var RESULT_GRID_MIN_HEIGHT = 80;
+function adjustResultGridHeight() {
+	if (!fitToViewportMode) return;
+	if ($("div.result-data").css("display") == "none") return;
+	var $gbox = $("#gbox_searchResult");
+	if ($gbox.length == 0) return;
+
+	var gridTop = $gbox.offset().top;
+	var viewportBottom = $(window).scrollTop() + $(window).height();
+
+	//テーブル下端以降の可視要素(ページング・削除/一括更新ボタン区等)の高さを算出
+	var belowHeight = 0;
+	$gbox.nextAll().each(function() {
+		var $elem = $(this);
+		if ($elem.css("display") != "none" && $elem.css("visibility") != "hidden") {
+			belowHeight += $elem.outerHeight(true);
+		}
+	});
+
+	var height = Math.floor(viewportBottom - gridTop - belowHeight);
+	if (height < RESULT_GRID_MIN_HEIGHT) height = RESULT_GRID_MIN_HEIGHT;
+
+	grid.jqGrid("setGridHeight", height);
+	//スクロールバー出現後の横幅再計算(列幅・横スクロールは保持: 既存dispHeight>0時と同じ考慮)
+	grid.jqGrid("setGridWidth", $("#gbox_searchResult").width(), false);
+}
+$(window).on("resize", function() {
+	//ウィンドウリサイズ時も高さを再調節
+	if (fitToViewportMode) {
+		setTimeout(adjustResultGridHeight, 200);
+	}
+});
 var loadingOff = null;
 loadingOff = function(event, src) {
 	if (src === "pager") {
