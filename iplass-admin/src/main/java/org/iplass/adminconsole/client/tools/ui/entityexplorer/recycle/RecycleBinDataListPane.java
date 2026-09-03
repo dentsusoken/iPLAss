@@ -72,7 +72,7 @@ public class RecycleBinDataListPane extends VLayout {
 		ToolStripButton backButton = new ToolStripButton();
 		backButton.setIcon(BACK_ICON);
 		backButton.setTitle("Back");
-		backButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "backTooltip")));
+		backButton.setTooltip(SmartGWTUtil.getHoverString(getResourceString("backTooltip")));
 		backButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -85,7 +85,7 @@ public class RecycleBinDataListPane extends VLayout {
 		ToolStripButton restoreButton = new ToolStripButton();
 		restoreButton.setIcon(RESTORE_ICON);
 		restoreButton.setTitle("Restore");
-		restoreButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "restoreTooltip")));
+		restoreButton.setTooltip(SmartGWTUtil.getHoverString(getResourceString("restoreTooltip")));
 		restoreButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -97,7 +97,7 @@ public class RecycleBinDataListPane extends VLayout {
 		ToolStripButton clearButton = new ToolStripButton();
 		clearButton.setIcon(CLEAR_ICON);
 		clearButton.setTitle("Clean");
-		clearButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "clearTooltip")));
+		clearButton.setTooltip(SmartGWTUtil.getHoverString(getResourceString("clearTooltip")));
 		clearButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -122,7 +122,7 @@ public class RecycleBinDataListPane extends VLayout {
 
 		ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "refreshTooltip")));
+		refreshButton.setTooltip(SmartGWTUtil.getHoverString(getResourceString("refreshTooltip")));
 		refreshButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -175,12 +175,12 @@ public class RecycleBinDataListPane extends VLayout {
 	private void restore() {
 		final List<Long> recycleBinIds = getSelectedRecycleBinIds();
 		if (recycleBinIds.isEmpty()) {
-			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "selectTargetData"));
+			SC.say(getResourceString("selectTargetData"));
 			return;
 		}
 
-		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"),
-				AdminClientMessageUtil.getString(RESOURCE_PREFIX + "restoreConfirm"), new BooleanCallback() {
+		SC.ask(getResourceString("confirmTitle"),
+				getResourceString("restoreConfirm"), new BooleanCallback() {
 					@Override
 					public void execute(Boolean value) {
 						if (value) {
@@ -193,12 +193,12 @@ public class RecycleBinDataListPane extends VLayout {
 	private void clearSelectedData() {
 		final List<Long> recycleBinIds = getSelectedRecycleBinIds();
 		if (recycleBinIds.isEmpty()) {
-			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "selectTargetData"));
+			SC.say(getResourceString("selectTargetData"));
 			return;
 		}
 
-		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"),
-				AdminClientMessageUtil.getString(RESOURCE_PREFIX + "clearConfirm"), new BooleanCallback() {
+		SC.ask(getResourceString("confirmTitle"),
+				getResourceString("clearConfirm"), new BooleanCallback() {
 					@Override
 					public void execute(Boolean value) {
 						if (value) {
@@ -242,19 +242,18 @@ public class RecycleBinDataListPane extends VLayout {
 			RecycleBinDataOperation operation, final String progressResourceSuffix,
 			final String failureResourceSuffix, final String failureLogMessage) {
 		startExecute();
-		SmartGWTUtil.showProgress(AdminClientMessageUtil.getString(RESOURCE_PREFIX + progressResourceSuffix));
+		SmartGWTUtil.showProgress(getResourceString(progressResourceSuffix));
 		operation.execute(recycleBinIds, new AsyncCallback<List<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				SmartGWTUtil.hideProgress();
 				GWT.log(failureLogMessage, caught);
 				List<String> messages = new ArrayList<>();
-				messages.add(AdminClientMessageUtil.getString(RESOURCE_PREFIX + failureResourceSuffix));
+				messages.add(getResourceString(failureResourceSuffix));
 				messages.add("Cause:" + caught.getMessage());
 				executeErrorCallback(messages);
 				finishExecute();
-				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
-						AdminClientMessageUtil.getString(RESOURCE_PREFIX + failureResourceSuffix));
+				SC.say(getResourceString("failed"), getResourceString(failureResourceSuffix));
 			}
 
 			@Override
@@ -264,13 +263,13 @@ public class RecycleBinDataListPane extends VLayout {
 				if (hasOperationError(result)) {
 					executeErrorCallback(result);
 					finishExecute();
-					SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "failed"),
+					SC.say(getResourceString("failed"),
 							formatOperationMessages(result));
 					return;
 				}
 				executeStatusCallback(createCompletedMessages(result));
 				finishExecute();
-				SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"));
+				SC.say(getResourceString("completed"));
 			}
 		});
 	}
@@ -306,9 +305,9 @@ public class RecycleBinDataListPane extends VLayout {
 
 	private List<String> createCompletedMessages(List<String> result) {
 		List<String> messages = new ArrayList<>();
-		messages.add(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "completed"));
+		messages.add(getResourceString("completed"));
 		if (result == null || result.isEmpty()) {
-			messages.add(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "noDataProcessed"));
+			messages.add(getResourceString("noDataProcessed"));
 		} else {
 			messages.addAll(result);
 		}
@@ -317,7 +316,7 @@ public class RecycleBinDataListPane extends VLayout {
 
 	private String formatOperationMessages(List<String> messages) {
 		if (messages == null || messages.isEmpty()) {
-			return AdminClientMessageUtil.getString(RESOURCE_PREFIX + "noDataProcessed");
+			return getResourceString("noDataProcessed");
 		}
 
 		StringBuilder result = new StringBuilder();
@@ -328,5 +327,9 @@ public class RecycleBinDataListPane extends VLayout {
 			result.append(message);
 		}
 		return result.toString();
+	}
+
+	private static String getResourceString(String key) {
+		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
 	}
 }
