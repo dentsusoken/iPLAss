@@ -253,6 +253,13 @@
 </div>
 <div style="<%= disclosureStyle %><%= styleAttr %>">
 <%
+	if (OutputType.EDIT == type && dataIndex == 0) {
+%>
+<jsp:include page="/jsp/gem/generic/editor/ErrorMessage.jsp">
+	<jsp:param value="<%=section.getPropertyName() %>" name="propName" />
+</jsp:include>
+<%
+	}
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
 		String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 		evm.executeTemplate(rootDefName, section.getContentScriptKey() + "_UpperContent", request, response, application, pageContext);
