@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
@@ -42,10 +43,12 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.DefragEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataCountResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityDataListResultInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.EntityViewInfo;
+import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinDataInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.RecycleBinEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityInfo;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.SimpleEntityTreeNode;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerService;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
@@ -83,6 +86,7 @@ import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.impl.tools.entity.EntityUpdateAllCondition;
 import org.iplass.mtp.impl.tools.entity.EntityUpdateAllResultInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
@@ -97,20 +101,22 @@ import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet implements EntityExplorerService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EntityExplorerServiceImpl.class);
+	private static final int RECYCLE_BIN_BATCH_SIZE = 100;
+	private static final String OPERATION_ERROR_PREFIX = "Failed to ";
 
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = -3459617043325559477L;
 
 //	private static final String USER_ENTITY = "mtp.auth.User";
 
-	private EntityManager em = AdminEntityManager.getInstance();
-	private EntityDefinitionManager edm = ManagerLocator.getInstance()
+	private final EntityManager em = AdminEntityManager.getInstance();
+	private final EntityDefinitionManager edm = ManagerLocator.getInstance()
 			.getManager(EntityDefinitionManager.class);
-	private EntityService ehs = ServiceRegistry.getRegistry()
+	private final EntityService ehs = ServiceRegistry.getRegistry()
 			.getService(EntityService.class);
-	private FulltextSearchManager fsm = ManagerLocator.getInstance()
+	private final FulltextSearchManager fsm = ManagerLocator.getInstance()
 			.getManager(FulltextSearchManager.class);
-	private RdbAdapter rdb = ServiceRegistry.getRegistry()
+	private final RdbAdapter rdb = ServiceRegistry.getRegistry()
 			.getService(RdbAdapterService.class)
 			.getRdbAdapter();
 
@@ -1214,7 +1220,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	@Override
 	public List<RecycleBinEntityInfo> getRecycleBinInfoList(int tenantId, Timestamp ts, boolean isGetCount) {
 
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<RecycleBinEntityInfo>>() {
 
 					@Override
@@ -1276,7 +1282,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 	@Override
 	public List<String> cleanRecycleBin(int tenantId, String defName, Timestamp ts) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), getThreadLocalRequest(), getThreadLocalResponse(), tenantId,
+		return authCheckAndInvoke(tenantId,
 				new AuthUtil.Callable<List<String>>() {
 					@Override
 					public List<String> call() {
@@ -1300,6 +1306,103 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 						return messages;
 					}
 				});
+	}
+
+	@Override
+	public List<RecycleBinDataInfo> getRecycleBinDataList(int tenantId, String defName, Timestamp ts) {
+		return authCheckAndInvoke(tenantId,
+				new AuthUtil.Callable<List<RecycleBinDataInfo>>() {
+
+					@Override
+					public List<RecycleBinDataInfo> call() {
+						List<RecycleBinDataInfo> dataList = new ArrayList<>();
+						em.getRecycleBin(defName, entity -> {
+							Timestamp recycleDate = entity.getUpdateDate();
+							if (recycleDate != null && (ts == null || recycleDate.before(ts))) {
+								RecycleBinDataInfo info = new RecycleBinDataInfo();
+								info.setRecycleBinId(entity.getRecycleBinId());
+								info.setName(entity.getName());
+								info.setRecycleDate(recycleDate);
+								dataList.add(info);
+							}
+							return true;
+						});
+						return dataList;
+					}
+				});
+	}
+
+	@Override
+	public List<String> purgeRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds) {
+		return authCheckAndInvoke(tenantId,
+				new AuthUtil.Callable<List<String>>() {
+
+					@Override
+					public List<String> call() {
+						return executeRecycleBinDataOperation(defName, recycleBinIds,
+								recycleBinId -> em.purge(recycleBinId, defName), "clear", "Cleared");
+					}
+				});
+	}
+
+	@Override
+	public List<String> restoreRecycleBinData(int tenantId, String defName, List<Long> recycleBinIds) {
+		return authCheckAndInvoke(tenantId,
+				new AuthUtil.Callable<List<String>>() {
+
+					@Override
+					public List<String> call() {
+						return executeRecycleBinDataOperation(defName, recycleBinIds,
+								recycleBinId -> em.restore(recycleBinId, defName), "restore", "Restored");
+					}
+				});
+	}
+
+	private List<String> executeRecycleBinDataOperation(String defName, List<Long> recycleBinIds,
+			Consumer<Long> operation, String operationName, String completedOperationName) {
+		List<String> messages = new ArrayList<>();
+		if (recycleBinIds == null) {
+			return messages;
+		}
+
+		int batchCount = recycleBinIds.size() / RECYCLE_BIN_BATCH_SIZE;
+		if (recycleBinIds.size() % RECYCLE_BIN_BATCH_SIZE > 0) {
+			batchCount++;
+		}
+		for (int batchIndex = 0; batchIndex < batchCount; batchIndex++) {
+			int current = batchIndex * RECYCLE_BIN_BATCH_SIZE;
+			int last = Math.min(current + RECYCLE_BIN_BATCH_SIZE, recycleBinIds.size());
+			List<Long> subList = recycleBinIds.subList(current, last);
+			Boolean succeeded = Transaction.requiresNew(transaction -> {
+				for (Long recycleBinId : subList) {
+					if (recycleBinId == null) {
+						continue;
+					}
+					try {
+						operation.accept(recycleBinId);
+					} catch (ApplicationException e) {
+						transaction.rollback();
+						logger.error("Failed to {} recycle bin data. definitionName={}, recycleBinId={}", operationName, defName, recycleBinId, e);
+						messages.add(OPERATION_ERROR_PREFIX + operationName + " recycle bin data. recycleBinId=" + recycleBinId);
+						return false;
+					}
+				}
+				return true;
+			});
+			if (!succeeded) {
+				break;
+			}
+			for (Long recycleBinId : subList) {
+				if (recycleBinId != null) {
+					messages.add(completedOperationName + " recycle bin data. recycleBinId=" + recycleBinId);
+				}
+			}
+		}
+		return messages;
+	}
+
+	private <R> R authCheckAndInvoke(int tenantId, AuthUtil.Callable<R> callback) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, callback);
 	}
 
 	private void doCleanRecycleBinInfoList(String defName, Timestamp ts) {
