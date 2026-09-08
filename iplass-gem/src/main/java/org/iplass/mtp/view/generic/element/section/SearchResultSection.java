@@ -63,7 +63,7 @@ public class SearchResultSection extends Section {
 		WHEN_SEARCH
 	}
 
-	/** テーブル高さの自動調節モード */
+	/** 検索結果TABLEの高さ自動調節 */
 	@XmlType(namespace = "http://mtp.iplass.org/xml/definition/view/generic")
 	public enum AutoHeightAdjustMode {
 
@@ -117,12 +117,12 @@ public class SearchResultSection extends Section {
 
 	/** テーブル高さの自動調節モード（「検索結果TABLEの高さ」が 0 の場合のみ有効） */
 	@MetaFieldInfo(
-			displayName = "テーブル高さの自動調節モード",
+			displayName = "検索結果TABLEの高さ自動調節",
 			displayNameKey = "generic_element_section_SearchResultSection_autoHeightAdjustModeDisplayNameKey",
 			inputType = InputType.ENUM,
 			enumClass = AutoHeightAdjustMode.class,
 			displayOrder = 206,
-			description = "「検索結果TABLEの高さ」が 0 の場合の、テーブル高さの自動調節モードを指定します。<br>" +
+			description = "「検索結果TABLEの高さ」が 0 の場合の、テーブル高さの自動調整方法を設定します。<br>" +
 					"<b>FIT_TO_ROW_COUNT :</b> 検索結果の表示件数に応じて調節します。(既定)<br>" +
 					"<b>FIT_TO_VIEWPORT :</b> テーブル全体が画面内に表示されるよう調節します。<br>" +
 					"※「検索結果TABLEの高さ」が 0 の場合のみ設定可能です。",
@@ -484,7 +484,7 @@ public class SearchResultSection extends Section {
 
 	/**
 	 * テーブル高さの自動調節モードを設定します。
-	 * @param autoHeightAdjustMode テーブル高さの自動調節モード
+	 * @param autoHeightAdjustMode 検索結果TABLEの高さ自動調節
 	 */
 	public void setAutoHeightAdjustMode(AutoHeightAdjustMode autoHeightAdjustMode) {
 		this.autoHeightAdjustMode = autoHeightAdjustMode;

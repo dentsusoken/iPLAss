@@ -66,7 +66,7 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 表示TABLEの高さ */
 	private int dispHeight;
 
-	/** テーブル高さの自動調節モード */
+	/** 検索結果TABLEの高さ自動調節 */
 	private AutoHeightAdjustMode autoHeightAdjustMode;
 
 	/** 検索結果をまとめる設定 */
@@ -186,7 +186,7 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/**
 	 * テーブル高さの自動調節モードを設定します。
-	 * @param autoHeightAdjustMode テーブル高さの自動調節モード
+	 * @param autoHeightAdjustMode 検索結果TABLEの高さ自動調節
 	 */
 	public void setAutoHeightAdjustMode(AutoHeightAdjustMode autoHeightAdjustMode) {
 		this.autoHeightAdjustMode = autoHeightAdjustMode;

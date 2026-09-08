@@ -155,7 +155,7 @@
 	//Limit件数
 	int limit = ViewUtil.getSearchLimit(section);
 
-	//テーブル高さの自動調節モード(section未設定時はServiceConfig既定値)
+	//検索結果TABLEの高さ自動調節(section未設定時はServiceConfig既定値)
 	SearchResultSection.AutoHeightAdjustMode autoHeightAdjustMode = ViewUtil.getAutoHeightAdjustMode(section);
 	//高さ自動調節(画面fit)は「検索結果TABLEの高さ」が0かつ一般検索画面の場合のみ有効(dispHeight>0は固定高優先)
 	boolean fitToViewport = section.getDispHeight() == 0
@@ -929,7 +929,8 @@ function adjustResultGridHeight() {
 	if ($gbox.length == 0) return;
 
 	var gridTop = $gbox.offset().top;
-	var viewportBottom = $(window).scrollTop() + $(window).height();
+	var $win = $(window);
+	var viewportBottom = $win.scrollTop() + $win.height();
 
 	//テーブル下端以降の可視要素(ページング・削除/一括更新ボタン区等)の高さを算出
 	var belowHeight = 0;
@@ -953,9 +954,10 @@ function adjustResultGridHeight() {
 	//スクロールバー出現後の横幅再計算(列幅・横スクロールは保持: 既存dispHeight>0時と同じ考慮)
 	grid.jqGrid("setGridWidth", $("#gbox_searchResult").width(), false);
 }
+//リサイズイベント連続発火時の過剰実行を抑止するためのデバウンス用タイマーID
 var resultGridResizeTimerId = null;
 $(window).on("resize", function() {
-	//ウィンドウリサイズ時も高さを再調節(連続発火による過剰実行を抑止するためデバウンス)
+	//ウィンドウリサイズ時も高さを再調節
 	if (!fitToViewportMode) return;
 	if (resultGridResizeTimerId != null) {
 		clearTimeout(resultGridResizeTimerId);

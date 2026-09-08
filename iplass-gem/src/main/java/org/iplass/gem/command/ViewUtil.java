@@ -352,19 +352,19 @@ public class ViewUtil {
 	}
 
 	/**
-	 * テーブル高さの自動調節モードを返します。
+	 * 検索結果TABLEの高さ自動調節を返します。
 	 * SearchResultSection で未設定の場合は GemConfigService の既定値を返します。
 	 *
 	 * @param resultSection SearchResultSection
-	 * @return テーブル高さの自動調節モード
+	 * @return 検索結果TABLEの高さ自動調節
 	 */
 	public static AutoHeightAdjustMode getAutoHeightAdjustMode(SearchResultSection resultSection) {
 		if (resultSection.getAutoHeightAdjustMode() != null) {
 			return resultSection.getAutoHeightAdjustMode();
 		}
-		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
-				.getService(GemConfigService.class);
-		return gemConfigService.getSearchResultAutoHeightAdjustMode();
+		return ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class)
+				.getSearchResultAutoHeightAdjustMode();
 	}
 
 	public static int getCsvDownloadInterval() {
