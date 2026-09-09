@@ -53,7 +53,7 @@
 
 	$.fn.sameHeight = function() {
 		var maxHeight = 0;
-		this.css("height","auto");
+		this.css("height","auto").css("min-height","");
 		this.each(function(){
 			if ( $(this).height() > maxHeight ) maxHeight = $(this).height();
 		});
