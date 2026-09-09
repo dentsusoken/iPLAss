@@ -57,7 +57,7 @@
 		this.each(function(){
 			if ( $(this).height() > maxHeight ) maxHeight = $(this).height();
 		});
-		return this.height(maxHeight);
+		return this.css("min-height", maxHeight);
 	}
 
 	function getChildren( i_parent ) {
