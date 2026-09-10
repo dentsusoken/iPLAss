@@ -7,20 +7,22 @@ configurations {
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
 	runtimeOnly.extendsFrom(wjRuntime)
+}
 
+configurations.configureEach {
 	// jqueryはorg.webjars:jqueryを利用。
 	// それ以外は除外
-	all*.exclude group: 'org.webjars.npm', module: 'jquery'
-	all*.exclude group: 'org.webjars.bower', module: 'jquery'
-	all*.exclude group: 'org.webjars.bowergithub.jquery', module: 'jquery-dist'
+	exclude group: 'org.webjars.npm', module: 'jquery'
+	exclude group: 'org.webjars.bower', module: 'jquery'
+	exclude group: 'org.webjars.bowergithub.jquery', module: 'jquery-dist'
 	
 	// jquery-uiはorg.webjars.npm:jquery-uiを利用。
 	// org.webjars:jquery-uiは除外(org.webjars:jQuery-Timepicker-Addonで参照)
-	all*.exclude group: 'org.webjars', module: 'jquery-ui'
+	exclude group: 'org.webjars', module: 'jquery-ui'
 
 	// momentはorg.webjars.npm:momentを利用。
 	// org.webjars.bower:momentは除外(org.webjars.bower:fullcalendarで参照)
-	all*.exclude group: 'org.webjars.bower', module: 'moment'
+	exclude group: 'org.webjars.bower', module: 'moment'
 }
 
 dependencies {

@@ -1,9 +1,11 @@
 configurations {
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
+}
 
+configurations.configureEach {
 	// JasperReports 7 系の推移依存で xml-apis が含まれるが、JDK に含まれており動作不良を起こすため除外する
-	all*.exclude group: 'xml-apis', module: 'xml-apis' 
+	exclude group: 'xml-apis', module: 'xml-apis' 
 }
 
 dependencies {
