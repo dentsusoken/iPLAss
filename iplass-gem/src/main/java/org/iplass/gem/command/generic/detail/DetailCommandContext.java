@@ -950,7 +950,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 		for (int i = 0; i < count; i++) {
 			//データあり
 			String paramPrefix = prefix + p.getName() + "[" + Integer.toString(i) + "].";
-			String errorPrefix = (i != list.size() ? prefix + p.getName() + "[" + Integer.toString(list.size()) + "]." : null);
+			String errorPrefix = (i != list.size() ? prefix + p.getName() + "[" + Integer.toString(i) + "]." : null);
 			Entity entity = createEntity(paramPrefix, errorPrefix);
 
 			//入力エラー時に再Loadされないようにフラグ設定
