@@ -130,6 +130,18 @@ public class SearchResultSection extends Section {
 	)
 	private AutoHeightAdjustMode autoHeightAdjustMode;
 
+	/** タイトル行固定設定（「検索結果TABLEの高さ」が 0 かつ FIT_TO_ROW_COUNT の場合のみ有効） */
+	@MetaFieldInfo(
+			displayName = "タイトル行を固定する",
+			displayNameKey = "generic_element_section_SearchResultSection_titleRowFreezeDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 207,
+			description = "縦スクロール時に検索結果のタイトル行（表頭行）を画面上部に固定して表示し続けます。<br>" +
+					"※「検索結果TABLEの高さ」が 0 かつテーブル高さの自動調節モードが FIT_TO_ROW_COUNT の場合のみ有効です。",
+			descriptionKey = "generic_element_section_SearchResultSection_titleRowFreezeDescriptionKey"
+	)
+	private boolean titleRowFreeze;
+
 	/** 検索結果をまとめる */
 	@MetaFieldInfo(
 			displayName = "検索結果をまとめる設定",
@@ -488,6 +500,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setAutoHeightAdjustMode(AutoHeightAdjustMode autoHeightAdjustMode) {
 		this.autoHeightAdjustMode = autoHeightAdjustMode;
+	}
+
+	/**
+	 * タイトル行固定設定を取得します。
+	 * @return タイトル行固定設定
+	 */
+	public boolean isTitleRowFreeze() {
+		return titleRowFreeze;
+	}
+
+	/**
+	 * タイトル行固定設定を設定します。
+	 * @param titleRowFreeze タイトル行固定設定
+	 */
+	public void setTitleRowFreeze(boolean titleRowFreeze) {
+		this.titleRowFreeze = titleRowFreeze;
 	}
 
 	/**

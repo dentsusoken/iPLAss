@@ -162,6 +162,25 @@
 			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_VIEWPORT
 			&& OutputType.SEARCHRESULT == type;
 
+	//タイトル行固定(表頭のスティッキー表示)は以下の条件をすべて満たす場合のみ利用可能。
+	//・「検索結果TABLEの高さ」が0(固定高が指定されるとTABLE内スクロールとなり表頭が既に不動のため不要)
+	//・FIT_TO_ROW_COUNT(ページ側がスクロールするモード。FIT_TO_VIEWPORTは表が画面内に収まるため不要)
+	//・セクション高さ未指定(指定時はスクロール容器が.result-data側へ移り別文脈となるため対象外)
+	//・一般検索画面(選択ダイアログ等は対象外)
+	boolean titleRowFreezeAvailable = section.getDispHeight() == 0
+			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_ROW_COUNT
+			&& (section.getSectionHeight() == null || section.getSectionHeight() <= 0)
+			&& OutputType.SEARCHRESULT == type;
+	//利用者が切替可能なため、Admin Consoleの設定値は初期値として扱う(未設定=false=現行挙動から変化なし)
+	boolean titleRowFreezeDefault = titleRowFreezeAvailable && section.isTitleRowFreeze();
+
+	//表示状態の永続化キーはテナント・ユーザー単位で分離する
+	String titleRowFreezeKeyPrefix = StringUtil.escapeJavaScript(
+			(auth.getTenant() != null ? auth.getTenant().getId() : -1)
+			+ "." + (auth.getUser() != null ? auth.getUser().getOid() : "anonymous"));
+	String titleRowFreezeLabel = StringUtil.escapeJavaScript(
+			GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.titleRowFreeze"));
+
 	//一括詳細表示アクション
 	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
 	if (section.isUseBulkView()) {
@@ -606,6 +625,66 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	}
 %>
 	});
+<%
+	if (titleRowFreezeAvailable) {
+%>
+	//タイトル行固定: 粘着の実効/解除はgboxへのclass付与で制御する(スタイルはskinのCSSに定義)
+	var titleRowFreezeEnabled = <%=titleRowFreezeDefault%>;
+	var $titleRowFreezePin = null;
+
+	//テナント・ユーザー・Entity・ビュー単位で利用者の切替状態を保持する
+	function titleRowFreezeStorageKey() {
+		return "mtp.titleRowFreeze.<%=titleRowFreezeKeyPrefix%>.<%=StringUtil.escapeJavaScript(defName)%>.<%=StringUtil.escapeJavaScript(viewName)%>";
+	}
+	function loadTitleRowFreezeState() {
+		try {
+			var raw = localStorage.getItem(titleRowFreezeStorageKey());
+			//保存値がある間は利用者の切替を優先、無ければ画面定義の初期値のままとする
+			if (raw !== null) titleRowFreezeEnabled = JSON.parse(raw) === true;
+		} catch (e) {
+			//localStorageが利用不可、または保存値が不正な場合は画面定義の初期値を使用する
+		}
+	}
+	function saveTitleRowFreezeState() {
+		try {
+			localStorage.setItem(titleRowFreezeStorageKey(), JSON.stringify(titleRowFreezeEnabled));
+		} catch (e) {
+			//保存できない場合は当画面の表示のみに反映される
+		}
+	}
+	function applyTitleRowFreeze() {
+		$("#gbox_searchResult").toggleClass("mtp-title-row-freeze", titleRowFreezeEnabled);
+		if ($titleRowFreezePin != null) {
+			$titleRowFreezePin.toggleClass("mtp-titlefreeze-pin-on", titleRowFreezeEnabled)
+					.attr("aria-pressed", titleRowFreezeEnabled);
+		}
+	}
+	//表頭の左端セルへ切替ピンを配置する。検索・ページングでヘッダーが再構築されるため冪等に処理する
+	function injectTitleRowFreezePin() {
+		var $th = $("#gview_searchResult .ui-jqgrid-hdiv table tr:first th:first");
+		if ($th.length == 0 || $th.find(".mtp-titlefreeze-pin").length > 0) return;
+		$titleRowFreezePin = $('<span class="mtp-titlefreeze-pin" role="button" tabindex="0"></span>')
+				.attr("title", "<%=titleRowFreezeLabel%>")
+				.attr("aria-label", "<%=titleRowFreezeLabel%>");
+		$titleRowFreezePin.on("click keydown", function(e) {
+			if (e.type === "keydown" && e.which !== 13 && e.which !== 32) return;
+			//th側のソート処理が誤発火しないよう伝播を止める
+			e.preventDefault();
+			e.stopPropagation();
+			titleRowFreezeEnabled = !titleRowFreezeEnabled;
+			applyTitleRowFreeze();
+			saveTitleRowFreezeState();
+		});
+		$th.prepend($titleRowFreezePin);
+		applyTitleRowFreeze();
+	}
+	loadTitleRowFreezeState();
+	$("#searchResult").on("jqGridAfterGridComplete", injectTitleRowFreezePin);
+	injectTitleRowFreezePin();
+	applyTitleRowFreeze();
+<%
+	}
+%>
 
 <%
 	if (!section.isHidePaging()) {

@@ -1,0 +1,40 @@
+//タイトル行固定(検索結果の表頭をスティッキー表示する)
+//SearchResultSection.jspがgboxへ「.mtp-title-row-freeze」を付与した場合のみ有効となる。
+//スキン間で見た目を揃えるため、各スキンの_jqgrid.scssから本ファイルを読み込む。
+.ui-jqgrid.mtp-title-row-freeze > .ui-jqgrid-view {
+	//固定列の表頭(fhDiv)も「.ui-jqgrid-hdiv」を持つため「:not(.frozen-div)」で除外する
+	> .ui-jqgrid-hdiv:not(.frozen-div) {
+		position: sticky;
+		top: 0;
+		//粘着時にデータ行(bDiv)より前面へ描画する。背景の不透過は「.ui-jqgrid .ui-jqgrid-hdiv」の背景色指定で担保される
+		z-index: 10;
+	}
+}
+
+//タイトル行固定の切替ピン(表頭左端セル)。OFF=中空円、ON=塗り円で状態を区別する
+.mtp-titlefreeze-pin {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin-right: 4px;
+	border: 2px solid $color_mountain_mist_approx;
+	border-radius: 50%;
+	box-sizing: border-box;
+	vertical-align: middle;
+	cursor: pointer;
+	&::after {
+		content: "";
+		display: block;
+		width: 2px;
+		height: 4px;
+		margin: 1px auto 0;
+		background: $color_mountain_mist_approx;
+	}
+	&.mtp-titlefreeze-pin-on {
+		border-color: $color_curious_blue_approx;
+		background: $color_curious_blue_approx;
+		&::after {
+			background: $color_curious_blue_approx;
+		}
+	}
+}

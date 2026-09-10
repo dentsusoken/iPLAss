@@ -2620,6 +2620,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplayNameKey 
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "検索結果TABLEの高さを指定します。<br>0を指定した場合、高さを自動とします。";
 LocaleInfo.generic_element_section_SearchResultSection_autoHeightAdjustModeDisplayNameKey = "検索結果TABLEの高さ自動調節";
 LocaleInfo.generic_element_section_SearchResultSection_autoHeightAdjustModeDescriptionKey = "「検索結果TABLEの高さ」が 0 の場合の、テーブル高さの自動調整方法を設定します。<br><b>FIT_TO_ROW_COUNT :</b> 検索結果の表示件数に応じて調節します。(既定)<br><b>FIT_TO_VIEWPORT :</b> テーブル全体が画面内に表示されるよう調節します。<br>※「検索結果TABLEの高さ」が 0 の場合のみ設定可能です。";
+LocaleInfo.generic_element_section_SearchResultSection_titleRowFreezeDisplayNameKey = "タイトル行を固定する";
+LocaleInfo.generic_element_section_SearchResultSection_titleRowFreezeDescriptionKey = "縦スクロール時に検索結果のタイトル行（表頭行）を画面上部に固定して表示し続けます。<br>※「検索結果TABLEの高さ」が 0 かつテーブル高さの自動調節モードが FIT_TO_ROW_COUNT の場合のみ有効です。";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplayNameKey = "検索結果をまとめる";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "検索結果をまとめて表示します。<br>OIDとVersionが同じであるレコードをまとめます。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplayNameKey = "編集リンクを非表示";

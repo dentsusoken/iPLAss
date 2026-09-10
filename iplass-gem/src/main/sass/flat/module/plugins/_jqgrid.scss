@@ -305,3 +305,10 @@
 		@extend %extend_pjg_5;
 	}
 }
+@import "../../../basedesign/module/plugins/titlerowfreeze";
+
+//flatスキンは「.ui-jqgrid」にoverflow:autoを指定しておりスクロールコンテナ化して表頭のstickyが失効するため、
+//タイトル行固定が有効な場合のみvisibleへ戻す(広い表の横スクロールはページ/コンテナ側で行われる)
+.ui-jqgrid.mtp-title-row-freeze {
+	overflow: visible;
+}

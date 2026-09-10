@@ -1014,6 +1014,43 @@ button.dialog-csvdl-btn:hover {
   background: #d4d4d4 !important;
 }
 
+.ui-jqgrid.mtp-title-row-freeze > .ui-jqgrid-view > .ui-jqgrid-hdiv:not(.frozen-div) {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.mtp-titlefreeze-pin {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+  border: 2px solid #999999;
+  border-radius: 50%;
+  box-sizing: border-box;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.mtp-titlefreeze-pin::after {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 4px;
+  margin: 1px auto 0;
+  background: #999999;
+}
+.mtp-titlefreeze-pin.mtp-titlefreeze-pin-on {
+  border-color: #178fe5;
+  background: #178fe5;
+}
+.mtp-titlefreeze-pin.mtp-titlefreeze-pin-on::after {
+  background: #178fe5;
+}
+
+.ui-jqgrid.mtp-title-row-freeze {
+  overflow: visible;
+}
+
 ul.jqtree-tree {
   margin-left: 12px;
 }
