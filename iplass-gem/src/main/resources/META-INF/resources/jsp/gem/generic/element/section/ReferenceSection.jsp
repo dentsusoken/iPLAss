@@ -78,6 +78,11 @@
 		return new LoadOption(propList);
 	}
 	int getOrderPropertValue(ReferenceSection section, Entity entity, EntityManager em) {
+		int order = toInteger(entity.getValue(section.getOrderPropName()));
+		if (order != -1 || entity.getOid() == null) {
+			return order;
+		}
+
 		Query query = new Query().select(section.getOrderPropName())
 				.from(entity.getDefinitionName())
 				.where(new And(
