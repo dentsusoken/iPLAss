@@ -53,11 +53,11 @@
 
 	$.fn.sameHeight = function() {
 		var maxHeight = 0;
-		this.css("height","auto");
+		this.css("height","auto").css("min-height","");
 		this.each(function(){
 			if ( $(this).height() > maxHeight ) maxHeight = $(this).height();
 		});
-		return this.height(maxHeight);
+		return this.css("min-height", maxHeight);
 	}
 
 	function getChildren( i_parent ) {
