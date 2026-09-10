@@ -36,6 +36,7 @@ import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor.RichTextLibrary;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.FileSupportType;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.AutoHeightAdjustMode;
 
 /**
  * gem固有の設定など
@@ -100,6 +101,9 @@ public class GemConfigService implements Service {
 
 	/** 検索画面で表示する検索結果の件数*/
 	private int searchResultDispRowCount;
+
+	/** 検索画面のテーブル高さ自動調節モード*/
+	private AutoHeightAdjustMode searchResultAutoHeightAdjustMode;
 
 	/** 詳細検索における検索項目の上限数 */
 	private int maxOfDetailSearchItems;
@@ -221,6 +225,11 @@ public class GemConfigService implements Service {
 		showSeachCondResetButton = Boolean.valueOf(config.getValue("showSeachCondResetButton"));
 
 		searchResultDispRowCount = config.getValue("searchResultDispRowCount", Integer.class, 10);
+
+		String searchResultAutoHeightAdjustMode = config.getValue("searchResultAutoHeightAdjustMode");
+		this.searchResultAutoHeightAdjustMode = searchResultAutoHeightAdjustMode != null
+				? AutoHeightAdjustMode.valueOf(searchResultAutoHeightAdjustMode)
+				: AutoHeightAdjustMode.FIT_TO_ROW_COUNT;
 
 		maxOfDetailSearchItems = config.getValue("maxOfDetailSearchItems", Integer.class, 100);
 
@@ -454,6 +463,14 @@ public class GemConfigService implements Service {
 	 */
 	public int getSearchResultDispRowCount() {
 		return searchResultDispRowCount;
+	}
+
+	/**
+	 * 検索画面のテーブル高さ自動調節モードを取得します。
+	 * @return テーブル高さ自動調節モード（既定: FIT_TO_ROW_COUNT）
+	 */
+	public AutoHeightAdjustMode getSearchResultAutoHeightAdjustMode() {
+		return searchResultAutoHeightAdjustMode;
 	}
 
 	/**

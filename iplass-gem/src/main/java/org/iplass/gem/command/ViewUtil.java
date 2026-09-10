@@ -59,6 +59,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.AutoHeightAdjustMode;
 import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
@@ -348,6 +349,22 @@ public class ViewUtil {
 		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
 				.getService(GemConfigService.class);
 		return gemConfigService.getSearchResultDispRowCount();
+	}
+
+	/**
+	 * 検索結果TABLEの高さ自動調節を返します。
+	 * SearchResultSection で未設定の場合は GemConfigService の既定値を返します。
+	 *
+	 * @param resultSection SearchResultSection
+	 * @return 検索結果TABLEの高さ自動調節
+	 */
+	public static AutoHeightAdjustMode getAutoHeightAdjustMode(SearchResultSection resultSection) {
+		if (resultSection.getAutoHeightAdjustMode() != null) {
+			return resultSection.getAutoHeightAdjustMode();
+		}
+		return ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class)
+				.getSearchResultAutoHeightAdjustMode();
 	}
 
 	public static int getCsvDownloadInterval() {
