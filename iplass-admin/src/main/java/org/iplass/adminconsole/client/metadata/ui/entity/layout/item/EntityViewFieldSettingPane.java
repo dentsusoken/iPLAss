@@ -42,6 +42,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.AutoHeightAdjustMode;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
@@ -156,15 +157,20 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		if (getOwner().getValue() instanceof SearchResultSection) {
 			FormItem dispHeightItem = form.getItem("dispHeight");
 			FormItem modeItem = form.getItem("autoHeightAdjustMode");
+			FormItem titleRowFreezeItem = form.getItem("titleRowFreeze");
 			if (dispHeightItem != null && modeItem != null) {
 				updateAutoHeightAdjustModeEnabled(dispHeightItem, modeItem);
-				dispHeightItem.addChangedHandler(new ChangedHandler() {
+				updateTitleRowFreezeEnabled(dispHeightItem, modeItem, titleRowFreezeItem);
+				ChangedHandler handler = new ChangedHandler() {
 
 					@Override
 					public void onChanged(ChangedEvent event) {
 						updateAutoHeightAdjustModeEnabled(dispHeightItem, modeItem);
+						updateTitleRowFreezeEnabled(dispHeightItem, modeItem, titleRowFreezeItem);
 					}
-				});
+				};
+				dispHeightItem.addChangedHandler(handler);
+				modeItem.addChangedHandler(handler);
 			}
 		}
 		triggerdPropertyList.clear();
@@ -179,6 +185,23 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		Integer dispHeight = SmartGWTUtil.getIntegerValue(dispHeightItem);
 		boolean fixedHeight = dispHeight != null && dispHeight.intValue() > 0;
 		modeItem.setDisabled(fixedHeight);
+	}
+
+	/**
+	 * タイトル行固定は「検索結果TABLEの高さ」が0かつテーブル高さ自動調節モードがFIT_TO_ROW_COUNTの場合のみ変更可能とする。
+	 * モードが未設定の場合はServiceConfigの既定値(FIT_TO_ROW_COUNT)が適用されるため変更可能とする。
+	 */
+	private void updateTitleRowFreezeEnabled(FormItem dispHeightItem, FormItem modeItem, FormItem titleRowFreezeItem) {
+		if (titleRowFreezeItem == null) {
+			return;
+		}
+		Integer dispHeight = SmartGWTUtil.getIntegerValue(dispHeightItem);
+		boolean fixedHeight = dispHeight != null && dispHeight.intValue() > 0;
+		String mode = SmartGWTUtil.getStringValue(modeItem);
+		boolean fitToRowCount = mode == null || mode.isEmpty()
+				|| AutoHeightAdjustMode.FIT_TO_ROW_COUNT.name()
+						.equals(mode);
+		titleRowFreezeItem.setDisabled(fixedHeight || !fitToRowCount);
 	}
 
 	@Override

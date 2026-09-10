@@ -2620,6 +2620,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplayNameKey 
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of the search results table.<br>If set to 0, the height will be adjusted automatically.";
 LocaleInfo.generic_element_section_SearchResultSection_autoHeightAdjustModeDisplayNameKey = "Auto adjust mode of table height";
 LocaleInfo.generic_element_section_SearchResultSection_autoHeightAdjustModeDescriptionKey = "Specifies the auto adjust mode of table height applied when \"Display height of search results table\" is 0.<br><b>FIT_TO_ROW_COUNT :</b> Adjusts according to the number of search results to display. (Default)<br><b>FIT_TO_VIEWPORT :</b> Adjusts so that the entire table is displayed within the screen.<br>* This can only be set when \"Display height of search results table\" is 0.";
+LocaleInfo.generic_element_section_SearchResultSection_titleRowFreezeDisplayNameKey = "Freeze title row";
+LocaleInfo.generic_element_section_SearchResultSection_titleRowFreezeDescriptionKey = "Keeps the title row (header row) of the search results fixed at the top of the screen during vertical scrolling.<br>* This is enabled only when \"Display height of search results table\" is 0 and the auto adjust mode of table height is FIT_TO_ROW_COUNT.";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplayNameKey = "Summarize search results";
 LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "Summarize search results to display.<br>Summarize records with same OID and Version.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplayNameKey = "Hide Edit Link";

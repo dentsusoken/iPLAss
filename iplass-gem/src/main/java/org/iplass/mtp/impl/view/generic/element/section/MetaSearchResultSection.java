@@ -69,6 +69,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 検索結果TABLEの高さ自動調節 */
 	private AutoHeightAdjustMode autoHeightAdjustMode;
 
+	/** タイトル行固定設定 */
+	private boolean titleRowFreeze;
+
 	/** 検索結果をまとめる設定 */
 	private boolean groupingData;
 
@@ -190,6 +193,22 @@ public class MetaSearchResultSection extends MetaSection {
 	 */
 	public void setAutoHeightAdjustMode(AutoHeightAdjustMode autoHeightAdjustMode) {
 		this.autoHeightAdjustMode = autoHeightAdjustMode;
+	}
+
+	/**
+	 * タイトル行固定設定を取得します。
+	 * @return タイトル行固定設定
+	 */
+	public boolean isTitleRowFreeze() {
+		return titleRowFreeze;
+	}
+
+	/**
+	 * タイトル行固定設定を設定します。
+	 * @param titleRowFreeze タイトル行固定設定
+	 */
+	public void setTitleRowFreeze(boolean titleRowFreeze) {
+		this.titleRowFreeze = titleRowFreeze;
 	}
 
 	/**
@@ -600,6 +619,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.dispRowCount = section.getDispRowCount();
 		this.dispHeight = section.getDispHeight();
 		this.autoHeightAdjustMode = section.getAutoHeightAdjustMode();
+		this.titleRowFreeze = section.isTitleRowFreeze();
 		this.groupingData = section.isGroupingData();
 		this.hideDetailLink = section.isHideDetailLink();
 		this.checkEntityPermissionLimitConditionOfEditLink = section.isCheckEntityPermissionLimitConditionOfEditLink();
@@ -650,6 +670,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setDispRowCount(this.dispRowCount);
 		section.setDispHeight(this.dispHeight);
 		section.setAutoHeightAdjustMode(this.autoHeightAdjustMode);
+		section.setTitleRowFreeze(this.titleRowFreeze);
 		section.setGroupingData(this.isGroupingData());
 		section.setHideDetailLink(hideDetailLink);
 		section.setCheckEntityPermissionLimitConditionOfEditLink(checkEntityPermissionLimitConditionOfEditLink);
