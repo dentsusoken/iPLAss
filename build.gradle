@@ -70,7 +70,7 @@ allprojects {
 subprojects { subproject ->
 	apply from: '../sharedlibs.gradle'
 
-	configurations.all {
+	configurations.configureEach {
 		globalExcludes.each {
 			exclude group: it.group, module: it.module
 		}
