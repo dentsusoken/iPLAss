@@ -973,7 +973,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 			//エラーがなくて、何もデータが入ってないものは破棄する
 			if (hasError || !isEmpty(entity)) {
 				entity.setDefinitionName(defName);
-				entity.setValue(Constants.REF_INDEX, list.size());
+				entity.setValue(Constants.REF_INDEX, i);
 
 				if (rsProperty != null) {
 					// entity,sectionでまとめる
