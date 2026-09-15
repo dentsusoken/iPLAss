@@ -629,59 +629,61 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	if (titleRowFreezeAvailable) {
 %>
 	//タイトル行固定: 粘着の実効/解除はgboxへのclass付与で制御する(スタイルはskinのCSSに定義)
-	var titleRowFreezeEnabled = <%=titleRowFreezeDefault%>;
-	var $titleRowFreezePin = null;
+	(function() {
+		let titleRowFreezeEnabled = <%=titleRowFreezeDefault%>;
+		let $titleRowFreezePin = null;
 
-	//テナント・ユーザー・Entity・ビュー単位で利用者の切替状態を保持する
-	function titleRowFreezeStorageKey() {
-		return "mtp.titleRowFreeze.<%=titleRowFreezeKeyPrefix%>.<%=StringUtil.escapeJavaScript(defName)%>.<%=StringUtil.escapeJavaScript(viewName)%>";
-	}
-	function loadTitleRowFreezeState() {
-		try {
-			var raw = localStorage.getItem(titleRowFreezeStorageKey());
-			//保存値がある間は利用者の切替を優先、無ければ画面定義の初期値のままとする
-			if (raw !== null) titleRowFreezeEnabled = JSON.parse(raw) === true;
-		} catch (e) {
-			//localStorageが利用不可、または保存値が不正な場合は画面定義の初期値を使用する
+		//テナント・ユーザー・Entity・ビュー単位で利用者の切替状態を保持する
+		function titleRowFreezeStorageKey() {
+			return "mtp.titleRowFreeze.<%=titleRowFreezeKeyPrefix%>.<%=StringUtil.escapeJavaScript(defName)%>.<%=StringUtil.escapeJavaScript(viewName)%>";
 		}
-	}
-	function saveTitleRowFreezeState() {
-		try {
-			localStorage.setItem(titleRowFreezeStorageKey(), JSON.stringify(titleRowFreezeEnabled));
-		} catch (e) {
-			//保存できない場合は当画面の表示のみに反映される
+		function loadTitleRowFreezeState() {
+			try {
+				const raw = localStorage.getItem(titleRowFreezeStorageKey());
+				//保存値がある間は利用者の切替を優先、無ければ画面定義の初期値のままとする
+				if (raw !== null) titleRowFreezeEnabled = JSON.parse(raw) === true;
+			} catch (e) {
+				//localStorageが利用不可、または保存値が不正な場合は画面定義の初期値を使用する
+			}
 		}
-	}
-	function applyTitleRowFreeze() {
-		$("#gbox_searchResult").toggleClass("mtp-title-row-freeze", titleRowFreezeEnabled);
-		if ($titleRowFreezePin != null) {
-			$titleRowFreezePin.toggleClass("mtp-titlefreeze-pin-on", titleRowFreezeEnabled)
-					.attr("aria-pressed", titleRowFreezeEnabled);
+		function saveTitleRowFreezeState() {
+			try {
+				localStorage.setItem(titleRowFreezeStorageKey(), JSON.stringify(titleRowFreezeEnabled));
+			} catch (e) {
+				//保存できない場合は当画面の表示のみに反映される
+			}
 		}
-	}
-	//表頭の左端セルへ切替ピンを配置する。検索・ページングでヘッダーが再構築されるため冪等に処理する
-	function injectTitleRowFreezePin() {
-		var $th = $("#gview_searchResult .ui-jqgrid-hdiv table tr:first th:first");
-		if ($th.length == 0 || $th.find(".mtp-titlefreeze-pin").length > 0) return;
-		$titleRowFreezePin = $('<span class="mtp-titlefreeze-pin" role="button" tabindex="0"></span>')
-				.attr("title", "<%=titleRowFreezeLabel%>")
-				.attr("aria-label", "<%=titleRowFreezeLabel%>");
-		$titleRowFreezePin.on("click keydown", function(e) {
-			if (e.type === "keydown" && e.which !== 13 && e.which !== 32) return;
-			//th側のソート処理が誤発火しないよう伝播を止める
-			e.preventDefault();
-			e.stopPropagation();
-			titleRowFreezeEnabled = !titleRowFreezeEnabled;
+		function applyTitleRowFreeze() {
+			$("#gbox_searchResult").toggleClass("mtp-title-row-freeze", titleRowFreezeEnabled);
+			if ($titleRowFreezePin != null) {
+				$titleRowFreezePin.toggleClass("mtp-titlefreeze-pin-on", titleRowFreezeEnabled)
+						.attr("aria-pressed", titleRowFreezeEnabled);
+			}
+		}
+		//表頭の左端セルへ切替ピンを配置する。検索・ページングでヘッダーが再構築されるため冪等に処理する
+		function injectTitleRowFreezePin() {
+			const $th = $("#gview_searchResult .ui-jqgrid-hdiv table tr:first th:first");
+			if ($th.length == 0 || $th.find(".mtp-titlefreeze-pin").length > 0) return;
+			$titleRowFreezePin = $('<span class="mtp-titlefreeze-pin" role="button" tabindex="0"></span>')
+					.attr("title", "<%=titleRowFreezeLabel%>")
+					.attr("aria-label", "<%=titleRowFreezeLabel%>");
+			$titleRowFreezePin.on("click keydown", function(e) {
+				if (e.type === "keydown" && e.which !== 13 && e.which !== 32) return;
+				//th側のソート処理が誤発火しないよう伝播を止める
+				e.preventDefault();
+				e.stopPropagation();
+				titleRowFreezeEnabled = !titleRowFreezeEnabled;
+				applyTitleRowFreeze();
+				saveTitleRowFreezeState();
+			});
+			$th.prepend($titleRowFreezePin);
 			applyTitleRowFreeze();
-			saveTitleRowFreezeState();
-		});
-		$th.prepend($titleRowFreezePin);
+		}
+		loadTitleRowFreezeState();
+		$("#searchResult").on("jqGridAfterGridComplete", injectTitleRowFreezePin);
+		injectTitleRowFreezePin();
 		applyTitleRowFreeze();
-	}
-	loadTitleRowFreezeState();
-	$("#searchResult").on("jqGridAfterGridComplete", injectTitleRowFreezePin);
-	injectTitleRowFreezePin();
-	applyTitleRowFreeze();
+	})();
 <%
 	}
 %>
