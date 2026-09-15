@@ -206,4 +206,11 @@ public class MTPJUnitTestExtension implements BeforeAllCallback, AfterAllCallbac
 		// テスト実行
 		decoratedInvoker.invoke(testConfig);
 	}
+
+	@Override
+	public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
+			ExtensionContext extensionContext) throws Throwable {
+		interceptTestMethod(invocation, invocationContext, extensionContext);
+	}
+
 }

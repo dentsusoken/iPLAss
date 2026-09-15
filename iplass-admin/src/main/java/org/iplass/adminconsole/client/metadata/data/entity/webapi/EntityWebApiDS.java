@@ -100,12 +100,13 @@ public class EntityWebApiDS extends AbstractAdminDataSource {
 
 	@Override
 	protected void executeUpdate(String requestId, DSRequest request, DSResponse response) {
+		updateGridRecordResponse(requestId, request, response);
 		processResponse(requestId, response);
 	}
 
 	private List<ListGridRecord> createRecord(List<DefinitionEntry> entities) {
 
-		List<ListGridRecord> list = new ArrayList<ListGridRecord>();
+		List<ListGridRecord> list = new ArrayList<>();
 
 		if (entities != null) {
 			for (DefinitionEntry entry : entities) {
