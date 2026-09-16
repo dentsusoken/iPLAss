@@ -73,10 +73,9 @@ public class GotenbergDocumentConverter implements DocumentConverter {
 				return doConvert(input, fileName);
 			} catch (DocumentConversionException e) {
 				last = e;
-				// 4xx はリトライしない（レスポンス確定の失敗）
-				if (e.getHttpStatus() >= 400 && e.getHttpStatus() < 500) {
-					throw e;
-				}
+				if (e.getCause() instanceof InterruptedException) {
+ 					throw e;
+ 				}
 			}
 		}
 		throw last;
