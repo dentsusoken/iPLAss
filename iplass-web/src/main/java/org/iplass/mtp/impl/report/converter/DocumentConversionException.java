@@ -27,7 +27,7 @@ import org.iplass.mtp.SystemException;
 public class DocumentConversionException extends SystemException {
 
 	private static final long serialVersionUID = -6029021818526956842L;
-	
+
 	/** HTTP ステータスコード。ネットワークエラー等の未知は -1 */
 	private final int httpStatus;
 

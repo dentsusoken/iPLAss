@@ -74,8 +74,8 @@ public class GotenbergDocumentConverter implements DocumentConverter {
 			} catch (DocumentConversionException e) {
 				last = e;
 				if (e.getCause() instanceof InterruptedException) {
- 					throw e;
- 				}
+					throw e;
+				}
 			}
 		}
 		throw last;
