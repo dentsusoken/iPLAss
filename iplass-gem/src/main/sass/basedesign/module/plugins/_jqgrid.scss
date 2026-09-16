@@ -254,3 +254,53 @@
 	border-bottom: 0 none;
 	border-color: $color_celeste_approx;
 }
+
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th {
+	div:has(> .mtp-col-pin) {
+		white-space: nowrap;
+		> p.title {
+			display: inline-block;
+			max-width: calc(100% - 40px);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			vertical-align: middle;
+		}
+	}
+	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-dim):not(.mtp-pin-disabled) {
+		opacity: 0.35;
+		pointer-events: auto;
+	}
+}
+a.mtp-col-pin {
+	display: inline-block;
+	margin-left: 4px;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	text-decoration: none;
+	text-align: center;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease;
+	color: $color_mountain_mist_approx;
+	> i,
+	> svg {
+		font-size: 13px;
+	}
+	> svg.svg-inline--fa {
+		vertical-align: middle;
+	}
+	&.mtp-pin-on {
+		opacity: 1;
+		color: $color_storm_dust_approx;
+		pointer-events: auto;
+	}
+	&.mtp-pin-dim {
+		opacity: 0.5;
+		pointer-events: auto;
+	}
+	&.mtp-pin-disabled {
+		opacity: 0;
+		pointer-events: none;
+	}
+}

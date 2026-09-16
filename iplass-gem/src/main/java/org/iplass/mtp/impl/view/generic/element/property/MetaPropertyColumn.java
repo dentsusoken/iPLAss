@@ -58,6 +58,9 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	/** ソートを許可 */
 	private boolean sortable = true;
 
+	/** 列を固定する */
+	private boolean frozen;
+
 	/** CSVの出力 */
 	private boolean outputCsv = true;
 
@@ -132,6 +135,22 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	}
 
 	/**
+	 * 列を固定するかを取得します。
+	 * @return 列を固定するか
+	 */
+	public boolean isFrozen() {
+		return frozen;
+	}
+
+	/**
+	 * 列を固定するかを設定します。
+	 * @param frozen 列を固定するか
+	 */
+	public void setFrozen(boolean frozen) {
+		this.frozen = frozen;
+	}
+
+	/**
 	 * CSVに出力するかを取得します。
 	 * @return CSVに出力するか
 	 */
@@ -187,6 +206,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		nullOrderType = p.getNullOrderType();
 		textAlign = p.getTextAlign();
 		sortable = p.isSortable();
+		frozen = p.isFrozen();
 		outputCsv = p.isOutputCsv();
 
 		if (p.getBulkUpdateEditor() != null) {
@@ -227,6 +247,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		p.setNullOrderType(nullOrderType);
 		p.setTextAlign(textAlign);
 		p.setSortable(sortable);
+		p.setFrozen(frozen);
 		p.setOutputCsv(outputCsv);
 		if (bulkUpdateEditor != null) {
 			p.setBulkUpdateEditor(bulkUpdateEditor.currentConfig(p.getPropertyName()));

@@ -1014,6 +1014,70 @@ button.dialog-csvdl-btn:hover {
   background: #d4d4d4 !important;
 }
 
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr > td {
+  background: #fff !important;
+}
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr.ui-state-hover td {
+  background: #dfeffc !important;
+}
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr:not(:last-child) > td {
+  border-bottom-width: 0 !important;
+}
+
+.result-data .ui-jqgrid.frozen-columns tr.jqgrow td {
+  height: 25px;
+  line-height: 25px;
+}
+
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th div:has(> .mtp-col-pin) {
+  white-space: nowrap;
+}
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th div:has(> .mtp-col-pin) > p.title {
+  display: inline-block;
+  max-width: calc(100% - 40px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-dim):not(.mtp-pin-disabled) {
+  opacity: 0.35;
+  pointer-events: auto;
+}
+
+a.mtp-col-pin {
+  display: inline-block;
+  margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  text-decoration: none;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  color: #aaa;
+}
+a.mtp-col-pin > i,
+a.mtp-col-pin > svg {
+  font-size: 13px;
+}
+a.mtp-col-pin > svg.svg-inline--fa {
+  vertical-align: middle;
+}
+a.mtp-col-pin.mtp-pin-on {
+  opacity: 1;
+  color: #666666;
+  pointer-events: auto;
+}
+a.mtp-col-pin.mtp-pin-dim {
+  opacity: 0.5;
+  pointer-events: auto;
+}
+a.mtp-col-pin.mtp-pin-disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
 ul.jqtree-tree {
   margin-left: 12px;
 }
