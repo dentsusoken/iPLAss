@@ -20,6 +20,7 @@
 package org.iplass.mtp.impl.report;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +37,10 @@ import org.apache.poi.poifs.crypt.EncryptionMode;
 import org.apache.poi.poifs.crypt.Encryptor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.TempFile;
+import org.iplass.mtp.impl.report.converter.ConvertContext;
+import org.iplass.mtp.impl.report.converter.DocumentConversionException;
+import org.iplass.mtp.impl.report.converter.DocumentConverter;
+import org.iplass.mtp.impl.report.converter.PdfEncryptDocumentConverter;
 import org.iplass.mtp.impl.web.template.report.MetaJxlsReportOutputLogic.JxlsReportOutputLogicRuntime;
 import org.iplass.mtp.impl.web.template.report.MetaReportParamMap;
 import org.iplass.mtp.util.StringUtil;
@@ -63,6 +68,8 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	private MetaReportParamMap[] paramMap;
 
 	private JxlsCompiledScriptCacheStore cacheStore;
+
+	private DocumentConverter documentConverter;
 
 	JxlsReportingOutputModel(byte[] binary, String type, String extension) throws Exception {
 		this.binary = binary;
@@ -171,6 +178,22 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	}
 
 	/**
+	 * ドキュメント変換エンジンを取得する
+	 * @return ドキュメント変換エンジン
+	 */
+	public DocumentConverter getDocumentConverter() {
+		return documentConverter;
+	}
+
+	/**
+	 * ドキュメント変換エンジンを設定する（PDF_JXLS 出力時に利用）
+	 * @param documentConverter ドキュメント変換エンジン
+	 */
+	public void setDocumentConverter(DocumentConverter documentConverter) {
+		this.documentConverter = documentConverter;
+	}
+
+	/**
 	 * レポートを書き込む
 	 * @param reportData 帳票データ
 	 * @param os 帳票出力先
@@ -195,6 +218,12 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 					.withTemplate(templateInput)
 					// テンプレートのストリーミング対応
 					.withStreaming(isStreaming ? JxlsStreaming.STREAMING_ON : JxlsStreaming.STREAMING_OFF);
+
+			// PDF_JXLS の場合は xlsx を組み立てた後、ドキュメント変換して PDF を出力
+			if (outputType == OutputFileType.PDF_JXLS) {
+				writePdf(reportData, builder, os, password);
+				return;
+			}
 
 			// パスワードなしの場合は、直接Responseに出力
 			if (StringUtil.isEmpty(password)) {
@@ -278,5 +307,32 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 			builder.build()
 					.fill(reportData, () -> out);
 		}
+	}
+
+	/**
+	 * PDF_JXLS 出力：Jxls で xlsx をメモリ上に組み立て、DocumentConverter で PDF へ変換して出力する。
+	 *
+	 * <p>password が指定された場合は {@link PdfEncryptDocumentConverter} で変換結果を暗号化する。</p>
+	 */
+	private void writePdf(Map<String, Object> reportData, JxlsPoiTemplateFillerBuilder builder, OutputStream os, String password)
+			throws IOException {
+		if (documentConverter == null) {
+			throw new DocumentConversionException(
+					"DocumentConverter is not configured. Set the documentConverter property of JxlsReportingEngine in service configuration to use PDF_JXLS.",
+					-1);
+		}
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		outputReport(reportData, builder, baos);
+
+		ConvertContext convertContext = new ConvertContext();
+		convertContext.setOutputFileType(getType());
+		convertContext.setPassword(password);
+
+		// password 指定時のみ暗号化で装飾（未指定時は従来経路の平文出力）
+		DocumentConverter converter = StringUtil.isNotEmpty(password) ? new PdfEncryptDocumentConverter(documentConverter)
+				: documentConverter;
+		byte[] pdf = converter.convert(baos.toByteArray(), "report.xlsx", convertContext);
+		os.write(pdf);
 	}
 }

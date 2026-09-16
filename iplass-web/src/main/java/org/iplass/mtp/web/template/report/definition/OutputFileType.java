@@ -29,7 +29,8 @@ public enum OutputFileType {
 	XLSX_SXSSF_POI("XLSX(POI Streaming)", new String[] { "xlsx" }),
 	XLS_JXLS("XLS(JXLS)", new String[] { "jxls", "xls" }),
 	XLSX_JXLS("XLSX(JXLS)", new String[] { "jxls", "xlsx" }),
-	XLSX_SXSSF_JXLS("XLSX(JXLS Streaming)", new String[] { "jxls", "xlsx" });
+	XLSX_SXSSF_JXLS("XLSX(JXLS Streaming)", new String[] { "jxls", "xlsx" }),
+	PDF_JXLS("PDF(JXLS)", new String[] { "jxls", "xlsx" });
 
 	private String displayName;
 	private String[] canExtensions;

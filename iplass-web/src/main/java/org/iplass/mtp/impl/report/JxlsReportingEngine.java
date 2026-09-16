@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.GenericEntity;
+import org.iplass.mtp.impl.report.converter.DocumentConverter;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.template.report.MetaReportParamMap;
 import org.iplass.mtp.util.StringUtil;
@@ -38,6 +39,9 @@ public class JxlsReportingEngine implements ReportingEngine {
 
 	private String[] supportFiles;
 
+	/** PDF_JXLS 等で利用するドキュメント変換エンジン（service-config の documentConverter プロパティで注入） */
+	private DocumentConverter documentConverter;
+
 	private static final String SESSION_STR = "session";
 	private static final String REQUEST_STR = "request";
 	private static final String PREFIX_REQUEST = REQUEST_STR + ".";
@@ -45,7 +49,25 @@ public class JxlsReportingEngine implements ReportingEngine {
 
 	@Override
 	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception {
-		return new JxlsReportingOutputModel(binary, type, extension);
+		JxlsReportingOutputModel model = new JxlsReportingOutputModel(binary, type, extension);
+		model.setDocumentConverter(documentConverter);
+		return model;
+	}
+
+	/**
+	 * ドキュメント変換エンジンを取得する
+	 * @return ドキュメント変換エンジン
+	 */
+	public DocumentConverter getDocumentConverter() {
+		return documentConverter;
+	}
+
+	/**
+	 * ドキュメント変換エンジンを設定する
+	 * @param documentConverter ドキュメント変換エンジン
+	 */
+	public void setDocumentConverter(DocumentConverter documentConverter) {
+		this.documentConverter = documentConverter;
 	}
 
 	@Override
