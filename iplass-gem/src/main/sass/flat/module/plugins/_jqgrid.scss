@@ -318,15 +318,25 @@ $result_grid_frozen_row_content_height: 25px; //flat 実測: 主表行高41px-16
 	}
 }
 
-//カラム固定: 凍結適用時の両表(frozen/main)行高統一
-//frozen/main の描画差による累積ずれ対策
-.result-data .ui-jqgrid.frozen-columns tr.jqgrow td {
+//カラム固定: 両表(frozen/main)行高の統一と固定/解除間での行高恒定化
+//frozen-ever は JS が一度でも凍結適用した grid に付与し解除後も残す恒久マーカー——
+//適用中のみの規則だと完全解除時にマーカーが外れ行高が跳ぶため(frozen/main の描画差による累積ずれ対策とも共用)
+.result-data .ui-jqgrid.frozen-ever tr.jqgrow td {
 	height: $result_grid_frozen_row_content_height;
 	line-height: $result_grid_frozen_row_content_height;
 }
+//カラム固定: 固定領域の右端に常時境界線を表示(横スクロール時に固定範囲を示す)
+.result-data .ui-jqgrid.frozen-columns {
+	.frozen-div tr.ui-jqgrid-labels th:last-child {
+		border-right: 1px solid $color_alto_approx;
+	}
+	.frozen-bdiv tr.ui-row-ltr > td:last-child {
+		border-right: 1px solid $color_alto_approx !important; //td の border 系は skin/jqgrid 側が !important で指定するため同強度で上書き
+	}
+}
 
 //カラム固定ピン: 列ヘッダー左の固定切替ピン(Font Awesome thumbtack・単色)
-//非固定列は通常時非表示でヘッダーhover時のみ薄く表示、固定設定済み(on/dim)は常時表示、
+//非固定列は通常時非表示でヘッダーhover時のみ薄く表示、固定範囲内(on)は常時表示、
 //全列収まる場合(disabled)は非表示。不可視状態でクリック当たり判定とならないよう pointer-events も連動
 .ui-jqgrid-hdiv tr.ui-jqgrid-labels th {
 	div:has(> .mtp-col-pin) {
@@ -339,7 +349,7 @@ $result_grid_frozen_row_content_height: 25px; //flat 実測: 主表行高41px-16
 			vertical-align: middle;
 		}
 	}
-	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-dim):not(.mtp-pin-disabled) {
+	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled) {
 		opacity: 0.35;
 		pointer-events: auto;
 	}
@@ -366,10 +376,6 @@ a.mtp-col-pin {
 	&.mtp-pin-on {
 		opacity: 1;
 		color: $color_storm_dust_approx;
-		pointer-events: auto;
-	}
-	&.mtp-pin-dim {
-		opacity: 0.5;
 		pointer-events: auto;
 	}
 	&.mtp-pin-disabled {

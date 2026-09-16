@@ -266,7 +266,7 @@
 			vertical-align: middle;
 		}
 	}
-	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-dim):not(.mtp-pin-disabled) {
+	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled) {
 		opacity: 0.35;
 		pointer-events: auto;
 	}
@@ -295,12 +295,18 @@ a.mtp-col-pin {
 		color: $color_storm_dust_approx;
 		pointer-events: auto;
 	}
-	&.mtp-pin-dim {
-		opacity: 0.5;
-		pointer-events: auto;
-	}
 	&.mtp-pin-disabled {
 		opacity: 0;
 		pointer-events: none;
+	}
+}
+
+//カラム固定: 固定領域の右端に常時境界線を表示(横スクロール時に固定範囲を示す)
+.result-data .ui-jqgrid.frozen-columns {
+	.frozen-div tr.ui-jqgrid-labels th:last-child {
+		border-right: 1px solid $color_celeste_approx;
+	}
+	.frozen-bdiv tr.ui-row-ltr > td:last-child {
+		border-right: 1px solid $color_celeste_approx;
 	}
 }

@@ -76,15 +76,15 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 	)
 	private TextAlign textAlign;
 
-	/** 列を固定する */
+	/** 列の固定を許可 */
 	@MetaFieldInfo(
-			displayName = "列を固定する",
+			displayName = "列の固定を許可",
 			displayNameKey = "generic_element_property_PropertyColumn_frozenDisplayNameKey",
 			inputType = InputType.CHECKBOX,
 			displayOrder = 415,
-			description = "検索結果一覧の横スクロール時に、列を左側に固定して表示し続けます。<br>" +
-					"先頭から連続して設定された列が固定されます（連続していない列の設定は無効になります）。<br>" +
-					"固定時はチェックボックス列と詳細/編集リンク列も固定されます。",
+			description = "検索結果一覧での列の固定を許可します。<br>" +
+					"許可した列はデフォルトで固定され、画面上のピン操作で固定範囲の変更・解除ができます。<br>" +
+					"許可しない列にはピンは表示されません。",
 			descriptionKey = "generic_element_property_PropertyColumn_frozenDescriptionKey"
 	)
 	private boolean frozen;
@@ -243,16 +243,16 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 	}
 
 	/**
-	 * 列を固定するかを取得します。
-	 * @return 列を固定するか
+	 * 列の固定を許可するかを取得します。
+	 * @return 列の固定を許可するか
 	 */
 	public boolean isFrozen() {
 		return frozen;
 	}
 
 	/**
-	 * 列を固定するかを設定します。
-	 * @param frozen 列を固定するか
+	 * 列の固定を許可するかを設定します。
+	 * @param frozen 列の固定を許可するか
 	 */
 	public void setFrozen(boolean frozen) {
 		this.frozen = frozen;

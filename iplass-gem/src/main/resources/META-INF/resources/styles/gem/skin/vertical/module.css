@@ -998,7 +998,7 @@ img.ui-datepicker-trigger {
   text-overflow: ellipsis;
   vertical-align: middle;
 }
-.ui-jqgrid-hdiv tr.ui-jqgrid-labels th:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-dim):not(.mtp-pin-disabled) {
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled) {
   opacity: 0.35;
   pointer-events: auto;
 }
@@ -1028,13 +1028,16 @@ a.mtp-col-pin.mtp-pin-on {
   color: #666;
   pointer-events: auto;
 }
-a.mtp-col-pin.mtp-pin-dim {
-  opacity: 0.5;
-  pointer-events: auto;
-}
 a.mtp-col-pin.mtp-pin-disabled {
   opacity: 0;
   pointer-events: none;
+}
+
+.result-data .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child {
+  border-right: 1px solid #cccccc;
+}
+.result-data .ui-jqgrid.frozen-columns .frozen-bdiv tr.ui-row-ltr > td:last-child {
+  border-right: 1px solid #cccccc;
 }
 
 ul.jqtree-tree {
