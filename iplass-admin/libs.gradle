@@ -1,14 +1,14 @@
-ext {
-	// TODO gwt plugin jakarta-servlet 版に対応していないので、バージョンを指定し依存関係を設定しない
-	//gwtVersion = "2.10.0"
-}
-
 configurations {
 	wjRuntime
 
 	compileOnly.extendsFrom(jeecoreapis)
 	compileOnly.extendsFrom(jeewebapis)
 	runtimeOnly.extendsFrom(wjRuntime)
+
+	gwtCompileOnly {
+		extendsFrom(jeecoreapis)
+		extendsFrom(jeewebapis)
+	}
 }
 
 dependencies {
@@ -27,36 +27,38 @@ dependencies {
 	//jackson
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+	// gwt-servlet-jakarta
+	implementation sharedLib('org.gwtproject:gwt-servlet-jakarta')
+
 	wjRuntime sharedLib('org.webjars.npm:ace-builds')
 
 	//smart gwt has no public maven repository
 	compileOnly fileTree(rootProject.ext.localLibDir) {
 		include 'smartgwt/**/*.jar'
 	}
+	compileOnly sharedLib('org.gwtproject:gwt-user')
 
-}
-
-// FIXME gwt plugin が gwt-servlet-jakarta に対応するまで以下のような設定を実施する
-afterEvaluate {
-	configurations {
-		gwt
-		gwtSdk
+ 	// GWTコンパイル用依存関係
+	// gwt
+	gwtCompileOnly(sharedLib('org.gwtproject:gwt-dev')) {
+		// java.xml パッケージを含む xml-apis ライブラリを推移依存するため除外
+		exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+		// NOTE: apache-jsp 関連のライブラリを推移依存する。害が無いので除外しないが不要ではある。
+		//exclude group: 'org.eclipse.jetty'
 	}
-	dependencies {
-		// gwt.gwtVersion を指定すれば設定される依存関係を個別設定
-		gwtSdk(sharedLib('org.gwtproject:gwt-dev')) {
-		  // java.xml パッケージを含む xml-apis ライブラリを推移依存するため除外
-		  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
-		  // NOTE: apache-jsp 関連のライブラリを推移依存する。害が無いので除外しないが不要ではある。
-		  //exclude group: 'org.eclipse.jetty'
-		}
-		gwtSdk sharedLib('org.gwtproject:gwt-user')
-		implementation sharedLib('org.gwtproject:gwt-servlet-jakarta')
-		gwt(sharedLib('org.gwtproject:gwt-codeserver')) {
-		  // java.xml パッケージを含む xml-apis ライブラリを推移依存するため除外
-		  exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
-		  // NOTE: apache-jsp 関連のライブラリを推移依存する。害が無いので除外しないが不要ではある。
-		  //exclude group: 'org.eclipse.jetty'
-		}
+	gwtCompileOnly(sharedLib('org.gwtproject:gwt-codeserver')) {
+		// java.xml パッケージを含む xml-apis ライブラリを推移依存するため除外
+		exclude group: 'net.sourceforge.htmlunit', module: 'htmlunit'
+		// NOTE: apache-jsp 関連のライブラリを推移依存する。害が無いので除外しないが不要ではある。
+		//exclude group: 'org.eclipse.jetty'
+	}
+	gwtCompileOnly sharedLib('org.gwtproject:gwt-user')
+	gwtCompileOnly sharedLib('org.gwtproject:gwt-servlet-jakarta')
+	// jackson
+	gwtCompileOnly platform(sharedLib('com.fasterxml.jackson:jackson-bom'))
+	gwtCompileOnly 'com.fasterxml.jackson.core:jackson-databind'
+	//smart gwt has no public maven repository
+	gwtCompileOnly fileTree(rootProject.ext.localLibDir) {
+		include 'smartgwt/**/*.jar'
 	}
 }
