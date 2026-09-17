@@ -1046,7 +1046,8 @@ button.dialog-csvdl-btn:hover {
   text-overflow: ellipsis;
   vertical-align: middle;
 }
-.ui-jqgrid-hdiv tr.ui-jqgrid-labels th:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled) {
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled),
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled):focus-visible {
   opacity: 0.35;
   pointer-events: auto;
 }

@@ -164,9 +164,9 @@
 			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_VIEWPORT
 			&& OutputType.SEARCHRESULT == type;
 
-	//全ユーザー列名の連結(実効固定範囲Kの尺度——許可列・非許可列とも含む)
-	StringBuilder frozenUserCols = new StringBuilder();
 	//「列の固定を許可」された列名の連結(pin 注入対象。未許可列は pin 非表示)
+	//※全ユーザー列(実効固定範囲Kの尺度)はJSP側で収集せず、JSで実際のcolModelから導出する
+	//(要素ループで収集すると仮想プロパティやネスト列等が取りこぼれるため)
 	StringBuilder frozenPermCols = new StringBuilder();
 
 	//カラム固定の永続化キー接頭辞(tenant/user 単位で分離)
@@ -339,15 +339,13 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
-					//全ユーザー列(frozenUserCols=実効範囲Kの尺度)と「列の固定を許可」列(frozenPermCols=pin対象)
+					//「列の固定を許可」列(frozenPermCols=pin対象)
 					String frozen = "";
 					if (property.isFrozen()) {
 						frozen = ", frozen:true";
 						if (frozenPermCols.length() > 0) frozenPermCols.append(",");
 						frozenPermCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
 					}
-					if (frozenUserCols.length() > 0) frozenUserCols.append(",");
-					frozenUserCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -369,15 +367,13 @@ $(function() {
 					if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
-					//全ユーザー列(frozenUserCols=実効範囲Kの尺度)と「列の固定を許可」列(frozenPermCols=pin対象)
+					//「列の固定を許可」列(frozenPermCols=pin対象)
 					String frozen = "";
 					if (property.isFrozen()) {
 						frozen = ", frozen:true";
 						if (frozenPermCols.length() > 0) frozenPermCols.append(",");
 						frozenPermCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
 					}
-					if (frozenUserCols.length() > 0) frozenUserCols.append(",");
-					frozenUserCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -404,15 +400,13 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
-						//全ユーザー列(frozenUserCols=実効範囲Kの尺度)と「列の固定を許可」列(frozenPermCols=pin対象)
+						//「列の固定を許可」列(frozenPermCols=pin対象)
 						String frozen = "";
 						if (property.isFrozen()) {
 							frozen = ", frozen:true";
 							if (frozenPermCols.length() > 0) frozenPermCols.append(",");
 							frozenPermCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
 						}
-						if (frozenUserCols.length() > 0) frozenUserCols.append(",");
-						frozenUserCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -614,7 +608,8 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			var data = $("#searchResult").getGridParam("_data");
 			if (!data) return;
 			//チェックボタン一覧の結合処理を行います。
-			$("#gview_searchResult tr.jqgrow").each(function(index){
+			//凍結中は clone 側(frozen-bdiv)にも tr.jqgrow が存在するため主表のみを対象とする(二重走査防止)
+			$("#gview_searchResult .ui-jqgrid-bdiv:not(.frozen-bdiv) tr.jqgrow").each(function(index){
 				var row = data[index];
 				if (index > 0) {
 					var beforeRow = data[index - 1];
@@ -724,7 +719,8 @@ function setData(list, count) {
 	$("div.result-data").show();
 	grid.clearGridData(true);
 	//行クリア後に凍結構成を強制再適用(シグネチャをリセットし destroy→set を促す——
-	//clearGridData で主表が空になっても凍結 clone が旧データのまま残るのを防ぐ)
+	//addRowData は凍結 clone 再生成のトリガにならないため、再適用なしでは行が復元されない。
+	//なお clearGridData は主表と同時に clone 行も削除するため旧データの残留は生じない)
 	frozenAppliedSignature = null;
 	grid.setGridParam({"_data": list}).trigger("reloadGrid");
 
@@ -1042,15 +1038,27 @@ $(window).on("resize", function() {
 //カラム固定:AdminConsole「列の固定を許可」された列のピン操作+初期反映
 //仕様: 許可列(frozenPermColumns)のみピンが表示され、既定で固定される。
 const pinAvailable = <%=OutputType.SEARCHRESULT == type%>;
-//全ユーザー列(実効範囲Kの尺度基準。colModel順)
-const frozenUserColumns = [<%=frozenUserCols.toString()%>];
+//全ユーザー列(実効範囲Kの尺度基準。colModel順)——実際の colModel から導出する。
+const frozenSystemColumns = ["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"];
+let frozenUserColumnsCache = null;
+function frozenUserColumns() {
+	if (frozenUserColumnsCache != null) return frozenUserColumnsCache;
+	frozenUserColumnsCache = [];
+	if (grid != null) {
+		const cm = grid.jqGrid("getGridParam", "colModel");
+		for (let i = 0; i < cm.length; i++) {
+			if (frozenSystemColumns.indexOf(cm[i].name) < 0) frozenUserColumnsCache.push(cm[i].name);
+		}
+	}
+	return frozenUserColumnsCache;
+}
 //「列の固定を許可」された列(pin 注入対象)
 const frozenPermColumns = [<%=frozenPermCols.toString()%>];
 let frozenK = 0;
 let frozenKInited = false;
 //全ユーザー列中の位置(1始まり)。0=非ユーザー列
 function userColPos(name) {
-	return frozenUserColumns.indexOf(name) + 1;
+	return frozenUserColumns().indexOf(name) + 1;
 }
 function isPermColumn(name) {
 	return frozenPermColumns.indexOf(name) >= 0;
@@ -1208,7 +1216,7 @@ function loadFrozenK() {
 		if (raw) {
 			const saved = JSON.parse(raw);
 			if (saved && typeof saved.k === "number") {
-				frozenK = Math.max(0, Math.min(Math.floor(saved.k), frozenUserColumns.length));
+				frozenK = Math.max(0, Math.min(Math.floor(saved.k), frozenUserColumns().length));
 			}
 		}
 	} catch (e) {

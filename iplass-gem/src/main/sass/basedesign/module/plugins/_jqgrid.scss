@@ -266,7 +266,10 @@
 			vertical-align: middle;
 		}
 	}
-	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled) {
+	//hover 時およびキーボードフォーカス時(:focus-visible)に表示——
+	//focus を含めないと Tab 操作中のユーザーが操作対象を視認できない
+	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled),
+	a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled):focus-visible {
 		opacity: 0.35;
 		pointer-events: auto;
 	}
