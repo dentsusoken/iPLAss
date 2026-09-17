@@ -922,6 +922,12 @@ function setData(list, count) {
 			}
 		}
 	}
+
+	//高さ自動調節(画面fit)時は、初回計算後にページ全体のレイアウト確定(コンテンツ領域の
+	//画面高調整がボタン区等へ波及する)ことで下方要素の高さが変わり得るため、遅延して再計算する
+	if (fitToViewportMode) {
+		setTimeout(adjustResultGridHeight, 300);
+	}
 }
 function applyGridSelection(onselectrow) {
 	$("#searchResult tr[id]").each(function() {
@@ -989,7 +995,18 @@ function adjustResultGridHeight() {
 	$gbox.nextAll().each(function() {
 		var $elem = $(this);
 		if ($elem.css("display") != "none" && $elem.css("visibility") != "hidden") {
-			belowHeight += $elem.outerHeight(true);
+			var h = $elem.outerHeight(true);
+			if ($elem.hasClass("result-btns")) {
+				//ボタン区はページレイアウト(コンテンツ領域の画面高調整)の引き伸ばしにより
+				//実際の内容以上の高さで測定される実測がある(内容はボタンのみ)——
+				//内容(ボタン)の実高と上下 margin のみを計上し、テーブル高の不当な圧縮を防ぐ
+				var btnH = 0;
+				$elem.children(":visible").each(function() {
+					btnH += $(this).outerHeight(true);
+				});
+				h = btnH + parseFloat($elem.css("marginTop") || 0) + parseFloat($elem.css("marginBottom") || 0);
+			}
+			belowHeight += h;
 		}
 	});
 
@@ -1232,7 +1249,7 @@ ${m:outputToken('FORM_XHTML', false)}
 <%
 	}
 %>
-<p>
+<p class="result-btns">
 <%
 	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
 %>
