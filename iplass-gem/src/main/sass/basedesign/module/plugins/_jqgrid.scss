@@ -255,8 +255,8 @@
 	border-color: $color_celeste_approx;
 }
 
-//カラム固定ピンは共通定義を利用
-@import "jqgridColPin";
+//skin非依存のjqGrid共通定義(カラム固定ピン等)
+@import "jqgridCommon";
 
 //カラム固定: 固定領域の右端に常時境界線を表示(横スクロール時に固定範囲を示す)
 .result-data .ui-jqgrid.frozen-columns {

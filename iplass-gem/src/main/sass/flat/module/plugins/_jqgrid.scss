@@ -335,9 +335,9 @@ $result_grid_frozen_row_content_height: 25px; //flat 実測: 主表行高41px-16
 	}
 }
 
-//カラム固定ピンは basedesign の共通定義を利用(flat は pin 通常時の色のみ差し替え)
+//skin非依存のjqGrid共通定義(basedesign配下)を利用。flat はカラム固定ピン通常時の色のみ差し替え
 $mtp-pin-color: $color_silver_chalice_approx;
-@import "../../../basedesign/module/plugins/jqgridColPin";
+@import "../../../basedesign/module/plugins/jqgridCommon";
 .modal-body .ui-jqgrid {
 	.ui-jqgrid-hdiv tr > th.sel_radio {
 		@extend %extend_pjg_5;
