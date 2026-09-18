@@ -25,6 +25,8 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
+<%@ page import="org.iplass.mtp.auth.User"%>
+<%@ page import="org.iplass.mtp.tenant.Tenant"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.BinaryProperty"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
@@ -72,6 +74,16 @@
 			value = ((Object[]) value)[0];
 		}
 		return value.toString();
+	}
+	/**
+	 * 「列の固定を許可」列(=pin対象)のcolModelオプションを返す。
+	 * 許可列の場合は副作用としてpin対象列名リスト(frozenPermCols)へ列名を追加する。
+	 */
+	String frozenColModelOption(PropertyColumn property, String sortPropName, StringBuilder frozenPermCols) {
+		if (!property.isFrozen()) return "";
+		if (frozenPermCols.length() > 0) frozenPermCols.append(",");
+		frozenPermCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
+		return ", frozen:true";
 	}
 %>
 <%
@@ -161,6 +173,18 @@
 	boolean fitToViewport = section.getDispHeight() == 0
 			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_VIEWPORT
 			&& OutputType.SEARCHRESULT == type;
+
+	//「列の固定を許可」された列名の連結(pin 注入対象。未許可列は pin 非表示)
+	//※全ユーザー列(実効固定範囲Kの尺度)はJSP側で収集せず、JSで実際のcolModelから導出する
+	//(要素ループで収集すると仮想プロパティやネスト列等が取りこぼれるため)
+	StringBuilder frozenPermCols = new StringBuilder();
+
+	//カラム固定の永続化キー接頭辞(tenant/user 単位で分離)
+	Tenant frozenTenant = auth.getTenant();
+	User frozenUser = auth.getUser();
+	String frozenKeyPrefix = (frozenTenant != null ? frozenTenant.getId() : -1)
+			+ "." + (frozenUser != null ? frozenUser.getOid() : "anonymous");
+	frozenKeyPrefix = StringUtil.escapeJavaScript(frozenKeyPrefix);
 
 	//一括詳細表示アクション
 	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
@@ -325,9 +349,10 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
+					String frozen = frozenColModelOption(property, sortPropName, frozenPermCols);
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
 
 <%
 				//参照プロパティでJoinPropertyEditorを利用する場合
@@ -346,9 +371,10 @@ $(function() {
 					if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
+					String frozen = frozenColModelOption(property, sortPropName, frozenPermCols);
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -372,9 +398,10 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
+						String frozen = frozenColModelOption(property, sortPropName, frozenPermCols);
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -573,7 +600,8 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			var data = $("#searchResult").getGridParam("_data");
 			if (!data) return;
 			//チェックボタン一覧の結合処理を行います。
-			$("#gview_searchResult tr.jqgrow").each(function(index){
+			//凍結中は clone 側(frozen-bdiv)にも tr.jqgrow が存在するため主表のみを対象とする(二重走査防止)
+			$("#gview_searchResult .ui-jqgrid-bdiv:not(.frozen-bdiv) tr.jqgrow").each(function(index){
 				var row = data[index];
 				if (index > 0) {
 					var beforeRow = data[index - 1];
@@ -682,6 +710,10 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 function setData(list, count) {
 	$("div.result-data").show();
 	grid.clearGridData(true);
+	//行クリア後に凍結構成を強制再適用(シグネチャをリセットし destroy→set を促す——
+	//addRowData は凍結 clone 再生成のトリガにならないため、再適用なしでは行が復元されない。
+	//なお clearGridData は主表と同時に clone 行も削除するため旧データの残留は生じない)
+	frozenAppliedSignature = null;
 	grid.setGridParam({"_data": list}).trigger("reloadGrid");
 
 <%	if (type == OutputType.SINGLESELECT) { %>
@@ -851,6 +883,17 @@ function setData(list, count) {
 	clearAllDelete();
 <%	} %>
 
+
+
+	$(".fixHeight").fixHeight();
+	adjustResultGridHeight();
+	applyFrozenColumns();
+	refreshFrozenPins();
+	updateFrozenPinsDisabled();
+
+	//ソート状態の表頭反映(sortGrid)は凍結クローン再構築の後に実施する——
+	//凍結中は jqGrid がソートアイコンをクローン側(fhDiv)に表示するため、クローン再構築の前に
+	//適用すると表示が失われる(固定適用後ソート矢印が出ない問題の対策)
 	var sortKey = $(":hidden[name='sortKey']").val();
 	var sortType = $(":hidden[name='sortType']").val();
 	if (sortKey.length > 0 && sortType.length > 0) {
@@ -868,8 +911,11 @@ function setData(list, count) {
 		}
 	}
 
-	$(".fixHeight").fixHeight();
-	adjustResultGridHeight();
+	//高さ自動調節(画面fit)時は、初回計算後にページ全体のレイアウト確定(コンテンツ領域の
+	//画面高調整がボタン区等へ波及する)ことで下方要素の高さが変わり得るため、遅延して再計算する
+	if (fitToViewportMode) {
+		setTimeout(adjustResultGridHeight, 300);
+	}
 }
 function applyGridSelection(onselectrow) {
 	$("#searchResult tr[id]").each(function() {
@@ -937,7 +983,18 @@ function adjustResultGridHeight() {
 	$gbox.nextAll().each(function() {
 		var $elem = $(this);
 		if ($elem.css("display") != "none" && $elem.css("visibility") != "hidden") {
-			belowHeight += $elem.outerHeight(true);
+			var h = $elem.outerHeight(true);
+			if ($elem.hasClass("result-btns")) {
+				//ボタン区はページレイアウト(コンテンツ領域の画面高調整)の引き伸ばしにより
+				//実際の内容以上の高さで測定される実測がある(内容はボタンのみ)——
+				//内容(ボタン)の実高と上下 margin のみを計上し、テーブル高の不当な圧縮を防ぐ
+				var btnH = 0;
+				$elem.children(":visible").each(function() {
+					btnH += $(this).outerHeight(true);
+				});
+				h = btnH + parseFloat($elem.css("marginTop") || 0) + parseFloat($elem.css("marginBottom") || 0);
+			}
+			belowHeight += h;
 		}
 	});
 
@@ -957,16 +1014,220 @@ function adjustResultGridHeight() {
 //リサイズイベント連続発火時の過剰実行を抑止するためのデバウンス用タイマーID
 var resultGridResizeTimerId = null;
 $(window).on("resize", function() {
-	//ウィンドウリサイズ時も高さを再調節
-	if (!fitToViewportMode) return;
+	//リサイズ時も高さを再調節——高さ調節は高さ自動調節(画面fit)モードのみ、
+	//ピン操作可否の再判定は全モードで実施
 	if (resultGridResizeTimerId != null) {
 		clearTimeout(resultGridResizeTimerId);
 	}
 	resultGridResizeTimerId = setTimeout(function() {
 		resultGridResizeTimerId = null;
-		adjustResultGridHeight();
+		if (fitToViewportMode) {
+			adjustResultGridHeight();
+		}
+		updateFrozenPinsDisabled();
 	}, 200);
 });
+//カラム固定:AdminConsole「列の固定を許可」された列のピン操作+初期反映
+//仕様: 許可列(frozenPermColumns)のみピンが表示され、既定で固定される。
+const pinAvailable = <%=OutputType.SEARCHRESULT == type%>;
+//全ユーザー列(実効範囲Kの尺度基準。colModel順)——実際の colModel から導出する。
+const frozenSystemColumns = ["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"];
+let frozenUserColumnsCache = null;
+function frozenUserColumns() {
+	if (frozenUserColumnsCache != null) return frozenUserColumnsCache;
+	frozenUserColumnsCache = [];
+	if (grid != null) {
+		const cm = grid.jqGrid("getGridParam", "colModel");
+		for (let i = 0; i < cm.length; i++) {
+			if (frozenSystemColumns.indexOf(cm[i].name) < 0) frozenUserColumnsCache.push(cm[i].name);
+		}
+	}
+	return frozenUserColumnsCache;
+}
+//「列の固定を許可」された列(pin 注入対象)
+const frozenPermColumns = [<%=frozenPermCols.toString()%>];
+let frozenColumnCount = 0;
+let frozenColumnCountInited = false;
+//全ユーザー列中の位置(1始まり)。0=非ユーザー列
+function userColPos(name) {
+	return frozenUserColumns().indexOf(name) + 1;
+}
+function isPermColumn(name) {
+	return frozenPermColumns.indexOf(name) >= 0;
+}
+function initFrozenColumnCount() {
+	if (frozenColumnCountInited) return;
+	frozenColumnCountInited = true;
+	//許可列(colModel.frozen==true は JSP が許可列に出力)の最も右の全ユーザー列位置を固定列数の初期値とする
+	const cm = grid.jqGrid("getGridParam", "colModel");
+	for (let i = 0; i < cm.length; i++) {
+		if (isPermColumn(cm[i].name) && cm[i].frozen === true) {
+			const pos = userColPos(cm[i].name);
+			if (pos > frozenColumnCount) frozenColumnCount = pos;
+		}
+	}
+	loadFrozenColumnCount();
+}
+let frozenAppliedSignature = null;
+function applyFrozenColumns() {
+	if (!pinAvailable || grid == null) return;
+	initFrozenColumnCount();
+	const $gbox = $("#gbox_searchResult");
+	const cm = grid.jqGrid("getGridParam", "colModel");
+	let signature = String(frozenColumnCount);
+	for (let i = 0; i < cm.length; i++) {
+		//ユーザー列のみを実効範囲(先頭から固定列数分の列)で frozen を制御する(最右側連続化——非許可列も含む)。
+		const pos = userColPos(cm[i].name);
+		if (pos > 0) {
+			const f = pos <= frozenColumnCount;
+			if (cm[i].frozen !== f) grid.jqGrid("setColProp", cm[i].name, { frozen: f });
+			cm[i].frozen = f;
+		}
+		signature += (cm[i].frozen === true ? "1" : "0");
+	}
+	if (signature === frozenAppliedSignature) return;
+	//凍結構成が変わったら必ず破棄→再適用(適用済み set は no-op、かつ clone は再構築されないため)
+	const applied = grid.jqGrid("getGridParam", "frozenColumns") === true;
+	if (applied) {
+		grid.jqGrid("destroyFrozenColumns");
+		//適用中マーカー除去(frozen-ever は行高恒定マーカーのため解除後も残す)
+		$gbox.removeClass("frozen-columns");
+	}
+	if (frozenColumnCount > 0) {
+		//main ヘッダーのピンが現状態であることを確認してから set(clone に複製される)
+		refreshFrozenPins();
+		grid.jqGrid("setFrozenColumns");
+		//frozen-columns=適用中マーカー。frozen-ever=行高恒定マーカー(一度適用した grid は解除後も同一行高)
+		$gbox.addClass("frozen-columns").addClass("frozen-ever");
+		//fhDiv(凍結表頭)の寸法同期——列幅合計を明示。
+		//flat skin の module.css(`width:auto !important`)が inline width を打ち負かすため
+		//min-width で指定、幅は hidden 列を除いた実効幅として内部 table の実測幅を採用。
+		//height 同期は fh 高と主表頭高の差>2px が確認された場合のみ有効化
+		const $fh = $gbox.find(".frozen-div");
+		if ($fh.length > 0) {
+			const $fhTable = $fh.children("table.ui-jqgrid-htable");
+			const fhW = $fhTable.length > 0 ? $fhTable[0].offsetWidth : 0;
+			if (fhW > 0) $fh.css("min-width", fhW + "px");
+			//主表頭は fhDiv も .ui-jqgrid-hdiv を持つため :not(.frozen-div) で除外して取得
+			const mainHeaderHeight = $gbox.find(".ui-jqgrid-hdiv:not(.frozen-div)").height();
+			if ($fh.height() !== mainHeaderHeight) {
+				$fh.height(mainHeaderHeight);
+			}
+		}
+		//両表の行高を1回明示同期(frozen/main の描画差による累積ずれ対策)。
+		//主表側セレクタは .frozen-bdiv が ui-jqgrid-bdiv を兼任するため :not で凍結側を除外
+		const $frows = $gbox.find(".frozen-bdiv tr.jqgrow");
+		$gbox.find(".ui-jqgrid-bdiv:not(.frozen-bdiv) tr.jqgrow").each(function(i) {
+			if ($frows.eq(i).length > 0) $frows.eq(i).height($(this).height());
+		});
+	}
+	frozenAppliedSignature = signature;
+}
+function toggleFrozenColumn(name) {
+	if (!pinAvailable || grid == null) return;
+	initFrozenColumnCount();
+	const n = userColPos(name);
+	if (n <= 0 || !isPermColumn(name)) return;
+	//クリック列が実効範囲外→その列まで拡張 / 範囲内→その列と右側を解除
+	frozenColumnCount = (n > frozenColumnCount) ? n : n - 1;
+	applyFrozenColumns();
+	refreshFrozenPins();
+	updateFrozenPinsDisabled();
+	saveFrozenColumnCount();
+}
+function refreshFrozenPins() {
+	if (!pinAvailable || grid == null) return;
+	initFrozenColumnCount();
+	const $gbox = $("#gbox_searchResult");
+	if ($gbox.length == 0) return;
+	const cm = grid.jqGrid("getGridParam", "colModel");
+	//main ヘッダーのみ対象——fhDiv も .ui-jqgrid-hdiv class を持つため .frozen-div を除外
+	const $ths = $gbox.find(".ui-jqgrid-hdiv tr.ui-jqgrid-labels th").filter(function() {
+		return jQuery(this).closest(".frozen-div").length === 0;
+	});
+	let pinCreated = false;
+	$ths.each(function(idx) {
+		const name = cm[idx] ? cm[idx].name : null;
+		//許可列のみ pin を持つ(未許可列は操作の入口が存在しない)
+		if (!isPermColumn(name)) return;
+		const $th = $(this);
+		let $pin = $th.find(".mtp-col-pin");
+		if ($pin.length == 0) {
+			$pin = $("<a/>").attr({
+				href: "javascript:void(0)",
+				"class": "mtp-col-pin",
+				"data-colname": name,
+				"aria-label": name
+			}).append($("<i/>").addClass("fas fa-thumbtack"));
+			pinCreated = true;
+			//th の jqGrid クリック処理が伝播を断つため document 委譲でなく直接結合(clone(true) が handler を複製)
+			$pin.on("click", function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				toggleFrozenColumn($(this).attr("data-colname"));
+			});
+			//title(p.title) と同一行・sort ボタン(s-ico)の前に挿入
+			const $sico = $th.children("div").first().children("span.s-ico");
+			if ($sico.length > 0) {
+				$pin.insertBefore($sico);
+			} else {
+				$th.children("div").first().append($pin);
+			}
+		}
+		//実効範囲内(先頭から固定列数分のユーザー列)はON常時表示。範囲外はOFF(hover 時のみ表示)
+		const effective = userColPos(name) <= frozenColumnCount;
+		$pin.toggleClass("mtp-pin-on", effective);
+	});
+	//FA(JS版)は <i> を <svg> へ置換する——動的注入分を確実に描画するため gbox 配下を再走査
+	//(main で置換済みなら setFrozenColumns の clone は svg を複製する。失敗しても機能には影響なし)
+	if (pinCreated && window.FontAwesome && window.FontAwesome.dom && window.FontAwesome.dom.i2svg) {
+		try { window.FontAwesome.dom.i2svg({ node: $gbox[0] }); } catch (e) { /* 置換失敗時は無視 */ }
+	}
+}
+function updateFrozenPinsDisabled() {
+	if (!pinAvailable || grid == null) return;
+	const $gbox = $("#gbox_searchResult");
+	if ($gbox.length == 0) return;
+	const cm = grid.jqGrid("getGridParam", "colModel");
+	let sum = 0;
+	for (let i = 0; i < cm.length; i++) {
+		if (cm[i].hidden !== true) sum += (cm[i].width ? +cm[i].width : 0);
+	}
+	//判定基準は結果領域のコンテナ幅——凍結なしの場合 grid は列幅合計まで自動拡張し
+	//bdiv 自体が広がるため、bdiv 幅では横スクロール有無を判定できない
+	const avail = $gbox.closest(".result-data").width() || $gbox.parent().width() || 0;
+	//全列が収まる(横スクロール無し)場合はピンを操作不可とする
+	//(表示仕様=非表示。DOM/クラス判定は残し E2E で検証)
+	$gbox.find(".mtp-col-pin").toggleClass("mtp-pin-disabled", sum <= avail + 1);
+}
+//localStorage 永続化
+function frozenStorageKey() {
+	return "mtp.frozenColumns.<%=frozenKeyPrefix%>.<%=StringUtil.escapeJavaScript(defName)%>.<%=StringUtil.escapeJavaScript(viewName)%>";
+}
+function loadFrozenColumnCount() {
+	if (!frozenColumnCountInited) return;
+	try {
+		const raw = localStorage.getItem(frozenStorageKey());
+		if (raw) {
+			const saved = JSON.parse(raw);
+			if (saved && typeof saved.frozenColumnCount === "number") {
+				frozenColumnCount = Math.max(0, Math.min(Math.floor(saved.frozenColumnCount), frozenUserColumns().length));
+			}
+		}
+	} catch (e) {
+		//破損値は無視して許可設定を既定とする
+		console.warn("Failed to load frozen column count. key=" + frozenStorageKey(), e);
+	}
+}
+function saveFrozenColumnCount() {
+	if (!frozenColumnCountInited) return;
+	try {
+		localStorage.setItem(frozenStorageKey(), JSON.stringify({ frozenColumnCount: frozenColumnCount }));
+	} catch (e) {
+		//保存失敗は無視(この画面表示のみの状態となる)
+		console.warn("Failed to save frozen column count. key=" + frozenStorageKey() + ", frozenColumnCount=" + frozenColumnCount, e);
+	}
+}
 var loadingOff = null;
 loadingOff = function(event, src) {
 	if (src === "pager") {
@@ -993,7 +1254,7 @@ ${m:outputToken('FORM_XHTML', false)}
 <%
 	}
 %>
-<p>
+<p class="result-btns">
 <%
 	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
 %>

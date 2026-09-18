@@ -297,6 +297,47 @@
 		}
 	}
 }
+
+//カラム固定: 検索結果テーブルの frozen 列を通常列と同一の見た目にする
+$result_grid_frozen_row_content_height: 25px; //flat 実測: 主表行高41px-16px(padding)
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv {
+	tr.ui-row-ltr {
+		//通常行($white)と同一背景へ——上の frozen-bdiv 規則($color_gallery_approx !important)を上書き
+		> td {
+			background: $white !important;
+		}
+		//通常行の hover 表示へ揃える——上の frozen-bdiv 規則($color_quill_gray_approx !important)を上書き
+		&.ui-state-hover td {
+			background: $color_pattens_blue_approx !important;
+		}
+		//主表側に border-bottom が無いため凍結側も無効化(1px/行の累積ずれ対策)——
+		//上の frozen-bdiv 規則(border-bottom !important)を上書き
+		&:not(:last-child) > td {
+			border-bottom-width: 0 !important;
+		}
+	}
+}
+
+//カラム固定: 両表(frozen/main)行高の統一と固定/解除間での行高恒定化
+//frozen-ever は JS が一度でも凍結適用した grid に付与し解除後も残す恒久マーカー——
+//適用中のみの規則だと完全解除時にマーカーが外れ行高が跳ぶため(frozen/main の描画差による累積ずれ対策とも共用)
+.result-data .ui-jqgrid.frozen-ever tr.jqgrow td {
+	height: $result_grid_frozen_row_content_height;
+	line-height: $result_grid_frozen_row_content_height;
+}
+//カラム固定: 固定領域の右端に常時境界線を表示(横スクロール時に固定範囲を示す)
+.result-data .ui-jqgrid.frozen-columns {
+	.frozen-div tr.ui-jqgrid-labels th:last-child {
+		border-right: 1px solid $color_alto_approx;
+	}
+	.frozen-bdiv tr.ui-row-ltr > td:last-child {
+		border-right: 1px solid $color_alto_approx !important; //td の border 系は skin/jqgrid 側が !important で指定するため同強度で上書き
+	}
+}
+
+//skin非依存のjqGrid共通定義(basedesign配下)を利用。flat はカラム固定ピン通常時の色のみ差し替え
+$mtp-pin-color: $color_silver_chalice_approx;
+@import "../../../basedesign/module/plugins/jqgridCommon";
 .modal-body .ui-jqgrid {
 	.ui-jqgrid-hdiv tr > th.sel_radio {
 		@extend %extend_pjg_5;
