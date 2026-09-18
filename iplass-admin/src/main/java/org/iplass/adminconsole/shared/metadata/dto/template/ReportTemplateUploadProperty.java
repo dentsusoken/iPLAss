@@ -96,6 +96,9 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 	/** Jxls PasswordAttributeName */
 	public static final String JXLS_PASSWORD_ATTRIBUTE_NAME = "jxlsPasswordAttributeName";
 
+	/** Jxls OwnerPasswordAttributeName */
+	public static final String JXLS_OWNER_PASSWORD_ATTRIBUTE_NAME = "jxlsOwnerPasswordAttributeName";
+
 	/** Jxls ParamMapKey */
 	public static final String JXLS_PARAM_MAP_NAME = "jxlsParamMapName";
 
