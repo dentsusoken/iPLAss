@@ -19,20 +19,19 @@
  */
 package org.iplass.mtp.impl.report.converter;
 
+import org.iplass.mtp.spi.Service;
+
 /**
- * Office ドキュメント→PDF 等のドキュメント変換の抽象。
- *
- * <p>実装は service-config XML の JxlsReportingEngine bean 定義における
- * documentConverter プロパティとして注入される。</p>
+ * Office ドキュメント→PDF 等のドキュメント変換を行う独立 Service のインタフェース。
  */
-public interface DocumentConverter {
+public interface PdfConversionService extends Service {
 
 	/**
-	 * 入力バイナリを別のドキュメント形式へ変換する。
+	 * 入力バイナリを別のドキュメント形式へ変換する
 	 *
 	 * @param input    入力バイナリ（非 null）
-	 * @param fileName 入力ファイル名（拡張子で入力形式を判定。例: "report.xlsx"）
-	 * @param context  変換コンテキスト（テンプレート名・出力タイプ等のメタ情報）
+	 * @param fileName 入力ファイル名メタデータ（拡張子で入力形式を判定。例: "report.xlsx"）
+	 * @param context  変換コンテキスト（出力タイプ・パスワード等のメタ情報）
 	 * @return 変換結果バイナリ
 	 * @throws DocumentConversionException 変換失敗時
 	 */

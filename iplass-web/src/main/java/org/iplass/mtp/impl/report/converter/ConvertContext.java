@@ -24,22 +24,17 @@ package org.iplass.mtp.impl.report.converter;
  */
 public class ConvertContext {
 
-	/** ログ・トラブルシュート用のテンプレート名 */
-	private String templateName;
-
 	/** 出力ファイルタイプ（例: "PDF_JXLS"） */
 	private String outputFileType;
 
-	/** 出力 PDF の暗号化パスワード（未指定・空の場合は平文で出力） */
+	/** 出力 PDF の暗号化パスワード（user パスワード。未指定・空の場合は開くのにパスワード不要） */
 	private String password;
 
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	public void setTemplateName(String templateName) {
-		this.templateName = templateName;
-	}
+	/**
+	 * 出力 PDF のオーナーパスワード（権限変更用）。
+	 * 未設定で user パスワードが設定されている場合は後方互換のため user パスワードと同値で暗号化される。
+	 */
+	private String ownerPassword;
 
 	public String getOutputFileType() {
 		return outputFileType;
@@ -55,5 +50,13 @@ public class ConvertContext {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getOwnerPassword() {
+		return ownerPassword;
+	}
+
+	public void setOwnerPassword(String ownerPassword) {
+		this.ownerPassword = ownerPassword;
 	}
 }

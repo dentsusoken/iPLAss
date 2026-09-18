@@ -26,9 +26,10 @@ import java.util.Map;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.GenericEntity;
-import org.iplass.mtp.impl.report.converter.DocumentConverter;
+import org.iplass.mtp.impl.report.converter.PdfConversionService;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.template.report.MetaReportParamMap;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 
@@ -39,9 +40,6 @@ public class JxlsReportingEngine implements ReportingEngine {
 
 	private String[] supportFiles;
 
-	/** PDF_JXLS 等で利用するドキュメント変換エンジン（service-config の documentConverter プロパティで注入） */
-	private DocumentConverter documentConverter;
-
 	private static final String SESSION_STR = "session";
 	private static final String REQUEST_STR = "request";
 	private static final String PREFIX_REQUEST = REQUEST_STR + ".";
@@ -50,24 +48,24 @@ public class JxlsReportingEngine implements ReportingEngine {
 	@Override
 	public ReportingOutputModel createOutputModel(byte[] binary, String type, String extension) throws Exception {
 		JxlsReportingOutputModel model = new JxlsReportingOutputModel(binary, type, extension);
-		model.setDocumentConverter(documentConverter);
+		model.setPdfConversionService(lookupPdfConversionService());
 		return model;
 	}
 
 	/**
-	 * ドキュメント変換エンジンを取得する
-	 * @return ドキュメント変換エンジン
+	 * Service レジストリから PDF 変換 Service を取得する。
+	 *
+	 * <p>service-config に PdfConversionService が登録されていない場合は null を返す
+	 * （PDF_JXLS 以外の出力には影響しない。PDF_JXLS 利用時は出力時にエラーとなる）。</p>
+	 *
+	 * @return PDF 変換 Service（未登録の場合 null）
 	 */
-	public DocumentConverter getDocumentConverter() {
-		return documentConverter;
-	}
-
-	/**
-	 * ドキュメント変換エンジンを設定する
-	 * @param documentConverter ドキュメント変換エンジン
-	 */
-	public void setDocumentConverter(DocumentConverter documentConverter) {
-		this.documentConverter = documentConverter;
+	private PdfConversionService lookupPdfConversionService() {
+		ServiceRegistry registry = ServiceRegistry.getRegistry();
+		if (registry.exists(PdfConversionService.class)) {
+			return registry.getService(PdfConversionService.class);
+		}
+		return null;
 	}
 
 	@Override
@@ -88,9 +86,13 @@ public class JxlsReportingEngine implements ReportingEngine {
 		if (StringUtil.isNotEmpty(jxlsModel.getPasswordAttributeName())) {
 			password = (String) getAttribute(request, jxlsModel.getPasswordAttributeName());
 		}
+		String ownerPassword = null;
+		if (StringUtil.isNotEmpty(jxlsModel.getOwnerPasswordAttributeName())) {
+			ownerPassword = (String) getAttribute(request, jxlsModel.getOwnerPasswordAttributeName());
+		}
 
 		jxlsModel.write(reportData, requestStack.getResponse()
-				.getOutputStream(), password);
+				.getOutputStream(), password, ownerPassword);
 	}
 
 	private void putVar(RequestContext request, Map<String, Object> reportData, MetaReportParamMap[] paramMap) {

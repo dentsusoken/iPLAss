@@ -30,13 +30,17 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.UUID;
 
+import org.iplass.mtp.spi.Config;
+
 /**
- * Gotenberg（Docker 上のステートレス HTTP API）でドキュメント変換を行う実装。
+ * Gotenberg（Docker 上のステートレス HTTP API）でドキュメント変換を行う
+ * {@link PdfConversionService} の実装。
  *
  * <p>POST {baseUrl}/forms/libreoffice/convert へ multipart/form-data でファイルを送信し、
  * 応答バイナリ（PDF 等）を返す。新規依存なし（JDK 標準 HttpClient）。</p>
+ *
  */
-public class GotenbergDocumentConverter implements DocumentConverter {
+public class GotenbergPdfConversionService implements PdfConversionService {
 
 	private String baseUrl = "http://localhost:3000";
 
@@ -48,20 +52,49 @@ public class GotenbergDocumentConverter implements DocumentConverter {
 
 	private volatile HttpClient client;
 
+	/**
+	 * Gotenberg API のベース URL を設定する
+	 * @param baseUrl ベース URL
+	 */
 	public void setBaseUrl(String baseUrl) {
 		this.baseUrl = baseUrl;
 	}
 
+	/**
+	 * 接続タイムアウト（秒）を設定する
+	 * @param connectTimeoutSeconds 接続タイムアウト（秒）
+	 */
 	public void setConnectTimeoutSeconds(int connectTimeoutSeconds) {
 		this.connectTimeoutSeconds = connectTimeoutSeconds;
 	}
 
+	/**
+	 * リクエストタイムアウト（秒）を設定する
+	 * @param requestTimeoutSeconds リクエストタイムアウト（秒）
+	 */
 	public void setRequestTimeoutSeconds(int requestTimeoutSeconds) {
 		this.requestTimeoutSeconds = requestTimeoutSeconds;
 	}
 
+	/**
+	 * 変換失敗時の最大リトライ回数を設定する
+	 * @param maxRetries 最大リトライ回数
+	 */
 	public void setMaxRetries(int maxRetries) {
 		this.maxRetries = maxRetries;
+	}
+
+	@Override
+	public void init(Config config) {
+		baseUrl = config.getValue("baseUrl", String.class, baseUrl);
+		connectTimeoutSeconds = config.getValue("connectTimeoutSeconds", Integer.class, connectTimeoutSeconds);
+		requestTimeoutSeconds = config.getValue("requestTimeoutSeconds", Integer.class, requestTimeoutSeconds);
+		maxRetries = config.getValue("maxRetries", Integer.class, maxRetries);
+	}
+
+	@Override
+	public void destroy() {
+		// HttpClient はクローズ不要（JDK 標準 HttpClient に終了 API は無い）
 	}
 
 	@Override

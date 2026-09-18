@@ -39,8 +39,8 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.TempFile;
 import org.iplass.mtp.impl.report.converter.ConvertContext;
 import org.iplass.mtp.impl.report.converter.DocumentConversionException;
-import org.iplass.mtp.impl.report.converter.DocumentConverter;
-import org.iplass.mtp.impl.report.converter.PdfEncryptDocumentConverter;
+import org.iplass.mtp.impl.report.converter.PdfConversionService;
+import org.iplass.mtp.impl.report.converter.PdfEncryptPdfConversionService;
 import org.iplass.mtp.impl.web.template.report.MetaJxlsReportOutputLogic.JxlsReportOutputLogicRuntime;
 import org.iplass.mtp.impl.web.template.report.MetaReportParamMap;
 import org.iplass.mtp.util.StringUtil;
@@ -58,6 +58,7 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	private static Logger logger = LoggerFactory.getLogger(JxlsReportingOutputModel.class);
 
 	private String passwordAttributeName;
+	private String ownerPasswordAttributeName;
 	private POIFSFileSystem fs;
 	private File tempPasswordFile;
 
@@ -69,7 +70,7 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 
 	private JxlsCompiledScriptCacheStore cacheStore;
 
-	private DocumentConverter documentConverter;
+	private PdfConversionService pdfConversionService;
 
 	JxlsReportingOutputModel(byte[] binary, String type, String extension) throws Exception {
 		this.binary = binary;
@@ -90,6 +91,22 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	 */
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	/**
+	 * オーナーパスワード属性名を取得する
+	 * @return オーナーパスワード属性名
+	 */
+	public String getOwnerPasswordAttributeName() {
+		return ownerPasswordAttributeName;
+	}
+
+	/**
+	 * オーナーパスワード属性名を設定する
+	 * @param ownerPasswordAttributeName オーナーパスワード属性名
+	 */
+	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
+		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
 	}
 
 	/**
@@ -178,19 +195,19 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	}
 
 	/**
-	 * ドキュメント変換エンジンを取得する
-	 * @return ドキュメント変換エンジン
+	 * PDF 変換 Service を取得する
+	 * @return PDF 変換 Service
 	 */
-	public DocumentConverter getDocumentConverter() {
-		return documentConverter;
+	public PdfConversionService getPdfConversionService() {
+		return pdfConversionService;
 	}
 
 	/**
-	 * ドキュメント変換エンジンを設定する（PDF_JXLS 出力時に利用）
-	 * @param documentConverter ドキュメント変換エンジン
+	 * PDF 変換 Service を設定する（PDF_JXLS 出力時に利用）
+	 * @param pdfConversionService PDF 変換 Service
 	 */
-	public void setDocumentConverter(DocumentConverter documentConverter) {
-		this.documentConverter = documentConverter;
+	public void setPdfConversionService(PdfConversionService pdfConversionService) {
+		this.pdfConversionService = pdfConversionService;
 	}
 
 	/**
@@ -198,11 +215,12 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	 * @param reportData 帳票データ
 	 * @param os 帳票出力先
 	 * @param password 帳票に設定するパスワード
+	 * @param ownerPassword 帳票に設定するオーナーパスワード（PDF_JXLS 出力時のみ利用）
 	 * @throws IOException 入出力例外
 	 * @throws InvalidFormatException 帳票フォーマット不正
 	 * @throws GeneralSecurityException 帳票書き込み時セキュリティ例外
 	 */
-	public void write(Map<String, Object> reportData, OutputStream os, String password)
+	public void write(Map<String, Object> reportData, OutputStream os, String password, String ownerPassword)
 			throws IOException, InvalidFormatException, GeneralSecurityException {
 		try (InputStream templateInput = new ByteArrayInputStream(getBinary())) {
 			OutputFileType outputType = OutputFileType.convertOutputFileType(getType());
@@ -221,7 +239,7 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 
 			// PDF_JXLS の場合は xlsx を組み立てた後、ドキュメント変換して PDF を出力
 			if (outputType == OutputFileType.PDF_JXLS) {
-				writePdf(reportData, builder, os, password);
+				writePdf(reportData, builder, os, password, ownerPassword);
 				return;
 			}
 
@@ -310,15 +328,16 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	}
 
 	/**
-	 * PDF_JXLS 出力：Jxls で xlsx をメモリ上に組み立て、DocumentConverter で PDF へ変換して出力する。
+	 * PDF_JXLS 出力：Jxls で xlsx をメモリ上に組み立て、PdfConversionService で PDF へ変換して出力する。
 	 *
-	 * <p>password が指定された場合は {@link PdfEncryptDocumentConverter} で変換結果を暗号化する。</p>
+	 * <p>password／ownerPassword が指定された場合は {@link PdfEncryptPdfConversionService} で変換結果を暗号化する
+	 * （owner/user パスワード分離の挙動は同クラスを参照）。</p>
 	 */
-	private void writePdf(Map<String, Object> reportData, JxlsPoiTemplateFillerBuilder builder, OutputStream os, String password)
-			throws IOException {
-		if (documentConverter == null) {
+	private void writePdf(Map<String, Object> reportData, JxlsPoiTemplateFillerBuilder builder, OutputStream os, String password,
+			String ownerPassword) throws IOException {
+		if (pdfConversionService == null) {
 			throw new DocumentConversionException(
-					"DocumentConverter is not configured. Set the documentConverter property of JxlsReportingEngine in service configuration to use PDF_JXLS.",
+					"PdfConversionService is not registered in service configuration. Define a PdfConversionService service (e.g. GotenbergPdfConversionService) to use PDF_JXLS.",
 					-1);
 		}
 
@@ -328,10 +347,13 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 		ConvertContext convertContext = new ConvertContext();
 		convertContext.setOutputFileType(getType());
 		convertContext.setPassword(password);
+		convertContext.setOwnerPassword(ownerPassword);
 
-		// password 指定時のみ暗号化で装飾（未指定時は従来経路の平文出力）
-		DocumentConverter converter = StringUtil.isNotEmpty(password) ? new PdfEncryptDocumentConverter(documentConverter)
-				: documentConverter;
+		// ・Gotenberg はリクエスト毎に UUID 名の一時ディレクトリを作成し、アップロードされたファイルを
+		//   <UUID>.xlsx として保存してリクエスト完了後に削除するため、固定名でも多重スレッド競合・ゴミファイル蓄積は発生しない。
+		PdfConversionService converter = StringUtil.isNotEmpty(password) || StringUtil.isNotEmpty(ownerPassword)
+				? new PdfEncryptPdfConversionService(pdfConversionService)
+				: pdfConversionService;
 		byte[] pdf = converter.convert(baos.toByteArray(), "report.xlsx", convertContext);
 		os.write(pdf);
 	}

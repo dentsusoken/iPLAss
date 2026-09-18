@@ -573,13 +573,17 @@
 			<property name="supportFiles" value="XLSX_JXLS"/>
 			<property name="supportFiles" value="XLSX_SXSSF_JXLS"/>
 			<property name="supportFiles" value="PDF_JXLS"/>
-			<property name="documentConverter" class="org.iplass.mtp.impl.report.converter.GotenbergDocumentConverter">
-				<property name="baseUrl" value="http://localhost:3000"/>
-				<property name="connectTimeoutSeconds" value="5"/>
-				<property name="requestTimeoutSeconds" value="60"/>
-				<property name="maxRetries" value="0"/>
-			</property>
 		</property>
+	</service>
+
+	<!-- PDF変換サービス（JXLS帳票のPDF出力で利用。実装は class 定義の書き換えで差し替え可能） -->
+	<service>
+		<interface>org.iplass.mtp.impl.report.converter.PdfConversionService</interface>
+		<class>org.iplass.mtp.impl.report.converter.GotenbergPdfConversionService</class>
+		<property name="baseUrl" value="http://localhost:3000"/>
+		<property name="connectTimeoutSeconds" value="5"/>
+		<property name="requestTimeoutSeconds" value="60"/>
+		<property name="maxRetries" value="0"/>
 	</service>
 
 	<!-- WebApi Service -->

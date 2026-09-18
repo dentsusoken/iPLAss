@@ -39,6 +39,9 @@ public class JxlsReportType extends ReportType {
 
 	private String passwordAttributeName;
 
+	/** オーナーパスワードAttribute名 */
+	private String ownerPasswordAttributeName;
+
 	private String templateName;
 
 	public ReportOutputLogicDefinition getReportOutputLogicDefinition() {
@@ -63,6 +66,22 @@ public class JxlsReportType extends ReportType {
 
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	/**
+	 * オーナーパスワードAttribute名を取得する
+	 * @return オーナーパスワードAttribute名
+	 */
+	public String getOwnerPasswordAttributeName() {
+		return ownerPasswordAttributeName;
+	}
+
+	/**
+	 * オーナーパスワードAttribute名を設定する
+	 * @param ownerPasswordAttributeName オーナーパスワードAttribute名
+	 */
+	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
+		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
 	}
 
 	public String getTemplateName() {
