@@ -255,54 +255,8 @@
 	border-color: $color_celeste_approx;
 }
 
-.ui-jqgrid-hdiv tr.ui-jqgrid-labels th {
-	div:has(> .mtp-col-pin) {
-		white-space: nowrap;
-		> p.title {
-			display: inline-block;
-			max-width: calc(100% - 40px);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			vertical-align: middle;
-		}
-	}
-	//hover 時およびキーボードフォーカス時(:focus-visible)に表示——
-	//focus を含めないと Tab 操作中のユーザーが操作対象を視認できない
-	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled),
-	a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled):focus-visible {
-		opacity: 0.35;
-		pointer-events: auto;
-	}
-}
-a.mtp-col-pin {
-	display: inline-block;
-	margin-left: 4px;
-	width: 16px;
-	height: 16px;
-	vertical-align: middle;
-	text-decoration: none;
-	text-align: center;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 0.15s ease;
-	color: $color_mountain_mist_approx;
-	> i,
-	> svg {
-		font-size: 13px;
-	}
-	> svg.svg-inline--fa {
-		vertical-align: middle;
-	}
-	&.mtp-pin-on {
-		opacity: 1;
-		color: $color_storm_dust_approx;
-		pointer-events: auto;
-	}
-	&.mtp-pin-disabled {
-		opacity: 0;
-		pointer-events: none;
-	}
-}
+//カラム固定ピンは共通定義を利用
+@import "jqgridColPin";
 
 //カラム固定: 固定領域の右端に常時境界線を表示(横スクロール時に固定範囲を示す)
 .result-data .ui-jqgrid.frozen-columns {

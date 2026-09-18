@@ -1054,8 +1054,8 @@ function frozenUserColumns() {
 }
 //「列の固定を許可」された列(pin 注入対象)
 const frozenPermColumns = [<%=frozenPermCols.toString()%>];
-let frozenK = 0;
-let frozenKInited = false;
+let frozenColumnCount = 0;
+let frozenColumnCountInited = false;
 //全ユーザー列中の位置(1始まり)。0=非ユーザー列
 function userColPos(name) {
 	return frozenUserColumns().indexOf(name) + 1;
@@ -1063,30 +1063,30 @@ function userColPos(name) {
 function isPermColumn(name) {
 	return frozenPermColumns.indexOf(name) >= 0;
 }
-function initFrozenK() {
-	if (frozenKInited) return;
-	frozenKInited = true;
-	//許可列(colModel.frozen==true は JSP が許可列に出力)の最も右の全ユーザー列位置を初期Kとする
+function initFrozenColumnCount() {
+	if (frozenColumnCountInited) return;
+	frozenColumnCountInited = true;
+	//許可列(colModel.frozen==true は JSP が許可列に出力)の最も右の全ユーザー列位置を固定列数の初期値とする
 	const cm = grid.jqGrid("getGridParam", "colModel");
 	for (let i = 0; i < cm.length; i++) {
 		if (isPermColumn(cm[i].name) && cm[i].frozen === true) {
 			const pos = userColPos(cm[i].name);
-			if (pos > frozenK) frozenK = pos;
+			if (pos > frozenColumnCount) frozenColumnCount = pos;
 		}
 	}
-	loadFrozenK();
+	loadFrozenColumnCount();
 }
 let frozenAppliedSignature = null;
 function applyFrozenColumns() {
 	if (!pinAvailable || grid == null) return;
-	initFrozenK();
+	initFrozenColumnCount();
 	const cm = grid.jqGrid("getGridParam", "colModel");
-	let signature = String(frozenK);
+	let signature = String(frozenColumnCount);
 	for (let i = 0; i < cm.length; i++) {
-		//ユーザー列のみ実効範囲(第1〜K列)で frozen を制御する(最右側連続化——非許可列も含む)。
+		//ユーザー列のみを実効範囲(先頭から固定列数分の列)で frozen を制御する(最右側連続化——非許可列も含む)。
 		const pos = userColPos(cm[i].name);
 		if (pos > 0) {
-			const f = pos <= frozenK;
+			const f = pos <= frozenColumnCount;
 			if (cm[i].frozen !== f) grid.jqGrid("setColProp", cm[i].name, { frozen: f });
 			cm[i].frozen = f;
 		}
@@ -1100,7 +1100,7 @@ function applyFrozenColumns() {
 		//適用中マーカー除去(frozen-ever は行高恒定マーカーのため解除後も残す)
 		$("#gbox_searchResult").removeClass("frozen-columns");
 	}
-	if (frozenK > 0) {
+	if (frozenColumnCount > 0) {
 		//main ヘッダーのピンが現状態であることを確認してから set(clone に複製される)
 		refreshFrozenPins();
 		grid.jqGrid("setFrozenColumns");
@@ -1130,19 +1130,19 @@ function applyFrozenColumns() {
 }
 function toggleFrozenColumn(name) {
 	if (!pinAvailable || grid == null) return;
-	initFrozenK();
+	initFrozenColumnCount();
 	const n = userColPos(name);
 	if (n <= 0 || !isPermColumn(name)) return;
 	//クリック列が実効範囲外→その列まで拡張 / 範囲内→その列と右側を解除
-	frozenK = (n > frozenK) ? n : n - 1;
+	frozenColumnCount = (n > frozenColumnCount) ? n : n - 1;
 	applyFrozenColumns();
 	refreshFrozenPins();
 	updateFrozenPinsDisabled();
-	saveFrozenK();
+	saveFrozenColumnCount();
 }
 function refreshFrozenPins() {
 	if (!pinAvailable || grid == null) return;
-	initFrozenK();
+	initFrozenColumnCount();
 	const $gbox = $("#gbox_searchResult");
 	if ($gbox.length == 0) return;
 	const cm = grid.jqGrid("getGridParam", "colModel");
@@ -1179,8 +1179,8 @@ function refreshFrozenPins() {
 				$th.children("div").first().append($pin);
 			}
 		}
-		//実効範囲内(第1〜Kユーザー列)はON常時表示。範囲外はOFF(hover 時のみ表示)
-		const effective = userColPos(name) <= frozenK;
+		//実効範囲内(先頭から固定列数分のユーザー列)はON常時表示。範囲外はOFF(hover 時のみ表示)
+		const effective = userColPos(name) <= frozenColumnCount;
 		$pin.toggleClass("mtp-pin-on", effective);
 	});
 	//FA(JS版)は <i> を <svg> へ置換する——動的注入分を確実に描画するため gbox 配下を再走査
@@ -1209,24 +1209,24 @@ function updateFrozenPinsDisabled() {
 function frozenStorageKey() {
 	return "mtp.frozenColumns.<%=frozenKeyPrefix%>.<%=StringUtil.escapeJavaScript(defName)%>.<%=StringUtil.escapeJavaScript(viewName)%>";
 }
-function loadFrozenK() {
-	if (!frozenKInited) return;
+function loadFrozenColumnCount() {
+	if (!frozenColumnCountInited) return;
 	try {
 		const raw = localStorage.getItem(frozenStorageKey());
 		if (raw) {
 			const saved = JSON.parse(raw);
-			if (saved && typeof saved.k === "number") {
-				frozenK = Math.max(0, Math.min(Math.floor(saved.k), frozenUserColumns().length));
+			if (saved && typeof saved.frozenColumnCount === "number") {
+				frozenColumnCount = Math.max(0, Math.min(Math.floor(saved.frozenColumnCount), frozenUserColumns().length));
 			}
 		}
 	} catch (e) {
 		//破損値は無視して許可設定を既定とする
 	}
 }
-function saveFrozenK() {
-	if (!frozenKInited) return;
+function saveFrozenColumnCount() {
+	if (!frozenColumnCountInited) return;
 	try {
-		localStorage.setItem(frozenStorageKey(), JSON.stringify({ k: frozenK }));
+		localStorage.setItem(frozenStorageKey(), JSON.stringify({ frozenColumnCount: frozenColumnCount }));
 	} catch (e) {
 		//保存失敗は無視(この画面表示のみの状態となる)
 	}
