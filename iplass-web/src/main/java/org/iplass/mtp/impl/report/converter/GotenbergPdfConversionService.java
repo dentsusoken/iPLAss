@@ -29,8 +29,10 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.ServiceConfigrationException;
 
 /**
  * Gotenberg（Docker 上のステートレス HTTP API）でドキュメント変換を行う
@@ -42,7 +44,14 @@ import org.iplass.mtp.spi.Config;
  */
 public class GotenbergPdfConversionService implements PdfConversionService {
 
-	private String baseUrl = "http://localhost:3000";
+	/** multipart ヘッダーを破壊しうる文字（制御文字・CR/LF・ダブルクォート） */
+	private static final Pattern ILLEGAL_FILE_NAME_CHAR = Pattern.compile("[\\p{Cntrl}\"]");
+
+	/** サニタイズ結果が空になった場合の代替ファイル名 */
+	private static final String FALLBACK_FILE_NAME = "upload";
+
+	/** Gotenberg API のベース URL。未設定時は変換実行時に例外とする（既定値は service-config.xml 側で定義） */
+	private String baseUrl;
 
 	private int connectTimeoutSeconds = 5;
 
@@ -50,10 +59,12 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 
 	private int maxRetries = 0;
 
+	private long retryIntervalMillis = 1000L;
+
 	private volatile HttpClient client;
 
 	/**
-	 * Gotenberg API のベース URL を設定する
+	 * Gotenberg API のベース URL を設定する（必須）
 	 * @param baseUrl ベース URL
 	 */
 	public void setBaseUrl(String baseUrl) {
@@ -84,12 +95,21 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 		this.maxRetries = maxRetries;
 	}
 
+	/**
+	 * リトライ時の待機間隔（ミリ秒）を設定する
+	 * @param retryIntervalMillis リトライ間隔（ミリ秒）
+	 */
+	public void setRetryIntervalMillis(long retryIntervalMillis) {
+		this.retryIntervalMillis = retryIntervalMillis;
+	}
+
 	@Override
 	public void init(Config config) {
 		baseUrl = config.getValue("baseUrl", String.class, baseUrl);
 		connectTimeoutSeconds = config.getValue("connectTimeoutSeconds", Integer.class, connectTimeoutSeconds);
 		requestTimeoutSeconds = config.getValue("requestTimeoutSeconds", Integer.class, requestTimeoutSeconds);
 		maxRetries = config.getValue("maxRetries", Integer.class, maxRetries);
+		retryIntervalMillis = config.getValue("retryIntervalMillis", Long.class, retryIntervalMillis);
 	}
 
 	@Override
@@ -99,11 +119,26 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 
 	@Override
 	public byte[] convert(byte[] input, String fileName, ConvertContext context) {
+		if (baseUrl == null || baseUrl.isBlank()) {
+			throw new ServiceConfigrationException("baseUrl is not configured for " + getClass().getName()
+					+ ". Set the baseUrl property of PdfConversionService in service-config.xml.");
+		}
+
+		String safeFileName = sanitizeFileName(fileName);
 		int attempts = 1 + Math.max(0, maxRetries);
 		DocumentConversionException last = null;
 		for (int i = 0; i < attempts; i++) {
+			if (i > 0 && retryIntervalMillis > 0) {
+				try {
+					Thread.sleep(retryIntervalMillis);
+				} catch (InterruptedException e) {
+					Thread.currentThread()
+							.interrupt();
+					throw new DocumentConversionException("Gotenberg retry wait interrupted for " + safeFileName, -1, e);
+				}
+			}
 			try {
-				return doConvert(input, fileName);
+				return doConvert(input, safeFileName);
 			} catch (DocumentConversionException e) {
 				last = e;
 				if (e.getCause() instanceof InterruptedException) {
@@ -112,6 +147,30 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 			}
 		}
 		throw last;
+	}
+
+	/**
+	 * multipart ヘッダーへ安全に埋め込めるファイル名へ変換する。
+	 *
+	 * <p>ディレクトリ部分を除去し、CR/LF を含む制御文字およびダブルクォートを {@code _} へ置換する。</p>
+	 *
+	 * @param fileName 入力ファイル名
+	 * @return サニタイズ済みファイル名
+	 */
+	private static String sanitizeFileName(String fileName) {
+		if (fileName == null) {
+			return FALLBACK_FILE_NAME;
+		}
+
+		String name = fileName.replace('\\', '/');
+		name = name.substring(name.lastIndexOf('/') + 1);
+		name = ILLEGAL_FILE_NAME_CHAR.matcher(name)
+				.replaceAll("_")
+				.trim();
+		if (name.isEmpty() || ".".equals(name) || "..".equals(name)) {
+			return FALLBACK_FILE_NAME;
+		}
+		return name;
 	}
 
 	private byte[] doConvert(byte[] input, String fileName) {
@@ -149,9 +208,10 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 			throw new DocumentConversionException("Gotenberg request interrupted", -1, e);
 		}
 
-		if (response.statusCode() != 200) {
-			throw new DocumentConversionException("Gotenberg returned status " + response.statusCode()
-					+ " for " + fileName, response.statusCode());
+		int statusCode = response.statusCode();
+		if (statusCode != 200) {
+			throw new DocumentConversionException("Gotenberg returned status " + statusCode
+					+ " for " + fileName, statusCode);
 		}
 		return response.body();
 	}

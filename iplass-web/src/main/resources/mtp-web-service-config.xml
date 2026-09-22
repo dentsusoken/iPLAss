@@ -584,6 +584,7 @@
 		<property name="connectTimeoutSeconds" value="5"/>
 		<property name="requestTimeoutSeconds" value="60"/>
 		<property name="maxRetries" value="0"/>
+		<property name="retryIntervalMillis" value="1000"/>
 	</service>
 
 	<!-- WebApi Service -->
