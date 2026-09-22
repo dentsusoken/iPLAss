@@ -1205,33 +1205,22 @@ function updateFrozenPinsDisabled() {
 	//(表示仕様=非表示。DOM/クラス判定は残し E2E で検証)
 	$gbox.find(".mtp-col-pin").toggleClass("mtp-pin-disabled", sum <= avail + 1);
 }
-//localStorage 永続化
+//SessionStorage 永続化(common.js の set/getSessionStorage を利用。ブラウザのセッション(タブ)内で保持)
 function frozenStorageKey() {
-	return "mtp.frozenColumns.<%=frozenKeyPrefix%>.<%=StringUtil.escapeJavaScript(defName)%>.<%=StringUtil.escapeJavaScript(viewName)%>";
+	return "frozenColumns_<%=frozenKeyPrefix%>_<%=StringUtil.escapeJavaScript(defName)%>_<%=StringUtil.escapeJavaScript(viewName)%>";
 }
 function loadFrozenColumnCount() {
 	if (!frozenColumnCountInited) return;
-	try {
-		const raw = localStorage.getItem(frozenStorageKey());
-		if (raw) {
-			const saved = JSON.parse(raw);
-			if (saved && typeof saved.frozenColumnCount === "number") {
-				frozenColumnCount = Math.max(0, Math.min(Math.floor(saved.frozenColumnCount), frozenUserColumns().length));
-			}
-		}
-	} catch (e) {
-		//破損値は無視して許可設定を既定とする
-		console.warn("Failed to load frozen column count. key=" + frozenStorageKey(), e);
-	}
+	const saved = getSessionStorage(frozenStorageKey());
+	if (saved == null) return;
+	const count = parseInt(saved, 10);
+	//不正値は無視して許可設定を既定とする
+	if (isNaN(count)) return;
+	frozenColumnCount = Math.max(0, Math.min(count, frozenUserColumns().length));
 }
 function saveFrozenColumnCount() {
 	if (!frozenColumnCountInited) return;
-	try {
-		localStorage.setItem(frozenStorageKey(), JSON.stringify({ frozenColumnCount: frozenColumnCount }));
-	} catch (e) {
-		//保存失敗は無視(この画面表示のみの状態となる)
-		console.warn("Failed to save frozen column count. key=" + frozenStorageKey() + ", frozenColumnCount=" + frozenColumnCount, e);
-	}
+	setSessionStorage(frozenStorageKey(), frozenColumnCount);
 }
 var loadingOff = null;
 loadingOff = function(event, src) {
