@@ -77,12 +77,13 @@
 	}
 	/**
 	 * 「列の固定を許可」列(=pin対象)のcolModelオプションを返す。
-	 * 許可列の場合は副作用としてpin対象列名リスト(frozenPermCols)へ列名を追加する。
+	 * 許可列の場合は副作用としてpin対象列名(frozenPermCols)へ列名を "/" 区切りで追加する。
+	 * (プロパティ名に "/" は含まれないため区切り文字として利用可能)
 	 */
 	String frozenColModelOption(PropertyColumn property, String sortPropName, StringBuilder frozenPermCols) {
 		if (!property.isFrozen()) return "";
-		if (frozenPermCols.length() > 0) frozenPermCols.append(",");
-		frozenPermCols.append("\"").append(StringUtil.escapeJavaScript(sortPropName)).append("\"");
+		if (frozenPermCols.length() > 0) frozenPermCols.append("/");
+		frozenPermCols.append(StringUtil.escapeJavaScript(sortPropName));
 		return ", frozen:true";
 	}
 %>
@@ -174,7 +175,7 @@
 			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_VIEWPORT
 			&& OutputType.SEARCHRESULT == type;
 
-	//「列の固定を許可」された列名の連結(pin 注入対象。未許可列は pin 非表示)
+	//「列の固定を許可」された列名の "/" 区切り連結(pin 注入対象。未許可列は pin 非表示)
 	//※全ユーザー列(実効固定範囲Kの尺度)はJSP側で収集せず、JSで実際のcolModelから導出する
 	//(要素ループで収集すると仮想プロパティやネスト列等が取りこぼれるため)
 	StringBuilder frozenPermCols = new StringBuilder();
@@ -1031,7 +1032,7 @@ $(window).on("resize", function() {
 //仕様: 許可列(frozenPermColumns)のみピンが表示され、既定で固定される。
 const pinAvailable = <%=OutputType.SEARCHRESULT == type%>;
 //全ユーザー列(実効範囲Kの尺度基準。colModel順)——実際の colModel から導出する。
-const frozenSystemColumns = ["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"];
+const frozenSystemColumns = new Set(["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"]);
 let frozenUserColumnsCache = null;
 function frozenUserColumns() {
 	if (frozenUserColumnsCache != null) return frozenUserColumnsCache;
@@ -1039,13 +1040,14 @@ function frozenUserColumns() {
 	if (grid != null) {
 		const cm = grid.jqGrid("getGridParam", "colModel");
 		for (let i = 0; i < cm.length; i++) {
-			if (frozenSystemColumns.indexOf(cm[i].name) < 0) frozenUserColumnsCache.push(cm[i].name);
+			if (!frozenSystemColumns.has(cm[i].name)) frozenUserColumnsCache.push(cm[i].name);
 		}
 	}
 	return frozenUserColumnsCache;
 }
-//「列の固定を許可」された列(pin 注入対象)
-const frozenPermColumns = [<%=frozenPermCols.toString()%>];
+//「列の固定を許可」された列(pin 注入対象)。JSPからは "/" 区切りの列名文字列として出力される
+const frozenPermColsSrc = "<%=frozenPermCols.toString()%>";
+const frozenPermColumns = new Set(frozenPermColsSrc.length > 0 ? frozenPermColsSrc.split("/") : []);
 let frozenColumnCount = 0;
 let frozenColumnCountInited = false;
 //全ユーザー列中の位置(1始まり)。0=非ユーザー列
@@ -1053,7 +1055,7 @@ function userColPos(name) {
 	return frozenUserColumns().indexOf(name) + 1;
 }
 function isPermColumn(name) {
-	return frozenPermColumns.indexOf(name) >= 0;
+	return frozenPermColumns.has(name);
 }
 function initFrozenColumnCount() {
 	if (frozenColumnCountInited) return;
@@ -1068,6 +1070,9 @@ function initFrozenColumnCount() {
 	}
 	loadFrozenColumnCount();
 }
+//最後に凍結適用した構成(固定列数+各列のfrozen状態)を表す識別子。
+//applyFrozenColumns() で現在の構成と比較し、変化が無い場合に destroy→set の再適用を省く。
+//行クリア時(setData)は clone 再生成が必要なため null にリセットして強制再適用させる。
 let frozenAppliedSignature = null;
 function applyFrozenColumns() {
 	if (!pinAvailable || grid == null) return;
