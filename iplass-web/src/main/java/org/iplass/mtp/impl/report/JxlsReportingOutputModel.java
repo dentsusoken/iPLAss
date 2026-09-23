@@ -39,6 +39,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.TempFile;
 import org.iplass.mtp.impl.report.converter.ConvertContext;
 import org.iplass.mtp.impl.report.converter.DocumentConversionException;
+import org.iplass.mtp.impl.report.converter.GotenbergPdfConversionService;
 import org.iplass.mtp.impl.report.converter.PdfConversionService;
 import org.iplass.mtp.impl.report.converter.PdfEncryptPdfConversionService;
 import org.iplass.mtp.impl.web.template.report.MetaJxlsReportOutputLogic.JxlsReportOutputLogicRuntime;
@@ -340,7 +341,8 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 		if (pdfConversionService == null) {
 			String serviceName = PdfConversionService.class.getSimpleName();
 			throw new DocumentConversionException(serviceName + " is not registered in service configuration. Define a " + serviceName
-					+ " service (e.g. GotenbergPdfConversionService) to use " + OutputFileType.PDF_JXLS.name() + ".", -1);
+					+ " service (e.g. " + GotenbergPdfConversionService.class.getSimpleName() + ") to use " + OutputFileType.PDF_JXLS.name()
+					+ ".", -1);
 		}
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

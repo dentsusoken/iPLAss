@@ -36,7 +36,7 @@ import org.iplass.mtp.util.StringUtil;
  * レジストリから取得した変換 Service を包んで利用する。</p>
  *
  * <p>Decorator として差し替え可能なのは被委譲先の PDF 化 Service（{@link PdfConversionService} 実装）であり、
- * service-config の定義書き換えで {@code GotenbergPdfConversionService} 以外の PDF 化実装へ入れ替えても
+ * service-config の定義書き換えで {@link GotenbergPdfConversionService} 以外の PDF 化実装へ入れ替えても
  * 本クラスの暗号化処理はそのまま適用される。</p>
  */
 public class PdfEncryptPdfConversionService implements PdfConversionService {
@@ -66,15 +66,17 @@ public class PdfEncryptPdfConversionService implements PdfConversionService {
 		byte[] converted = delegate.convert(input, fileName, context);
 		String password = context.getPassword();
 		String ownerPassword = context.getOwnerPassword();
-		if (StringUtil.isEmpty(password) && StringUtil.isEmpty(ownerPassword)) {
+		boolean hasPassword = StringUtil.isNotEmpty(password);
+		boolean hasOwnerPassword = StringUtil.isNotEmpty(ownerPassword);
+		if (!hasPassword && !hasOwnerPassword) {
 			return converted;
 		}
 
 		// owner/user 分離
 		// user 未設定＋owner 設定：開くのにパスワード不要（user パスワードを空にする）で権限のみ owner に設定
-		String userPassword = StringUtil.isNotEmpty(password) ? password : "";
+		String userPassword = hasPassword ? password : "";
 		// owner 未設定＋user 設定：後方互換性のため owner パスワードに user パスワードをセット
-		String effectiveOwnerPassword = StringUtil.isNotEmpty(ownerPassword) ? ownerPassword : password;
+		String effectiveOwnerPassword = hasOwnerPassword ? ownerPassword : password;
 		try (PDDocument doc = Loader.loadPDF(converted)) {
 			// 権限制限なし（印刷・抽出等は全て許可）・AES-256（鍵長 256bit を明示指定）
 			StandardProtectionPolicy policy = new StandardProtectionPolicy(effectiveOwnerPassword, userPassword, new AccessPermission());
