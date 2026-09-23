@@ -302,15 +302,15 @@
 $result_grid_frozen_row_content_height: 25px; //flat 実測: 主表行高41px-16px(padding)
 .result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv {
 	tr.ui-row-ltr {
-		//通常行($white)と同一背景へ——上の frozen-bdiv 規則($color_gallery_approx !important)を上書き
+		//通常行($white)と同一背景へ: 上の frozen-bdiv 規則($color_gallery_approx !important)を上書き
 		> td {
 			background: $white !important;
 		}
-		//通常行の hover 表示へ揃える——上の frozen-bdiv 規則($color_quill_gray_approx !important)を上書き
+		//通常行の hover 表示へ揃える: 上の frozen-bdiv 規則($color_quill_gray_approx !important)を上書き
 		&.ui-state-hover td {
 			background: $color_pattens_blue_approx !important;
 		}
-		//主表側に border-bottom が無いため凍結側も無効化(1px/行の累積ずれ対策)——
+		//主表側に border-bottom が無いため凍結側も無効化する(1px/行の累積ずれ対策)。
 		//上の frozen-bdiv 規則(border-bottom !important)を上書き
 		&:not(:last-child) > td {
 			border-bottom-width: 0 !important;
@@ -319,7 +319,7 @@ $result_grid_frozen_row_content_height: 25px; //flat 実測: 主表行高41px-16
 }
 
 //カラム固定: 両表(frozen/main)行高の統一と固定/解除間での行高恒定化
-//frozen-ever は JS が一度でも凍結適用した grid に付与し解除後も残す恒久マーカー——
+//frozen-ever は JS が一度でも凍結適用した grid に付与し解除後も残す恒久マーカー。
 //適用中のみの規則だと完全解除時にマーカーが外れ行高が跳ぶため(frozen/main の描画差による累積ずれ対策とも共用)
 .result-data .ui-jqgrid.frozen-ever tr.jqgrow td {
 	height: $result_grid_frozen_row_content_height;

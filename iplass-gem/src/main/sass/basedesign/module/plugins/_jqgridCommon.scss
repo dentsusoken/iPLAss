@@ -21,7 +21,7 @@ $mtp-pin-color: $color_mountain_mist_approx !default;
 			vertical-align: middle;
 		}
 	}
-	//hover 時およびキーボードフォーカス時(:focus-visible)に表示——
+	//hover 時およびキーボードフォーカス時(:focus-visible)に表示する。
 	//focus を含めないと Tab 操作中のユーザーが操作対象を視認できない
 	&:hover a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled),
 	a.mtp-col-pin:not(.mtp-pin-on):not(.mtp-pin-disabled):focus-visible {
