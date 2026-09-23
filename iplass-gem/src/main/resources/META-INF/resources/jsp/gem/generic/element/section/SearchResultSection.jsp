@@ -1059,13 +1059,13 @@ function initFrozenColumns() {
 	if (!pinAvailable || grid == null) return;
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
 	frozenUserColumns = gridColModel
-			.filter(function(col) { return !frozenSystemColumns.has(col.name); })
-			.map(function(col) { return col.name; });
+			.filter(col => !frozenSystemColumns.has(col.name))
+			.map(col => col.name);
 	//許可列のうち colModel.frozen==true(JSP が既定で固定する列に出力)の最も右の位置を固定列数の初期値とする
 	frozenColumnCount = 0;
-	for (let i = 0; i < gridColModel.length; i++) {
-		if (isPermColumn(gridColModel[i].name) && gridColModel[i].frozen === true) {
-			const pos = userColPos(gridColModel[i].name);
+	for (const col of gridColModel) {
+		if (isPermColumn(col.name) && col.frozen === true) {
+			const pos = userColPos(col.name);
 			if (pos > frozenColumnCount) frozenColumnCount = pos;
 		}
 	}
@@ -1085,18 +1085,18 @@ function applyFrozenColumns() {
 	const $gbox = $("#gbox_searchResult");
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
 	let signature = frozenColumnCount + "|";
-	for (let i = 0; i < gridColModel.length; i++) {
+	for (const col of gridColModel) {
 		//ユーザー列のみを固定対象範囲(先頭から固定列数分の列)で frozen を制御する。
 		//範囲内であれば「列の固定を許可」されていない列も固定対象とし、固定領域を連続させる
-		const pos = userColPos(gridColModel[i].name);
+		const pos = userColPos(col.name);
 		if (pos > 0) {
 			const shouldFreeze = pos <= frozenColumnCount;
-			if (gridColModel[i].frozen !== shouldFreeze) {
-				grid.jqGrid("setColProp", gridColModel[i].name, { frozen: shouldFreeze });
+			if (col.frozen !== shouldFreeze) {
+				grid.jqGrid("setColProp", col.name, { frozen: shouldFreeze });
 			}
-			gridColModel[i].frozen = shouldFreeze;
+			col.frozen = shouldFreeze;
 		}
-		signature += (gridColModel[i].frozen === true ? "1" : "0");
+		signature += (col.frozen === true ? "1" : "0");
 	}
 	if (signature === frozenAppliedSignature) return;
 	//凍結構成が変わったら必ず破棄→再適用(適用済み set は no-op、かつ clone は再構築されないため)
@@ -1154,9 +1154,8 @@ function refreshFrozenPins() {
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
 	//main ヘッダーのみ対象: fhDiv も .ui-jqgrid-hdiv class を持つため .frozen-div を除外
 	const $headerCells = $gbox.find(".ui-jqgrid-hdiv tr.ui-jqgrid-labels th").filter(function() {
-		return jQuery(this).closest(".frozen-div").length === 0;
+		return $(this).closest(".frozen-div").length === 0;
 	});
-	let pinCreated = false;
 	$headerCells.each(function(idx) {
 		const name = gridColModel[idx] ? gridColModel[idx].name : null;
 		//許可列のみ pin を持つ(未許可列は操作の入口が存在しない)
@@ -1170,7 +1169,6 @@ function refreshFrozenPins() {
 				"data-colname": name,
 				"aria-label": name
 			}).append($("<i/>").addClass("fas fa-thumbtack"));
-			pinCreated = true;
 			//th の jqGrid クリック処理が伝播を断つため document 委譲でなく直接結合(clone(true) が handler を複製)
 			$pin.on("click", function(e) {
 				e.preventDefault();
@@ -1189,21 +1187,6 @@ function refreshFrozenPins() {
 		const isInFrozenRange = userColPos(name) <= frozenColumnCount;
 		$pin.toggleClass("mtp-pin-on", isInFrozenRange);
 	});
-	//FontAwesome(JS版)は読み込み時に <i class="fas ..."> を <svg> へ置換するが、
-	//その後に JS で動的挿入したピンの <i> は置換対象にならずアイコンが描画されない。
-	//そのためピンを新規生成した場合のみ、gbox 配下を再走査して明示的に置換させる。
-	//(main ヘッダー側を svg 化しておけば setFrozenColumns の clone も svg のまま複製される。
-	// FontAwesome 未読込や置換失敗時もピンの操作機能自体には影響しない)
-	const fontAwesome = window.FontAwesome;
-	const fontAwesomeDom = fontAwesome != null ? fontAwesome.dom : null;
-	const convertIconToSvg = fontAwesomeDom != null ? fontAwesomeDom.i2svg : null;
-	if (pinCreated && typeof convertIconToSvg === "function") {
-		try {
-			fontAwesomeDom.i2svg({ node: $gbox[0] });
-		} catch (e) {
-			//置換に失敗してもピンの操作機能には影響しないため無視する
-		}
-	}
 }
 function updateFrozenPinsDisabled() {
 	if (!pinAvailable || grid == null) return;
@@ -1211,9 +1194,9 @@ function updateFrozenPinsDisabled() {
 	if ($gbox.length == 0) return;
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
 	let totalColumnWidth = 0;
-	for (let i = 0; i < gridColModel.length; i++) {
-		if (gridColModel[i].hidden !== true) {
-			totalColumnWidth += (gridColModel[i].width ? +gridColModel[i].width : 0);
+	for (const col of gridColModel) {
+		if (col.hidden !== true) {
+			totalColumnWidth += (col.width ? +col.width : 0);
 		}
 	}
 	//判定基準は結果領域のコンテナ幅: 凍結なしの場合 grid は列幅合計まで自動拡張し
