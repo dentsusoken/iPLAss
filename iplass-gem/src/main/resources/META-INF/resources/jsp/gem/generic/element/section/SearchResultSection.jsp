@@ -75,6 +75,7 @@
 		}
 		return value.toString();
 	}
+
 	/**
 	 * 「列の固定を許可」列(=pin対象)のcolModelオプションを返す。
 	 * 許可列の場合は副作用としてpin対象列名(frozenPermCols)へ列名を "/" 区切りで追加する。
@@ -886,8 +887,6 @@ function setData(list, count) {
 	clearAllDelete();
 <%	} %>
 
-
-
 	$(".fixHeight").fixHeight();
 	adjustResultGridHeight();
 	applyFrozenColumns();
@@ -1030,22 +1029,28 @@ $(window).on("resize", function() {
 		updateFrozenPinsDisabled();
 	}, 200);
 });
+
 //カラム固定:AdminConsole「列の固定を許可」された列のピン操作+初期反映
 //仕様: 許可列(frozenPermColumns)のみピンが表示され、既定で固定される。
 const pinAvailable = <%=OutputType.SEARCHRESULT == type%>;
+
 //固定対象範囲: 「ユーザー列の先頭から frozenColumnCount 列分」を指す。
 //ユーザー列とは colModel から以下のシステム列(選択欄・詳細リンク等)を除いた列であり、
 //固定列数は colModel の並び順で数えたユーザー列の位置を基準とする。
 const frozenSystemColumns = new Set(["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"]);
+
 //ユーザー列の列名を colModel の並び順で保持する配列。initFrozenColumns() で設定する
 let frozenUserColumns = [];
+
 //固定対象範囲の列数(ユーザー列の先頭から何列を固定するか)。initFrozenColumns() で初期値を設定する
 let frozenColumnCount = 0;
+
 //「列の固定を許可」された列名(pin 注入対象)。
 //JSP からは列名を "/" で連結した1本の文字列として出力される(例: "name/code/status")。
 //プロパティ名に "/" は含まれないため区切り文字として利用できる。
 const frozenPermColsSrc = "<%=frozenPermCols.toString()%>";
 const frozenPermColumns = new Set(frozenPermColsSrc.length > 0 ? frozenPermColsSrc.split("/") : []);
+
 //ユーザー列中の位置(1始まり)。0=ユーザー列ではない(システム列)
 function userColPos(name) {
 	return frozenUserColumns.indexOf(name) + 1;
@@ -1053,6 +1058,7 @@ function userColPos(name) {
 function isPermColumn(name) {
 	return frozenPermColumns.has(name);
 }
+
 //固定対象範囲の基準情報(ユーザー列一覧・固定列数の初期値)を初期化する。
 //colModel は JSP が生成した固定構成であり grid 生成後は変化しないため、grid 生成直後に一度だけ実行する。
 function initFrozenColumns() {
@@ -1072,6 +1078,7 @@ function initFrozenColumns() {
 	//前回のピン操作結果が保存されていれば初期値を上書きする
 	loadFrozenColumnCount();
 }
+
 //最後に凍結適用した構成(固定列数+各列のfrozen状態)を表す文字列の識別子。
 //形式は "固定列数|colModel順の各列のfrozen状態(1=固定 / 0=非固定)"。
 //例: 全5列のうちユーザー列の先頭2列を固定している場合 "2|11000"。
@@ -1207,10 +1214,12 @@ function updateFrozenPinsDisabled() {
 	//+1 は幅の小数丸めによる 1px 未満の誤差を許容するためのマージン
 	$gbox.find(".mtp-col-pin").toggleClass("mtp-pin-disabled", totalColumnWidth <= availableWidth + 1);
 }
+
 //SessionStorage 永続化(common.js の set/getSessionStorage を利用。ブラウザのセッション(タブ)内で保持)
 function frozenStorageKey() {
 	return "frozenColumns_<%=frozenKeyPrefix%>_<%=StringUtil.escapeJavaScript(defName)%>_<%=StringUtil.escapeJavaScript(viewName)%>";
 }
+
 //SessionStorage に保存された固定列数を復元する。
 //保存値は「保存時点のユーザー列数」を前提とした値であり、画面定義(AdminConsole)の列構成変更や
 //表示条件の違いによって現在のユーザー列数と一致しないことがある。保存値をそのまま採用すると
