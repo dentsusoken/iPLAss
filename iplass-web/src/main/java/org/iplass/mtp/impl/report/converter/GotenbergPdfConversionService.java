@@ -126,7 +126,7 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 	public byte[] convert(byte[] input, String fileName, ConvertContext context) {
 		if (baseUrl == null || baseUrl.isBlank()) {
 			throw new ServiceConfigrationException("baseUrl is not configured for " + getClass().getName()
-					+ ". Set the baseUrl property of PdfConversionService in service-config.xml.");
+					+ ". Set the baseUrl property of " + PdfConversionService.class.getSimpleName() + " in service-config.xml.");
 		}
 
 		validateFileName(fileName);
@@ -210,16 +210,18 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 	}
 
 	private static byte[] multipartBody(String boundary, String fileName, byte[] file) {
-		String head = "--" + boundary + "\r\n"
+		// fileName に非 ASCII 文字が含まれる場合、文字数と UTF-8 バイト数が一致しないため
+		// 初期容量の算出にはエンコード後のバイト配列長を用いる
+		byte[] head = ("--" + boundary + "\r\n"
 				+ "Content-Disposition: form-data; name=\"files\"; filename=\"" + fileName + "\"\r\n"
 				+ "Content-Type: application/octet-stream\r\n"
-				+ "\r\n";
-		String tail = "\r\n--" + boundary + "--\r\n";
+				+ "\r\n").getBytes(StandardCharsets.UTF_8);
+		byte[] tail = ("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream(head.length() + file.length + tail.length());
-			bos.write(head.getBytes(StandardCharsets.UTF_8));
+			ByteArrayOutputStream bos = new ByteArrayOutputStream(head.length + file.length + tail.length);
+			bos.write(head);
 			bos.write(file);
-			bos.write(tail.getBytes(StandardCharsets.UTF_8));
+			bos.write(tail);
 			return bos.toByteArray();
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);

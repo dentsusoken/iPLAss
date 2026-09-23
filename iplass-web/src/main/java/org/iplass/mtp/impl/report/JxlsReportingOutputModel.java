@@ -212,7 +212,9 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 
 	/**
 	 * レポートを書き込む
-	 * @param reportData 帳票データ
+	 * @param reportData 帳票データ。key はテンプレート内の式から参照する変数名（{@link MetaReportParamMap#getName()}）、
+	 *                   value はその変数にバインドする値（{@link org.iplass.mtp.entity.GenericEntity} は Map、
+	 *                   そのリストは Map のリストに変換済み）
 	 * @param os 帳票出力先
 	 * @param password 帳票に設定するパスワード
 	 * @param ownerPassword 帳票に設定するオーナーパスワード（PDF_JXLS 出力時のみ利用）
@@ -336,9 +338,9 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	private void writePdf(Map<String, Object> reportData, JxlsPoiTemplateFillerBuilder builder, OutputStream os, String password,
 			String ownerPassword) throws IOException {
 		if (pdfConversionService == null) {
-			throw new DocumentConversionException(
-					"PdfConversionService is not registered in service configuration. Define a PdfConversionService service (e.g. GotenbergPdfConversionService) to use PDF_JXLS.",
-					-1);
+			String serviceName = PdfConversionService.class.getSimpleName();
+			throw new DocumentConversionException(serviceName + " is not registered in service configuration. Define a " + serviceName
+					+ " service (e.g. GotenbergPdfConversionService) to use " + OutputFileType.PDF_JXLS.name() + ".", -1);
 		}
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -131,8 +131,8 @@ ext {
 		'org.jxls:jxls': '3.1.0',
 		'org.jxls:jxls-poi': '3.1.0',
 
-		// PDFBox（PDF_JXLS 出力のパスワード暗号化用。）
-		'org.apache.pdfbox:pdfbox': '3.0.5',
+		// PDFBox
+		'org.apache.pdfbox:pdfbox': '3.0.7',
 		
 		// by bom
 		'org.apache.groovy:groovy-bom': '4.0.32',
