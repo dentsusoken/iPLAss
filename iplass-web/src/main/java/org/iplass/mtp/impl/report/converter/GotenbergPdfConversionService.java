@@ -44,11 +44,8 @@ import org.iplass.mtp.spi.ServiceConfigrationException;
  */
 public class GotenbergPdfConversionService implements PdfConversionService {
 
-	/** multipart ヘッダーを破壊しうる文字（制御文字・CR/LF・ダブルクォート） */
-	private static final Pattern ILLEGAL_FILE_NAME_CHAR = Pattern.compile("[\\p{Cntrl}\"]");
-
-	/** サニタイズ結果が空になった場合の代替ファイル名 */
-	private static final String FALLBACK_FILE_NAME = "upload";
+	/** multipart ヘッダーを破壊しうる文字（制御文字・CR/LF・ダブルクォート）およびパス区切り文字 */
+	private static final Pattern ILLEGAL_FILE_NAME_CHAR = Pattern.compile("[\\p{Cntrl}\"/\\\\]");
 
 	/** Gotenberg API のベース URL。未設定時は変換実行時に例外とする（既定値は service-config.xml 側で定義） */
 	private String baseUrl;
@@ -61,7 +58,7 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 
 	private long retryIntervalMillis = 1000L;
 
-	private volatile HttpClient client;
+	private HttpClient client;
 
 	/**
 	 * Gotenberg API のベース URL を設定する（必須）
@@ -110,11 +107,19 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 		requestTimeoutSeconds = config.getValue("requestTimeoutSeconds", Integer.class, requestTimeoutSeconds);
 		maxRetries = config.getValue("maxRetries", Integer.class, maxRetries);
 		retryIntervalMillis = config.getValue("retryIntervalMillis", Long.class, retryIntervalMillis);
+
+		// HttpClient はスレッドセーフかつ接続確立を伴わないため、Service 初期化時に生成して以降使い回す
+		client = HttpClient.newBuilder()
+				.connectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
+				.build();
 	}
 
 	@Override
 	public void destroy() {
-		// HttpClient はクローズ不要（JDK 標準 HttpClient に終了 API は無い）
+		if (client != null) {
+			// Java 21 以降の HttpClient は AutoCloseable。実行中のリクエスト完了を待ってリソースを解放する
+			client.close();
+		}
 	}
 
 	@Override
@@ -124,7 +129,7 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 					+ ". Set the baseUrl property of PdfConversionService in service-config.xml.");
 		}
 
-		String safeFileName = sanitizeFileName(fileName);
+		validateFileName(fileName);
 		int attempts = 1 + Math.max(0, maxRetries);
 		DocumentConversionException last = null;
 		for (int i = 0; i < attempts; i++) {
@@ -134,11 +139,11 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 				} catch (InterruptedException e) {
 					Thread.currentThread()
 							.interrupt();
-					throw new DocumentConversionException("Gotenberg retry wait interrupted for " + safeFileName, -1, e);
+					throw new DocumentConversionException("Gotenberg retry wait interrupted for " + fileName, -1, e);
 				}
 			}
 			try {
-				return doConvert(input, safeFileName);
+				return doConvert(input, fileName);
 			} catch (DocumentConversionException e) {
 				last = e;
 				if (e.getCause() instanceof InterruptedException) {
@@ -150,43 +155,31 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 	}
 
 	/**
-	 * multipart ヘッダーへ安全に埋め込めるファイル名へ変換する。
+	 * multipart ヘッダーへ安全に埋め込めるファイル名かを検証する。
 	 *
-	 * <p>ディレクトリ部分を除去し、CR/LF を含む制御文字およびダブルクォートを {@code _} へ置換する。</p>
+	 * <p>不正な値を黙って補正すると利用者が誤りに気付けないため、補正は行わず例外を送出する。</p>
 	 *
 	 * @param fileName 入力ファイル名
-	 * @return サニタイズ済みファイル名
+	 * @throws DocumentConversionException ファイル名が未指定、またはパス区切り文字・制御文字・ダブルクォートを含む場合
 	 */
-	private static String sanitizeFileName(String fileName) {
-		if (fileName == null) {
-			return FALLBACK_FILE_NAME;
+	private static void validateFileName(String fileName) {
+		if (fileName == null || fileName.isBlank()) {
+			throw new DocumentConversionException("fileName is required for Gotenberg conversion.", -1);
 		}
-
-		String name = fileName.replace('\\', '/');
-		name = name.substring(name.lastIndexOf('/') + 1);
-		name = ILLEGAL_FILE_NAME_CHAR.matcher(name)
-				.replaceAll("_")
-				.trim();
-		if (name.isEmpty() || ".".equals(name) || "..".equals(name)) {
-			return FALLBACK_FILE_NAME;
+		if (ILLEGAL_FILE_NAME_CHAR.matcher(fileName)
+				.find()) {
+			// ログ・メッセージ偽装を防ぐため、不正文字を '?' に置換した値のみを出力する
+			String maskedFileName = ILLEGAL_FILE_NAME_CHAR.matcher(fileName)
+					.replaceAll("?");
+			throw new DocumentConversionException(
+					"fileName must not contain a control character, a double quote or a path separator: " + maskedFileName, -1);
 		}
-		return name;
+		if (".".equals(fileName) || "..".equals(fileName)) {
+			throw new DocumentConversionException("fileName must not be \".\" or \"..\": " + fileName, -1);
+		}
 	}
 
 	private byte[] doConvert(byte[] input, String fileName) {
-		HttpClient current = client;
-		if (current == null) {
-			synchronized (this) {
-				current = client;
-				if (current == null) {
-					current = HttpClient.newBuilder()
-							.connectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
-							.build();
-					client = current;
-				}
-			}
-		}
-
 		String boundary = "----iplass-" + UUID.randomUUID()
 				.toString()
 				.replace("-", "");
@@ -199,7 +192,7 @@ public class GotenbergPdfConversionService implements PdfConversionService {
 
 		HttpResponse<byte[]> response;
 		try {
-			response = current.send(request, HttpResponse.BodyHandlers.ofByteArray());
+			response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 		} catch (IOException e) {
 			throw new DocumentConversionException("Gotenberg request failed: " + e.getMessage(), -1, e);
 		} catch (InterruptedException e) {

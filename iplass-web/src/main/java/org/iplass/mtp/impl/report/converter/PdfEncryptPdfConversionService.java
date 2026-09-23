@@ -30,19 +30,22 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.util.StringUtil;
 
 /**
- * 変換結果の PDF にパスワード暗号化を施す {@link PdfConversionService} の装飾器。
+ * 変換結果の PDF にパスワード暗号化を施す {@link PdfConversionService} の Decorator。
  *
- * <p>本装飾器は Service レジストリには登録せず、パスワード指定時にコード上で
- * レジストリから取得した変換 Service を包んで利用する。service-config の切替で
- * 入れ替わるのは内側の変換実装（{@code GotenbergPdfConversionService} 等）のみである。</p>
+ * <p>本クラスは Service レジストリには登録せず、パスワード指定時にコード上で
+ * レジストリから取得した変換 Service を包んで利用する。</p>
+ *
+ * <p>Decorator として差し替え可能なのは被委譲先の PDF 化 Service（{@link PdfConversionService} 実装）であり、
+ * service-config の定義書き換えで {@code GotenbergPdfConversionService} 以外の PDF 化実装へ入れ替えても
+ * 本クラスの暗号化処理はそのまま適用される。</p>
  */
 public class PdfEncryptPdfConversionService implements PdfConversionService {
 
 	private final PdfConversionService delegate;
 
 	/**
-	 * 暗号化で装飾する変換 Service を指定して生成する
-	 * @param delegate 被装飾 conversion service（PDF への変換を行う本体）
+	 * 暗号化を適用する変換 Service を指定して生成する
+	 * @param delegate 被委譲 conversion service（PDF への変換を行う本体）
 	 */
 	public PdfEncryptPdfConversionService(PdfConversionService delegate) {
 		this.delegate = delegate;
@@ -50,12 +53,12 @@ public class PdfEncryptPdfConversionService implements PdfConversionService {
 
 	@Override
 	public void init(Config config) {
-		// 本装飾器はレジストリ管理外（コード上で生成）。ライフサイクルは被装飾 Service に従うため何もしない
+		// 本 Decorator はレジストリ管理外（コード上で生成）。ライフサイクルは被委譲 Service に従うため何もしない
 	}
 
 	@Override
 	public void destroy() {
-		// 本装飾器はレジストリ管理外（コード上で生成）。ライフサイクルは被装飾 Service に従うため何もしない
+		// 本 Decorator はレジストリ管理外（コード上で生成）。ライフサイクルは被委譲 Service に従うため何もしない
 	}
 
 	@Override
