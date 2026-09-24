@@ -66,16 +66,16 @@ public final class UploadCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
-		// GEMのアップロードエラーをXML形式で返却するため、TokenCheckは使用せず、Command内でTokenを検証する。
-		String token = request.getParam(TokenStore.TOKEN_PARAM_NAME);
-		TokenStore ts = TokenStore.getTokenStore(request.getSession());
-		if (ts == null || !ts.isValid(token, false)) {
-			request.setAttribute(Constants.CMD_RSLT_STREAM,
-					new ResultXmlWriter(resourceString("command.binary.UploadCommand.failedMsg")));
-			return Constants.CMD_EXEC_FAILURE;
-		}
-
 		try {
+			// GEMのアップロードエラーをXML形式で返却するため、TokenCheckは使用せず、Command内でTokenを検証する。
+			String token = request.getParam(TokenStore.TOKEN_PARAM_NAME);
+			TokenStore ts = TokenStore.getTokenStore(request.getSession());
+			if (ts == null || !ts.isValid(token, false)) {
+				request.setAttribute(Constants.CMD_RSLT_STREAM,
+						new ResultXmlWriter(resourceString("command.binary.UploadCommand.failedMsg")));
+				return Constants.CMD_EXEC_FAILURE;
+			}
+
 			// プロパティエディタを取得する情報をリクエストから取得
 			String defName = request.getParam(Constants.DEF_NAME);
 			String viewName = request.getParam(Constants.VIEW_NAME);
