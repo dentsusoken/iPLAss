@@ -176,12 +176,12 @@
 			&& autoHeightAdjustMode == SearchResultSection.AutoHeightAdjustMode.FIT_TO_VIEWPORT
 			&& OutputType.SEARCHRESULT == type;
 
-	//「列の固定を許可」された列名の "/" 区切り連結(pin 注入対象。未許可列は pin 非表示)
-	//※固定列数の基準となるユーザー列一覧はJSP側では収集せず、JSで実際のcolModelから導出する
-	//(要素ループで収集すると仮想プロパティやネスト列等が取りこぼれるため)
+	// 「列の固定を許可」された列名の "/" 区切り連結(pin 注入対象。未許可列は pin 非表示)
+	// ※固定列数の基準となるユーザー列一覧はJSP側では収集せず、JSで実際のcolModelから導出する
+	// (要素ループで収集すると仮想プロパティやネスト列等が取りこぼれるため)
 	StringBuilder frozenPermCols = new StringBuilder();
 
-	//カラム固定の永続化キー接頭辞(tenant/user 単位で分離)
+	// カラム固定の永続化キー接頭辞(tenant/user 単位で分離)
 	Tenant frozenTenant = auth.getTenant();
 	User frozenUser = auth.getUser();
 	String frozenKeyPrefix = (frozenTenant != null ? frozenTenant.getId() : -1)
@@ -602,7 +602,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			var data = $("#searchResult").getGridParam("_data");
 			if (!data) return;
 			//チェックボタン一覧の結合処理を行います。
-			//凍結中は clone 側(frozen-bdiv)にも tr.jqgrow が存在するため主表のみを対象とする(二重走査防止)
+			// 凍結中は clone 側(frozen-bdiv)にも tr.jqgrow が存在するため主表のみを対象とする(二重走査防止)
 			$("#gview_searchResult .ui-jqgrid-bdiv:not(.frozen-bdiv) tr.jqgrow").each(function(index){
 				var row = data[index];
 				if (index > 0) {
@@ -636,7 +636,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	}
 %>
 	});
-	//カラム固定: colModel 確定後に固定対象範囲の基準情報を初期化する
+	// カラム固定: colModel 確定後に固定対象範囲の基準情報を初期化する
 	initFrozenColumns();
 
 <%
@@ -714,9 +714,9 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 function setData(list, count) {
 	$("div.result-data").show();
 	grid.clearGridData(true);
-	//行クリア後に凍結構成を強制再適用させるため、シグネチャをリセットして destroy→set を促す。
-	//addRowData は凍結 clone 再生成のトリガにならないため、再適用なしでは行が復元されない。
-	//なお clearGridData は主表と同時に clone 行も削除するため旧データの残留は生じない。
+	// 行クリア後に凍結構成を強制再適用させるため、シグネチャをリセットして destroy→set を促す。
+	// addRowData は凍結 clone 再生成のトリガにならないため、再適用なしでは行が復元されない。
+	// なお clearGridData は主表と同時に clone 行も削除するため旧データの残留は生じない。
 	frozenAppliedSignature = null;
 	grid.setGridParam({"_data": list}).trigger("reloadGrid");
 
@@ -893,9 +893,9 @@ function setData(list, count) {
 	refreshFrozenPins();
 	updateFrozenPinsDisabled();
 
-	//ソート状態の表頭反映(sortGrid)は凍結クローン再構築の後に実施する。
-	//凍結中は jqGrid がソートアイコンをクローン側(fhDiv)に表示するため、クローン再構築の前に
-	//適用すると表示が失われる(固定適用後ソート矢印が出ない問題の対策)
+	// ソート状態の表頭反映(sortGrid)は凍結クローン再構築の後に実施する。
+	// 凍結中は jqGrid がソートアイコンをクローン側(fhDiv)に表示するため、クローン再構築の前に
+	// 適用すると表示が失われる(固定適用後ソート矢印が出ない問題の対策)
 	var sortKey = $(":hidden[name='sortKey']").val();
 	var sortType = $(":hidden[name='sortType']").val();
 	if (sortKey.length > 0 && sortType.length > 0) {
@@ -913,8 +913,8 @@ function setData(list, count) {
 		}
 	}
 
-	//高さ自動調節(画面fit)時は、初回計算後にページ全体のレイアウト確定(コンテンツ領域の
-	//画面高調整がボタン区等へ波及する)ことで下方要素の高さが変わり得るため、遅延して再計算する
+	// 高さ自動調節(画面fit)時は、初回計算後にページ全体のレイアウト確定(コンテンツ領域の
+	// 画面高調整がボタン区等へ波及する)ことで下方要素の高さが変わり得るため、遅延して再計算する
 	if (fitToViewportMode) {
 		setTimeout(adjustResultGridHeight, 300);
 	}
@@ -987,9 +987,9 @@ function adjustResultGridHeight() {
 		if ($elem.css("display") != "none" && $elem.css("visibility") != "hidden") {
 			var h = $elem.outerHeight(true);
 			if ($elem.hasClass("result-btns")) {
-				//ボタン区はページレイアウト(コンテンツ領域の画面高調整)の引き伸ばしにより
-				//実際の内容以上の高さで測定される実測がある(内容はボタンのみ)。
-				//そのため内容(ボタン)の実高と上下 margin のみを計上し、テーブル高の不当な圧縮を防ぐ
+				// ボタン区はページレイアウト(コンテンツ領域の画面高調整)の引き伸ばしにより
+				// 実際の内容以上の高さで測定される実測がある(内容はボタンのみ)。
+				// そのため内容(ボタン)の実高と上下 margin のみを計上し、テーブル高の不当な圧縮を防ぐ
 				var btnH = 0;
 				$elem.children(":visible").each(function() {
 					btnH += $(this).outerHeight(true);
@@ -1016,8 +1016,8 @@ function adjustResultGridHeight() {
 //リサイズイベント連続発火時の過剰実行を抑止するためのデバウンス用タイマーID
 var resultGridResizeTimerId = null;
 $(window).on("resize", function() {
-	//リサイズ時の再調節: 高さ調節は高さ自動調節(画面fit)モードのみ、
-	//ピン操作可否の再判定は全モードで実施
+	// リサイズ時の再調節: 高さ調節は高さ自動調節(画面fit)モードのみ、
+	// ピン操作可否の再判定は全モードで実施
 	if (resultGridResizeTimerId != null) {
 		clearTimeout(resultGridResizeTimerId);
 	}
@@ -1030,28 +1030,28 @@ $(window).on("resize", function() {
 	}, 200);
 });
 
-//カラム固定:AdminConsole「列の固定を許可」された列のピン操作+初期反映
-//仕様: 許可列(frozenPermColumns)のみピンが表示され、既定で固定される。
+// カラム固定:AdminConsole「列の固定を許可」された列のピン操作+初期反映
+// 仕様: 許可列(frozenPermColumns)のみピンが表示され、既定で固定される。
 const pinAvailable = <%=OutputType.SEARCHRESULT == type%>;
 
-//固定対象範囲: 「ユーザー列の先頭から frozenColumnCount 列分」を指す。
-//ユーザー列とは colModel から以下のシステム列(選択欄・詳細リンク等)を除いた列であり、
-//固定列数は colModel の並び順で数えたユーザー列の位置を基準とする。
+// 固定対象範囲: 「ユーザー列の先頭から frozenColumnCount 列分」を指す。
+// ユーザー列とは colModel から以下のシステム列(選択欄・詳細リンク等)を除いた列であり、
+// 固定列数は colModel の並び順で数えたユーザー列の位置を基準とする。
 const frozenSystemColumns = new Set(["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"]);
 
-//ユーザー列の列名を colModel の並び順で保持する配列。initFrozenColumns() で設定する
+// ユーザー列の列名を colModel の並び順で保持する配列。initFrozenColumns() で設定する
 let frozenUserColumns = [];
 
-//固定対象範囲の列数(ユーザー列の先頭から何列を固定するか)。initFrozenColumns() で初期値を設定する
+// 固定対象範囲の列数(ユーザー列の先頭から何列を固定するか)。initFrozenColumns() で初期値を設定する
 let frozenColumnCount = 0;
 
-//「列の固定を許可」された列名(pin 注入対象)。
-//JSP からは列名を "/" で連結した1本の文字列として出力される(例: "name/code/status")。
-//プロパティ名に "/" は含まれないため区切り文字として利用できる。
+// 「列の固定を許可」された列名(pin 注入対象)。
+// JSP からは列名を "/" で連結した1本の文字列として出力される(例: "name/code/status")。
+// プロパティ名に "/" は含まれないため区切り文字として利用できる。
 const frozenPermColsSrc = "<%=frozenPermCols.toString()%>";
 const frozenPermColumns = new Set(frozenPermColsSrc.length > 0 ? frozenPermColsSrc.split("/") : []);
 
-//ユーザー列中の位置(1始まり)。0=ユーザー列ではない(システム列)
+// ユーザー列中の位置(1始まり)。0=ユーザー列ではない(システム列)
 function userColPos(name) {
 	return frozenUserColumns.indexOf(name) + 1;
 }
@@ -1059,15 +1059,15 @@ function isPermColumn(name) {
 	return frozenPermColumns.has(name);
 }
 
-//固定対象範囲の基準情報(ユーザー列一覧・固定列数の初期値)を初期化する。
-//colModel は JSP が生成した固定構成であり grid 生成後は変化しないため、grid 生成直後に一度だけ実行する。
+// 固定対象範囲の基準情報(ユーザー列一覧・固定列数の初期値)を初期化する。
+// colModel は JSP が生成した固定構成であり grid 生成後は変化しないため、grid 生成直後に一度だけ実行する。
 function initFrozenColumns() {
 	if (!pinAvailable || grid == null) return;
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
 	frozenUserColumns = gridColModel
 			.filter(col => !frozenSystemColumns.has(col.name))
 			.map(col => col.name);
-	//許可列のうち colModel.frozen==true(JSP が既定で固定する列に出力)の最も右の位置を固定列数の初期値とする
+	// 許可列のうち colModel.frozen==true(JSP が既定で固定する列に出力)の最も右の位置を固定列数の初期値とする
 	frozenColumnCount = 0;
 	for (const col of gridColModel) {
 		if (isPermColumn(col.name) && col.frozen === true) {
@@ -1075,17 +1075,17 @@ function initFrozenColumns() {
 			if (pos > frozenColumnCount) frozenColumnCount = pos;
 		}
 	}
-	//前回のピン操作結果が保存されていれば初期値を上書きする
+	// 前回のピン操作結果が保存されていれば初期値を上書きする
 	loadFrozenColumnCount();
 }
 
-//最後に凍結適用した構成(固定列数+各列のfrozen状態)を表す文字列の識別子。
-//形式は "固定列数|colModel順の各列のfrozen状態(1=固定 / 0=非固定)"。
-//例: 全5列のうちユーザー列の先頭2列を固定している場合 "2|11000"。
-//applyFrozenColumns() で現在の構成と比較し、変化が無い場合に destroy→set の再適用を省く。
-//固定列数と列状態を "|" で区切るのは、区切り無しだと「固定列数1+先頭列が固定」と
-//「固定列数11+先頭列が非固定」が共に "11..." となり、別構成を同一と誤判定するため。
-//行クリア時(setData)は clone 再生成が必要なため null にリセットして強制再適用させる。
+// 最後に凍結適用した構成(固定列数+各列のfrozen状態)を表す文字列の識別子。
+// 形式は "固定列数|colModel順の各列のfrozen状態(1=固定 / 0=非固定)"。
+// 例: 全5列のうちユーザー列の先頭2列を固定している場合 "2|11000"。
+// applyFrozenColumns() で現在の構成と比較し、変化が無い場合に destroy→set の再適用を省く。
+// 固定列数と列状態を "|" で区切るのは、区切り無しだと「固定列数1+先頭列が固定」と
+// 「固定列数11+先頭列が非固定」が共に "11..." となり、別構成を同一と誤判定するため。
+// 行クリア時(setData)は clone 再生成が必要なため null にリセットして強制再適用させる。
 let frozenAppliedSignature = null;
 function applyFrozenColumns() {
 	if (!pinAvailable || grid == null) return;
@@ -1093,8 +1093,8 @@ function applyFrozenColumns() {
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
 	let signature = frozenColumnCount + "|";
 	for (const col of gridColModel) {
-		//ユーザー列のみを固定対象範囲(先頭から固定列数分の列)で frozen を制御する。
-		//範囲内であれば「列の固定を許可」されていない列も固定対象とし、固定領域を連続させる
+		// ユーザー列のみを固定対象範囲(先頭から固定列数分の列)で frozen を制御する。
+		// 範囲内であれば「列の固定を許可」されていない列も固定対象とし、固定領域を連続させる
 		const pos = userColPos(col.name);
 		if (pos > 0) {
 			const shouldFreeze = pos <= frozenColumnCount;
@@ -1106,36 +1106,36 @@ function applyFrozenColumns() {
 		signature += (col.frozen === true ? "1" : "0");
 	}
 	if (signature === frozenAppliedSignature) return;
-	//凍結構成が変わったら必ず破棄→再適用(適用済み set は no-op、かつ clone は再構築されないため)
+	// 凍結構成が変わったら必ず破棄→再適用(適用済み set は no-op、かつ clone は再構築されないため)
 	const applied = grid.jqGrid("getGridParam", "frozenColumns") === true;
 	if (applied) {
 		grid.jqGrid("destroyFrozenColumns");
-		//適用中マーカー除去(frozen-ever は行高恒定マーカーのため解除後も残す)
+		// 適用中マーカー除去(frozen-ever は行高恒定マーカーのため解除後も残す)
 		$gbox.removeClass("frozen-columns");
 	}
 	if (frozenColumnCount > 0) {
-		//main ヘッダーのピンが現状態であることを確認してから set(clone に複製される)
+		// main ヘッダーのピンが現状態であることを確認してから set(clone に複製される)
 		refreshFrozenPins();
 		grid.jqGrid("setFrozenColumns");
-		//frozen-columns=適用中マーカー。frozen-ever=行高恒定マーカー(一度適用した grid は解除後も同一行高)
+		// frozen-columns=適用中マーカー。frozen-ever=行高恒定マーカー(一度適用した grid は解除後も同一行高)
 		$gbox.addClass("frozen-columns").addClass("frozen-ever");
-		//fhDiv(凍結表頭)の寸法同期: 列幅合計を明示する。
-		//flat skin の module.css(`width:auto !important`)が inline width を打ち負かすため
-		//min-width で指定、幅は hidden 列を除いた実効幅として内部 table の実測幅を採用。
-		//height 同期は fh 高と主表頭高の差>2px が確認された場合のみ有効化
+		// fhDiv(凍結表頭)の寸法同期: 列幅合計を明示する。
+		// flat skin の module.css(`width:auto !important`)が inline width を打ち負かすため
+		// min-width で指定、幅は hidden 列を除いた実効幅として内部 table の実測幅を採用。
+		// height 同期は fh 高と主表頭高の差>2px が確認された場合のみ有効化
 		const $frozenHeader = $gbox.find(".frozen-div");
 		if ($frozenHeader.length > 0) {
 			const $frozenHeaderTable = $frozenHeader.children("table.ui-jqgrid-htable");
 			const frozenHeaderWidth = $frozenHeaderTable.length > 0 ? $frozenHeaderTable[0].offsetWidth : 0;
 			if (frozenHeaderWidth > 0) $frozenHeader.css("min-width", frozenHeaderWidth + "px");
-			//主表頭は fhDiv も .ui-jqgrid-hdiv を持つため :not(.frozen-div) で除外して取得
+			// 主表頭は fhDiv も .ui-jqgrid-hdiv を持つため :not(.frozen-div) で除外して取得
 			const mainHeaderHeight = $gbox.find(".ui-jqgrid-hdiv:not(.frozen-div)").height();
 			if ($frozenHeader.height() !== mainHeaderHeight) {
 				$frozenHeader.height(mainHeaderHeight);
 			}
 		}
-		//両表の行高を1回明示同期(frozen/main の描画差による累積ずれ対策)。
-		//主表側セレクタは .frozen-bdiv が ui-jqgrid-bdiv を兼任するため :not で凍結側を除外
+		// 両表の行高を1回明示同期(frozen/main の描画差による累積ずれ対策)。
+		// 主表側セレクタは .frozen-bdiv が ui-jqgrid-bdiv を兼任するため :not で凍結側を除外
 		const $frozenRows = $gbox.find(".frozen-bdiv tr.jqgrow");
 		$gbox.find(".ui-jqgrid-bdiv:not(.frozen-bdiv) tr.jqgrow").each(function(i) {
 			if ($frozenRows.eq(i).length > 0) $frozenRows.eq(i).height($(this).height());
@@ -1147,7 +1147,7 @@ function toggleFrozenColumn(name) {
 	if (!pinAvailable || grid == null) return;
 	const targetPos = userColPos(name);
 	if (targetPos <= 0 || !isPermColumn(name)) return;
-	//クリック列が固定対象範囲外→その列まで拡張 / 範囲内→その列と右側を解除
+	// クリック列が固定対象範囲外→その列まで拡張 / 範囲内→その列と右側を解除
 	frozenColumnCount = (targetPos > frozenColumnCount) ? targetPos : targetPos - 1;
 	applyFrozenColumns();
 	refreshFrozenPins();
@@ -1159,13 +1159,13 @@ function refreshFrozenPins() {
 	const $gbox = $("#gbox_searchResult");
 	if ($gbox.length == 0) return;
 	const gridColModel = grid.jqGrid("getGridParam", "colModel");
-	//main ヘッダーのみ対象: fhDiv も .ui-jqgrid-hdiv class を持つため .frozen-div を除外
+	// main ヘッダーのみ対象: fhDiv も .ui-jqgrid-hdiv class を持つため .frozen-div を除外
 	const $headerCells = $gbox.find(".ui-jqgrid-hdiv tr.ui-jqgrid-labels th").filter(function() {
 		return $(this).closest(".frozen-div").length === 0;
 	});
 	$headerCells.each(function(idx) {
 		const name = gridColModel[idx] ? gridColModel[idx].name : null;
-		//許可列のみ pin を持つ(未許可列は操作の入口が存在しない)
+		// 許可列のみ pin を持つ(未許可列は操作の入口が存在しない)
 		if (!isPermColumn(name)) return;
 		const $th = $(this);
 		let $pin = $th.find(".mtp-col-pin");
@@ -1176,13 +1176,13 @@ function refreshFrozenPins() {
 				"data-colname": name,
 				"aria-label": name
 			}).append($("<i/>").addClass("fas fa-thumbtack"));
-			//th の jqGrid クリック処理が伝播を断つため document 委譲でなく直接結合(clone(true) が handler を複製)
+			// th の jqGrid クリック処理が伝播を断つため document 委譲でなく直接結合(clone(true) が handler を複製)
 			$pin.on("click", function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 				toggleFrozenColumn($(this).attr("data-colname"));
 			});
-			//title(p.title) と同一行・sort ボタン(s-ico)の前に挿入
+			// title(p.title) と同一行・sort ボタン(s-ico)の前に挿入
 			const $sortIcon = $th.children("div").first().children("span.s-ico");
 			if ($sortIcon.length > 0) {
 				$pin.insertBefore($sortIcon);
@@ -1190,7 +1190,7 @@ function refreshFrozenPins() {
 				$th.children("div").first().append($pin);
 			}
 		}
-		//固定対象範囲内(ユーザー列の先頭から固定列数分)はON常時表示。範囲外はOFF(hover 時のみ表示)
+		// 固定対象範囲内(ユーザー列の先頭から固定列数分)はON常時表示。範囲外はOFF(hover 時のみ表示)
 		const isInFrozenRange = userColPos(name) <= frozenColumnCount;
 		$pin.toggleClass("mtp-pin-on", isInFrozenRange);
 	});
@@ -1206,31 +1206,31 @@ function updateFrozenPinsDisabled() {
 			totalColumnWidth += (col.width ? +col.width : 0);
 		}
 	}
-	//判定基準は結果領域のコンテナ幅: 凍結なしの場合 grid は列幅合計まで自動拡張し
-	//bdiv 自体が広がるため、bdiv 幅では横スクロール有無を判定できない
+	// 判定基準は結果領域のコンテナ幅: 凍結なしの場合 grid は列幅合計まで自動拡張し
+	// bdiv 自体が広がるため、bdiv 幅では横スクロール有無を判定できない
 	const availableWidth = $gbox.closest(".result-data").width() || $gbox.parent().width() || 0;
-	//全列が収まる(横スクロール無し)場合はピンを操作不可とする
-	//(表示仕様=非表示。DOM/クラス判定は残し E2E で検証)
-	//+1 は幅の小数丸めによる 1px 未満の誤差を許容するためのマージン
+	// 全列が収まる(横スクロール無し)場合はピンを操作不可とする
+	// (表示仕様=非表示。DOM/クラス判定は残し E2E で検証)
+	// +1 は幅の小数丸めによる 1px 未満の誤差を許容するためのマージン
 	$gbox.find(".mtp-col-pin").toggleClass("mtp-pin-disabled", totalColumnWidth <= availableWidth + 1);
 }
 
-//SessionStorage 永続化(common.js の set/getSessionStorage を利用。ブラウザのセッション(タブ)内で保持)
+// SessionStorage 永続化(common.js の set/getSessionStorage を利用。ブラウザのセッション(タブ)内で保持)
 function frozenStorageKey() {
 	return "frozenColumns_<%=frozenKeyPrefix%>_<%=StringUtil.escapeJavaScript(defName)%>_<%=StringUtil.escapeJavaScript(viewName)%>";
 }
 
-//SessionStorage に保存された固定列数を復元する。
-//保存値は「保存時点のユーザー列数」を前提とした値であり、画面定義(AdminConsole)の列構成変更や
-//表示条件の違いによって現在のユーザー列数と一致しないことがある。保存値をそのまま採用すると
-//存在しない列まで固定対象となり、applyFrozenColumns() が実体の無い範囲を凍結しようとするため、
-//現在のユーザー列数を上限として丸めた値を採用する。
-//例: 保存値=5・現在のユーザー列数=3 の場合は 3 列固定として扱う。保存値が負値の場合は 0(固定なし)。
+// SessionStorage に保存された固定列数を復元する。
+// 保存値は「保存時点のユーザー列数」を前提とした値であり、画面定義(AdminConsole)の列構成変更や
+// 表示条件の違いによって現在のユーザー列数と一致しないことがある。保存値をそのまま採用すると
+// 存在しない列まで固定対象となり、applyFrozenColumns() が実体の無い範囲を凍結しようとするため、
+// 現在のユーザー列数を上限として丸めた値を採用する。
+// 例: 保存値=5・現在のユーザー列数=3 の場合は 3 列固定として扱う。保存値が負値の場合は 0(固定なし)。
 function loadFrozenColumnCount() {
 	const saved = getSessionStorage(frozenStorageKey());
 	if (saved == null) return;
 	const count = parseInt(saved, 10);
-	//不正値は無視して画面定義の既定値(initFrozenColumns()で算出済み)を使用する
+	// 不正値は無視して画面定義の既定値(initFrozenColumns()で算出済み)を使用する
 	if (isNaN(count)) return;
 	frozenColumnCount = Math.max(0, Math.min(count, frozenUserColumns.length));
 }
