@@ -1,6 +1,6 @@
 // sassのコンパイルにgradle-node-pluginを使用
 plugins {
-  id("com.github.node-gradle.node") version "7.0.1"
+  id("com.github.node-gradle.node") version "7.1.0"
 }
 
 apply from: 'libs.gradle'
