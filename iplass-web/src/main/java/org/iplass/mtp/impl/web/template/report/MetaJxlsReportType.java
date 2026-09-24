@@ -41,6 +41,9 @@ public class MetaJxlsReportType extends MetaReportType {
 
 	private String passwordAttributeName;
 
+	/** オーナーパスワードAttribute名 */
+	private String ownerPasswordAttributeName;
+
 	private String templateName;
 
 	public MetaJxlsReportOutputLogic getReportOutputLogic() {
@@ -65,6 +68,14 @@ public class MetaJxlsReportType extends MetaReportType {
 
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	public String getOwnerPasswordAttributeName() {
+		return ownerPasswordAttributeName;
+	}
+
+	public void setOwnerPasswordAttributeName(String ownerPasswordAttributeName) {
+		this.ownerPasswordAttributeName = ownerPasswordAttributeName;
 	}
 
 	public String getTemplateName() {
@@ -107,6 +118,7 @@ public class MetaJxlsReportType extends MetaReportType {
 			paramMap = null;
 		}
 		passwordAttributeName = def.getPasswordAttributeName();
+		ownerPasswordAttributeName = def.getOwnerPasswordAttributeName();
 		templateName = def.getTemplateName();
 	}
 
@@ -130,6 +142,7 @@ public class MetaJxlsReportType extends MetaReportType {
 		}
 
 		definition.setPasswordAttributeName(passwordAttributeName);
+		definition.setOwnerPasswordAttributeName(ownerPasswordAttributeName);
 		definition.setTemplateName(templateName);
 
 		return definition;
@@ -167,6 +180,7 @@ public class MetaJxlsReportType extends MetaReportType {
 				model.setParamMap(paramMap);
 			}
 			model.setPasswordAttributeName(passwordAttributeName);
+			model.setOwnerPasswordAttributeName(ownerPasswordAttributeName);
 			model.setCacheStore(cacheStore);
 		}
 	}

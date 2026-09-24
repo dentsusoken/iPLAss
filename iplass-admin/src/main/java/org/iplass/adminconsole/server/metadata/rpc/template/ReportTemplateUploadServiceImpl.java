@@ -414,6 +414,10 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			if (StringUtil.isNotEmpty(passwordAttributeName)) {
 				jxlsTemplate.setPasswordAttributeName(passwordAttributeName);
 			}
+			String ownerPasswordAttributeName = (String) args.get(ReportTemplateUploadProperty.JXLS_OWNER_PASSWORD_ATTRIBUTE_NAME);
+			if (StringUtil.isNotEmpty(ownerPasswordAttributeName)) {
+				jxlsTemplate.setOwnerPasswordAttributeName(ownerPasswordAttributeName);
+			}
 
 			String logicType = (String) (args.get(ReportTemplateUploadProperty.JXLS_LOGIC_NAME));
 			if (StringUtil.isNotEmpty(logicType)) {

@@ -105,6 +105,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	/** JXLS PasswordAttributeName */
 	private DynamicForm jxlsPasswordAttributeNameForm;
 	private TextItem jxlsPasswordAttributeNameField;
+	/** JXLS OwnerPasswordAttributeName */
+	private TextItem jxlsOwnerPasswordAttributeNameField;
 	/** JXLS ContextParamMap */
 	private JxlsReportParamMapGridPane jxlsContextParamMapPane;
 	/** JXLS ReportOutputLogic */
@@ -250,7 +252,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		/** JXLS PasswordAttributeName */
 		jxlsPasswordAttributeNameForm = new MtpForm();
 		jxlsPasswordAttributeNameField = new MtpTextItem("jxlsPasswordAttributeName", "Password AttributeName");
-		jxlsPasswordAttributeNameForm.setItems(jxlsPasswordAttributeNameField);
+		jxlsOwnerPasswordAttributeNameField = new MtpTextItem("jxlsOwnerPasswordAttributeName", "Owner Password AttributeName");
+		jxlsPasswordAttributeNameForm.setItems(jxlsPasswordAttributeNameField, jxlsOwnerPasswordAttributeNameField);
 
 		/** JXLS ContextParamMap */
 		jxlsContextParamMapPane = new JxlsReportParamMapGridPane();
@@ -354,6 +357,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 			//PasswordAttributeName
 			jxlsTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsPasswordAttributeNameField, true));
+			//OwnerPasswordAttributeName
+			jxlsTemplate.setOwnerPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsOwnerPasswordAttributeNameField, true));
 
 			//JXLS用出力設定
 			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
@@ -525,6 +530,10 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 				if (!SmartGWTUtil.isEmpty(jxlsRepo.getPasswordAttributeName())) {
 					addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PASSWORD_ATTRIBUTE_NAME, jxlsRepo.getPasswordAttributeName());
 				}
+				if (!SmartGWTUtil.isEmpty(jxlsRepo.getOwnerPasswordAttributeName())) {
+					addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_OWNER_PASSWORD_ATTRIBUTE_NAME,
+							jxlsRepo.getOwnerPasswordAttributeName());
+				}
 			}
 		}
 	}
@@ -591,6 +600,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			//Jxls利用の場合
 			JxlsReportType jxlsRepo = (JxlsReportType) type;
 			jxlsPasswordAttributeNameField.setValue(jxlsRepo.getPasswordAttributeName());
+			jxlsOwnerPasswordAttributeNameField.setValue(jxlsRepo.getOwnerPasswordAttributeName());
 			jxlsReportOutputLogicPane.setDefinition(jxlsRepo);
 			jxlsContextParamMapPane.setParamMap(jxlsRepo.getParamMap());
 			removeMembers(jasperAttributeForm, jasperParamMapPane);
@@ -695,6 +705,8 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 			//PasswordAttributeName
 			jxlsTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsPasswordAttributeNameField, true));
+			//OwnerPasswordAttributeName
+			jxlsTemplate.setOwnerPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsOwnerPasswordAttributeNameField, true));
 			//JXLS用出力設定
 			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
 			//ContextParamMapping

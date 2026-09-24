@@ -1,0 +1,62 @@
+/*
+ * Copyright (C) 2026 DENTSU SOKEN INC. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+package org.iplass.mtp.impl.report.converter;
+
+/**
+ * ドキュメント変換のコンテキスト情報。
+ */
+public class ConvertContext {
+
+	/** 出力ファイルタイプ（例: "PDF_JXLS"） */
+	private String outputFileType;
+
+	/** 出力 PDF の暗号化パスワード（user パスワード。未指定・空の場合は開くのにパスワード不要） */
+	private String password;
+
+	/**
+	 * 出力 PDF のオーナーパスワード（権限変更用）。
+	 * 未設定で user パスワードが設定されている場合は後方互換のため user パスワードと同値で暗号化される。
+	 */
+	private String ownerPassword;
+
+	public String getOutputFileType() {
+		return outputFileType;
+	}
+
+	public void setOutputFileType(String outputFileType) {
+		this.outputFileType = outputFileType;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getOwnerPassword() {
+		return ownerPassword;
+	}
+
+	public void setOwnerPassword(String ownerPassword) {
+		this.ownerPassword = ownerPassword;
+	}
+}

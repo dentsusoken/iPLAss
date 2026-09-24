@@ -36,6 +36,9 @@ dependencies {
 	api sharedLib('org.jxls:jxls')
 	implementation sharedLib('org.jxls:jxls-poi')
 
+	//PDFBox（PDF_JXLS 出力 PDF のパスワード暗号化用）
+	implementation sharedLib('org.apache.pdfbox:pdfbox')
+
 	// jasperreports
 	api sharedLib('net.sf.jasperreports:jasperreports')
 	implementation sharedLib('net.sf.jasperreports:jasperreports-excel-poi')
