@@ -76,6 +76,19 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 	)
 	private TextAlign textAlign;
 
+	/** 列の固定を許可 */
+	@MetaFieldInfo(
+			displayName = "列の固定を許可",
+			displayNameKey = "generic_element_property_PropertyColumn_frozenDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 415,
+			description = "検索結果一覧での列の固定を許可します。<br>" +
+					"許可した列はデフォルトで固定され、画面上のピン操作で固定範囲の変更・解除ができます。<br>" +
+					"許可しない列にはピンは表示されません。",
+			descriptionKey = "generic_element_property_PropertyColumn_frozenDescriptionKey"
+	)
+	private boolean frozen;
+
 	/** ソートを許可 */
 	@MetaFieldInfo(
 			displayName = "ソートを許可",
@@ -227,6 +240,22 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 	 */
 	public void setTextAlign(TextAlign textAlign) {
 		this.textAlign = textAlign;
+	}
+
+	/**
+	 * 列の固定を許可するかを取得します。
+	 * @return 列の固定を許可するか
+	 */
+	public boolean isFrozen() {
+		return frozen;
+	}
+
+	/**
+	 * 列の固定を許可するかを設定します。
+	 * @param frozen 列の固定を許可するか
+	 */
+	public void setFrozen(boolean frozen) {
+		this.frozen = frozen;
 	}
 
 	/**
