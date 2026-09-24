@@ -37,10 +37,10 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
-import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.impl.view.generic.FormViewRuntimeUtil;
 import org.iplass.mtp.impl.view.generic.editor.MetaBinaryPropertyEditor.BinaryPropertyEditorRuntime;
+import org.iplass.mtp.impl.web.token.TokenStore;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionManager;
@@ -56,8 +56,7 @@ import org.slf4j.LoggerFactory;
 @ActionMapping(
 		name = UploadCommand.ACTION_NAME,
 		displayName = "アップロード",
-		result = @Result(type = Type.STREAM, useContentDisposition = false),
-		tokenCheck = @TokenCheck(consume = false, useFixedToken = true)
+		result = @Result(type = Type.STREAM, useContentDisposition = false)
 )
 @CommandClass(name = "gem/binary/UploadCommand", displayName = "アップロード")
 public final class UploadCommand implements Command {
@@ -67,6 +66,14 @@ public final class UploadCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
+		// GEMのアップロードエラーをXML形式で返却するため、TokenCheckは使用せず、Command内でTokenを検証する。
+		String token = request.getParam(TokenStore.TOKEN_PARAM_NAME);
+		TokenStore ts = TokenStore.getTokenStore(request.getSession());
+		if (ts == null || !ts.isValid(token, false)) {
+			request.setAttribute(Constants.CMD_RSLT_STREAM,
+					new ResultXmlWriter(resourceString("command.binary.UploadCommand.failedMsg")));
+			return Constants.CMD_EXEC_FAILURE;
+		}
 
 		try {
 			// プロパティエディタを取得する情報をリクエストから取得
