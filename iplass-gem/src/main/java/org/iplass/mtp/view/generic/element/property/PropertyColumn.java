@@ -83,8 +83,8 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 			inputType = InputType.CHECKBOX,
 			displayOrder = 415,
 			description = "検索結果一覧での列の固定を許可します。<br>" +
-					"許可した列はデフォルトで固定され、画面上のピン操作で固定範囲の変更・解除ができます。<br>" +
-					"許可しない列にはピンは表示されません。",
+					"許可した列にはピンが表示され、ピンを押した列とその左側の列がすべて固定されます(固定の基準となるのは1列のみ)。<br>" +
+					"初期表示では許可した列のうち最も右側の列を基準として固定され、基準列のピンを押すと固定が解除されます。",
 			descriptionKey = "generic_element_property_PropertyColumn_frozenDescriptionKey"
 	)
 	private boolean frozen;

@@ -27,6 +27,8 @@
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.List" %>
 <%@ page import="org.iplass.mtp.auth.AuthContext" %>
+<%@ page import="org.iplass.mtp.auth.User" %>
+<%@ page import="org.iplass.mtp.tenant.Tenant" %>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.*" %>
@@ -131,6 +133,13 @@
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
 	boolean canDelete = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.DELETE));
+
+	// カラム固定の永続化キー接頭辞(tenant/user 単位で分離)
+	Tenant frozenTenant = auth.getTenant();
+	User frozenUser = auth.getUser();
+	String frozenKeyPrefix = (frozenTenant != null ? frozenTenant.getId() : -1)
+			+ "." + (frozenUser != null ? frozenUser.getOid() : "anonymous");
+	frozenKeyPrefix = StringUtil.escapeJavaScript(frozenKeyPrefix);
 
 	//スタイルシートのクラス名
 	String cellStyle = "entity-list topview-parts";
@@ -247,8 +256,10 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
+					// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
+					String frozen = property.isFrozen() ? ", frozen:true" : "";
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -272,8 +283,10 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
+						// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
+						String frozen = property.isFrozen() ? ", frozen:true" : "";
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -366,6 +379,11 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				});
 			}
 		}
+	});
+
+	// カラム固定: colModel 確定後に初期化する(固定の適用は検索結果の描画後)
+	const frozenColumns = $table.frozenColumns({
+		storageKey: "frozenColumns_topview_<%=frozenKeyPrefix%>_${m:escJs(MetaEntityListParts_entityListParts.defName)}_${m:escJs(MetaEntityListParts_entityListParts.viewName)}_${m:escJs(MetaEntityListParts_entityListParts.filterName)}"
 	});
 
 	var offset = 0;
@@ -511,6 +529,8 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 			$("#topview-parts-id_${partsCnt}").show();
 			$(".fixHeight").fixHeight();
+			// カラム固定: 行内リンクのイベント設定後・パーツ表示後に適用する(固定列の clone にイベントを複製し、表示状態で寸法を同期するため)
+			frozenColumns.refresh();
 		});
 	}
 });
