@@ -58,7 +58,7 @@ addNestRow_ColumnCallback("<%=StringUtil.escapeJavaScript(nestPropName) %>", "<%
 <%	} else { %>
 			const custom = {}; 
 <%	} %>
-			const option = $.extend(true, {}, defaults, custom);
+			const option = scriptContext.gem.richtext.quill.configureTableUp($.extend(true, {}, defaults, custom));
 
 			const editor = new Quill($container.get(0), option);
 			editor.on('text-change', function() {

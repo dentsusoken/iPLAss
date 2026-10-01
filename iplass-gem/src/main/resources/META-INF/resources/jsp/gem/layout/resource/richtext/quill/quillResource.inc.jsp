@@ -19,8 +19,27 @@
  --%>
 
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
-<script type="text/javascript" src="${staticContentPath}/webjars/quill/2.0.2/dist/quill.js?cv=${apiVersion}"></script>
-<link rel="stylesheet" href="${staticContentPath}/webjars/quill/2.0.2/dist/quill.snow.css?cv=${apiVersion}"/>
+<script type="text/javascript" src="${staticContentPath}/webjars/quill/2.0.3/dist/quill.js?cv=${apiVersion}"></script>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill/2.0.3/dist/quill.snow.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.2.1/dist/index.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.2.1/dist/table-creator.css?cv=${apiVersion}"/>
+<script>
+if (!scriptContext.gem.richtext) {
+	scriptContext.gem.richtext = {};
+}
+if (!scriptContext.gem.richtext.quill) {
+	scriptContext.gem.richtext.quill = {};
+}
+</script>
+<script type="importmap">
+{
+  "imports": {
+		"quill": "${staticContentPath}/scripts/gem/plugin/quill/quill-umd-shim.js?cv=${apiVersion}",
+    "quill-table-up": "${staticContentPath}/webjars/quill-table-up/3.2.1/dist/index.js?cv=${apiVersion}"
+  }
+}
+</script>
+<script type="module" src="${staticContentPath}/scripts/gem/plugin/quill/quill-table-up-register.js?cv=${apiVersion}"></script>
 
 <script>
 //元に戻す、やりなおすアイコンの登録
@@ -55,15 +74,28 @@ Quill.register(ColorStyle, true);
 Quill.register(SizeStyle, true);
 Quill.register(FontStyle, true);
 
-//デフォルトオプションの設定
-if (!scriptContext.gem.richtext) {
-	scriptContext.gem.richtext = {};
-	scriptContext.gem.richtext.quill = {};
-} else {
-	if (!scriptContext.gem.richtext.quill) {
-		scriptContext.gem.richtext.quill = {};
+// デフォルトのエディターオプションに表機能を追加する。
+scriptContext.gem.richtext.quill.configureTableUp = function(option) {
+	const tableUp = scriptContext.gem.richtext.quill.tableUp;
+	option.modules = option.modules || {};
+	option.modules[tableUp.TableUp.moduleName] = {
+		customSelect: tableUp.defaultCustomSelect,
+		modules: [
+			{ module: tableUp.TableSelection },
+			{ module: tableUp.TableMenuContextmenu },
+			{ module: tableUp.TableResizeLine },
+		],
+	};
+
+	const toolbar = option.modules.toolbar;
+	if (Array.isArray(toolbar)) {
+		toolbar.push([{ [tableUp.TableUp.toolName]: [] }]);
+	} else if (toolbar && Array.isArray(toolbar.container)) {
+		toolbar.container.push([{ [tableUp.TableUp.toolName]: [] }]);
 	}
-}
+	return option;
+};
+
 //デフォルトのツールバーオプション
 scriptContext.gem.richtext.quill.toolbarOptions = {
 	container: [

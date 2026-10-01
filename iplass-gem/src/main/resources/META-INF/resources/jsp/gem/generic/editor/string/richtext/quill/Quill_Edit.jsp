@@ -56,7 +56,7 @@ $(function() {
 <%	} else { %>
 		const custom = {}; 
 <%	} %>
-		const option = $.extend(true, {}, defaults, custom);
+		const option = scriptContext.gem.richtext.quill.configureTableUp($.extend(true, {}, defaults, custom));
 
 		const editor = new Quill($container.get(0), option);
 		const contents = editor.clipboard.convert({html:value});
