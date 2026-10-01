@@ -21,8 +21,8 @@
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 <script type="text/javascript" src="${staticContentPath}/webjars/quill/2.0.3/dist/quill.js?cv=${apiVersion}"></script>
 <link rel="stylesheet" href="${staticContentPath}/webjars/quill/2.0.3/dist/quill.snow.css?cv=${apiVersion}"/>
-<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.2.1/dist/index.css?cv=${apiVersion}"/>
-<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.2.1/dist/table-creator.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.6.0/dist/table-creator.css?cv=${apiVersion}"/>
 <script>
 if (!scriptContext.gem.richtext) {
 	scriptContext.gem.richtext = {};
@@ -34,8 +34,8 @@ if (!scriptContext.gem.richtext.quill) {
 <script type="importmap">
 {
   "imports": {
-		"quill": "${staticContentPath}/scripts/gem/plugin/quill/quill-umd-shim.js?cv=${apiVersion}",
-    "quill-table-up": "${staticContentPath}/webjars/quill-table-up/3.2.1/dist/index.js?cv=${apiVersion}"
+	"quill": "${staticContentPath}/scripts/gem/plugin/quill/quill-umd-shim.js?cv=${apiVersion}",
+	"quill-table-up": "${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.js?cv=${apiVersion}"
   }
 }
 </script>

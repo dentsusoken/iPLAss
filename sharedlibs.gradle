@@ -219,7 +219,7 @@ ext {
 		'org.webjars.npm:jquery-ui': '1.13.3',
 
 		'org.webjars.npm:quill': '2.0.3',
-		'org.webjars.npm:quill-table-up': '3.2.1',
+		'org.webjars.npm:quill-table-up': '3.6.0',
 
 		'org.webjars:font-awesome': '5.13.1',
 
