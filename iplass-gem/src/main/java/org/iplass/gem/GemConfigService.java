@@ -147,6 +147,9 @@ public class GemConfigService implements Service {
 	/** 参照型（SelectFilter）毎回検索件数 */
 	private int selectFilterSearchPageSize;
 
+	/** ReferencePropertyEditorのモーダル初期表示設定 */
+	private ReferenceModal referenceModal;
+
 	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
 	private boolean shallowCopyLobData;
 
@@ -260,6 +263,8 @@ public class GemConfigService implements Service {
 		bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize", Integer.class, 100);
 
 		selectFilterSearchPageSize = config.getValue("selectFilterSearchPageSizeDefault", Integer.class, 40);
+
+		referenceModal = config.getValue("referenceModal", ReferenceModal.class);
 
 		shallowCopyLobData = config.getValue("shallowCopyLobData", Boolean.class, false);
 
@@ -645,6 +650,30 @@ public class GemConfigService implements Service {
 	}
 
 	/**
+	 * ReferencePropertyEditorのモーダル初期表示幅を取得します。
+	 *
+	 * @return 幅（未設定または不正値の場合はnull）
+	 */
+	public Integer getReferenceModalWidth() {
+		if (referenceModal == null || referenceModal.getWidth() == null || referenceModal.getWidth() <= 0) {
+			return null;
+		}
+		return referenceModal.getWidth();
+	}
+
+	/**
+	 * ReferencePropertyEditorのモーダル初期表示高さを取得します。
+	 *
+	 * @return 高さ（未設定または不正値の場合はnull）
+	 */
+	public Integer getReferenceModalHeight() {
+		if (referenceModal == null || referenceModal.getHeight() == null || referenceModal.getHeight() <= 0) {
+			return null;
+		}
+		return referenceModal.getHeight();
+	}
+
+	/**
 	 * エンティティをコピーする際にLobデータをシャッローコピーするかを取得します。
 	 * @return エンティティをコピーする際にLobデータをシャッローコピーするか
 	 */
@@ -682,5 +711,26 @@ public class GemConfigService implements Service {
 	 */
 	public List<String> getPermitRolesToNoView() {
 		return permitRolesToNoView;
+	}
+
+	public static class ReferenceModal {
+		private Integer width;
+		private Integer height;
+
+		public Integer getWidth() {
+			return width;
+		}
+
+		public void setWidth(Integer width) {
+			this.width = width;
+		}
+
+		public Integer getHeight() {
+			return height;
+		}
+
+		public void setHeight(Integer height) {
+			this.height = height;
+		}
 	}
 }
