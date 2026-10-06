@@ -424,6 +424,28 @@ public class ViewUtil {
 
 	}
 
+	/**
+	 * ReferencePropertyEditorのモーダル初期表示幅を取得します。
+	 *
+	 * @return 幅（未設定の場合はnull）
+	 */
+	public static Integer getReferenceModalWidth() {
+		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
+		return gemConfigService.getReferenceModalWidth();
+	}
+
+	/**
+	 * ReferencePropertyEditorのモーダル初期表示高さを取得します。
+	 *
+	 * @return 高さ（未設定の場合はnull）
+	 */
+	public static Integer getReferenceModalHeight() {
+		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class);
+		return gemConfigService.getReferenceModalHeight();
+	}
+
 	public static boolean isCsvUploadAsync() {
 		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
 				.getService(GemConfigService.class);

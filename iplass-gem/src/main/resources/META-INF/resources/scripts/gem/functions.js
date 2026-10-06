@@ -655,6 +655,64 @@ $.fn.allInputCheck = function(){
 })(jQuery);
 
 /**
+ * 参照型モーダルの初期サイズオプション取得
+ * modalWindow、subModalWindowで共通利用
+ *
+ * 参照型のトリガーの場合のみ、以下の優先順でサイズを返す
+ * 1. トリガーのdata-dialog-width/data-dialog-height属性
+ * 2. GemConfigServiceのreferenceModal設定(scriptContext.gem.referenceModal)
+ * 未設定の場合は空オブジェクトを返す(各プラグインのデフォルトを利用)
+ */
+(function($){
+	function toPositiveNumber(value) {
+		const num = Number(value);
+		if (!isNaN(num) && num > 0) {
+			return num;
+		}
+		return null;
+	}
+
+	function isReferenceModalTrigger($el) {
+		if ($el.attr("data-reference-modal") === "true") {
+			return true;
+		}
+
+		const id = $el.attr("id") || "";
+		if ($el.hasClass("sel-btn") || $el.hasClass("ins-btn")
+				|| id.indexOf("sel_btn_") === 0 || id.indexOf("ins_btn_") === 0) {
+			return true;
+		}
+
+		return $el.hasClass("modal-lnk")
+			&& ($el.attr("data-linkId")
+				|| $el.closest("li.list-add").length > 0
+				|| $el.closest("ul[id^='ul_']").length > 0);
+	}
+
+	$.fn.referenceModalOption = function() {
+		const $el = this.first();
+		if (!$el.length || !isReferenceModalTrigger($el)) {
+			return {};
+		}
+
+		const config = scriptContext && scriptContext.gem ? scriptContext.gem.referenceModal : null;
+		const width = toPositiveNumber($el.attr("data-dialog-width"))
+			|| toPositiveNumber(config && config.width);
+		const height = toPositiveNumber($el.attr("data-dialog-height"))
+			|| toPositiveNumber(config && config.height);
+
+		const option = {};
+		if (width != null) {
+			option.dialogWidth = width;
+		}
+		if (height != null) {
+			option.dialogHeight = height;
+		}
+		return option;
+	};
+})(jQuery);
+
+/**
  * モーダルウィンドウ
  *
  * [オプション]
@@ -682,6 +740,7 @@ $.fn.allInputCheck = function(){
 
 		return this.each(function(){
 			const $this = $(this);
+			let runtimeOptions = $.extend({}, options);
 			const $document = $(document);
 			const $window = $(window);
 			const $overlay = $document.find(options.overlay);
@@ -692,7 +751,7 @@ $.fn.allInputCheck = function(){
 
 			const fade = {
 				show : function() {
-					$under.height(options.dialogHeight);
+					$under.height(runtimeOptions.dialogHeight);
 					$overlay.fadeIn(options.speed);
 					$under.fadeIn(options.speed);
 					scriptContext.overlayManager.addOverlay($overlay);
@@ -712,8 +771,10 @@ $.fn.allInputCheck = function(){
 				//maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
 
+				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+
 				$under.removeClass("unresizable");
-				if (options.resizable == false) {
+				if (runtimeOptions.resizable == false) {
 					$under.addClass("unresizable");
 				}
 
@@ -804,7 +865,7 @@ $.fn.allInputCheck = function(){
 					const windowHeight = $window.height();
 					const windowWidth = $window.width();
 
-					let dialogHeight = options.dialogHeight;
+					let dialogHeight = runtimeOptions.dialogHeight;
 					//windowの高さより大きい場合はwindowの高さに設定
 					if (dialogHeight > (windowHeight -80)) {
 						dialogHeight = windowHeight -80;
@@ -819,10 +880,10 @@ $.fn.allInputCheck = function(){
 
 					$under.css({
 						height: dialogHeight,
-						width: options.dialogWidth,
+						width: runtimeOptions.dialogWidth,
 						top: $document.scrollTop() + 20,
 						left: "auto",
-						marginLeft:(windowWidth - options.dialogWidth - 30)/2
+						marginLeft: (windowWidth - runtimeOptions.dialogWidth - 30) / 2,
 					});
 					$frame.height(frameHeight);
 				}
@@ -857,10 +918,11 @@ $.fn.allInputCheck = function(){
 		const $overlay = $under.prev();
 
 		const options = $.extend(defaults, option);
+		let runtimeOptions = $.extend({}, options);
 
 		const fade = {
 			show : function() {
-				$under.height(options.dialogHeight);
+				$under.height(runtimeOptions.dialogHeight);
 				$overlay.fadeIn(options.speed);
 				$under.fadeIn(options.speed);
 				rootDocument.scriptContext.overlayManager.addOverlay($overlay);
@@ -923,8 +985,10 @@ $.fn.allInputCheck = function(){
 				// maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
 
+				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+
 				$under.removeClass("unresizable");
-				if (options.resizable == false) {
+				if (runtimeOptions.resizable == false) {
 					$under.addClass("unresizable");
 				}
 
@@ -975,7 +1039,7 @@ $.fn.allInputCheck = function(){
 				const windowHeight = $rootWindow.height();
 				const windowWidth = $rootWindow.width();
 
-				let dialogHeight = options.dialogHeight;
+				let dialogHeight = runtimeOptions.dialogHeight;
 				//windowの高さより大きい場合はwindowの高さに設定
 				if (dialogHeight > (windowHeight -80)) {
 					dialogHeight = windowHeight -80;
@@ -990,10 +1054,10 @@ $.fn.allInputCheck = function(){
 
 				$under.css({
 					height: dialogHeight,
-					width: options.dialogWidth,
+					width: runtimeOptions.dialogWidth,
 					top: $rootWindow.scrollTop() + 20,
-					left:"auto",
-					marginLeft:(windowWidth - options.dialogWidth - 30)/2
+					left: "auto",
+					marginLeft: (windowWidth - runtimeOptions.dialogWidth - 30) / 2,
 				});
 				$frame.height(frameHeight);
 			}
