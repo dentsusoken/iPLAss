@@ -578,7 +578,7 @@ function <%=toggleInsBtnFunc%>() {
 					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
 					+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
  id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
@@ -601,7 +601,7 @@ function <%=toggleInsBtnFunc%>() {
 					+ ", false"  
 					+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
  id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
@@ -640,7 +640,10 @@ function <%=toggleInsBtnFunc%>() {
 				
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" id="<c:out value="<%=selBtnId %>"/>" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>"
+data-propName="
+<c:out value="<%=propName %>" />" />
 <script type="text/javascript">
 $(function() {
 	var callback = function(entityList, deleteList, propName) {
@@ -704,7 +707,9 @@ $(function() {
 				String insBtnStyle = "";
 				if (pd.getMultiplicity() != -1 && entityList.size() >= pd.getMultiplicity()) insBtnStyle = "display: none;";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}"
+	class="gr-btn-02 modal-btn ins-btn" data-reference-modal="true" id="<c:out value=" <%=insBtnId %>"/>" style="
+<c:out value="<%=insBtnStyle %>" />" />
 <script type="text/javascript">
 $(function() {
 	var callback = function(entity, propName) {
@@ -1136,7 +1141,7 @@ function <%=toggleInsBtnFunc%>() {
 					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'" 
 					+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
  id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
@@ -1159,7 +1164,7 @@ function <%=toggleInsBtnFunc%>() {
 					+ ", false"  
 					+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
  id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" 
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
@@ -1222,7 +1227,9 @@ function <%=toggleInsBtnFunc%>() {
 				String insBtnStyle = "";
 				if (pd.getMultiplicity() != -1 && entityList.size() >= pd.getMultiplicity()) insBtnStyle = "display: none;";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>"/>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}"
+	class="gr-btn-02 modal-btn ins-btn" data-reference-modal="true" id="<c:out value=" <%=insBtnId %>"/>" style="
+<c:out value="<%=insBtnStyle %>" />"/>
 <script type="text/javascript">
 $(function() {
 	var callback = function(entity, propName) {
@@ -1445,14 +1452,18 @@ $(function() {
 			if (!hideSelectButton) {
 				String selBtnId = "sel_btn_" + propName + i;
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" id="<c:out value="<%=selBtnId %>"/>" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>"
+data-propName="
+<c:out value="<%=propName %>" />" />
 <%
 			}
 
 			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 				String insBtnId = "ins_btn_" + propName + i;
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>"
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}"
+	class="gr-btn-02 modal-btn ins-btn" data-reference-modal="true" id="<c:out value=" <%=insBtnId %>"/>"
  data-parentOid="<c:out value="<%=StringUtil.escapeJavaScript(parentOid)%>"/>"
  data-parentVersion="<c:out value="<%=StringUtil.escapeJavaScript(parentVersion)%>"/>"
 />
@@ -1478,7 +1489,11 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=linkDisplayStyle%>"/> <c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>"/>"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=linkDisplayStyle%>" />
+	<c:out value="<%=customStyle%>" />"
   onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
@@ -1536,13 +1551,15 @@ $(function() {
 <%
 		if (!hideSelectButton) {
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 <%
 		}
 
 		if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn"
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}"
+	class="gr-btn-02 modal-btn ins-btn" data-reference-modal="true"
  data-parentOid="<c:out value="<%=StringUtil.escapeJavaScript(parentOid)%>"/>"
  data-parentVersion="<c:out value="<%=StringUtil.escapeJavaScript(parentVersion)%>"/>"
 />
@@ -1551,7 +1568,8 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+	<%=customStyle%>"/>"></a>
 <%
 
 		if (!hideDeleteButton && updatable) {
