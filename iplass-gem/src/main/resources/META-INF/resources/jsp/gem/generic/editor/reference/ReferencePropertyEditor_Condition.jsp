@@ -738,7 +738,10 @@ $(function() {
 					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
@@ -781,7 +784,10 @@ $(function() {
 					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
@@ -808,7 +814,8 @@ $(function() {
 		String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, null, UrlParameterActionType.SELECT);
 		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -937,7 +944,10 @@ $(function() {
 					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>" />
@@ -974,7 +984,10 @@ $(function() {
 					+ ")";
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1184,10 +1197,14 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>"/></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1246,10 +1263,14 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1288,10 +1309,12 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName%>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName%>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+	<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
 </span>
@@ -1325,10 +1348,12 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+	<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </span>
 <input type="hidden"/>
