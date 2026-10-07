@@ -237,6 +237,8 @@ $(function() {
 			String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
 			if (isDispProperty(defName, pd, property)) {
+				// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+				String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					String width = "";
@@ -256,8 +258,6 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
-					// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
-					String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
@@ -283,8 +283,6 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
-						// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
-						String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%

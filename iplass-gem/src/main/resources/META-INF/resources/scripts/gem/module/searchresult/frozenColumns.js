@@ -76,7 +76,7 @@
 			this.displayNames = new Map(colModel.map(col => [col.name, this.toPlainText(col.label) || col.name]));
 			// 「列を固定」指定列(frozen:true)の列名。colModel の frozen は固定適用時に書き換わるため初期化時に確定する
 			this.initiallyFrozenColumns = colModel
-					.filter(col => !SYSTEM_COLUMNS.has(col.name) && col.frozen === true)
+					.filter(col => col.frozen === true && !SYSTEM_COLUMNS.has(col.name))
 					.map(col => col.name);
 			// 基準列(固定が有効な列)。解除中は null
 			this.baseColumnName = this.loadBaseColumnName();

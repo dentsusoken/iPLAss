@@ -317,6 +317,8 @@ $(function() {
 			String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
 			if (isDispProperty(defName, pd, property)) {
+				// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+				String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					String width = "";
@@ -336,8 +338,6 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
-					// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
-					String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -359,8 +359,6 @@ $(function() {
 					if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
-					// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
-					String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -387,8 +385,6 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
-						// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
-						String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
