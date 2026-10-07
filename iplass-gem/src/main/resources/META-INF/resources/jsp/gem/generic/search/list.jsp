@@ -256,8 +256,8 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
-					// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
-					String frozen = property.isFrozen() ? ", frozen:true" : "";
+					// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+					String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
@@ -283,8 +283,8 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
-						// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
-						String frozen = property.isFrozen() ? ", frozen:true" : "";
+						// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+						String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
@@ -301,7 +301,6 @@ $(function() {
 						request.removeAttribute("nestProperty");
 						request.removeAttribute("nestStyle");
 						request.removeAttribute("nestEditor");
-						request.removeAttribute("frozenColNum");
 					}
 				}
 			}
@@ -381,10 +380,13 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		}
 	});
 
-	// カラム固定: colModel 確定後に初期化する(固定の適用は検索結果の描画後)
-	const frozenColumns = $table.frozenColumns({
-		storageKey: "frozenColumns_topview_<%=frozenKeyPrefix%>_${m:escJs(MetaEntityListParts_entityListParts.defName)}_${m:escJs(MetaEntityListParts_entityListParts.viewName)}_${m:escJs(MetaEntityListParts_entityListParts.filterName)}"
-	});
+	// カラム固定: colModel 確定後に初期化する(固定の適用は検索結果の描画後)。Section がカラム固定を許可していない場合は初期化しない
+	// freezeLabel/unfreezeLabel は Pin の操作ラベル({0}=表示列名。frozenColumns.js で埋め込む)
+	const frozenColumns = <%=section.isFrozenEnabled()%> ? $table.frozenColumns({
+		storageKey: "frozenColumns_topview_<%=frozenKeyPrefix%>_${m:escJs(MetaEntityListParts_entityListParts.defName)}_${m:escJs(MetaEntityListParts_entityListParts.viewName)}_${m:escJs(MetaEntityListParts_entityListParts.filterName)}",
+		freezeLabel: "${m:escJs(m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.freezeColumn'))}",
+		unfreezeLabel: "${m:escJs(m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.unfreezeColumn'))}"
+	}) : null;
 
 	var offset = 0;
 	var limit = <%=limit%>;
@@ -530,7 +532,9 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			$("#topview-parts-id_${partsCnt}").show();
 			$(".fixHeight").fixHeight();
 			// カラム固定: 行内リンクのイベント設定後・パーツ表示後に適用する(固定列の clone にイベントを複製し、表示状態で寸法を同期するため)
-			frozenColumns.refresh();
+			if (frozenColumns != null) {
+				frozenColumns.refresh();
+			}
 		});
 	}
 });

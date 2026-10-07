@@ -21,18 +21,25 @@
 /*
  * 検索結果一覧(jqGrid)のカラム固定
  *
- * - AdminConsole「列の固定を許可」された列(colModel に frozen:true で出力された列)すべてにピンを表示する。
+ * - SearchResultSection の「固定指定を許可」が ON の画面でのみ JSP から初期化される(OFF の場合はピンも固定も動作しない)。
+ * - システム列(選択欄・詳細リンク等)を除くすべてのユーザー列にピンを表示する。
  * - 固定が有効になるのは 1 列(基準列)のみで、基準列とその左側の列をすべて固定する。
- *   初期表示の基準列は許可列のうち最も右側の列とする。
+ *   初期表示の基準列は「列を固定」指定された列(colModel に frozen:true で出力された列)のうち最も右側の列とする。
+ *   指定された列がない場合は固定なしで表示する。
  * - ピン操作: 基準列以外のピンを押すとその列が基準列になる(他のピンは OFF)。基準列のピンを押すと固定を全解除する。
- * - 基準列(解除状態を含む)は SessionStorage に保存し、同一キーの画面を再表示した際に復元する。
- *   保存された列が許可列でなくなっている場合は最も右側の許可列とする。
+ * - ピンの支援技術への通知: 操作ラベル(freezeLabel/unfreezeLabel。{0}=表示列名)と aria-pressed(基準列の ON/OFF)を
+ *   基準列の切替(ピン押下・初期化・SessionStorage 復元のすべて)に同期する。属性は固定表頭の clone 側にも複製される。
+ * - 全列が表示領域に収まる場合はピンを無効化する(aria-disabled + tabindex=-1 で Tab 到達・キー操作を不可能にし、
+ *   無効化された瞬間にフォーカス中のピンからはフォーカスを外す。見た目は CSS クラスで制御)。
+ * - 基準列(解除状態を含む)は SessionStorage に保存し、同一キーの画面を再表示した際に復元する(開発者の初期固定指定より優先)。
+ *   保存された列が定義から消えた場合は固定なしとする。
  *
  */
 (function($) {
 
 	// 固定範囲の算出対象外とするシステム列(選択欄・詳細リンク等)。colModel で frozen:true が指定され常に固定される
-	const SYSTEM_COLUMNS = new Set(["orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"]);
+	// cb は multiselect(true) 時に jqGrid が自動追加するチェックボックス列
+	const SYSTEM_COLUMNS = new Set(["cb", "orgOid", "orgVersion", "orgTimestamp", "selOid", "_mtpDetailLink"]);
 
 	// window resize 連続発火時の過剰実行を抑止するための待機時間(ms)
 	const RESIZE_DEBOUNCE_MILLIS = 200;
@@ -49,11 +56,15 @@
 		 * @param options
 		 *   storageKey: 固定状態を SessionStorage に保存するキー
 		 *   containerSelector: ピン操作可否の判定基準となるコンテナ(gbox の祖先要素)のセレクタ。未指定時は gbox の親要素
+		 *   freezeLabel: 非基準列ピンの操作ラベル({0}=表示列名)。JSP 経由で mtp-gem-messages の文言が渡される
+		 *   unfreezeLabel: 基準列ピンの操作ラベル({0}=表示列名)
 		 */
 		constructor($grid, options) {
 			this.$grid = $grid;
 			this.storageKey = options.storageKey;
 			this.containerSelector = options.containerSelector;
+			this.freezeLabel = options.freezeLabel || "Freeze {0}";
+			this.unfreezeLabel = options.unfreezeLabel || "Unfreeze {0}";
 			this.resizeTimerId = null;
 
 			const colModel = $grid.jqGrid("getGridParam", "colModel");
@@ -61,8 +72,10 @@
 			this.userColumns = colModel
 					.filter(col => !SYSTEM_COLUMNS.has(col.name))
 					.map(col => col.name);
-			// 許可列(frozen:true)の列名。colModel の frozen は固定適用時に書き換わるため初期化時に確定する
-			this.permittedColumns = colModel
+			// ピンの操作ラベルに埋め込む表示列名。colModel の label は HTML 断片のためテキストを抽出する(空の場合は列名で代用)
+			this.displayNames = new Map(colModel.map(col => [col.name, this.toPlainText(col.label) || col.name]));
+			// 「列を固定」指定列(frozen:true)の列名。colModel の frozen は固定適用時に書き換わるため初期化時に確定する
+			this.initiallyFrozenColumns = colModel
 					.filter(col => !SYSTEM_COLUMNS.has(col.name) && col.frozen === true)
 					.map(col => col.name);
 			// 基準列(固定が有効な列)。解除中は null
@@ -85,7 +98,7 @@
 		 * clone 生成時にイベントハンドラも複製されるため、行内リンク等のイベント設定後に呼び出すこと。
 		 */
 		refresh() {
-			if (this.permittedColumns.length === 0) return;
+			if (this.userColumns.length === 0) return;
 			this.apply();
 			this.updatePinDisabled();
 		}
@@ -106,7 +119,7 @@
 			for (const col of colModel) {
 				const pos = this.userColumns.indexOf(col.name) + 1;
 				if (pos === 0) continue;
-				// 基準列より左の列は「列の固定を許可」されていなくても固定し、固定領域を連続させる
+				// 基準列より左の列は「列を固定」指定されていなくても固定し、固定領域を連続させる
 				const shouldFreeze = pos <= frozenColumnCount;
 				if (col.frozen !== shouldFreeze) {
 					this.$grid.jqGrid("setColProp", col.name, { frozen: shouldFreeze });
@@ -155,14 +168,14 @@
 			this.saveBaseColumnName();
 		}
 
-		// 許可列の主表頭にピンを設置し、基準列のピンのみ ON にする
+		// 全ユーザー列の主表頭にピンを設置し、基準列のピンのみ ON にする
 		refreshPins() {
 			const colModel = this.$grid.jqGrid("getGridParam", "colModel");
 			// 主表頭のみ対象: fhDiv も .ui-jqgrid-hdiv class を持つため .frozen-div を除外
 			const $headers = this.$gbox().find(".ui-jqgrid-hdiv tr.ui-jqgrid-labels th").filter(function() {
 				return $(this).closest(".frozen-div").length === 0;
 			});
-			for (const colName of this.permittedColumns) {
+			for (const colName of this.userColumns) {
 				const $th = $headers.eq(colModel.findIndex(col => col.name === colName));
 				if ($th.length === 0) continue;
 
@@ -180,6 +193,8 @@
 				}
 				// 基準列はON(常時表示)、それ以外はOFF(hover 時のみ表示)
 				$pin.toggleClass("mtp-pin-on", colName === this.baseColumnName);
+				// 操作ラベル(固定/解除)と aria-pressed を基準列の ON/OFF に同期する(生成直後・切替直後の両方で通る)
+				this.updatePinA11y($pin, colName);
 			}
 		}
 
@@ -187,21 +202,38 @@
 			const $pin = $("<a/>").attr({
 				href: "javascript:void(0)",
 				"class": "mtp-col-pin",
-				"data-colname": colName,
-				"aria-label": colName
+				"data-colname": colName
 			}).append($("<i/>").addClass("fas fa-thumbtack"));
 			// th の jqGrid クリック処理が伝播を断つため document 委譲でなく直接結合する(clone 側へも handler が複製される)
 			$pin.on("click", e => {
 				e.preventDefault();
 				e.stopPropagation();
+				// 無効化(全列が表示領域に収まる)状態のピンは操作しない。currentTarget で本体/clone の実際に押された側を判定する
+				if ($(e.currentTarget).hasClass("mtp-pin-disabled")) return;
 				this.select(colName);
 			});
 			return $pin;
 		}
 
+		// ピンの支援技術向け属性を更新する。ラベルは基準列かどうかで「固定する/固定を解除する」に切り替わる
+		updatePinA11y($pin, colName) {
+			const on = colName === this.baseColumnName;
+			const label = (on ? this.unfreezeLabel : this.freezeLabel)
+					.replace("{0}", this.displayNames.get(colName) || colName);
+			$pin.attr({
+				"aria-label": label,
+				"aria-pressed": on ? "true" : "false"
+			});
+		}
+
+		// colModel の label(HTML 断片)から表示列名としてのテキストを抽出する
+		toPlainText(html) {
+			return html ? $("<div/>").html(html).text().trim() : "";
+		}
+
 		// 全列が表示領域に収まる(横スクロール無し)場合はピンを操作不可とする
 		updatePinDisabled() {
-			if (this.permittedColumns.length === 0) return;
+			if (this.userColumns.length === 0) return;
 			const $gbox = this.$gbox();
 			if ($gbox.length === 0) return;
 			let totalColumnWidth = 0;
@@ -215,15 +247,30 @@
 			const $container = this.containerSelector ? $gbox.closest(this.containerSelector) : $gbox.parent();
 			const availableWidth = $container.width() || $gbox.parent().width() || 0;
 			// +1 は幅の小数丸めによる 1px 未満の誤差を許容するためのマージン
-			$gbox.find(".mtp-col-pin").toggleClass("mtp-pin-disabled", totalColumnWidth <= availableWidth + 1);
+			const disabled = totalColumnWidth <= availableWidth + 1;
+			// 主表頭と固定表頭(clone)の両方のピンに反映する
+			const $pins = $gbox.find(".mtp-col-pin").toggleClass("mtp-pin-disabled", disabled);
+			if (disabled) {
+				// Tab 到達・キー操作を不可能にする(CSS の pointer-events はマウス操作のみで、フォーカス可否は tabindex で制御する)
+				$pins.attr("aria-disabled", "true").attr("tabindex", "-1");
+				// リサイズで無効化された瞬間にフォーカス中のピンがあればフォーカスを外す
+				if ($pins.is(document.activeElement)) {
+					document.activeElement.blur();
+				}
+			} else {
+				$pins.removeAttr("aria-disabled").removeAttr("tabindex");
+			}
 		}
 
-		// SessionStorage に保存された基準列を返す。未保存・許可列以外の場合は最も右の許可列(許可列が無い場合は null)
+		// 基準列の初期値を決定する。
+		// SessionStorage に保存された基準列(ユーザー操作)を優先し、保存されていない場合は「列を固定」指定列の最も右側の列とする。
+		// 保存された列が現在のユーザー列に存在しない(定義から消えた)場合と指定列がない場合は固定なし(null)とする。
 		loadBaseColumnName() {
 			const stored = getSessionStorage(this.storageKey);
 			if (stored === UNFROZEN_VALUE) return null;
-			if (this.permittedColumns.includes(stored)) return stored;
-			return this.permittedColumns.length > 0 ? this.permittedColumns[this.permittedColumns.length - 1] : null;
+			if (stored != null) return this.userColumns.includes(stored) ? stored : null;
+			return this.initiallyFrozenColumns.length > 0
+					? this.initiallyFrozenColumns[this.initiallyFrozenColumns.length - 1] : null;
 		}
 
 		saveBaseColumnName() {

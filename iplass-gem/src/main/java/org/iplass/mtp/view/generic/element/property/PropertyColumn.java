@@ -76,15 +76,16 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 	)
 	private TextAlign textAlign;
 
-	/** 列の固定を許可 */
+	/** 列を固定(初期固定の指定) */
 	@MetaFieldInfo(
-			displayName = "列の固定を許可",
+			displayName = "列を固定",
 			displayNameKey = "generic_element_property_PropertyColumn_frozenDisplayNameKey",
 			inputType = InputType.CHECKBOX,
 			displayOrder = 415,
-			description = "検索結果一覧での列の固定を許可します。<br>" +
-					"許可した列にはピンが表示され、ピンを押した列とその左側の列がすべて固定されます(固定の基準となるのは1列のみ)。<br>" +
-					"初期表示では許可した列のうち最も右側の列を基準として固定され、基準列のピンを押すと固定が解除されます。",
+			description = "検索結果一覧の初期表示でこの列を固定します。<br>" +
+					"検索結果セクションの「固定指定を許可」が有効な場合にのみ機能します。<br>" +
+					"複数の列に指定した場合は最も右側の列が基準となり、基準列とその左側の列がすべて固定されます。<br>" +
+					"ユーザーのピン操作はこの設定より優先されます。",
 			descriptionKey = "generic_element_property_PropertyColumn_frozenDescriptionKey"
 	)
 	private boolean frozen;
@@ -243,16 +244,16 @@ public class PropertyColumn extends PropertyBase implements FileItem, SortItem {
 	}
 
 	/**
-	 * 列の固定を許可するかを取得します。
-	 * @return 列の固定を許可するか
+	 * 初期固定の指定をするかを取得します。
+	 * @return 初期固定の指定をするか
 	 */
 	public boolean isFrozen() {
 		return frozen;
 	}
 
 	/**
-	 * 列の固定を許可するかを設定します。
-	 * @param frozen 列の固定を許可するか
+	 * 初期固定の指定をするかを設定します。
+	 * @param frozen 初期固定の指定をするか
 	 */
 	public void setFrozen(boolean frozen) {
 		this.frozen = frozen;

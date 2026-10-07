@@ -222,7 +222,7 @@
 <script type="text/javascript">
 var $pager = null;
 var grid = null;
-// カラム固定の制御オブジェクト(frozenColumns.js)。一般検索画面(SEARCHRESULT)のみ設定する
+// カラム固定の制御オブジェクト(frozenColumns.js)。一般検索画面(SEARCHRESULT)かつ Section がカラム固定を許可している場合のみ設定する
 let frozenColumns = null;
 var isloaded = false;
 var keepSelectAllStatus = false;
@@ -336,8 +336,8 @@ $(function() {
 					if (property.getEditor() != null && property.getEditor().isHide()) {
 						hidden = ", hidden:true";
 					}
-					// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
-					String frozen = property.isFrozen() ? ", frozen:true" : "";
+					// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+					String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -359,8 +359,8 @@ $(function() {
 					if (!property.isSortable() || !ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
-					// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
-					String frozen = property.isFrozen() ? ", frozen:true" : "";
+					// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+					String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -387,8 +387,8 @@ $(function() {
 						if (property.getEditor() != null && property.getEditor().isHide()) {
 							hidden = ", hidden:true";
 						}
-						// 「列の固定を許可」列は frozen:true を出力する(ピンで固定の基準列に選択可能となる。frozenColumns.js 参照)
-						String frozen = property.isFrozen() ? ", frozen:true" : "";
+						// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+						String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%><%=align%>, cellattr: cellAttrFunc});
@@ -625,12 +625,15 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 	});
 <%
-	if (OutputType.SEARCHRESULT == type) {
+	if (OutputType.SEARCHRESULT == type && section.isFrozenEnabled()) {
 %>
-	// カラム固定: colModel 確定後に初期化する(固定の適用は検索結果の描画後)
+	// カラム固定: colModel 確定後に初期化する(固定の適用は検索結果の描画後)。Section がカラム固定を許可していない場合は初期化しない
+	// freezeLabel/unfreezeLabel は Pin の操作ラベル({0}=表示列名。frozenColumns.js で埋め込む)
 	frozenColumns = $("#searchResult").frozenColumns({
 		storageKey: "frozenColumns_<%=frozenKeyPrefix%>_<%=StringUtil.escapeJavaScript(defName)%>_<%=StringUtil.escapeJavaScript(viewName)%>",
-		containerSelector: ".result-data"
+		containerSelector: ".result-data",
+		freezeLabel: "<%=StringUtil.escapeJavaScript(GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.freezeColumn"))%>",
+		unfreezeLabel: "<%=StringUtil.escapeJavaScript(GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.unfreezeColumn"))%>"
 	});
 <%
 	}
