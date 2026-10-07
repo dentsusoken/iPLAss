@@ -834,7 +834,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 						+ ")";
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk"
+<a href="javascript:void(0);" class="modal-lnk" data-reference-modal="true"
  onclick="<c:out value="<%=editReference %>"/>">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
@@ -869,7 +869,7 @@ $(function() {
 	scriptContext[dynamicParamCallbackKey] = dynamicParamCallback;
 });
 </script>
-<a href="javascript:void(0);" class="modal-lnk"
+<a href="javascript:void(0);" class="modal-lnk" data-reference-modal="true"
  onclick="<c:out value="<%=viewEditableReference %>"/>">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
 </td>
@@ -1154,7 +1154,7 @@ $(function() {
 	scriptContext[dynamicParamCallbackKey] = dynamicParamCallback;
 });
 </script>
-<a href="javascript:void(0);" class="modal-lnk"
+<a href="javascript:void(0);" class="modal-lnk" data-reference-modal="true"
  onclick="<c:out value="<%=viewEditableReference %>"/>"><%= GemResourceBundleUtil.resourceString(strKey) %></a>
 </td>
 <%
@@ -1262,7 +1262,11 @@ $(function() {
 
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
+<input type="button"
+	value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>"
+data-specVersionKey="
+<c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -1303,7 +1307,8 @@ $(function() {
 					}
 				}
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true" id="<c:out value=" <%=insBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
