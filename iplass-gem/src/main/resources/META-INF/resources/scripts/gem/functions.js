@@ -851,15 +851,15 @@ $.fn.allInputCheck = function(){
 
 					let dialogHeight = runtimeOptions.dialogHeight;
 					let dialogWidth = runtimeOptions.dialogWidth;
-          const maxDialogWidth = Math.max(windowWidth - 30, 0);
+					const maxDialogWidth = Math.max(windowWidth - 30, 0);
 					//windowの高さより大きい場合はwindowの高さに設定
 					if (dialogHeight > windowHeight - 80) {
-            dialogHeight = windowHeight - 80;
-          }
-          //windowの幅より大きい場合はwindowの幅に設定
-          if (dialogWidth > maxDialogWidth) {
-            dialogWidth = maxDialogWidth;
-          }
+						dialogHeight = windowHeight - 80;
+					}
+					//windowの幅より大きい場合はwindowの幅に設定
+					if (dialogWidth > maxDialogWidth) {
+						dialogWidth = maxDialogWidth;
+					}
 					//最小高さを200
 					if (dialogHeight < 200) {
 						dialogHeight = 200;
@@ -869,12 +869,12 @@ $.fn.allInputCheck = function(){
 					const frameHeight = dialogHeight - 49;
 
 					$under.css({
-            height: dialogHeight,
-            width: dialogWidth,
-            top: $document.scrollTop() + 20,
-            left: "auto",
-            marginLeft: (windowWidth - dialogWidth - 30) / 2,
-          });
+						height: dialogHeight,
+						width: dialogWidth,s's's
+						top: $document.scrollTop() + 20,
+						left: "auto",
+						marginLeft: (windowWidth - dialogWidth - 30) / 2,
+					});
 					$frame.height(frameHeight);
 				}
 			}
@@ -1031,15 +1031,15 @@ $.fn.allInputCheck = function(){
 
 				let dialogHeight = runtimeOptions.dialogHeight;
 				let dialogWidth = runtimeOptions.dialogWidth;
-        const maxDialogWidth = Math.max(windowWidth - 30, 0);
+				const maxDialogWidth = Math.max(windowWidth - 30, 0);
 				//windowの高さより大きい場合はwindowの高さに設定
 				if (dialogHeight > windowHeight - 80) {
-          dialogHeight = windowHeight - 80;
-        }
-        //windowの幅より大きい場合はwindowの幅に設定
-        if (dialogWidth > maxDialogWidth) {
-          dialogWidth = maxDialogWidth;
-        }
+					dialogHeight = windowHeight - 80;
+				}
+				//windowの幅より大きい場合はwindowの幅に設定
+				if (dialogWidth > maxDialogWidth) {
+					dialogWidth = maxDialogWidth;
+				}
 				//最小高さを200
 				if (dialogHeight < 200) {
 					dialogHeight = 200;
@@ -1049,12 +1049,12 @@ $.fn.allInputCheck = function(){
 				const frameHeight = dialogHeight - 49;
 
 				$under.css({
-          height: dialogHeight,
-          width: dialogWidth,
-          top: $rootWindow.scrollTop() + 20,
-          left: "auto",
-          marginLeft: (windowWidth - dialogWidth - 30) / 2,
-        });
+					height: dialogHeight,
+					width: dialogWidth,
+					top: $rootWindow.scrollTop() + 20,
+					left: "auto",
+					marginLeft: (windowWidth - dialogWidth - 30) / 2,
+				});
 				$frame.height(frameHeight);
 			}
 		}
