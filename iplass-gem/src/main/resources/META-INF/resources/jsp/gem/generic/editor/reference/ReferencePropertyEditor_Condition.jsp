@@ -754,7 +754,7 @@ $(function() {
 <%
 				}
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key%>" />"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
 </li>
 <%
 			}
