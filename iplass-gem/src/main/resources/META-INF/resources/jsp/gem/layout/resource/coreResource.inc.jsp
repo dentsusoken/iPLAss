@@ -38,9 +38,6 @@
 		language = "ja";
 	}
 	request.setAttribute("language", language);
-
-	Integer referenceModalWidth = ViewUtil.getReferenceModalWidth();
-	Integer referenceModalHeight = ViewUtil.getReferenceModalHeight();
 %>
 <script>
 contentPath = "${staticContentPath}";
@@ -51,8 +48,8 @@ document.scriptContext = scriptContext;
 scriptContext.gem = {};
 scriptContext.gem.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
 	scriptContext.gem.referenceModal = {
-		width: <%=String.valueOf(referenceModalWidth) %>,
-		height: <%=String.valueOf(referenceModalHeight) %>
+		width: <%=ViewUtil.getReferenceModalWidth() %>,
+		height: <%=ViewUtil.getReferenceModalHeight() %>
 };
 dType="/gem";
 </script>
