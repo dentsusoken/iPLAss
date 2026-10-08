@@ -1,8 +1,9 @@
 import TableUp, { defaultCustomSelect, TableSelection, TableMenuContextmenu, TableResizeLine } from "quill-table-up";
+import QuillResize from "quill-resize-module";
 const quill = window.Quill;
 
 if (!quill) {
-	throw new Error("Quill UMD must be loaded before quill-table-up.");
+	throw new Error("Quill UMD must be loaded before quill plugins.");
 }
 
 // quill-table-up 3.6.0 clears its table reference when the table is removed,
@@ -54,4 +55,16 @@ class TableResizeLineWithTableGuard extends TableResizeLine {
 }
 
 quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
+quill.register("modules/resize", QuillResize, true);
+
+// quill-resize-module 2.1.3 registers resize-inline and resize-block with the
+// same class key (ql-resize-style). The block attributor overwrites the inline
+// key in Parchment, so saved image alignment is imported as resize-block.
+const Parchment = quill.import("parchment");
+const ImageResizeAlignment = new Parchment.ClassAttributor("resize-inline", "ql-resize-style", {
+	scope: Parchment.Scope.INLINE,
+	whitelist: ["left", "center", "right", "full"],
+});
+quill.register(ImageResizeAlignment, true);
+
 window.scriptContext.gem.richtext.quill.tableUp = { TableUp, defaultCustomSelect, TableSelection: TableSelectionWithCleanup, TableMenuContextmenu, TableResizeLine: TableResizeLineWithTableGuard };

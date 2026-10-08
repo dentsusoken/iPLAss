@@ -220,6 +220,7 @@ ext {
 
 		'org.webjars.npm:quill': '2.0.3',
 		'org.webjars.npm:quill-table-up': '3.6.0',
+		'org.webjars.npm:quill-resize-module': '2.1.3',
 
 		'org.webjars:font-awesome': '5.13.1',
 

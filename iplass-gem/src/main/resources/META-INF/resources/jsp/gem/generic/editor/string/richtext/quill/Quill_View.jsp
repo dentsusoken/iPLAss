@@ -65,6 +65,9 @@ $(function() {
 		const custom = {}; 
 <%	} %>
 		const option = $.extend(true, {}, defaults, custom);
+		if (option.modules) {
+			delete option.modules.resize;
+		}
 
 		const editor = new Quill($container.get(0), option);
 		const contents = editor.clipboard.convert({html:value});

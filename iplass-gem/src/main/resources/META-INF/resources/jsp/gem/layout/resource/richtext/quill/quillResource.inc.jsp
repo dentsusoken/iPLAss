@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="${staticContentPath}/webjars/quill/2.0.3/dist/quill.snow.css?cv=${apiVersion}"/>
 <link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.css?cv=${apiVersion}"/>
 <link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.6.0/dist/table-creator.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-resize-module/2.1.3/dist/resize.css?cv=${apiVersion}"/>
 <script>
 if (!scriptContext.gem.richtext) {
 	scriptContext.gem.richtext = {};
@@ -35,11 +36,12 @@ if (!scriptContext.gem.richtext.quill) {
 {
   "imports": {
 	"quill": "${staticContentPath}/scripts/gem/plugin/quill/quill-umd-shim.js?cv=${apiVersion}",
-	"quill-table-up": "${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.js?cv=${apiVersion}"
+	"quill-table-up": "${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.js?cv=${apiVersion}",
+	"quill-resize-module": "${staticContentPath}/webjars/quill-resize-module/2.1.3/dist/resize.esm.js?cv=${apiVersion}"
   }
 }
 </script>
-<script type="module" src="${staticContentPath}/scripts/gem/plugin/quill/quill-table-up-register.js?cv=${apiVersion}"></script>
+<script type="module" src="${staticContentPath}/scripts/gem/plugin/quill/quill-plugin-register.js?cv=${apiVersion}"></script>
 
 <script>
 //元に戻す、やりなおすアイコンの登録
@@ -75,7 +77,7 @@ Quill.register(SizeStyle, true);
 Quill.register(FontStyle, true);
 
 // デフォルトのエディターオプションに表機能を追加する。
-scriptContext.gem.richtext.quill.configureTableUp = function(option) {
+scriptContext.gem.richtext.quill.configureQuillPlugins = function(option) {
 	const tableUp = scriptContext.gem.richtext.quill.tableUp;
 	option.modules = option.modules || {};
 	option.modules[tableUp.TableUp.moduleName] = {
@@ -86,6 +88,19 @@ scriptContext.gem.richtext.quill.configureTableUp = function(option) {
 			{ module: tableUp.TableResizeLine },
 		],
 	};
+	const resizeOptions = option.modules.resize || {};
+	option.modules.resize = $.extend(true, {}, resizeOptions, {
+		modules: resizeOptions.modules || ["DisplaySize", "Toolbar", "Resize", "Keyboard"],
+		embedTags: resizeOptions.embedTags || [],
+		parchment: {
+			image: $.extend(true, {
+				attribute: ["width"],
+				limit: { minWidth: 1 },
+			}, resizeOptions.parchment?.image || {}),
+		},
+	});
+	option.modules.uploader = option.modules.uploader || {};
+	option.modules.uploader.mimetypes = [];
 
 	const toolbar = option.modules.toolbar;
 	if (Array.isArray(toolbar)) {
@@ -108,7 +123,7 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 		["blockquote", "code-block"],
 		[{ "indent": "-1"}, { "indent": "+1" }],
 		[{ "align": [] }, { "direction": "rtl" }],
-		["link"],
+		["link", "image"],
 		["undo", "redo"],
 		["clean"],
 	],
@@ -118,6 +133,28 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 		},
 		redo: function(value) {
 			this.quill.history.redo();
+		},
+		image: function() {
+			const range = this.quill.getSelection(true);
+			const imageUrl = window.prompt("画像のURLを入力してください");
+			if (!range || imageUrl == null || imageUrl.trim() === "") {
+				return;
+			}
+
+			const url = imageUrl.trim();
+			try {
+				const parsedUrl = new URL(url, document.baseURI);
+				if (!/^https?:$/i.test(parsedUrl.protocol)) {
+					window.alert("HTTP(S)または相対URLを指定してください。");
+					return;
+				}
+			} catch (error) {
+				window.alert("有効な画像URLを指定してください。");
+				return;
+			}
+
+			this.quill.insertEmbed(range.index, "image", url, "user");
+			this.quill.setSelection(range.index + 1, 0, "user");
 		}
 	},
 }
