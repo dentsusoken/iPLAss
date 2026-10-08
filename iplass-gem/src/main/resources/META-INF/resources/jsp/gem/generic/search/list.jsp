@@ -27,6 +27,8 @@
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.List" %>
 <%@ page import="org.iplass.mtp.auth.AuthContext" %>
+<%@ page import="org.iplass.mtp.auth.User" %>
+<%@ page import="org.iplass.mtp.tenant.Tenant" %>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.*" %>
@@ -132,6 +134,13 @@
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
 	boolean canDelete = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.DELETE));
 
+	// カラム固定の永続化キー接頭辞(tenant/user 単位で分離)
+	Tenant frozenTenant = auth.getTenant();
+	User frozenUser = auth.getUser();
+	String frozenKeyPrefix = (frozenTenant != null ? frozenTenant.getId() : -1)
+			+ "." + (frozenUser != null ? frozenUser.getOid() : "anonymous");
+	frozenKeyPrefix = StringUtil.escapeJavaScript(frozenKeyPrefix);
+
 	//スタイルシートのクラス名
 	String cellStyle = "entity-list topview-parts";
 	if (StringUtil.isNotBlank(parts.getStyle())) {
@@ -228,6 +237,8 @@ $(function() {
 			String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
 			if (isDispProperty(defName, pd, property)) {
+				// Section の「固定指定を許可」が ON の場合のみ「列を固定」指定列に frozen:true を出力する(初期固定の指定。frozenColumns.js 参照)
+				String frozen = section.isFrozenEnabled() && property.isFrozen() ? ", frozen:true" : "";
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					String width = "";
@@ -248,7 +259,7 @@ $(function() {
 						hidden = ", hidden:true";
 					}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -273,7 +284,7 @@ $(function() {
 							hidden = ", hidden:true";
 						}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=frozen%><%=width%>, cellattr: cellAttrFunc});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -288,7 +299,6 @@ $(function() {
 						request.removeAttribute("nestProperty");
 						request.removeAttribute("nestStyle");
 						request.removeAttribute("nestEditor");
-						request.removeAttribute("frozenColNum");
 					}
 				}
 			}
@@ -367,6 +377,14 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			}
 		}
 	});
+
+	// カラム固定: colModel 確定後に初期化する(固定の適用は検索結果の描画後)。Section がカラム固定を許可していない場合は初期化しない
+	// freezeLabel/unfreezeLabel は Pin の操作ラベル({0}=表示列名。frozenColumns.js で埋め込む)
+	const frozenColumns = <%=section.isFrozenEnabled()%> ? $table.frozenColumns({
+		storageKey: "frozenColumns_topview_<%=frozenKeyPrefix%>_${m:escJs(MetaEntityListParts_entityListParts.defName)}_${m:escJs(MetaEntityListParts_entityListParts.viewName)}_${m:escJs(MetaEntityListParts_entityListParts.filterName)}",
+		freezeLabel: "${m:escJs(m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.freezeColumn'))}",
+		unfreezeLabel: "${m:escJs(m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.unfreezeColumn'))}"
+	}) : null;
 
 	var offset = 0;
 	var limit = <%=limit%>;
@@ -511,6 +529,10 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 			$("#topview-parts-id_${partsCnt}").show();
 			$(".fixHeight").fixHeight();
+			// カラム固定: 行内リンクのイベント設定後・パーツ表示後に適用する(固定列の clone にイベントを複製し、表示状態で寸法を同期するため)
+			if (frozenColumns != null) {
+				frozenColumns.refresh();
+			}
 		});
 	}
 });

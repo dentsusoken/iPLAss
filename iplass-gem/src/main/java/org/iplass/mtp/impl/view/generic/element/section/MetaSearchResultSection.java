@@ -72,6 +72,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 検索結果をまとめる設定 */
 	private boolean groupingData;
 
+	/** カラム固定を許可 */
+	private boolean frozenEnabled;
+
 	/** 編集リンク非表示設定 */
 	private boolean hideDetailLink;
 
@@ -206,6 +209,22 @@ public class MetaSearchResultSection extends MetaSection {
 	 */
 	public void setGroupingData(boolean groupingData) {
 		this.groupingData = groupingData;
+	}
+
+	/**
+	 * カラム固定を許可するかを取得します。
+	 * @return カラム固定を許可するか
+	 */
+	public boolean isFrozenEnabled() {
+		return frozenEnabled;
+	}
+
+	/**
+	 * カラム固定を許可するかを設定します。
+	 * @param frozenEnabled カラム固定を許可するか
+	 */
+	public void setFrozenEnabled(boolean frozenEnabled) {
+		this.frozenEnabled = frozenEnabled;
 	}
 
 	/**
@@ -601,6 +620,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.dispHeight = section.getDispHeight();
 		this.autoHeightAdjustMode = section.getAutoHeightAdjustMode();
 		this.groupingData = section.isGroupingData();
+		this.frozenEnabled = section.isFrozenEnabled();
 		this.hideDetailLink = section.isHideDetailLink();
 		this.checkEntityPermissionLimitConditionOfEditLink = section.isCheckEntityPermissionLimitConditionOfEditLink();
 		this.hideDelete = section.isHideDelete();
@@ -651,6 +671,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setDispHeight(this.dispHeight);
 		section.setAutoHeightAdjustMode(this.autoHeightAdjustMode);
 		section.setGroupingData(this.isGroupingData());
+		section.setFrozenEnabled(this.frozenEnabled);
 		section.setHideDetailLink(hideDetailLink);
 		section.setCheckEntityPermissionLimitConditionOfEditLink(checkEntityPermissionLimitConditionOfEditLink);
 		section.setHideDelete(hideDelete);
