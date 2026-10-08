@@ -82,6 +82,9 @@ scriptContext.gem.richtext.quill.configureQuillPlugins = function(option) {
 	option.modules = option.modules || {};
 	option.modules[tableUp.TableUp.moduleName] = {
 		customSelect: tableUp.defaultCustomSelect,
+		texts: function(key) {
+			return scriptContext.gem.locale.quill.tableUp[key];
+		},
 		modules: [
 			{ module: tableUp.TableSelection },
 			{ module: tableUp.TableMenuContextmenu },
@@ -136,7 +139,7 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 		},
 		image: function() {
 			const range = this.quill.getSelection(true);
-			const imageUrl = window.prompt("画像のURLを入力してください");
+			const imageUrl = window.prompt(scriptContext.gem.locale.quill.imageUrlPrompt);
 			if (!range || imageUrl == null || imageUrl.trim() === "") {
 				return;
 			}
@@ -145,11 +148,11 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 			try {
 				const parsedUrl = new URL(url, document.baseURI);
 				if (!/^https?:$/i.test(parsedUrl.protocol)) {
-					window.alert("HTTP(S)または相対URLを指定してください。");
+					window.alert(scriptContext.gem.locale.quill.imageUrlProtocolError);
 					return;
 				}
 			} catch (error) {
-				window.alert("有効な画像URLを指定してください。");
+				window.alert(scriptContext.gem.locale.quill.imageUrlInvalid);
 				return;
 			}
 
