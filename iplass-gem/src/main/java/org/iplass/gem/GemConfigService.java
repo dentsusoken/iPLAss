@@ -655,10 +655,8 @@ public class GemConfigService implements Service {
 	 * @return 幅（未設定または不正値の場合はnull）
 	 */
 	public Integer getReferenceModalWidth() {
-		if (referenceModal == null || referenceModal.getWidth() == null || referenceModal.getWidth() <= 0) {
-			return null;
-		}
-		return referenceModal.getWidth();
+		Integer width = referenceModal == null ? null : referenceModal.getWidth();
+		return width == null || width <= 0 ? null : width;
 	}
 
 	/**
@@ -667,10 +665,8 @@ public class GemConfigService implements Service {
 	 * @return 高さ（未設定または不正値の場合はnull）
 	 */
 	public Integer getReferenceModalHeight() {
-		if (referenceModal == null || referenceModal.getHeight() == null || referenceModal.getHeight() <= 0) {
-			return null;
-		}
-		return referenceModal.getHeight();
+		Integer height = referenceModal == null ? null : referenceModal.getHeight();
+		return height == null || height <= 0 ? null : height;
 	}
 
 	/**

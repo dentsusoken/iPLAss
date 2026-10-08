@@ -430,9 +430,9 @@ public class ViewUtil {
 	 * @return 幅（未設定の場合はnull）
 	 */
 	public static Integer getReferenceModalWidth() {
-		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
-				.getService(GemConfigService.class);
-		return gemConfigService.getReferenceModalWidth();
+		return ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class)
+				.getReferenceModalWidth();
 	}
 
 	/**
@@ -441,9 +441,9 @@ public class ViewUtil {
 	 * @return 高さ（未設定の場合はnull）
 	 */
 	public static Integer getReferenceModalHeight() {
-		GemConfigService gemConfigService = ServiceRegistry.getRegistry()
-				.getService(GemConfigService.class);
-		return gemConfigService.getReferenceModalHeight();
+		return ServiceRegistry.getRegistry()
+				.getService(GemConfigService.class)
+				.getReferenceModalHeight();
 	}
 
 	public static boolean isCsvUploadAsync() {

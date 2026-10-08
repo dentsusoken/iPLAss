@@ -741,7 +741,7 @@ $(function() {
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
 	data-linkId="
 	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle%>" />"
+	<c:out value="<%=customStyle %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
@@ -754,7 +754,7 @@ $(function() {
 <%
 				}
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
+<input type="hidden" name="<c:out value=" <%=propName %>"/>" value="<c:out value="<%=key%>" />"/>
 </li>
 <%
 			}
@@ -787,7 +787,7 @@ $(function() {
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
 	data-linkId="
 	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle%>" />"
+	<c:out value="<%=customStyle %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
@@ -947,7 +947,7 @@ $(function() {
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
 	data-linkId="
 	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle%>" />"
+	<c:out value="<%=customStyle %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>" />
