@@ -1041,10 +1041,8 @@ a.mtp-col-pin.mtp-pin-disabled {
 }
 
 .result-data .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child,
-.topview-parts.entity-list .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child {
-  border-right: 1px solid #cccccc;
-}
 .result-data .ui-jqgrid.frozen-columns .frozen-bdiv tr.ui-row-ltr > td:last-child,
+.topview-parts.entity-list .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child,
 .topview-parts.entity-list .ui-jqgrid.frozen-columns .frozen-bdiv tr.ui-row-ltr > td:last-child {
   border-right: 1px solid #cccccc;
 }

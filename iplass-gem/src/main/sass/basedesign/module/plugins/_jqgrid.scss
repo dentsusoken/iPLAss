@@ -262,9 +262,7 @@
 .result-data,
 .topview-parts.entity-list {
 	.ui-jqgrid.frozen-columns {
-		.frozen-div tr.ui-jqgrid-labels th:last-child {
-			border-right: 1px solid $color_celeste_approx;
-		}
+		.frozen-div tr.ui-jqgrid-labels th:last-child,
 		.frozen-bdiv tr.ui-row-ltr > td:last-child {
 			border-right: 1px solid $color_celeste_approx;
 		}

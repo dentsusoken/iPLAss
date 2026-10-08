@@ -201,8 +201,7 @@
 		createPin(colName) {
 			const $pin = $("<a/>").attr({
 				href: "javascript:void(0)",
-				"class": "mtp-col-pin",
-				"data-colname": colName
+				"class": "mtp-col-pin"
 			}).append($("<i/>").addClass("fas fa-thumbtack"));
 			// th の jqGrid クリック処理が伝播を断つため document 委譲でなく直接結合する(clone 側へも handler が複製される)
 			$pin.on("click", e => {
