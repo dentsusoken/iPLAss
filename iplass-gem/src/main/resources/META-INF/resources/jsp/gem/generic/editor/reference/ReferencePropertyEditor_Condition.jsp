@@ -41,6 +41,7 @@
 <%@ page import="org.iplass.mtp.entity.EntityManager" %>
 <%@ page import="org.iplass.mtp.entity.LoadOption"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>
@@ -300,10 +301,10 @@
 		String template = "<a href=\"javascript:void(0)\" class=\"modal-lnk\" data-reference-modal=\"true\" "
 				+ " id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
 		return String.format(template,
-				org.apache.commons.text.StringEscapeUtils.escapeHtml4(linkId),
-				org.apache.commons.text.StringEscapeUtils.escapeHtml4(customStyle),
-				org.apache.commons.text.StringEscapeUtils.escapeHtml4(showReference),
-				org.apache.commons.text.StringEscapeUtils.escapeHtml4(displayPropLabel));
+				StringEscapeUtils.escapeHtml4(linkId),
+				StringEscapeUtils.escapeHtml4(customStyle),
+				StringEscapeUtils.escapeHtml4(showReference),
+				StringEscapeUtils.escapeHtml4(displayPropLabel));
 	}
 %>
 <%
@@ -1513,7 +1514,7 @@ $(function() {
 	    class="form-size-02 inpbr ref-select-filter-item"
 		id="<c:out value="<%=inputId %>"/>"
 	    style="<c:out value="<%=customStyle%>"/>"
-	    placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
+		placeholder="<%=StringEscapeUtils.escapeHtml4(placeHolder) %>"
 	    data-defName="<c:out value="<%=rootDefName%>"/>"
 	    data-viewName="<%=viewName %>" 
 	    data-propName="<c:out value="<%=propertyName%>"/>" 
