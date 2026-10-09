@@ -296,6 +296,15 @@
 				+ ", " + isMultiple
 				+ ")";
 	}
+	String createReferenceLink(String linkId, String customStyle, String showReference, String displayPropLabel) {
+		String template = "<a href=\"javascript:void(0)\" class=\"modal-lnk\" data-reference-modal=\"true\" "
+				+ " id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
+		return String.format(template,
+				org.apache.commons.text.StringEscapeUtils.escapeHtml4(linkId),
+				org.apache.commons.text.StringEscapeUtils.escapeHtml4(customStyle),
+				org.apache.commons.text.StringEscapeUtils.escapeHtml4(showReference),
+				org.apache.commons.text.StringEscapeUtils.escapeHtml4(displayPropLabel));
+	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -736,13 +745,10 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
-	data-linkId="
-	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle %>" />"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <%
 				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 					String deleteItem = "deleteItem(" 
@@ -782,13 +788,10 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
-	data-linkId="
-	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle %>" />"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <%
 			if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 				String deleteItem = "deleteItem(" 
@@ -942,13 +945,10 @@ $(function() {
 				String deleteItem = "deleteItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
-	data-linkId="
-	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle %>" />"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>" />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
@@ -982,13 +982,10 @@ $(function() {
 				String deleteItem = "deleteItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
-	data-linkId="
-	<c:out value="<%=linkId %>" />" style="
-	<c:out value="<%=customStyle%>" />"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
