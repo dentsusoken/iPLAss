@@ -655,6 +655,71 @@ $.fn.allInputCheck = function(){
 })(jQuery);
 
 /**
+ * 参照型モーダルの初期サイズオプション取得
+ * modalWindow、subModalWindowで共通利用
+ *
+ * 参照型のトリガーの場合のみ、以下の優先順でサイズを返す
+ * 1. トリガーのdata-dialog-width/data-dialog-height属性
+ * 2. GemConfigServiceのreferenceModal設定(scriptContext.gem.referenceModal)
+ * 未設定の場合は空オブジェクトを返す(各プラグインのデフォルトを利用)
+ */
+(function($){
+	function toPositiveNumber(value) {
+		const num = Number(value);
+		if (!isNaN(num) && num > 0) {
+			return num;
+		}
+		return null;
+	}
+
+	$.fn.referenceModalOption = function () {
+		const $el = this.first();
+		// ReferencePropertyEditorのJSPが出力するdata-reference-modal="true"のトリガーのみ対象
+		if (!$el.length || $el.attr("data-reference-modal") !== "true") {
+			return {};
+		}
+
+		const config = scriptContext && scriptContext.gem ? scriptContext.gem.referenceModal : null;
+		const width = toPositiveNumber($el.attr("data-dialog-width"))
+			|| toPositiveNumber(config && config.width);
+		const height = toPositiveNumber($el.attr("data-dialog-height"))
+			|| toPositiveNumber(config && config.height);
+
+		const option = {};
+		if (width != null) {
+			option.dialogWidth = width;
+		}
+		if (height != null) {
+			option.dialogHeight = height;
+		}
+		return option;
+	};
+})(jQuery);
+
+/**
+ * モーダルウィンドウのサイズを表示領域に収まるよう調整
+ */
+function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
+	let dialogHeight = runtimeOptions.dialogHeight;
+	let dialogWidth = runtimeOptions.dialogWidth;
+	const maxDialogWidth = Math.max(windowWidth - 30, 0);
+	//windowの高さより大きい場合はwindowの高さに設定
+	if (dialogHeight > windowHeight - 80) {
+		dialogHeight = windowHeight - 80;
+	}
+	//windowの幅より大きい場合はwindowの幅に設定
+	if (dialogWidth > maxDialogWidth) {
+		dialogWidth = maxDialogWidth;
+	}
+	//最小高さを200
+	if (dialogHeight < 200) {
+		dialogHeight = 200;
+	}
+
+	return {dialogHeight: dialogHeight, dialogWidth: dialogWidth};
+}
+
+/**
  * モーダルウィンドウ
  *
  * [オプション]
@@ -682,6 +747,7 @@ $.fn.allInputCheck = function(){
 
 		return this.each(function(){
 			const $this = $(this);
+			let runtimeOptions = $.extend({}, options);
 			const $document = $(document);
 			const $window = $(window);
 			const $overlay = $document.find(options.overlay);
@@ -692,7 +758,7 @@ $.fn.allInputCheck = function(){
 
 			const fade = {
 				show : function() {
-					$under.height(options.dialogHeight);
+					$under.height(runtimeOptions.dialogHeight);
 					$overlay.fadeIn(options.speed);
 					$under.fadeIn(options.speed);
 					scriptContext.overlayManager.addOverlay($overlay);
@@ -712,8 +778,10 @@ $.fn.allInputCheck = function(){
 				//maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
 
+				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+
 				$under.removeClass("unresizable");
-				if (options.resizable == false) {
+				if (runtimeOptions.resizable == false) {
 					$under.addClass("unresizable");
 				}
 
@@ -803,26 +871,21 @@ $.fn.allInputCheck = function(){
 				} else {
 					const windowHeight = $window.height();
 					const windowWidth = $window.width();
-
-					let dialogHeight = options.dialogHeight;
-					//windowの高さより大きい場合はwindowの高さに設定
-					if (dialogHeight > (windowHeight -80)) {
-						dialogHeight = windowHeight -80;
-					}
-					//最小高さを200
-					if (dialogHeight < 200) {
-						dialogHeight = 200;
-					}
+					const { dialogWidth, dialogHeight } = getModalWindowSize(
+						windowWidth,
+						windowHeight,
+						runtimeOptions,
+					);
 
 					//frameはheader分減らす
 					const frameHeight = dialogHeight - 49;
 
 					$under.css({
 						height: dialogHeight,
-						width: options.dialogWidth,
+						width: dialogWidth,
 						top: $document.scrollTop() + 20,
 						left: "auto",
-						marginLeft:(windowWidth - options.dialogWidth - 30)/2
+						marginLeft: (windowWidth - dialogWidth - 30) / 2,
 					});
 					$frame.height(frameHeight);
 				}
@@ -857,10 +920,11 @@ $.fn.allInputCheck = function(){
 		const $overlay = $under.prev();
 
 		const options = $.extend(defaults, option);
+		let runtimeOptions = $.extend({}, options);
 
 		const fade = {
 			show : function() {
-				$under.height(options.dialogHeight);
+				$under.height(runtimeOptions.dialogHeight);
 				$overlay.fadeIn(options.speed);
 				$under.fadeIn(options.speed);
 				rootDocument.scriptContext.overlayManager.addOverlay($overlay);
@@ -923,8 +987,10 @@ $.fn.allInputCheck = function(){
 				// maximize,restore,resizeHandlerから呼び出せるようにする。
 				$trigger = $this;
 
+				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+
 				$under.removeClass("unresizable");
-				if (options.resizable == false) {
+				if (runtimeOptions.resizable == false) {
 					$under.addClass("unresizable");
 				}
 
@@ -974,26 +1040,21 @@ $.fn.allInputCheck = function(){
 				const $rootWindow = $(rootDocument.scriptContext.getWindow());
 				const windowHeight = $rootWindow.height();
 				const windowWidth = $rootWindow.width();
-
-				let dialogHeight = options.dialogHeight;
-				//windowの高さより大きい場合はwindowの高さに設定
-				if (dialogHeight > (windowHeight -80)) {
-					dialogHeight = windowHeight -80;
-				}
-				//最小高さを200
-				if (dialogHeight < 200) {
-					dialogHeight = 200;
-				}
+				const { dialogWidth, dialogHeight } = getModalWindowSize(
+					windowWidth,
+					windowHeight,
+					runtimeOptions,
+				);
 
 				//frameはheader分減らす
 				const frameHeight = dialogHeight - 49;
 
 				$under.css({
 					height: dialogHeight,
-					width: options.dialogWidth,
+					width: dialogWidth,
 					top: $rootWindow.scrollTop() + 20,
-					left:"auto",
-					marginLeft:(windowWidth - options.dialogWidth - 30)/2
+					left: "auto",
+					marginLeft: (windowWidth - dialogWidth - 30) / 2,
 				});
 				$frame.height(frameHeight);
 			}

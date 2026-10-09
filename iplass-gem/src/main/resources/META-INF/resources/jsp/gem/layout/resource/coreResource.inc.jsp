@@ -47,6 +47,10 @@ scriptContext = {};
 document.scriptContext = scriptContext;
 scriptContext.gem = {};
 scriptContext.gem.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
+scriptContext.gem.referenceModal = {
+	width: <%=ViewUtil.getReferenceModalWidth() %>,
+	height: <%=ViewUtil.getReferenceModalHeight() %>
+};
 dType="/gem";
 </script>
 
