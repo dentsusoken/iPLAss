@@ -28,6 +28,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.*"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.And"%>
@@ -41,7 +42,6 @@
 <%@ page import="org.iplass.mtp.entity.EntityManager" %>
 <%@ page import="org.iplass.mtp.entity.LoadOption"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
-<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>

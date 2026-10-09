@@ -871,13 +871,11 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				} else {
 					const windowHeight = $window.height();
 					const windowWidth = $window.width();
-					const dialogSize = getModalWindowSize(
+					const { dialogWidth, dialogHeight } = getModalWindowSize(
 						windowWidth,
 						windowHeight,
 						runtimeOptions,
 					);
-					const dialogHeight = dialogSize.dialogHeight;
-					const dialogWidth = dialogSize.dialogWidth;
 
 					//frameはheader分減らす
 					const frameHeight = dialogHeight - 49;
@@ -1042,13 +1040,11 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				const $rootWindow = $(rootDocument.scriptContext.getWindow());
 				const windowHeight = $rootWindow.height();
 				const windowWidth = $rootWindow.width();
-				const dialogSize = getModalWindowSize(
+				const { dialogWidth, dialogHeight } = getModalWindowSize(
 					windowWidth,
 					windowHeight,
 					runtimeOptions,
 				);
-				const dialogHeight = dialogSize.dialogHeight;
-				const dialogWidth = dialogSize.dialogWidth;
 
 				//frameはheader分減らす
 				const frameHeight = dialogHeight - 49;

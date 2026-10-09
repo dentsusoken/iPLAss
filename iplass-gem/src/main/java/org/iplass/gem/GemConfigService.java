@@ -709,8 +709,14 @@ public class GemConfigService implements Service {
 		return permitRolesToNoView;
 	}
 
+	/**
+	 * ReferencePropertyEditorで参照データを選択するモーダルの初期表示サイズを定義する設定クラスです。
+	 * 幅と高さはピクセル単位で指定します。未設定または0以下の場合は、モーダルの既定サイズが使用されます。
+	 */
 	public static class ReferenceModal {
+		/** モーダルの初期表示幅（ピクセル）。 */
 		private Integer width;
+		/** モーダルの初期表示高さ（ピクセル）。 */
 		private Integer height;
 
 		public Integer getWidth() {
