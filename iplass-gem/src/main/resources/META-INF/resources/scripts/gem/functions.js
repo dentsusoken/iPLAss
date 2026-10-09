@@ -697,6 +697,29 @@ $.fn.allInputCheck = function(){
 })(jQuery);
 
 /**
+ * モーダルウィンドウのサイズを表示領域に収まるよう調整
+ */
+function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
+	let dialogHeight = runtimeOptions.dialogHeight;
+	let dialogWidth = runtimeOptions.dialogWidth;
+	const maxDialogWidth = Math.max(windowWidth - 30, 0);
+	//windowの高さより大きい場合はwindowの高さに設定
+	if (dialogHeight > windowHeight - 80) {
+		dialogHeight = windowHeight - 80;
+	}
+	//windowの幅より大きい場合はwindowの幅に設定
+	if (dialogWidth > maxDialogWidth) {
+		dialogWidth = maxDialogWidth;
+	}
+	//最小高さを200
+	if (dialogHeight < 200) {
+		dialogHeight = 200;
+	}
+
+	return {dialogHeight: dialogHeight, dialogWidth: dialogWidth};
+}
+
+/**
  * モーダルウィンドウ
  *
  * [オプション]
@@ -848,29 +871,20 @@ $.fn.allInputCheck = function(){
 				} else {
 					const windowHeight = $window.height();
 					const windowWidth = $window.width();
-
-					let dialogHeight = runtimeOptions.dialogHeight;
-					let dialogWidth = runtimeOptions.dialogWidth;
-					const maxDialogWidth = Math.max(windowWidth - 30, 0);
-					//windowの高さより大きい場合はwindowの高さに設定
-					if (dialogHeight > windowHeight - 80) {
-						dialogHeight = windowHeight - 80;
-					}
-					//windowの幅より大きい場合はwindowの幅に設定
-					if (dialogWidth > maxDialogWidth) {
-						dialogWidth = maxDialogWidth;
-					}
-					//最小高さを200
-					if (dialogHeight < 200) {
-						dialogHeight = 200;
-					}
+					const dialogSize = getModalWindowSize(
+						windowWidth,
+						windowHeight,
+						runtimeOptions,
+					);
+					const dialogHeight = dialogSize.dialogHeight;
+					const dialogWidth = dialogSize.dialogWidth;
 
 					//frameはheader分減らす
 					const frameHeight = dialogHeight - 49;
 
 					$under.css({
 						height: dialogHeight,
-						width: dialogWidth,s's's
+						width: dialogWidth,
 						top: $document.scrollTop() + 20,
 						left: "auto",
 						marginLeft: (windowWidth - dialogWidth - 30) / 2,
@@ -1028,22 +1042,13 @@ $.fn.allInputCheck = function(){
 				const $rootWindow = $(rootDocument.scriptContext.getWindow());
 				const windowHeight = $rootWindow.height();
 				const windowWidth = $rootWindow.width();
-
-				let dialogHeight = runtimeOptions.dialogHeight;
-				let dialogWidth = runtimeOptions.dialogWidth;
-				const maxDialogWidth = Math.max(windowWidth - 30, 0);
-				//windowの高さより大きい場合はwindowの高さに設定
-				if (dialogHeight > windowHeight - 80) {
-					dialogHeight = windowHeight - 80;
-				}
-				//windowの幅より大きい場合はwindowの幅に設定
-				if (dialogWidth > maxDialogWidth) {
-					dialogWidth = maxDialogWidth;
-				}
-				//最小高さを200
-				if (dialogHeight < 200) {
-					dialogHeight = 200;
-				}
+				const dialogSize = getModalWindowSize(
+					windowWidth,
+					windowHeight,
+					runtimeOptions,
+				);
+				const dialogHeight = dialogSize.dialogHeight;
+				const dialogWidth = dialogSize.dialogWidth;
 
 				//frameはheader分減らす
 				const frameHeight = dialogHeight - 49;
