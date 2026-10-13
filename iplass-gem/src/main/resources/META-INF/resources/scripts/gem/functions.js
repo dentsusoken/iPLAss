@@ -664,15 +664,15 @@ $.fn.allInputCheck = function(){
  * 未設定の場合は空オブジェクトを返す(各プラグインのデフォルトを利用)
  */
 (function($){
-	function toPositiveNumber(value) {
-		const num = Number(value);
-		if (!isNaN(num) && num > 0) {
-			return num;
-		}
-		return null;
-	}
-
 	$.fn.referenceModalOption = function () {
+		function toPositiveNumber(value) {
+			const num = Number(value);
+			if (!isNaN(num) && num > 0) {
+				return num;
+			}
+			return null;
+		}
+
 		const $el = this.first();
 		// ReferencePropertyEditorのJSPが出力するdata-reference-modal="true"のトリガーのみ対象
 		if (!$el.length || $el.attr("data-reference-modal") !== "true") {
