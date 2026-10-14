@@ -499,6 +499,11 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	)
 	private Integer dialogHeight;
 
+	/** 参照型モーダルを初期表示時に最大化 */
+	@MetaFieldInfo(displayName = "参照型モーダルを初期表示時に最大化", displayNameKey = "generic_editor_ReferencePropertyEditor_dialogMaximizeDisplayNameKey", inputType = InputType.CHECKBOX, displayOrder = 607, description = "ReferencePropertyEditorのモーダルを開いた直後に最大化表示します。", descriptionKey = "generic_editor_ReferencePropertyEditor_dialogMaximizeDescriptionKey")
+	@EntityViewField(referenceTypes = { FieldReferenceType.ALL })
+	private boolean dialogMaximize;
+
 	/** URLパラメータ */
 	@MetaFieldInfo(
 			displayName = "URLパラメータ",
@@ -1137,6 +1142,24 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setDialogHeight(Integer dialogHeight) {
 		this.dialogHeight = dialogHeight;
+	}
+
+	/**
+	 * 参照型モーダルを初期表示時に最大化するかを取得します。
+	 * 
+	 * @return 参照型モーダルを初期表示時に最大化するか
+	 */
+	public boolean isDialogMaximize() {
+		return dialogMaximize;
+	}
+
+	/**
+	 * 参照型モーダルを初期表示時に最大化するかを設定します。
+	 * 
+	 * @param dialogMaximize 参照型モーダルを初期表示時に最大化するか
+	 */
+	public void setDialogMaximize(boolean dialogMaximize) {
+		this.dialogMaximize = dialogMaximize;
 	}
 
 	/**

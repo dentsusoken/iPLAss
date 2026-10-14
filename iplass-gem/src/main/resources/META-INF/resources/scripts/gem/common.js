@@ -3230,10 +3230,13 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	}).appendTo($li);
 	if ($ul.attr("data-reference-modal") === "true") {
 		$link.attr("data-reference-modal", "true");
-		var dialogWidth = $ul.attr("data-dialog-width");
-		var dialogHeight = $ul.attr("data-dialog-height");
+		const dialogWidth = $ul.attr("data-dialog-width");
+		const dialogHeight = $ul.attr("data-dialog-height");
+		const dialogMaximize = $ul.attr("data-dialog-maximize");
 		if (dialogWidth != null) $link.attr("data-dialog-width", dialogWidth);
 		if (dialogHeight != null) $link.attr("data-dialog-height", dialogHeight);
+		if (dialogMaximize != null)
+			$link.attr("data-dialog-maximize", dialogMaximize);
 	}
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {

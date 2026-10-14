@@ -252,7 +252,8 @@
 	//Request情報取得
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
-			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "");
+			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
+			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
 	OutputType outputType = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
@@ -628,7 +629,7 @@ $(function() {
 					String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.select')}"
-	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
 data-specVersionKey="
 <c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
@@ -735,7 +736,7 @@ $(function() {
 		//参照コンボ
 		String ulId = "ul_" + propName;
 %>
-<ul class="data-label" id="<c:out value=" <%=ulId %>"/>" data-reference-modal="true"<%=referenceModalSizeAttributes %>>
+<ul class="data-label" id="<c:out value="<%=ulId %>"/>" data-reference-modal="true"<%=referenceModalSizeAttributes %>>
 <%
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);

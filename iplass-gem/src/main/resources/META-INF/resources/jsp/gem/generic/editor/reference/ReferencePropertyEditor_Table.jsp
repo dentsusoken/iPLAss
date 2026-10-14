@@ -155,7 +155,8 @@
 	//Request情報取得
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
-			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "");
+			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
+			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
@@ -1266,7 +1267,7 @@ $(function() {
 %>
 <input type="button"
 	value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}"
-	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
 data-specVersionKey="
 <c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">

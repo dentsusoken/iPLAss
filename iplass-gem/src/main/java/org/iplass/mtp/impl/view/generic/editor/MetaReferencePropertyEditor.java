@@ -125,6 +125,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** 参照型モーダルの初期表示高さ（ピクセル） */
 	private Integer dialogHeight;
 
+	/** 参照型モーダルを初期表示時に最大化 */
+	private boolean dialogMaximize;
+
 	/** URLパラメータ */
 	private String urlParameter;
 
@@ -539,6 +542,24 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 */
 	public void setDialogHeight(Integer dialogHeight) {
 		this.dialogHeight = dialogHeight;
+	}
+
+	/**
+	 * 参照型モーダルを初期表示時に最大化するかを取得します。
+	 * 
+	 * @return 参照型モーダルを初期表示時に最大化するか
+	 */
+	public boolean isDialogMaximize() {
+		return dialogMaximize;
+	}
+
+	/**
+	 * 参照型モーダルを初期表示時に最大化するかを設定します。
+	 * 
+	 * @param dialogMaximize 参照型モーダルを初期表示時に最大化するか
+	 */
+	public void setDialogMaximize(boolean dialogMaximize) {
+		this.dialogMaximize = dialogMaximize;
 	}
 
 	/**
@@ -1053,6 +1074,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		viewName = rpe.getViewName();
 		dialogWidth = rpe.getDialogWidth();
 		dialogHeight = rpe.getDialogHeight();
+		dialogMaximize = rpe.isDialogMaximize();
 		urlParameter = rpe.getUrlParameter();
 		urlParameterAction = rpe.getUrlParameterAction() != null ? new ArrayList<>(rpe.getUrlParameterAction()) : null;
 		dynamicUrlParameter = rpe.getDynamicUrlParameter();
@@ -1188,6 +1210,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setViewName(viewName);
 		editor.setDialogWidth(dialogWidth);
 		editor.setDialogHeight(dialogHeight);
+		editor.setDialogMaximize(dialogMaximize);
 		editor.setUrlParameter(urlParameter);
 		editor.setUrlParameterAction(urlParameterAction != null ? new ArrayList<>(urlParameterAction) : null);
 		editor.setUrlParameterScriptKey(urlParameterScriptKey);

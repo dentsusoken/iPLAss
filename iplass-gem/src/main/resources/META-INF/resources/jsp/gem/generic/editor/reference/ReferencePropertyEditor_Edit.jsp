@@ -377,7 +377,8 @@
 	//Request情報取得
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
-			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "");
+			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
+			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
 
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
 	Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
@@ -551,7 +552,7 @@ function <%=toggleInsBtnFunc%>() {
 	$("#ins_btn_" + _propName).toggle(display);
 }
 </script>
-<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
@@ -1118,7 +1119,7 @@ function <%=toggleInsBtnFunc%>() {
 	toggleRefInsertBtn("ul_" + _propName, <%=pd.getMultiplicity()%>, "ins_btn_" + _propName);
 }
 </script>
-<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
@@ -1396,7 +1397,7 @@ $(function() {
 	scriptContext[insDynamicParamKey] = insDynamicParamCallback;
 });
 </script>
-<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
