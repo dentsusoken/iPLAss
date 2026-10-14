@@ -648,7 +648,7 @@ function <%=toggleInsBtnFunc%>() {
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
 data-propName="
 <c:out value="<%=propName %>" />" />
 <script type="text/javascript">
@@ -1466,7 +1466,7 @@ $(function() {
 				String selBtnId = "sel_btn_" + propName + i;
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
 data-propName="
 <c:out value="<%=propName %>" />" />
 <%
