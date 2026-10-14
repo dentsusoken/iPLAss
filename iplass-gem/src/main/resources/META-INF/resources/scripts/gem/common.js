@@ -3228,6 +3228,13 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	var $link = $("<a href='javascript:void(0)' />").attr({"id":linkId, "data-linkId":linkId, "style":customStyle}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex, entityOid, entityVersion);
 	}).appendTo($li);
+	if ($ul.attr("data-reference-modal") === "true") {
+		$link.attr("data-reference-modal", "true");
+		var dialogWidth = $ul.attr("data-dialog-width");
+		var dialogHeight = $ul.attr("data-dialog-height");
+		if (dialogWidth != null) $link.attr("data-dialog-width", dialogWidth);
+		if (dialogHeight != null) $link.attr("data-dialog-height", dialogHeight);
+	}
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
 		$link.subModalWindow();
