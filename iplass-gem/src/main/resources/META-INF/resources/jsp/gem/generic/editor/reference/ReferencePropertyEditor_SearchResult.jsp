@@ -61,7 +61,8 @@
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
-			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "");
+			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
+			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 
