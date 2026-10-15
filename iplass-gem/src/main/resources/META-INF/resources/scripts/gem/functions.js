@@ -673,7 +673,7 @@ $.fn.allInputCheck = function(){
 			}
 			return null;
 		}
-
+		//true/false文字列をbooleanに変換、未設定はnullを返す
 		function toBoolean(value) {
 			if (value === true || value === "true") {
 				return true;
