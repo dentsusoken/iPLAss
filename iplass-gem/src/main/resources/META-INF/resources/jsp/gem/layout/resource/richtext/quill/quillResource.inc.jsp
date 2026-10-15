@@ -80,36 +80,45 @@ Quill.register(FontStyle, true);
 scriptContext.gem.richtext.quill.configureQuillPlugins = function(option) {
 	const tableUp = scriptContext.gem.richtext.quill.tableUp;
 	option.modules = option.modules || {};
-	option.modules[tableUp.TableUp.moduleName] = {
-		customSelect: tableUp.defaultCustomSelect,
-		texts: function(key) {
-			return scriptContext.gem.locale.quill.tableUp[key];
-		},
-		modules: [
-			{ module: tableUp.TableSelection },
-			{ module: tableUp.TableMenuContextmenu },
-			{ module: tableUp.TableResizeLine },
-		],
-	};
-	const resizeOptions = option.modules.resize || {};
-	option.modules.resize = $.extend(true, {}, resizeOptions, {
-		modules: resizeOptions.modules || ["DisplaySize", "Toolbar", "Resize", "Keyboard"],
-		embedTags: resizeOptions.embedTags || [],
-		parchment: {
-			image: $.extend(true, {
-				attribute: ["width"],
-				limit: { minWidth: 1 },
-			}, resizeOptions.parchment?.image || {}),
-		},
-	});
-	option.modules.uploader = option.modules.uploader || {};
-	option.modules.uploader.mimetypes = [];
+	const tableModuleName = tableUp.TableUp.moduleName;
+	const tableOptions = option.modules[tableModuleName];
+	if (tableOptions !== false) {
+		option.modules[tableModuleName] = $.extend({
+			customSelect: tableUp.defaultCustomSelect,
+			texts: function(key) {
+				return scriptContext.gem.locale.quill.tableUp[key];
+			},
+			modules: [
+				{ module: tableUp.TableSelection },
+				{ module: tableUp.TableMenuContextmenu },
+				{ module: tableUp.TableResizeLine },
+			],
+		}, tableOptions);
+	}
+	if (option.modules.resize !== false) {
+		const resizeOptions = option.modules.resize || {};
+		option.modules.resize = $.extend(true, {}, resizeOptions, {
+			modules: resizeOptions.modules || ["DisplaySize", "Toolbar", "Resize", "Keyboard"],
+			embedTags: resizeOptions.embedTags || [],
+			parchment: {
+				image: $.extend(true, {
+					attribute: ["width"],
+					limit: { minWidth: 1 },
+				}, resizeOptions.parchment?.image || {}),
+			},
+		});
+	}
+	if (option.modules.uploader !== false) {
+		option.modules.uploader = $.extend({ mimetypes: [] }, option.modules.uploader);
+	}
 
-	const toolbar = option.modules.toolbar;
-	if (Array.isArray(toolbar)) {
-		toolbar.push([{ [tableUp.TableUp.toolName]: [] }]);
-	} else if (toolbar && Array.isArray(toolbar.container)) {
-		toolbar.container.push([{ [tableUp.TableUp.toolName]: [] }]);
+	if (option.modules[tableModuleName] !== false) {
+		const toolbar = option.modules.toolbar;
+		if (Array.isArray(toolbar)) {
+			toolbar.push([{ [tableUp.TableUp.toolName]: [] }]);
+		} else if (toolbar && Array.isArray(toolbar.container)) {
+			toolbar.container.push([{ [tableUp.TableUp.toolName]: [] }]);
+		}
 	}
 	return option;
 };
