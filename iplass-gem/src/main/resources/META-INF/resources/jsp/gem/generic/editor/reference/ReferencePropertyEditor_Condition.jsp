@@ -730,7 +730,7 @@ $(function() {
 
 		String ulId = "ul_" + propName;
 %>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
+<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
 		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
@@ -829,7 +829,7 @@ $(function() {
 		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>" />
+	class="gr-btn-02 modal-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -930,7 +930,7 @@ $(function() {
 			viewAction = contextPath + "/" + DetailViewCommand.REF_VIEW_ACTION_NAME + urlPath;
 		}
 %>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
+<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
 		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
@@ -1159,7 +1159,7 @@ $(function() {
 	scriptContext[insDynamicParamKey] = insDynamicParamCallback;
 });
 </script>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
+<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
 		int length = 0;
@@ -1210,7 +1210,7 @@ $(function() {
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName %>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> id="
@@ -1277,7 +1277,7 @@ $(function() {
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName %>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> id="
@@ -1324,7 +1324,7 @@ $(function() {
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName%>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value=" <%=propName%>"/>" />
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
@@ -1364,7 +1364,7 @@ $(function() {
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName %>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="

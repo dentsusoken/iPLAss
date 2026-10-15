@@ -552,7 +552,7 @@ function <%=toggleInsBtnFunc%>() {
 	$("#ins_btn_" + _propName).toggle(display);
 }
 </script>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="
+<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
@@ -648,7 +648,7 @@ function <%=toggleInsBtnFunc%>() {
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
 data-propName="
 <c:out value="<%=propName %>" />" />
 <script type="text/javascript">
@@ -1119,7 +1119,7 @@ function <%=toggleInsBtnFunc%>() {
 	toggleRefInsertBtn("ul_" + _propName, <%=pd.getMultiplicity()%>, "ins_btn_" + _propName);
 }
 </script>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="
+<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
@@ -1397,7 +1397,7 @@ $(function() {
 	scriptContext[insDynamicParamKey] = insDynamicParamCallback;
 });
 </script>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="
+<ul id="<c:out value=" <%=ulId %>"/>" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" class="mb05" data-reference-modal="true"
 	<%=referenceModalSizeAttributes %>>
 <%
@@ -1466,7 +1466,7 @@ $(function() {
 				String selBtnId = "sel_btn_" + propName + i;
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
 data-propName="
 <c:out value="<%=propName %>" />" />
 <%
