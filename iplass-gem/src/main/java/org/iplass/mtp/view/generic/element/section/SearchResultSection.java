@@ -142,6 +142,20 @@ public class SearchResultSection extends Section {
 	)
 	private boolean groupingData;
 
+	/** カラム固定を許可 */
+	@MetaFieldInfo(
+			displayName = "固定指定を許可",
+			displayNameKey = "generic_element_section_SearchResultSection_frozenEnabledDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 211,
+			description = "検索結果一覧でのカラム固定を許可します。<br>" +
+					"許可した場合はシステム列(選択欄・詳細リンク等)を除くすべての列にピンが表示され、ピンを押した列とその左側の列がすべて固定されます(固定の基準となるのは1列のみ)。<br>" +
+					"初期表示で固定する列は、各列の「列を固定」設定で指定します(複数指定時は最も右側の列が基準)。<br>" +
+					"許可しない場合(既定)はピンも固定も一切機能しません。",
+			descriptionKey = "generic_element_section_SearchResultSection_frozenEnabledDescriptionKey"
+	)
+	private boolean frozenEnabled;
+
 	/** 編集リンク非表示設定 */
 	@MetaFieldInfo(
 			displayName = "編集リンク非表示設定",
@@ -504,6 +518,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setGroupingData(boolean groupingData) {
 		this.groupingData = groupingData;
+	}
+
+	/**
+	 * カラム固定を許可するかを取得します。
+	 * @return カラム固定を許可するか
+	 */
+	public boolean isFrozenEnabled() {
+		return frozenEnabled;
+	}
+
+	/**
+	 * カラム固定を許可するかを設定します。
+	 * @param frozenEnabled カラム固定を許可するか
+	 */
+	public void setFrozenEnabled(boolean frozenEnabled) {
+		this.frozenEnabled = frozenEnabled;
 	}
 
 	/**

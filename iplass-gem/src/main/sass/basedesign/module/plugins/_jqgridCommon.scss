@@ -11,6 +11,11 @@
 $mtp-pin-color: $color_mountain_mist_approx !default;
 
 .ui-jqgrid-hdiv tr.ui-jqgrid-labels th {
+	// ヘッダー(th.ui-state-default)内のリンクへ jQuery UI 系上書き(`.ui-state-default a:link` の白背景)が
+	// 適用されるため、ピンの背景を透過させてヘッダー背景と同化させる
+	a.mtp-col-pin {
+		background: transparent;
+	}
 	div:has(> .mtp-col-pin) {
 		white-space: nowrap;
 		> p.title {
@@ -30,10 +35,14 @@ $mtp-pin-color: $color_mountain_mist_approx !default;
 	}
 }
 a.mtp-col-pin {
-	display: inline-block;
+	// アイコンを 16px 枠の上下中央へ配置する(継承した行高(flat の th は 40px)で枠内のアイコンが下方へずれるのを防ぐ)
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	margin-left: 4px;
 	width: 16px;
 	height: 16px;
+	line-height: 1;
 	vertical-align: middle;
 	text-decoration: none;
 	text-align: center;
@@ -46,7 +55,7 @@ a.mtp-col-pin {
 		font-size: 13px;
 	}
 	> svg.svg-inline--fa {
-		vertical-align: middle;
+		display: block;
 	}
 	&.mtp-pin-on {
 		opacity: 1;

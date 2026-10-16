@@ -259,11 +259,12 @@
 @import "jqgridCommon";
 
 // カラム固定: 固定領域の右端に常時境界線を表示(横スクロール時に固定範囲を示す)
-.result-data .ui-jqgrid.frozen-columns {
-	.frozen-div tr.ui-jqgrid-labels th:last-child {
-		border-right: 1px solid $color_celeste_approx;
-	}
-	.frozen-bdiv tr.ui-row-ltr > td:last-child {
-		border-right: 1px solid $color_celeste_approx;
+.result-data,
+.topview-parts.entity-list {
+	.ui-jqgrid.frozen-columns {
+		.frozen-div tr.ui-jqgrid-labels th:last-child,
+		.frozen-bdiv tr.ui-row-ltr > td:last-child {
+			border-right: 1px solid $color_celeste_approx;
+		}
 	}
 }

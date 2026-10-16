@@ -1014,28 +1014,35 @@ button.dialog-csvdl-btn:hover {
   background: #d4d4d4 !important;
 }
 
-.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr > td {
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr > td,
+.topview-parts.entity-list .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr > td {
   background: #fff !important;
 }
-.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr.ui-state-hover td {
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr.ui-state-hover td,
+.topview-parts.entity-list .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr.ui-state-hover td {
   background: #dfeffc !important;
 }
-.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr:not(:last-child) > td {
+.result-data .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr:not(:last-child) > td,
+.topview-parts.entity-list .ui-jqgrid.frozen-columns .ui-jqgrid-bdiv.frozen-bdiv tr.ui-row-ltr:not(:last-child) > td {
   border-bottom-width: 0 !important;
 }
-
-.result-data .ui-jqgrid.frozen-ever tr.jqgrow td {
+.result-data .ui-jqgrid.frozen-ever tr.jqgrow td,
+.topview-parts.entity-list .ui-jqgrid.frozen-ever tr.jqgrow td {
   height: 25px;
   line-height: 25px;
 }
-
-.result-data .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child {
+.result-data .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child,
+.topview-parts.entity-list .ui-jqgrid.frozen-columns .frozen-div tr.ui-jqgrid-labels th:last-child {
   border-right: 1px solid #ddd;
 }
-.result-data .ui-jqgrid.frozen-columns .frozen-bdiv tr.ui-row-ltr > td:last-child {
+.result-data .ui-jqgrid.frozen-columns .frozen-bdiv tr.ui-row-ltr > td:last-child,
+.topview-parts.entity-list .ui-jqgrid.frozen-columns .frozen-bdiv tr.ui-row-ltr > td:last-child {
   border-right: 1px solid #ddd !important;
 }
 
+.ui-jqgrid-hdiv tr.ui-jqgrid-labels th a.mtp-col-pin {
+  background: transparent;
+}
 .ui-jqgrid-hdiv tr.ui-jqgrid-labels th div:has(> .mtp-col-pin) {
   white-space: nowrap;
 }
@@ -1053,10 +1060,13 @@ button.dialog-csvdl-btn:hover {
 }
 
 a.mtp-col-pin {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-left: 4px;
   width: 16px;
   height: 16px;
+  line-height: 1;
   vertical-align: middle;
   text-decoration: none;
   text-align: center;
@@ -1070,7 +1080,7 @@ a.mtp-col-pin > svg {
   font-size: 13px;
 }
 a.mtp-col-pin > svg.svg-inline--fa {
-  vertical-align: middle;
+  display: block;
 }
 a.mtp-col-pin.mtp-pin-on {
   opacity: 1;
