@@ -2561,6 +2561,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @return
  */
 function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion, dpCallback, customStyle) {
+	propName = propName == null ? "" : String(propName).replace(/^\s+|\s+$/g, "");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -3228,6 +3229,16 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	var $link = $("<a href='javascript:void(0)' />").attr({"id":linkId, "data-linkId":linkId, "style":customStyle}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex, entityOid, entityVersion);
 	}).appendTo($li);
+	if ($ul.attr("data-reference-modal") === "true") {
+		$link.attr("data-reference-modal", "true");
+		const dialogWidth = $ul.attr("data-dialog-width");
+		const dialogHeight = $ul.attr("data-dialog-height");
+		const dialogMaximize = $ul.attr("data-dialog-maximize");
+		if (dialogWidth != null) $link.attr("data-dialog-width", dialogWidth);
+		if (dialogHeight != null) $link.attr("data-dialog-height", dialogHeight);
+		if (dialogMaximize != null)
+			$link.attr("data-dialog-maximize", dialogMaximize);
+	}
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
 		$link.subModalWindow();

@@ -297,18 +297,25 @@
 				+ ", " + isMultiple
 				+ ")";
 	}
-	String createReferenceLink(String linkId, String customStyle, String showReference, String displayPropLabel) {
+	String createReferenceLink(String linkId, String customStyle, String showReference, String displayPropLabel,
+	Integer dialogWidth, Integer dialogHeight, boolean dialogMaximize) {
 		String template = "<a href=\"javascript:void(0)\" class=\"modal-lnk\" data-reference-modal=\"true\" "
-				+ " id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
+				+ "%5$s%6$s%7$s id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
 		return String.format(template,
 				StringEscapeUtils.escapeHtml4(linkId),
 				StringEscapeUtils.escapeHtml4(customStyle),
 				StringEscapeUtils.escapeHtml4(showReference),
-				StringEscapeUtils.escapeHtml4(displayPropLabel));
+				StringEscapeUtils.escapeHtml4(displayPropLabel),
+				dialogWidth != null ? "data-dialog-width=\"" + dialogWidth + "\" " : "",
+				dialogHeight != null ? "data-dialog-height=\"" + dialogHeight + "\" " : "",
+				dialogMaximize ? "data-dialog-maximize=\"true\" " : "");
 	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
+	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
+			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
+			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
 
 	String rootDefName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
@@ -723,7 +730,8 @@ $(function() {
 
 		String ulId = "ul_" + propName;
 %>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
+	<%=referenceModalSizeAttributes %>>
 <%
 		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
@@ -746,7 +754,8 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -789,7 +798,8 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
-				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -819,7 +829,7 @@ $(function() {
 		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>" />
+	class="gr-btn-02 modal-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -920,7 +930,8 @@ $(function() {
 			viewAction = contextPath + "/" + DetailViewCommand.REF_VIEW_ACTION_NAME + urlPath;
 		}
 %>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
+	<%=referenceModalSizeAttributes %>>
 <%
 		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
@@ -946,7 +957,8 @@ $(function() {
 				String deleteItem = "deleteItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
-				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -983,7 +995,8 @@ $(function() {
 				String deleteItem = "deleteItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
-				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -1146,7 +1159,8 @@ $(function() {
 	scriptContext[insDynamicParamKey] = insDynamicParamCallback;
 });
 </script>
-<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05" data-reference-modal="true"
+	<%=referenceModalSizeAttributes %>>
 <%
 		int length = 0;
 		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
@@ -1196,10 +1210,11 @@ $(function() {
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> id="
+	<c:out value="<%=linkId %>" />"
 	data-linkId="
 	<c:out value="<%=linkId %>" />" style="
 	<c:out value="<%=customStyle%>" />"
@@ -1262,10 +1277,11 @@ $(function() {
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> id="
+	<c:out value="<%=linkId %>" />"
 	data-linkId="
 	<c:out value="<%=linkId %>" />" style="
 	<c:out value="<%=customStyle%>" />"
@@ -1308,10 +1324,11 @@ $(function() {
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName%>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName%>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
+	<c:out value="
 	<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1347,10 +1364,11 @@ $(function() {
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
-	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true"<%=referenceModalSizeAttributes %> data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
+	<c:out value="
 	<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </span>

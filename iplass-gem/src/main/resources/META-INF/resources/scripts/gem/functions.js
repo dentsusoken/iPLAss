@@ -661,6 +661,7 @@ $.fn.allInputCheck = function(){
  * 参照型のトリガーの場合のみ、以下の優先順でサイズを返す
  * 1. トリガーのdata-dialog-width/data-dialog-height属性
  * 2. GemConfigServiceのreferenceModal設定(scriptContext.gem.referenceModal)
+ * maximizeはdata-dialog-maximize、未指定時にGemConfigService設定を参照する
  * 未設定の場合は空オブジェクトを返す(各プラグインのデフォルトを利用)
  */
 (function($){
@@ -669,6 +670,16 @@ $.fn.allInputCheck = function(){
 			const num = Number(value);
 			if (!isNaN(num) && num > 0) {
 				return num;
+			}
+			return null;
+		}
+		//true/false文字列をbooleanに変換、未設定はnullを返す
+		function toBoolean(value) {
+			if (value === true || value === "true") {
+				return true;
+			}
+			if (value === false || value === "false") {
+				return false;
 			}
 			return null;
 		}
@@ -684,6 +695,8 @@ $.fn.allInputCheck = function(){
 			|| toPositiveNumber(config && config.width);
 		const height = toPositiveNumber($el.attr("data-dialog-height"))
 			|| toPositiveNumber(config && config.height);
+		const attrDialogMaximize = toBoolean($el.attr("data-dialog-maximize"));
+		const configDialogMaximize = toBoolean(config && config.maximize);
 
 		const option = {};
 		if (width != null) {
@@ -691,6 +704,11 @@ $.fn.allInputCheck = function(){
 		}
 		if (height != null) {
 			option.dialogHeight = height;
+		}
+		if (attrDialogMaximize != null) {
+			option.dialogMaximize = attrDialogMaximize;
+		} else if (configDialogMaximize != null) {
+			option.dialogMaximize = configDialogMaximize;
 		}
 		return option;
 	};
@@ -779,6 +797,10 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				$trigger = $this;
 
 				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+				$under.removeClass("fullWindow");
+				if (runtimeOptions.dialogMaximize === true) {
+					$under.addClass("fullWindow");
+				}
 
 				$under.removeClass("unresizable");
 				if (runtimeOptions.resizable == false) {
@@ -988,6 +1010,10 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				$trigger = $this;
 
 				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+				$under.removeClass("fullWindow");
+				if (runtimeOptions.dialogMaximize === true) {
+					$under.addClass("fullWindow");
+				}
 
 				$under.removeClass("unresizable");
 				if (runtimeOptions.resizable == false) {
