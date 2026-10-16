@@ -2561,6 +2561,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @return
  */
 function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion, dpCallback, customStyle) {
+	propName = propName == null ? "" : String(propName).replace(/^\s+|\s+$/g, "");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);

@@ -409,7 +409,7 @@
 			}
 		}
 %>
-<ul name="data-label-<c:out value=" <%=propName %>"/>" class="data-label" id="
+<ul name="data-label-<c:out value="<%=propName %>"/>" class="data-label" id="
 	<c:out value="<%=ulId %>" />" data-deletable="
 	<c:out value="<%=(!hideDeleteButton && updatable) %>" />" data-reference-modal="true"<%=referenceModalSizeAttributes
 		%>>
@@ -498,7 +498,7 @@ $(function() {
 });
 </script>
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
-	<c:out value=" <%=customStyle%>" />"
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=viewEditableReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
 <%
@@ -546,7 +546,7 @@ $(function() {
 						+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
-	<c:out value=" <%=customStyle%>" />"
+	<c:out value="<%=customStyle%>" />"
 	id="
 	<c:out value="<%=linkId %>" />" data-linkId="
 	<c:out value="<%=linkId %>" />"
@@ -575,7 +575,7 @@ $(function() {
 					+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
-	<c:out value=" <%=customStyle%>" />"
+	<c:out value="<%=customStyle%>" />"
 	id="
 	<c:out value="<%=linkId %>" />" data-linkId="
 	<c:out value="<%=linkId %>" />"
@@ -629,7 +629,7 @@ $(function() {
 					String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.select')}"
-	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=selBtnId %>"/>"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
 data-specVersionKey="
 <c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
@@ -709,7 +709,7 @@ $(function() {
 				}
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}"
-	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value=" <%=insBtnId %>"/>" style="
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=insBtnId %>"/>" style="
 <c:out value="<%=insBtnStyle %>" />" />
 <script type="text/javascript">
 $(function() {
@@ -736,7 +736,7 @@ $(function() {
 		//参照コンボ
 		String ulId = "ul_" + propName;
 %>
-<ul class="data-label" id="<c:out value=" <%=ulId %>"/>" data-reference-modal="true"<%=referenceModalSizeAttributes %>>
+<ul class="data-label" id="<c:out value="<%=ulId %>"/>" data-reference-modal="true"<%=referenceModalSizeAttributes %>>
 <%
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
@@ -785,7 +785,7 @@ $(function() {
 				+ ")";
 %>
 <a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> style="
-	<c:out value=" <%=customStyle%>" />"
+	<c:out value="<%=customStyle%>" />"
 	id="
 	<c:out value="<%=linkId %>" />" data-linkId="
 	<c:out value="<%=linkId %>" />"
