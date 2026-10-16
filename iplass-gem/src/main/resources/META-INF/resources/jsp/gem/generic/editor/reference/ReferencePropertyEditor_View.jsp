@@ -491,7 +491,7 @@ $(function() {
 	scriptContext[dynamicParamCallbackKey] = dynamicParamCallback;
 });
 </script>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
  onclick="<c:out value="<%=viewEditableReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
 <%
@@ -538,7 +538,10 @@ $(function() {
 						+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 						+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
+	id="
+	<c:out value="<%=linkId %>" />" data-linkId="
+	<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				}
@@ -563,7 +566,10 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 					+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
+	id="
+	<c:out value="<%=linkId %>" />" data-linkId="
+	<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			}
@@ -613,7 +619,10 @@ $(function() {
 
 					String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_View.select')}"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>"
+data-specVersionKey="
+<c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -690,7 +699,9 @@ $(function() {
 					}
 				}
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}"
+	class="gr-btn-02 modal-btn mt05" data-reference-modal="true" id="<c:out value=" <%=insBtnId %>"/>" style="
+<c:out value="<%=insBtnStyle %>" />" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -764,7 +775,10 @@ $(function() {
 				+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 				+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value=" <%=customStyle%>"/>"
+	id="
+	<c:out value="<%=linkId %>" />" data-linkId="
+	<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			if (outputHidden) {
