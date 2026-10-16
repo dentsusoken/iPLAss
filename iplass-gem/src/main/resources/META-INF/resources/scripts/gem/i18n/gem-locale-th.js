@@ -107,3 +107,43 @@ scriptContext.gem.locale.calendar.withoutEntity = "เอา{0}ออกจา�
 
 scriptContext.gem.locale.apendCategory("application");
 scriptContext.gem.locale.application.specifyDescription = "โปรดป้อนคำอธิบายของโทเค็นที่จะสร้าง";
+
+scriptContext.gem.locale.apendCategory("quill");
+scriptContext.gem.locale.quill.imageUrlPrompt = "กรุณาป้อน URL ของรูปภาพ";
+scriptContext.gem.locale.quill.imageUrlProtocolError = "กรุณาระบุ URL แบบ HTTP(S) หรือ URL สัมพัทธ์";
+scriptContext.gem.locale.quill.imageUrlInvalid = "กรุณาระบุ URL รูปภาพที่ถูกต้อง";
+scriptContext.gem.locale.quill.tableUp = {
+	fullCheckboxText: "แทรกตารางเต็มความกว้าง",
+	customBtnText: "กำหนดเอง",
+	confirmText: "ยืนยัน",
+	cancelText: "ยกเลิก",
+	rowText: "แถว",
+	colText: "คอลัมน์",
+	notPositiveNumberError: "กรุณาป้อนจำนวนเต็มบวก",
+	custom: "กำหนดเอง",
+	clear: "ล้าง",
+	transparent: "โปร่งใส",
+	perWidthInsufficient: "ความกว้างแบบเปอร์เซ็นต์ไม่เพียงพอ ต้องแปลงตารางเป็นความกว้างคงที่เพื่อดำเนินการต่อ ต้องการดำเนินการต่อหรือไม่?",
+	CopyCell: "คัดลอกเซลล์",
+	CutCell: "ตัดเซลล์",
+	InsertTop: "แทรกแถวด้านบน",
+	InsertRight: "แทรกคอลัมน์ด้านขวา",
+	InsertBottom: "แทรกแถวด้านล่าง",
+	InsertLeft: "แทรกคอลัมน์ด้านซ้าย",
+	MergeCell: "ผสานเซลล์",
+	SplitCell: "แยกเซลล์",
+	DeleteRow: "ลบแถว",
+	DeleteColumn: "ลบคอลัมน์",
+	DeleteTable: "ลบตาราง",
+	BackgroundColor: "ตั้งค่าสีพื้นหลัง",
+	BorderColor: "ตั้งค่าสีเส้นขอบ",
+	FreezeRow: "ตรึงถึงแถวนี้",
+	UnfreezeRow: "ยกเลิกการตรึงแถว",
+	FreezeCol: "ตรึงถึงคอลัมน์นี้",
+	UnfreezeCol: "ยกเลิกการตรึงคอลัมน์",
+	SwitchWidth: "สลับความกว้างตาราง",
+	InsertCaption: "แทรกคำบรรยายตาราง",
+	ToggleTdBetweenTh: "สลับเซลล์ระหว่างเซลล์ข้อมูลกับเซลล์หัวตาราง",
+	ConvertTothead: "แปลงเป็นส่วนหัวตาราง",
+	ConvertTotfoot: "แปลงเป็นส่วนท้ายตาราง"
+};

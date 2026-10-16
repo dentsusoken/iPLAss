@@ -19,8 +19,29 @@
  --%>
 
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
-<script type="text/javascript" src="${staticContentPath}/webjars/quill/2.0.2/dist/quill.js?cv=${apiVersion}"></script>
-<link rel="stylesheet" href="${staticContentPath}/webjars/quill/2.0.2/dist/quill.snow.css?cv=${apiVersion}"/>
+<script type="text/javascript" src="${staticContentPath}/webjars/quill/2.0.3/dist/quill.js?cv=${apiVersion}"></script>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill/2.0.3/dist/quill.snow.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-table-up/3.6.0/dist/table-creator.css?cv=${apiVersion}"/>
+<link rel="stylesheet" href="${staticContentPath}/webjars/quill-resize-module/2.1.3/dist/resize.css?cv=${apiVersion}"/>
+<script>
+if (!scriptContext.gem.richtext) {
+	scriptContext.gem.richtext = {};
+}
+if (!scriptContext.gem.richtext.quill) {
+	scriptContext.gem.richtext.quill = {};
+}
+</script>
+<script type="importmap">
+{
+  "imports": {
+	"quill": "${staticContentPath}/scripts/gem/plugin/quill/quill-umd-shim.js?cv=${apiVersion}",
+	"quill-table-up": "${staticContentPath}/webjars/quill-table-up/3.6.0/dist/index.js?cv=${apiVersion}",
+	"quill-resize-module": "${staticContentPath}/webjars/quill-resize-module/2.1.3/dist/resize.esm.js?cv=${apiVersion}"
+  }
+}
+</script>
+<script type="module" src="${staticContentPath}/scripts/gem/plugin/quill/quill-plugin-register.js?cv=${apiVersion}"></script>
 
 <script>
 //元に戻す、やりなおすアイコンの登録
@@ -55,15 +76,53 @@ Quill.register(ColorStyle, true);
 Quill.register(SizeStyle, true);
 Quill.register(FontStyle, true);
 
-//デフォルトオプションの設定
-if (!scriptContext.gem.richtext) {
-	scriptContext.gem.richtext = {};
-	scriptContext.gem.richtext.quill = {};
-} else {
-	if (!scriptContext.gem.richtext.quill) {
-		scriptContext.gem.richtext.quill = {};
+// デフォルトのエディターオプションに表機能を追加する。
+scriptContext.gem.richtext.quill.configureQuillPlugins = function(option) {
+	const tableUp = scriptContext.gem.richtext.quill.tableUp;
+	option.modules = option.modules || {};
+	const tableModuleName = tableUp.TableUp.moduleName;
+	const tableOptions = option.modules[tableModuleName];
+	if (tableOptions !== false) {
+		option.modules[tableModuleName] = $.extend({
+			customSelect: tableUp.defaultCustomSelect,
+			texts: function(key) {
+				return scriptContext.gem.locale.quill.tableUp[key];
+			},
+			modules: [
+				{ module: tableUp.TableSelection },
+				{ module: tableUp.TableMenuContextmenu },
+				{ module: tableUp.TableResizeLine },
+			],
+		}, tableOptions);
 	}
-}
+	if (option.modules.resize !== false) {
+		const resizeOptions = option.modules.resize || {};
+		option.modules.resize = $.extend(true, {}, resizeOptions, {
+			modules: resizeOptions.modules || ["DisplaySize", "Toolbar", "Resize", "Keyboard"],
+			embedTags: resizeOptions.embedTags || [],
+			parchment: {
+				image: $.extend(true, {
+					attribute: ["width"],
+					limit: { minWidth: 1 },
+				}, resizeOptions.parchment?.image || {}),
+			},
+		});
+	}
+	if (option.modules.uploader !== false) {
+		option.modules.uploader = $.extend({ mimetypes: [] }, option.modules.uploader);
+	}
+
+	if (option.modules[tableModuleName] !== false) {
+		const toolbar = option.modules.toolbar;
+		if (Array.isArray(toolbar)) {
+			toolbar.push([{ [tableUp.TableUp.toolName]: [] }]);
+		} else if (toolbar && Array.isArray(toolbar.container)) {
+			toolbar.container.push([{ [tableUp.TableUp.toolName]: [] }]);
+		}
+	}
+	return option;
+};
+
 //デフォルトのツールバーオプション
 scriptContext.gem.richtext.quill.toolbarOptions = {
 	container: [
@@ -76,7 +135,7 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 		["blockquote", "code-block"],
 		[{ "indent": "-1"}, { "indent": "+1" }],
 		[{ "align": [] }, { "direction": "rtl" }],
-		["link"],
+		["link", "image"],
 		["undo", "redo"],
 		["clean"],
 	],
@@ -86,6 +145,28 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 		},
 		redo: function(value) {
 			this.quill.history.redo();
+		},
+		image: function() {
+			const range = this.quill.getSelection(true);
+			const imageUrl = window.prompt(scriptContext.gem.locale.quill.imageUrlPrompt);
+			if (!range || imageUrl == null || imageUrl.trim() === "") {
+				return;
+			}
+
+			const url = imageUrl.trim();
+			try {
+				const parsedUrl = new URL(url, document.baseURI);
+				if (!/^https?:$/i.test(parsedUrl.protocol)) {
+					window.alert(scriptContext.gem.locale.quill.imageUrlProtocolError);
+					return;
+				}
+			} catch (error) {
+				window.alert(scriptContext.gem.locale.quill.imageUrlInvalid);
+				return;
+			}
+
+			this.quill.insertEmbed(range.index, "image", url, "user");
+			this.quill.setSelection(range.index + 1, 0, "user");
 		}
 	},
 }

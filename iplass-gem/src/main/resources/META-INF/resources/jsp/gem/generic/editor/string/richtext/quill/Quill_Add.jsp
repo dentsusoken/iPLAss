@@ -55,7 +55,7 @@ function addRichtextItem_<%=StringUtil.escapeJavaScript(targetName)%>(targetId) 
 <%	} else { %>
 	const custom = {}; 
 <%	} %>
-	const option = $.extend(true, {}, defaults, custom);
+	const option = scriptContext.gem.richtext.quill.configureQuillPlugins($.extend(true, {}, defaults, custom));
 
 	const editor = new Quill($container.get(0), option);
 	const contents = editor.clipboard.convert({html:value});
