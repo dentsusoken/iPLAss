@@ -107,12 +107,16 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 			}
 		} else if (editor instanceof UserPropertyEditor) {
 			//入力された内容(名前)でoid取得
-			//Like like = new Like(Entity.NAME, "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%");
-			Like like = new Like(Entity.NAME, getValue().toString(), Like.MatchPattern.PARTIAL);
-			conditions.add(new In(getPropertyName(), new SubQuery(
-					new Query().select(Entity.OID)
-							.from(User.DEFINITION_NAME)
-							.where(like))));
+			Object value = getValue();
+			String strValue = value instanceof String[] values ? (values.length > 0 ? values[0] : null)
+					: value != null ? value.toString() : null;
+			if (StringUtil.isNotBlank(strValue)) {
+				Like like = new Like(Entity.NAME, strValue, Like.MatchPattern.PARTIAL);
+				conditions.add(new In(getPropertyName(), new SubQuery(
+						new Query().select(Entity.OID)
+								.from(User.DEFINITION_NAME)
+								.where(like))));
+			}
 		} else {
 			//Template等のケース、likeで検索
 			//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));
