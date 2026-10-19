@@ -25,6 +25,7 @@
 <%@page import="java.util.Map"%>
 <%@page import="org.iplass.gem.command.Constants"%>
 <%@page import="org.iplass.gem.command.ViewUtil"%>
+<%@page import="org.iplass.gem.command.generic.editor.ReferencePropertyEditorUtil" %>
 <%@page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@page import="org.iplass.mtp.ManagerLocator"%>
 <%@page import="org.iplass.mtp.entity.Entity"%>
@@ -60,9 +61,7 @@
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
-	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
-			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
-			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
+	String referenceModalSizeAttributes = ReferencePropertyEditorUtil.getDialogSizeAttributes(editor);
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 
