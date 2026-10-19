@@ -737,6 +737,9 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 	return {dialogHeight: dialogHeight, dialogWidth: dialogWidth};
 }
 
+const FULL_WINDOW_CLASS = "fullWindow";
+const UNRESIZABLE_CLASS = "unresizable";
+
 /**
  * モーダルウィンドウ
  *
@@ -748,8 +751,6 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
  * resizable: 最大化可能か
  */
 (function($){
-	const FULL_WINDOW_CLASS = "fullWindow";
-	const UNRESIZABLE_CLASS = "unresizable";
 	let $trigger = null;
 	$.fn.modalWindow = function(option){
 		if (!this) return false;
@@ -927,8 +928,6 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
  * resizable: 最大化可能か
  */
 (function($){
-	const FULL_WINDOW_CLASS = "fullWindow";
-	const UNRESIZABLE_CLASS = "unresizable";
 	let $trigger = null;
 	$.fn.subModalWindow = function(option){
 		if (!this) return false;

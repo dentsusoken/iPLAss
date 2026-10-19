@@ -2561,6 +2561,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @return
  */
 function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion, dpCallback, customStyle) {
+	// null は空文字にし、プロパティ名の前後にある空白文字を正規表現で除去する。
 	var referencePropertyName =
 		propName == null ? "" : String(propName).replace(/^\s+|\s+$/g, "");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
@@ -2603,6 +2604,7 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 		}
 
 		if (list.length > 0) {
+			// API 用のプロパティ名にするため、検索条件の "sc_" 接頭辞とネストテーブルの行識別子（例: [0]）を除去する。
 			var parentPropName = referencePropertyName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
 			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, rootEntity, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
