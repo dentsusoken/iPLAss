@@ -51,10 +51,14 @@ public final class ReferencePropertyEditorUtil {
 	public static String getDialogSizeAttributes(Integer dialogWidth, Integer dialogHeight, boolean dialogMaximize) {
 		StringBuilder attributes = new StringBuilder();
 		if (dialogWidth != null) {
-			attributes.append(" data-dialog-width=\"").append(dialogWidth).append('"');
+			attributes.append(" data-dialog-width=\"")
+					.append(dialogWidth)
+					.append('"');
 		}
 		if (dialogHeight != null) {
-			attributes.append(" data-dialog-height=\"").append(dialogHeight).append('"');
+			attributes.append(" data-dialog-height=\"")
+					.append(dialogHeight)
+					.append('"');
 		}
 		if (dialogMaximize) {
 			attributes.append(" data-dialog-maximize=\"true\"");
