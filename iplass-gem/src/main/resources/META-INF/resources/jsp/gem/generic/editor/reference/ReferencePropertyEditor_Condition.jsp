@@ -64,6 +64,7 @@
 <%@ page import="org.iplass.gem.command.CommandUtil" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
+<%@ page import="org.iplass.gem.command.generic.editor.ReferencePropertyEditorUtil" %>
 <%!
 	boolean isDispProperty(PropertyDefinition pd, NestProperty property) {
 // 		if (pd instanceof BinaryProperty) return false;
@@ -300,22 +301,18 @@
 	String createReferenceLink(String linkId, String customStyle, String showReference, String displayPropLabel,
 	Integer dialogWidth, Integer dialogHeight, boolean dialogMaximize) {
 		String template = "<a href=\"javascript:void(0)\" class=\"modal-lnk\" data-reference-modal=\"true\" "
-				+ "%5$s%6$s%7$s id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
+				+ "%5$s id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
 		return String.format(template,
 				StringEscapeUtils.escapeHtml4(linkId),
 				StringEscapeUtils.escapeHtml4(customStyle),
 				StringEscapeUtils.escapeHtml4(showReference),
 				StringEscapeUtils.escapeHtml4(displayPropLabel),
-				dialogWidth != null ? "data-dialog-width=\"" + dialogWidth + "\" " : "",
-				dialogHeight != null ? "data-dialog-height=\"" + dialogHeight + "\" " : "",
-				dialogMaximize ? "data-dialog-maximize=\"true\" " : "");
+				ReferencePropertyEditorUtil.getDialogSizeAttributes(dialogWidth, dialogHeight, dialogMaximize));
 	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
-	String referenceModalSizeAttributes = (editor.getDialogWidth() != null ? " data-dialog-width=\"" + editor.getDialogWidth() + "\"" : "")
-			+ (editor.getDialogHeight() != null ? " data-dialog-height=\"" + editor.getDialogHeight() + "\"" : "")
-			+ (editor.isDialogMaximize() ? " data-dialog-maximize=\"true\"" : "");
+	String referenceModalSizeAttributes = ReferencePropertyEditorUtil.getDialogSizeAttributes(editor);
 
 	String rootDefName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
