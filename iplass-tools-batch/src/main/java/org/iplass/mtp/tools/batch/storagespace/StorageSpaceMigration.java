@@ -67,7 +67,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 	 *
 	 * <p>
 	 * <ul>
-	 * <li>args[0]・・・execMode["Wizard" or "Silent"]</li>
+	 * <li>args[0]・・・execMode["WIZARD" or "SILENT"]</li>
 	 * <li>args[1]・・・tenantId</li>
 	 * <li>args[2]・・・entityName</li>
 	 * <li>args[3]・・・storageSpaceName</li>

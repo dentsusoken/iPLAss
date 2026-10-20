@@ -77,7 +77,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 	/**
 	 * コンストラクタ
 	 *
-	 * args[0]・・・execMode["Wizard" or "Silent"]
+	 * args[0]・・・execMode["WIZARD" or "SILENT"]
 	 * args[1]・・・tenantId[Less then zero is wizard mode]
 	 * args[2]・・・overwrite["overwrite" or other]
 	 * args[3]・・・recursive["recursive" or other]
@@ -207,7 +207,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 	/**
 	 * メイン処理
 	 *
-	 * args[0]・・・execMode["Wizard" or "Silent"]
+	 * args[0]・・・execMode["WIZARD" or "SILENT"]
 	 * args[1]・・・tenantId[Less then zero is wizard mode]
 	 * args[2]・・・overwrite["overwrite" or other]
 	 * args[3]・・・recursive["recursive" or other]

@@ -40,7 +40,7 @@ public class MetaDataPatch extends MtpCuiBase {
 	/**
 	 * コンストラクタ
 	 *
-	 * args[0]・・・execMode["Wizard" or "Silent"]
+	 * args[0]・・・execMode["WIZARD" or "SILENT"]
 	 * args[1]・・・tenantId
 	 * args[2]・・・oldMetaDataFilePath
 	 * args[3]・・・newMetaDataFilePath
@@ -85,7 +85,7 @@ public class MetaDataPatch extends MtpCuiBase {
 	/**
 	 * メイン処理
 	 *
-	 * args[0]・・・execMode["Wizard" or "Silent"]
+	 * args[0]・・・execMode["WIZARD" or "SILENT"]
 	 * args[1]・・・tenantId
 	 * args[2]・・・oldMetaDataFilePath
 	 * args[3]・・・newMetaDataFilePath
