@@ -23,7 +23,7 @@ package org.iplass.gem.command.generic.editor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 
 /**
- * Utility methods for rendering reference property editor attributes.
+ * 参照プロパティエディタの属性を出力するためのユーティリティクラスです。
  */
 public final class ReferencePropertyEditorUtil {
 
@@ -31,22 +31,22 @@ public final class ReferencePropertyEditorUtil {
 	}
 
 	/**
-	 * Builds the dialog-size data attributes configured on the reference property editor.
+	 * 参照プロパティエディタに設定されたダイアログサイズのdata属性を生成します。
 	 *
-	 * @param editor reference property editor
-	 * @return the dialog-size data attributes, or an empty string when none are configured
+	 * @param editor 参照プロパティエディタ
+	 * @return ダイアログサイズのdata属性。未設定の場合は空文字列
 	 */
 	public static String getDialogSizeAttributes(ReferencePropertyEditor editor) {
 		return getDialogSizeAttributes(editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
 	}
 
 	/**
-	 * Builds dialog-size data attributes.
+	 * ダイアログサイズのdata属性を生成します。
 	 *
-	 * @param dialogWidth dialog width in pixels
-	 * @param dialogHeight dialog height in pixels
-	 * @param dialogMaximize whether the dialog should be maximized
-	 * @return the dialog-size data attributes, or an empty string when none are configured
+	 * @param dialogWidth    ダイアログの幅（ピクセル）
+	 * @param dialogHeight   ダイアログの高さ（ピクセル）
+	 * @param dialogMaximize ダイアログを最大化するかどうか
+	 * @return ダイアログサイズのdata属性。設定がない場合は空文字列
 	 */
 	public static String getDialogSizeAttributes(Integer dialogWidth, Integer dialogHeight, boolean dialogMaximize) {
 		StringBuilder attributes = new StringBuilder();
