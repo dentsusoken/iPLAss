@@ -240,6 +240,8 @@ public abstract class PropertySearchCondition {
 	 * たとえば、通常検索のStringPropertyでは、通常値・From値・To値を格納したString配列が設定される場合があり、
 	 * 詳細検索では{@link SearchConditionDetail}が設定されます。
 	 * このメソッドは値の型変換やコピーを行いません。
+	 * 呼び出し元は検索モードやプロパティエディタに応じて、{@code instanceof}等で戻り値の型を確認し、
+	 * 該当する型および構造として解釈してから条件生成に使用してください。
 	 * </p>
 	 *
 	 * @return 設定された検索条件値。値が設定されていない場合は{@code null}
