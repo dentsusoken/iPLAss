@@ -84,7 +84,7 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 					conditions.add(new LesserEqual(getPropertyName(), to));
 				}
 			} else {
-				String strValue = getFirstValue();
+				String strValue = getLikeSource();
 				if (StringUtil.isNotBlank(strValue)) {
 					if ((sp.getDisplayType() != null && sp.getDisplayType() == StringDisplayType.SELECT)
 							|| sp.isSearchExactMatchCondition()) {
@@ -107,7 +107,7 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 			}
 		} else if (editor instanceof UserPropertyEditor) {
 			// 入力されたユーザー名を元にUserを検索し、該当ユーザーのOIDで絞り込む
-			String strValue = getFirstValue();
+			String strValue = getLikeSource();
 			if (StringUtil.isNotBlank(strValue)) {
 				Like like = new Like(Entity.NAME, strValue, Like.MatchPattern.PARTIAL);
 				conditions.add(new In(getPropertyName(), new SubQuery(
@@ -119,7 +119,7 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 			//Template等のケース、likeで検索
 			//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));
 
-			String strValue = getFirstValue();
+			String strValue = getLikeSource();
 			if (StringUtil.isNotBlank(strValue)) {
 				conditions.add(new Like(getPropertyName(), strValue, Like.MatchPattern.PARTIAL));
 			}
@@ -152,11 +152,11 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 	}
 
 	/**
-	 * 検索値の1番目の文字列を取得します。
-	 * 配列の場合は1番目の要素、それ以外は文字列表現を返します。
-	 * @return 検索値の1番目の文字列。取得できない場合はnull
+	 * LIKE条件の生成元となる検索文字列を取得します。
+	 * 検索値が配列の場合は先頭要素を、それ以外の場合は文字列表現を返します。
+	 * @return LIKE条件の生成元となる検索文字列。値がnullまたは空配列の場合はnull
 	 */
-	private String getFirstValue() {
+	private String getLikeSource() {
 		Object value = getValue();
 		if (value instanceof String[] values) {
 			return values.length > 0 ? values[0] : null;

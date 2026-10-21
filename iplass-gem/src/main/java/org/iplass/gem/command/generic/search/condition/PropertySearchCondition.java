@@ -233,8 +233,16 @@ public abstract class PropertySearchCondition {
 	}
 
 	/**
-	 * 検索用の値を取得します。
-	 * @return 検索用の値
+	 * 検索条件の生成に使用する値を取得します。
+	 * <p>
+	 * 返されるオブジェクトは、コンストラクタまたは{@link #setValue(Object)}で設定された値です。
+	 * プロパティ定義、プロパティエディタ、および通常検索／詳細検索の別によって、値の型や構造は異なります。
+	 * たとえば、通常検索のStringPropertyでは、通常値・From値・To値を格納したString配列が設定される場合があり、
+	 * 詳細検索では{@link SearchConditionDetail}が設定されます。
+	 * このメソッドは値の型変換やコピーを行いません。
+	 * </p>
+	 *
+	 * @return 設定された検索条件値。値が設定されていない場合は{@code null}
 	 */
 	public Object getValue() {
 		return value;
