@@ -84,8 +84,8 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 					conditions.add(new LesserEqual(getPropertyName(), to));
 				}
 			} else {
-				if (values.length > 0 && values[0] != null) {
-					String strValue = values[0];
+				String strValue = getLikeSource();
+				if (StringUtil.isNotBlank(strValue)) {
 					if ((sp.getDisplayType() != null && sp.getDisplayType() == StringDisplayType.SELECT)
 							|| sp.isSearchExactMatchCondition()) {
 						// 「値なし」を検索条件の選択肢に追加するか
@@ -106,21 +106,23 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 				}
 			}
 		} else if (editor instanceof UserPropertyEditor) {
-			//入力された内容(名前)でoid取得
-			//Like like = new Like(Entity.NAME, "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%");
-			Like like = new Like(Entity.NAME, getValue().toString(), Like.MatchPattern.PARTIAL);
-			conditions.add(new In(getPropertyName(), new SubQuery(
-					new Query().select(Entity.OID)
-							.from(User.DEFINITION_NAME)
-							.where(like))));
+			// 入力されたユーザー名を元にUserを検索し、該当ユーザーのOIDで絞り込む
+			String strValue = getLikeSource();
+			if (StringUtil.isNotBlank(strValue)) {
+				Like like = new Like(Entity.NAME, strValue, Like.MatchPattern.PARTIAL);
+				conditions.add(new In(getPropertyName(), new SubQuery(
+						new Query().select(Entity.OID)
+								.from(User.DEFINITION_NAME)
+								.where(like))));
+			}
 		} else {
 			//Template等のケース、likeで検索
 			//conditions.add(new Like(getPropertyName(), "%" + StringUtil.escapeEqlForLike(getValue().toString()) + "%"));
 
-			Object v = getValue();
-			conditions.add(new Like(getPropertyName(),
-					(v instanceof String[] values && values.length > 0) ? values[0] : v.toString(),
-					Like.MatchPattern.PARTIAL));
+			String strValue = getLikeSource();
+			if (StringUtil.isNotBlank(strValue)) {
+				conditions.add(new Like(getPropertyName(), strValue, Like.MatchPattern.PARTIAL));
+			}
 		}
 		return conditions;
 	}
@@ -147,5 +149,18 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 			return conditions;
 		}
 		return super.convertDetailCondition();
+	}
+
+	/**
+	 * LIKE条件の生成元となる検索文字列を取得します。
+	 * 検索値が配列の場合は先頭要素を、それ以外の場合は文字列表現を返します。
+	 * @return LIKE条件の生成元となる検索文字列。値がnullまたは空配列の場合はnull
+	 */
+	private String getLikeSource() {
+		Object value = getValue();
+		if (value instanceof String[] values) {
+			return values.length > 0 ? values[0] : null;
+		}
+		return value != null ? value.toString() : null;
 	}
 }
