@@ -244,7 +244,8 @@ public abstract class PropertySearchCondition {
 	 * 該当する型および構造として解釈してから条件生成に使用してください。
 	 * </p>
 	 *
-	 * @return 設定された検索条件値。値が設定されていない場合は{@code null}
+	 * @return 設定された検索条件値。型や構造は検索モード等により異なるため、呼び出し元で型を確認して使用してください。
+	 *         詳細は説明本文を参照してください。値が設定されていない場合は{@code null}
 	 */
 	public Object getValue() {
 		return value;
