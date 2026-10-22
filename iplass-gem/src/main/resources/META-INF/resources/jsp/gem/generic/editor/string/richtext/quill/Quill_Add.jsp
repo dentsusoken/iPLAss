@@ -33,31 +33,15 @@
 function addRichtextItem_<%=StringUtil.escapeJavaScript(targetName)%>(targetId) {
 	const $textArea = $("#" + targetId);
 	const value = $textArea.val();
-	const textAreaId = $textArea.attr("id");
-	
-	const $container = $("<div/>").attr("id", textAreaId + "_ql_container")
-		.addClass("gem-quill-container gem-quill-editable");
-
-	$textArea.hide();
-	$container.insertAfter($textArea);
-
-	const toolbarOptions = scriptContext.gem.richtext.quill.toolbarOptions;
-
-	const defaults = {
-		modules: {
-			toolbar: toolbarOptions,
-		},
-		theme: 'snow',
-	}
 
 <%	if (StringUtil.isNotBlank(editorOption)) { %>
 	const custom = <%=editorOption%>;
 <%	} else { %>
 	const custom = {}; 
 <%	} %>
-	const option = $.extend(true, {}, defaults, custom);
+	const option = scriptContext.gem.richtext.quill.createEditableOptions(custom);
 
-	const editor = new Quill($container.get(0), option);
+	const editor = scriptContext.gem.richtext.quill.createEditor($textArea, option, "gem-quill-editable");
 	const contents = editor.clipboard.convert({html:value});
 	editor.setContents(contents);
 	editor.on('text-change', function() {
