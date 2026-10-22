@@ -98,20 +98,18 @@ scriptContext.gem.richtext.quill.configureQuillPlugins = function(option) {
 	if (option.modules.resize !== false) {
 		const resizeOptions = option.modules.resize || {};
 		option.modules.resize = $.extend(true, {}, resizeOptions, {
-			modules: resizeOptions.modules || ["DisplaySize", "Toolbar", "Resize", "Keyboard"],
-			embedTags: resizeOptions.embedTags || [],
-			parchment: {
-				image: $.extend(true, {
+			parchment: $.extend(true, {
+				image: {
 					attribute: ["width"],
 					limit: { minWidth: 1 },
-				}, resizeOptions.parchment?.image || {}),
-			},
+				},
+				video: {
+					attribute: ["width", "height"],
+					limit: { minWidth: 1, ratio: 0.5625 },
+				},
+			}, resizeOptions.parchment || {}),
 		});
 	}
-	if (option.modules.uploader !== false) {
-		option.modules.uploader = $.extend({ mimetypes: [] }, option.modules.uploader);
-	}
-
 	if (option.modules[tableModuleName] !== false) {
 		const toolbar = option.modules.toolbar;
 		if (Array.isArray(toolbar)) {
