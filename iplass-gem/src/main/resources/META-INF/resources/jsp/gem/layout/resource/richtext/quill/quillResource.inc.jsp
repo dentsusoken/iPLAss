@@ -31,6 +31,27 @@ if (!scriptContext.gem.richtext) {
 if (!scriptContext.gem.richtext.quill) {
 	scriptContext.gem.richtext.quill = {};
 }
+scriptContext.gem.richtext.quill.createEditor = function(textArea, option, containerClass) {
+	const $textArea = $(textArea);
+	const textAreaId = $textArea.attr("id");
+	const $container = $("<div/>").attr("id", textAreaId + "_ql_container")
+		.addClass("gem-quill-container " + containerClass);
+
+	$textArea.hide();
+	$container.insertAfter($textArea);
+
+	return new Quill($container.get(0), option);
+};
+scriptContext.gem.richtext.quill.createEditableOptions = function(custom) {
+	const defaults = {
+		modules: {
+			toolbar: scriptContext.gem.richtext.quill.toolbarOptions,
+		},
+		theme: 'snow',
+	};
+	const option = $.extend(true, {}, defaults, custom || {});
+	return scriptContext.gem.richtext.quill.configureQuillPlugins(option);
+};
 </script>
 <script type="importmap">
 {

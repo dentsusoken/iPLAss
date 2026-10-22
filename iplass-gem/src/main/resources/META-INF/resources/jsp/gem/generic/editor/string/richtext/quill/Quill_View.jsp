@@ -36,13 +36,6 @@ $(function() {
 	elements.each(function() {
 		const $textArea = $(this);
 		const value = $textArea.val();
-		const textAreaId = $textArea.attr("id");
-		
-		const $container = $("<div/>").attr("id", textAreaId + "_ql_container")
-			.addClass("gem-quill-container gem-quill-read-only");
-
-		$textArea.hide();
-		$container.insertAfter($textArea);
 
 		const toolbarOptions = scriptContext.gem.richtext.quill.toolbarOptions;
 
@@ -60,9 +53,10 @@ $(function() {
 		const custom = {}; 
 <%	} %>
 		const option = $.extend(true, {}, defaults, custom);
+		let containerClass = "gem-quill-read-only";
 
 <% if (hideToolBar) { %>
-		$container.addClass("gem-quill-disable-toolbar");
+		containerClass += " gem-quill-disable-toolbar";
 		option.modules = option.modules || {};
 		option.modules.toolbar = null;
 <% } %>
@@ -70,7 +64,7 @@ $(function() {
 			delete option.modules.resize;
 		}
 
-		const editor = new Quill($container.get(0), option);
+		const editor = scriptContext.gem.richtext.quill.createEditor($textArea, option, containerClass);
 		const contents = editor.clipboard.convert({html:value});
 		editor.setContents(contents);
 		$(".fixHeight").fixHeight();
