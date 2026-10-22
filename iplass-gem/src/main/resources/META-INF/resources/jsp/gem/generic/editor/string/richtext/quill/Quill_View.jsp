@@ -44,12 +44,7 @@ $(function() {
 		$textArea.hide();
 		$container.insertAfter($textArea);
 
-<%	if (hideToolBar) { %>
-		$container.addClass("gem-quill-disable-toolbar");
-		const toolbarOptions = null;
-<%	} else { %>
 		const toolbarOptions = scriptContext.gem.richtext.quill.toolbarOptions;
-<%	} %>
 
 		const defaults = {
 			modules: {
@@ -65,6 +60,12 @@ $(function() {
 		const custom = {}; 
 <%	} %>
 		const option = $.extend(true, {}, defaults, custom);
+
+<% if (hideToolBar) { %>
+		$container.addClass("gem-quill-disable-toolbar");
+		option.modules = option.modules || {};
+		option.modules.toolbar = null;
+<% } %>
 		if (option.modules) {
 			delete option.modules.resize;
 		}
