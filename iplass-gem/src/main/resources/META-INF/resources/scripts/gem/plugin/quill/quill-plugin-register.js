@@ -57,6 +57,30 @@ class TableResizeLineWithTableGuard extends TableResizeLine {
 quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
 quill.register("modules/resize", QuillResize, true);
 
+// Quill標準のVideo.html()はgetSemanticHTML()時にiframeをリンクへ変換するため、
+// GEMでは動画埋め込みとして再読込可能なHTMLを出力する。
+const Video = quill.import("formats/video");
+class VideoWithSemanticHtml extends Video {
+	html() {
+		const iframe = document.createElement("iframe");
+		iframe.className = ["ql-video", ...Array.from(this.domNode.classList)
+			.filter(className => /^ql-align-(center|right|justify)$/.test(className))].join(" ");
+
+		const src = this.statics.sanitize(this.domNode.getAttribute("src") || "");
+		iframe.setAttribute("src", src);
+		iframe.setAttribute("frameborder", "0");
+		iframe.setAttribute("allowfullscreen", "true");
+		["width", "height"].forEach(attribute => {
+			if (this.domNode.hasAttribute(attribute)) {
+				iframe.setAttribute(attribute, this.domNode.getAttribute(attribute));
+			}
+		});
+
+		return iframe.outerHTML;
+	}
+}
+quill.register({ "formats/video": VideoWithSemanticHtml }, true);
+
 // quill-resize-module 2.1.3はresize-inlineとresize-blockを同じクラスキー（ql-resize-style）で登録する。
 // Parchmentではblock側のAttributorがinline側のキーを上書きするため、保存済みの画像配置がresize-blockとしてインポートされる。
 const Parchment = quill.import("parchment");
