@@ -110,7 +110,6 @@ scriptContext.gem.locale.application.specifyDescription = "生成するトーク
 
 scriptContext.gem.locale.apendCategory("quill");
 scriptContext.gem.locale.quill.imageUrlPrompt = "画像のURLを入力してください";
-scriptContext.gem.locale.quill.imageUrlProtocolError = "HTTP(S)または相対URLを指定してください。";
 scriptContext.gem.locale.quill.imageUrlInvalid = "有効な画像URLを指定してください。";
 scriptContext.gem.locale.quill.tableUp = {
 	fullCheckboxText: "全幅の表を挿入",

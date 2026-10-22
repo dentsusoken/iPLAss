@@ -110,7 +110,6 @@ scriptContext.gem.locale.application.specifyDescription = "โปรดป้อ
 
 scriptContext.gem.locale.apendCategory("quill");
 scriptContext.gem.locale.quill.imageUrlPrompt = "กรุณาป้อน URL ของรูปภาพ";
-scriptContext.gem.locale.quill.imageUrlProtocolError = "กรุณาระบุ URL แบบ HTTP(S) หรือ URL สัมพัทธ์";
 scriptContext.gem.locale.quill.imageUrlInvalid = "กรุณาระบุ URL รูปภาพที่ถูกต้อง";
 scriptContext.gem.locale.quill.tableUp = {
 	fullCheckboxText: "แทรกตารางเต็มความกว้าง",

@@ -110,7 +110,6 @@ scriptContext.gem.locale.application.specifyDescription = "請輸入要生成的
 
 scriptContext.gem.locale.apendCategory("quill");
 scriptContext.gem.locale.quill.imageUrlPrompt = "請輸入圖片 URL";
-scriptContext.gem.locale.quill.imageUrlProtocolError = "請輸入 HTTP(S) 或相對 URL。";
 scriptContext.gem.locale.quill.imageUrlInvalid = "請輸入有效的圖片 URL。";
 scriptContext.gem.locale.quill.tableUp = {
 	fullCheckboxText: "插入全寬表格",

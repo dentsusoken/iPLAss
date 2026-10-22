@@ -110,7 +110,6 @@ scriptContext.gem.locale.application.specifyDescription = "Specify a note of the
 
 scriptContext.gem.locale.apendCategory("quill");
 scriptContext.gem.locale.quill.imageUrlPrompt = "Enter the image URL";
-scriptContext.gem.locale.quill.imageUrlProtocolError = "Specify an HTTP(S) or relative URL.";
 scriptContext.gem.locale.quill.imageUrlInvalid = "Specify a valid image URL.";
 scriptContext.gem.locale.quill.tableUp = {
 	fullCheckboxText: "Insert full width table",

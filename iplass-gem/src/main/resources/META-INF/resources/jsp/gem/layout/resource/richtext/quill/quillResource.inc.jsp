@@ -146,24 +146,18 @@ scriptContext.gem.richtext.quill.toolbarOptions = {
 		},
 		image: function() {
 			const range = this.quill.getSelection(true);
-			const imageUrl = window.prompt(scriptContext.gem.locale.quill.imageUrlPrompt);
-			if (!range || imageUrl == null || imageUrl.trim() === "") {
+			const imageUrl = window.prompt(scriptContext.gem.locale.quill.imageUrlPrompt)?.trim();
+			if (!range || !imageUrl) {
 				return;
 			}
 
-			const url = imageUrl.trim();
-			try {
-				const parsedUrl = new URL(url, document.baseURI);
-				if (!/^https?:$/i.test(parsedUrl.protocol)) {
-					window.alert(scriptContext.gem.locale.quill.imageUrlProtocolError);
-					return;
-				}
-			} catch (error) {
+			const ImageBlot = Quill.import("formats/image");
+			if (ImageBlot.sanitize(imageUrl) !== imageUrl) {
 				window.alert(scriptContext.gem.locale.quill.imageUrlInvalid);
 				return;
 			}
 
-			this.quill.insertEmbed(range.index, "image", url, "user");
+			this.quill.insertEmbed(range.index, "image", imageUrl, "user");
 			this.quill.setSelection(range.index + 1, 0, "user");
 		}
 	},
