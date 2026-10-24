@@ -147,6 +147,9 @@ public class GemConfigService implements Service {
 	/** 参照型（SelectFilter）毎回検索件数 */
 	private int selectFilterSearchPageSize;
 
+	/** ReferencePropertyEditorのモーダル初期表示設定 */
+	private ReferenceModal referenceModal;
+
 	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
 	private boolean shallowCopyLobData;
 
@@ -260,6 +263,8 @@ public class GemConfigService implements Service {
 		bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize", Integer.class, 100);
 
 		selectFilterSearchPageSize = config.getValue("selectFilterSearchPageSizeDefault", Integer.class, 40);
+
+		referenceModal = config.getValue("referenceModal", ReferenceModal.class);
 
 		shallowCopyLobData = config.getValue("shallowCopyLobData", Boolean.class, false);
 
@@ -645,6 +650,26 @@ public class GemConfigService implements Service {
 	}
 
 	/**
+	 * ReferencePropertyEditorのモーダル初期表示幅を取得します。
+	 *
+	 * @return 幅（未設定または不正値の場合はnull）
+	 */
+	public Integer getReferenceModalWidth() {
+		Integer width = referenceModal == null ? null : referenceModal.getWidth();
+		return width == null || width <= 0 ? null : width;
+	}
+
+	/**
+	 * ReferencePropertyEditorのモーダル初期表示高さを取得します。
+	 *
+	 * @return 高さ（未設定または不正値の場合はnull）
+	 */
+	public Integer getReferenceModalHeight() {
+		Integer height = referenceModal == null ? null : referenceModal.getHeight();
+		return height == null || height <= 0 ? null : height;
+	}
+
+	/**
 	 * エンティティをコピーする際にLobデータをシャッローコピーするかを取得します。
 	 * @return エンティティをコピーする際にLobデータをシャッローコピーするか
 	 */
@@ -682,5 +707,32 @@ public class GemConfigService implements Service {
 	 */
 	public List<String> getPermitRolesToNoView() {
 		return permitRolesToNoView;
+	}
+
+	/**
+	 * ReferencePropertyEditorで参照データを選択するモーダルの初期表示サイズを定義する設定クラスです。
+	 * 幅と高さはピクセル単位で指定します。未設定または0以下の場合は、モーダルの既定サイズが使用されます。
+	 */
+	public static class ReferenceModal {
+		/** モーダルの初期表示幅（ピクセル）。 */
+		private Integer width;
+		/** モーダルの初期表示高さ（ピクセル）。 */
+		private Integer height;
+
+		public Integer getWidth() {
+			return width;
+		}
+
+		public void setWidth(Integer width) {
+			this.width = width;
+		}
+
+		public Integer getHeight() {
+			return height;
+		}
+
+		public void setHeight(Integer height) {
+			this.height = height;
+		}
 	}
 }

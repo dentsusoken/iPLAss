@@ -131,7 +131,9 @@
 							+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 							+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 					}
@@ -180,7 +182,9 @@
 								+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 								+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=entity.getName() %>" /></a>
 <%
 						}
