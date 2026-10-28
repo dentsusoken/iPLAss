@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
@@ -57,6 +58,7 @@ import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.view.generic.parser.Parser;
 import org.iplass.mtp.tenant.TenantI18nInfo;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.ResourceBundleUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -615,7 +617,7 @@ public class EntityViewUtil {
 
 		//表示順を検索
 		List<Entity> target = null;
-		if (research) {
+		if (research && isResearch(entities)) {
 			List<String> oidList = entities.stream()
 					.filter(e -> e.getOid() != null)
 					.map(e -> e.getOid())
@@ -704,6 +706,24 @@ public class EntityViewUtil {
 		definition.setMultiplicity(1);
 		definition.setUpdatable(true);
 		return definition;
+	}
+
+	private static boolean isResearch(List<Entity> entities) {
+		if (CollectionUtil.isEmpty(entities)) {
+			return false;
+		}
+
+		// 1件目のEntityのREF_RELOADプロパティを確認し、検索を行うかどうかを判断する
+		// リストアイテムごとにREF_RELOADが設定されてたりされてなかったりすることはないので、1件目のEntityだけを確認する
+		Entity entity = entities.get(0);
+		Object value = entity.getValue(Constants.REF_RELOAD);
+		if (value == null) {
+			// REF_RELOADが設定されていない場合は、検索を行う
+			return true;
+		}
+
+		// 明示的にリロードフラグをfalseにしない限り検索を行う
+		return (value instanceof Boolean reload) ? reload : true;
 	}
 
 	private static class SortInfo {

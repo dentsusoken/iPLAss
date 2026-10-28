@@ -908,6 +908,10 @@ public class DetailCommandContext extends RegistrationCommandContext
 			for (int i = 0; i < target.size(); i++) {
 				target.get(i)
 						.setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
+
+				// エラーメッセージのキーとの整合性をあわせるためREF_INDEXも更新する
+				target.get(i)
+						.setValue(Constants.REF_INDEX, i);
 			}
 		} else {
 			target = list;
