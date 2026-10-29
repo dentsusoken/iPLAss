@@ -450,46 +450,8 @@ function getGrid(id) {
 	return ret;
 }
 function groupingCellAttr(rowId, val, rowObject, colModel, rdata) {
-	var rowIndex = parseInt(rowId) - 1;
-	var grid = getGrid(this.id);
-	var data = grid.getGridParam("_data");
-	var row = data[rowIndex];
-	var colName = colModel.name;
-
-	if (rowIndex > 0) {
-		var beforeRow = data[rowIndex - 1];
-		//前の行と値が同じか確認
-		var dif = false;
-		if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion || row[colName] != beforeRow[colName]) {
-			dif = true;
-		}
-		//同じ場合は非表示にする、タイトルを指定しないと(""含む)CELL値が設定されるので指定
-		if (!dif) return " title=\"&nbsp;\" style=\"display:none;\" ";
-	}
-
-	//この行から何行分rowspanを設定するか計算
-	var count = 0;
-	for (var i = rowIndex; i < data.length; i++) {
-		if (i >= data.length) break;
-		var nextRow = data[i];
-		var dif = false;
-		if (row.orgOid != nextRow.orgOid || row.orgVersion != nextRow.orgVersion || row[colName] != nextRow[colName]) {
-			dif = true;
-			break;
-		}
-		if (!dif) count++;
-		else break;
-	}
-	if (count > 1) {
-		var label = $.jgrid.stripHtml(rdata[colModel.name]).replace(/'/g, "&apos;");
-		if (!label || typeof label === "undefined") {
-			//タイトルを指定しないと(""含む)CELL値が設定されるので指定
-			label = "&nbsp;";
-		}
-		return " title=\"" + label + "\" style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
-	} else {
-		return null;
-	}
+	//セル結合の判定は共通処理(common.js)で行う
+	return searchResultGroupingCellAttr(getGrid(this.id), rowId, colModel, rdata);
 }
 
 function noneGroupingCellAttr(rowId, val, rowObject, colModel, rdata) {
