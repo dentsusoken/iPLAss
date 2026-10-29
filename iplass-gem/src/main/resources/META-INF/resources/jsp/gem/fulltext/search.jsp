@@ -450,8 +450,8 @@ function getGrid(id) {
 	return ret;
 }
 function groupingCellAttr(rowId, val, rowObject, colModel, rdata) {
-	//セル結合の判定は共通処理(groupingCells.js)で行う
-	return SearchResultGrouping.cellAttr(getGrid(this.id), rowId, colModel, rdata);
+	//セル結合の判定は共通処理(common.js)で行う
+	return searchResultGroupingCellAttr(getGrid(this.id), rowId, colModel, rdata);
 }
 
 function noneGroupingCellAttr(rowId, val, rowObject, colModel, rdata) {

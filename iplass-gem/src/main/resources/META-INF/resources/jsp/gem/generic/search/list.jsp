@@ -167,8 +167,8 @@ $(function() {
 <%
 	if (section.isGroupingData()) {
 %>
-		//セル結合の判定は共通処理(groupingCells.js)で行う
-		return SearchResultGrouping.cellAttr(grid, rowId, colModel, rdata);
+		//セル結合の判定は共通処理(common.js)で行う
+		return searchResultGroupingCellAttr(grid, rowId, colModel, rdata);
 <%
 	} else {
 %>
