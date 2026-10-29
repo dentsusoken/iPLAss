@@ -206,7 +206,7 @@ ext {
 		'org.webjars:jquery-blockui': '2.70-1',
 		'org.webjars:jQuery-Timepicker-Addon': '1.6.3',
 
-		'org.webjars.npm:moment': '2.30.1',
+		'org.webjars.npm:moment': '2.31.0',
 
 		'org.webjars.npm:free-jqgrid': '4.15.5',
 		'org.webjars.npm:jqtree': '1.4.9',
