@@ -167,6 +167,27 @@ public class DetailFormView extends FormView {
 	)
 	private List<LocalizedStringDefinition> localizedEditDisplayLabelList;
 
+	/** 編集ボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "編集ボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_editDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 255,
+			description = "編集ボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_editDisplayTypeScriptDescriptionKey"
+	)
+	private String editDisplayTypeScript;
+
 	/** コピーボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName = "コピーボタン表示ラベル",
@@ -188,6 +209,27 @@ public class DetailFormView extends FormView {
 			displayOrder = 270
 	)
 	private List<LocalizedStringDefinition> localizedCopyDisplayLabelList;
+
+	/** コピーボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "コピーボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_copyDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 275,
+			description = "コピーボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_copyDisplayTypeScriptDescriptionKey"
+	)
+	private String copyDisplayTypeScript;
 
 	/** バージョンアップボタン表示ラベル */
 	@MetaFieldInfo(
@@ -211,6 +253,27 @@ public class DetailFormView extends FormView {
 	)
 	private List<LocalizedStringDefinition> localizedVersionupDisplayLabelList;
 
+	/** バージョンアップボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "バージョンアップボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_versionupDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 295,
+			description = "バージョンアップボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_versionupDisplayTypeScriptDescriptionKey"
+	)
+	private String versionupDisplayTypeScript;
+
 	/** 追加ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName = "追加ボタン表示ラベル",
@@ -232,6 +295,27 @@ public class DetailFormView extends FormView {
 			displayOrder = 310
 	)
 	private List<LocalizedStringDefinition> localizedInsertDisplayLabelList;
+
+	/** 登録ボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "登録ボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_insertDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 315,
+			description = "登録ボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_insertDisplayTypeScriptDescriptionKey"
+	)
+	private String insertDisplayTypeScript;
 
 	/** 更新ボタン表示ラベル */
 	@MetaFieldInfo(
@@ -255,6 +339,27 @@ public class DetailFormView extends FormView {
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
 
+	/** 更新ボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "更新ボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_updateDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 335,
+			description = "更新ボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_updateDisplayTypeScriptDescriptionKey"
+	)
+	private String updateDisplayTypeScript;
+
 	/** 削除ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName = "削除ボタン表示ラベル",
@@ -277,6 +382,27 @@ public class DetailFormView extends FormView {
 	)
 	private List<LocalizedStringDefinition> localizedDeleteDisplayLabelList;
 
+	/** 削除ボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "削除ボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_deleteDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 355,
+			description = "削除ボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_deleteDisplayTypeScriptDescriptionKey"
+	)
+	private String deleteDisplayTypeScript;
+
 	/** バージョン削除ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName = "バージョン削除ボタン表示ラベル",
@@ -298,6 +424,49 @@ public class DetailFormView extends FormView {
 			displayOrder = 370
 	)
 	private List<LocalizedStringDefinition> localizedDeleteSpecificVersionDisplayLabelList;
+
+	/** バージョン削除ボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "バージョン削除ボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_deleteSpecificVersionDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 375,
+			description = "バージョン削除ボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_deleteSpecificVersionDisplayTypeScriptDescriptionKey"
+	)
+	private String deleteSpecificVersionDisplayTypeScript;
+
+	/** ロックボタン表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName = "ロックボタン表示判定用スクリプト",
+			displayNameKey = "generic_DetailFormView_lockDisplayTypeScriptDisplaNameKey",
+			inputType = InputType.SCRIPT,
+			mode = "groovy_script",
+			displayOrder = 380,
+			description = "ロックボタンを表示するか判定するGroovyScriptです。<BR />" +
+					"実行結果がtrueの場合、ボタンを表示します。<BR />" +
+					"ロックボタンとロック解除ボタンの両方に適用されます。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト情報<BR />" +
+					"session         ：セッション情報<BR />" +
+					"user            ：ユーザー情報<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：対象のEntity",
+
+			descriptionKey = "generic_DetailFormView_lockDisplayTypeScriptDescriptionKey"
+	)
+	private String lockDisplayTypeScript;
 
 	/** 編集アクション名 */
 	@MetaFieldInfo(
@@ -1188,6 +1357,150 @@ public class DetailFormView extends FormView {
 	 */
 	public void setJavaScript(String javaScript) {
 		this.javaScript = javaScript;
+	}
+
+	/**
+	 * 編集ボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return 編集ボタン表示判定用スクリプト
+	 */
+	public String getEditDisplayTypeScript() {
+		return editDisplayTypeScript;
+	}
+
+	/**
+	 * 編集ボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param editDisplayTypeScript 編集ボタン表示判定用スクリプト
+	 */
+	public void setEditDisplayTypeScript(String editDisplayTypeScript) {
+		this.editDisplayTypeScript = editDisplayTypeScript;
+	}
+
+	/**
+	 * コピーボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return コピーボタン表示判定用スクリプト
+	 */
+	public String getCopyDisplayTypeScript() {
+		return copyDisplayTypeScript;
+	}
+
+	/**
+	 * コピーボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param copyDisplayTypeScript コピーボタン表示判定用スクリプト
+	 */
+	public void setCopyDisplayTypeScript(String copyDisplayTypeScript) {
+		this.copyDisplayTypeScript = copyDisplayTypeScript;
+	}
+
+	/**
+	 * バージョンアップボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return バージョンアップボタン表示判定用スクリプト
+	 */
+	public String getVersionupDisplayTypeScript() {
+		return versionupDisplayTypeScript;
+	}
+
+	/**
+	 * バージョンアップボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param versionupDisplayTypeScript バージョンアップボタン表示判定用スクリプト
+	 */
+	public void setVersionupDisplayTypeScript(String versionupDisplayTypeScript) {
+		this.versionupDisplayTypeScript = versionupDisplayTypeScript;
+	}
+
+	/**
+	 * 登録ボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return 登録ボタン表示判定用スクリプト
+	 */
+	public String getInsertDisplayTypeScript() {
+		return insertDisplayTypeScript;
+	}
+
+	/**
+	 * 登録ボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param insertDisplayTypeScript 登録ボタン表示判定用スクリプト
+	 */
+	public void setInsertDisplayTypeScript(String insertDisplayTypeScript) {
+		this.insertDisplayTypeScript = insertDisplayTypeScript;
+	}
+
+	/**
+	 * 更新ボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return 更新ボタン表示判定用スクリプト
+	 */
+	public String getUpdateDisplayTypeScript() {
+		return updateDisplayTypeScript;
+	}
+
+	/**
+	 * 更新ボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param updateDisplayTypeScript 更新ボタン表示判定用スクリプト
+	 */
+	public void setUpdateDisplayTypeScript(String updateDisplayTypeScript) {
+		this.updateDisplayTypeScript = updateDisplayTypeScript;
+	}
+
+	/**
+	 * 削除ボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return 削除ボタン表示判定用スクリプト
+	 */
+	public String getDeleteDisplayTypeScript() {
+		return deleteDisplayTypeScript;
+	}
+
+	/**
+	 * 削除ボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param deleteDisplayTypeScript 削除ボタン表示判定用スクリプト
+	 */
+	public void setDeleteDisplayTypeScript(String deleteDisplayTypeScript) {
+		this.deleteDisplayTypeScript = deleteDisplayTypeScript;
+	}
+
+	/**
+	 * バージョン削除ボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return バージョン削除ボタン表示判定用スクリプト
+	 */
+	public String getDeleteSpecificVersionDisplayTypeScript() {
+		return deleteSpecificVersionDisplayTypeScript;
+	}
+
+	/**
+	 * バージョン削除ボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param deleteSpecificVersionDisplayTypeScript バージョン削除ボタン表示判定用スクリプト
+	 */
+	public void setDeleteSpecificVersionDisplayTypeScript(String deleteSpecificVersionDisplayTypeScript) {
+		this.deleteSpecificVersionDisplayTypeScript = deleteSpecificVersionDisplayTypeScript;
+	}
+
+	/**
+	 * ロックボタン表示判定用スクリプトを取得します。
+	 *
+	 * @return ロックボタン表示判定用スクリプト
+	 */
+	public String getLockDisplayTypeScript() {
+		return lockDisplayTypeScript;
+	}
+
+	/**
+	 * ロックボタン表示判定用スクリプトを設定します。
+	 *
+	 * @param lockDisplayTypeScript ロックボタン表示判定用スクリプト
+	 */
+	public void setLockDisplayTypeScript(String lockDisplayTypeScript) {
+		this.lockDisplayTypeScript = lockDisplayTypeScript;
 	}
 
 	/**

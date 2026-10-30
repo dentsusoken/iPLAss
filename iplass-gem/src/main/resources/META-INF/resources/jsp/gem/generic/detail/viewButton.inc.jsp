@@ -35,6 +35,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
+<%@ page import="org.iplass.mtp.view.generic.DetailFormViewButtonType"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -132,7 +133,8 @@
 			}
 		}
 		if (showEditButton) {
-			if (!form.isHideLock()) {
+			if (!form.isHideLock()
+					&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.LOCK, OutputType.VIEW, data.getEntity())) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.viewButton.lock')}" class="gr-btn-02" 
@@ -144,7 +146,8 @@
 </li>
 <%
 			}
-			if (!form.isHideDetail()) {
+			if (!form.isHideDetail()
+					&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.EDIT, OutputType.VIEW, data.getEntity())) {
 				String dispStyle = "";
 				if (isLock && !hasLock) {
 					dispStyle = "display: none";
@@ -157,7 +160,8 @@
 <%
 			}
 		}
-		if (showCopyButton && !isNoneDispCopyButton) {
+		if (showCopyButton && !isNoneDispCopyButton
+				&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.COPY, OutputType.VIEW, data.getEntity())) {
 %>
 <li class="btn copy-btn">
 <input type="button" value="<c:out value="<%=copyDisplayLabel %>"/>" class="gr-btn" 
@@ -166,7 +170,8 @@
 <%
 		}
 		if (showEditButton) {
-			if (data.getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
+			if (data.getEntityDefinition().getVersionControlType() != VersionControlType.NONE
+					&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.VERSIONUP, OutputType.VIEW, data.getEntity())) {
 				String dispStyle = "";
 				if (isLock && !hasLock) {
 					dispStyle = "display: none";
