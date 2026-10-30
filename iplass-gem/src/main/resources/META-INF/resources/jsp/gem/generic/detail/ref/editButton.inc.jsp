@@ -26,6 +26,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
+<%@ page import="org.iplass.mtp.view.generic.DetailFormViewButtonType"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -120,7 +121,8 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (data.isCanUpdate()) {
+		if (data.isCanUpdate()
+				&& evm.isDisplayStandardButton(defName, viewName, DetailFormViewButtonType.UPDATE, OutputType.EDIT, data.getEntity())) {
 %>
 <li class="btn save-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" 
@@ -133,7 +135,8 @@
 <%
 		}
 	} else {
-		if (data.isCanCreate()) {
+		if (data.isCanCreate()
+				&& evm.isDisplayStandardButton(defName, viewName, DetailFormViewButtonType.INSERT, OutputType.EDIT, data.getEntity())) {
 %>
 <li class="btn insert-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" 
