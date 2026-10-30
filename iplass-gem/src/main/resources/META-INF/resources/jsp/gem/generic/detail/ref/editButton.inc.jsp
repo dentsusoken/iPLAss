@@ -129,7 +129,7 @@
 	disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" />
 </li>
 <%
-		} else {
+		} else if (!data.isCanUpdate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notUpdate")}</span></li>
 <%
@@ -143,7 +143,7 @@
 	disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" />
 </li>
 <%
-		} else {
+		} else if (!data.isCanCreate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notRegist")}</span></li>
 <%
