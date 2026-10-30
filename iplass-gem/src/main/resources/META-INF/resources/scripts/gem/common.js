@@ -149,9 +149,12 @@ function oidCellFormatter(cellvalue, options, rowObject) {
  * 検索結果一覧(jqGrid)の cellattr から呼び出し、セル結合(rowspan)の属性文字列を返します。
  * 一般検索画面、トップ画面の一覧パーツ、全文検索画面で共通利用します。
  *
- * - 同一(oid, version)の行で、かつ判定対象の列の値が連続して同じ場合に、セルを結合します。
- * - ネストした参照プロパティの列(例: "mref2.mref3.name")は、親(祖先)の参照プロパティの列も判定対象に含めます。
- *   (親が異なる行同士を、子の値が同じというだけで結合しないようにするため)
+ * 次の全てが連続する行で同じ場合に、セルを結合します。
+ * - 行のEntityの oid と version
+ * - ネストした参照プロパティの列(例: "mref2.mref3.name")は、その列が属する階層(例: "mref2.mref3")と
+ *   祖先の階層(例: "mref2")の参照先Entityの oid と version(行データの "mref2.@oid"、"mref2.mref3.@version" など)
+ *   (参照先Entityが異なる行同士を、値が同じというだけで結合しないようにするため)
+ * - 対象の列の値
  *
  * @param grid jqGrid(_data に検索結果の行データを保持していること)
  * @param rowId 行ID(jqGrid の cellattr の引数)
@@ -160,43 +163,26 @@ function oidCellFormatter(cellvalue, options, rowObject) {
  * @returns cellattr の戻り値(属性文字列。属性を設定しない場合は null)
  */
 function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
-	// 列名から親プロパティのパスを取得
-	// 例: "mref2.mref3.name" → "mref2.mref3"、"name" → ""
-	const getParentPath = (name) => {
-		const idx = name.lastIndexOf(".");
-		return idx < 0 ? "" : name.substring(0, idx);
-	};
-
-	// path が parentPath と同じ、またはその祖先にあたる親パスか判定
-	// 例: parentPath = "mref2.mref3" の場合
-	//  "mref2.mref3" → true、"mref2" → true、"mref4" → false
-	const isSameOrAncestorPath = (path, parentPath) =>
-		path !== "" && (path === parentPath || parentPath.startsWith(path + "."));
-
-	// 結合判定の対象とする列名の一覧を取得
-	// 例(colNames = ["name", "mref2.name", "mref2.mref3.name", "mref4.name"]):
-	//  "name" → ["name"]
-	//  "mref2.mref3.name" → ["mref2.name", "mref2.mref3.name"]
-	const getGroupingKeyCols = (colName, colNames) => {
-		const parentPath = getParentPath(colName);
-		return parentPath === ""
-			? [colName]
-			: colNames.filter((name) => isSameOrAncestorPath(getParentPath(name), parentPath));
-	};
-
 	const rowIndex = parseInt(rowId) - 1;
 	const data = grid.getGridParam("_data");
 	const row = data[rowIndex];
-	const colNames = grid.getGridParam("colModel").map((model) => model.name);
 	const colName = colModel.name;
-	const keyCols = getGroupingKeyCols(colName, colNames);
+
+	// 列が属する階層と祖先の階層の参照先Entityの oid、version のキーを取得
+	// 例: "mref2.mref3.name" → ["mref2.@oid", "mref2.@version", "mref2.mref3.@oid", "mref2.mref3.@version"]、"name" → []
+	const names = colName.split(".").slice(0, -1);
+	const idKeys = names.flatMap((_, i) => {
+		const path = names.slice(0, i + 1).join(".");
+		return [path + ".@oid", path + ".@version"];
+	});
 
 	// 2つの行が結合対象(同一)か判定する
 	const isSame = (row1, row2) => row1.orgOid == row2.orgOid
 		&& row1.orgVersion == row2.orgVersion
-		&& keyCols.every((col) => row1[col] == row2[col]);
+		&& idKeys.every((key) => row1[key] == row2[key])
+		&& row1[colName] == row2[colName];
 
-	// 前の行と値が同じ場合(ネストした参照プロパティは親の値も同じ場合)は非表示にする
+	// 前の行と同じ場合は非表示にする
 	// タイトルを指定しないと(""含む)CELL値が設定されるので指定
 	if (rowIndex > 0 && isSame(row, data[rowIndex - 1])) {
 		return " title=\"&nbsp;\" style=\"display:none;\" ";

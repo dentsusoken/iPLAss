@@ -143,6 +143,11 @@
 		ReferenceProperty rp = (ReferenceProperty) pd;
 		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 		EntityDefinition ed = edm.get(rp.getObjectDefinitionName());
+		if (eval != null && entity != null) {
+			//「検索結果をまとめる」の判定用に、この階層の参照先Entityの oid と version を保持する(キー例: mref2.@oid、mref2.mref3.@version)
+			eval.put(editor.getPropertyName() + ".@oid", entity.getOid());
+			eval.put(editor.getPropertyName() + ".@version", String.valueOf(entity.getVersion()));
+		}
 		for (NestProperty np : editor.getNestProperties()) {
 			String key = editor.getPropertyName() + "." + np.getPropertyName();
 			PropertyDefinition _pd = EntityViewUtil.getNestTablePropertyDefinition(np, ed);
