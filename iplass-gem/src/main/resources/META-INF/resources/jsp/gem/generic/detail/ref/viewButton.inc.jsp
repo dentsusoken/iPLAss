@@ -23,13 +23,12 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
-<%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
-<%@ page import="org.iplass.mtp.view.generic.DetailFormViewButtonType"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonDisplay"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -81,6 +80,7 @@
 	boolean isEditable = "true".equals(refEdit);
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+	StandardButtonDisplay standardButton = new StandardButtonDisplay(defName, OutputType.VIEW, data);
 %>
 
 <ul class="list_operation">
@@ -117,10 +117,7 @@
 		}
 	}
 	if (isEditable) {
-		boolean showEditButton = data.isCanUpdate() || data.isCanDelete();
-		if (showEditButton) {
-			if (!form.isHideLock()
-					&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.LOCK, OutputType.VIEW, data.getEntity())) {
+		if (standardButton.isDisplayLockButton()) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.ref.viewButton.lock')}" class="gr-btn-02" 
@@ -131,34 +128,29 @@
 	name="unlock" style="<c:out value="<%=unlockStyle %>"/>" onclick="dataUnlock()" />
 </li>
 <%
+		}
+		if (standardButton.isDisplayEditButton()) {
+			String dispStyle = "";
+			if (isLock && !hasLock) {
+				dispStyle = "display: none";
 			}
-			if (!form.isHideDetail()
-					&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.EDIT, OutputType.VIEW, data.getEntity())) {
-				String dispStyle = "";
-				if (isLock && !hasLock) {
-					dispStyle = "display: none";
-				}
 %>
 <li class="btn edit-btn">
 <input type="submit" value="<c:out value="<%=editDisplayLabel %>"/>" class="gr-btn" style="<c:out value="<%=dispStyle %>"/>" />
 </li>
 <%
-			}
 		}
-		if (showEditButton) {
-			if (data.getEntityDefinition().getVersionControlType() != VersionControlType.NONE
-					&& evm.isDisplayStandardButton(defName, form.getName(), DetailFormViewButtonType.VERSIONUP, OutputType.VIEW, data.getEntity())) {
-				String dispStyle = "";
-				if (isLock && !hasLock) {
-					dispStyle = "display: none";
-				}
+		if (standardButton.isDisplayVersionupButton()) {
+			String dispStyle = "";
+			if (isLock && !hasLock) {
+				dispStyle = "display: none";
+			}
 %>
 <li class="btn version-btn">
 <input type="button" value="<c:out value="<%=versionupDisplayLabel %>"/>" class="gr-btn gr-size-03" 
-	style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
+style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
 </li>
 <%
-			}
 		}
 	}
 %>

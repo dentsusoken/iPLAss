@@ -898,7 +898,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public boolean isDisplayStandardButton(String definitionName, String viewName, DetailFormViewButtonType type, OutputType outputType,
+	public boolean isStandardButtonVisible(String definitionName, String viewName, DetailFormViewButtonType type, OutputType outputType,
 			Entity entity) {
 		if (definitionName == null || type == null || outputType == null) {
 			return true;
@@ -918,22 +918,21 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		DetailFormViewRuntime detailView = null;
 		for (FormViewRuntime formView : entityView.getFormViews()) {
-			if (formView instanceof DetailFormViewRuntime) {
-				//nameが一致するhandlerを検索
-				if (viewName == null || viewName.isEmpty()) {
-					if (formView.getMetaData()
-							.getName() == null || formView.getMetaData()
-									.getName()
-									.isEmpty()) {
-						detailView = (DetailFormViewRuntime) formView;
-						break;
-					}
-				} else {
-					if (viewName.equals(formView.getMetaData()
-							.getName())) {
-						detailView = (DetailFormViewRuntime) formView;
-						break;
-					}
+			if (!(formView instanceof DetailFormViewRuntime detailFormView)) {
+				continue;
+			}
+			//nameが一致するhandlerを検索
+			String formViewName = detailFormView.getMetaData()
+					.getName();
+			if (viewName == null || viewName.isEmpty()) {
+				if (formViewName == null || formViewName.isEmpty()) {
+					detailView = detailFormView;
+					break;
+				}
+			} else {
+				if (viewName.equals(formViewName)) {
+					detailView = detailFormView;
+					break;
 				}
 			}
 		}
@@ -942,7 +941,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			//画面定義が見つからない場合は従来通り表示する
 			return true;
 		}
-		return detailView.isDisplayButton(type, outputType, entity);
+		return detailView.isStandardButtonVisible(type, outputType, entity);
 	}
 
 	@Override

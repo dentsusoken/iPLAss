@@ -233,7 +233,8 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param entity 表示対象のエンティティ
 	 * @return 表示可否
 	 */
-	public boolean isDisplayStandardButton(String definitionName, String viewName, DetailFormViewButtonType type, OutputType outputType, Entity entity);
+	public boolean isStandardButtonVisible(String definitionName, String viewName, DetailFormViewButtonType type, OutputType outputType,
+			Entity entity);
 
 	/**
 	 * 参照ダイアログ用のURLパラメータを取得します。

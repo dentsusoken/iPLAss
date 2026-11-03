@@ -182,7 +182,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 	 * @param entity 対象のエンティティ（新規登録時はnull）
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayButton(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
+	public boolean isStandardButtonVisible(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
 		Script script = displayTypeScripts.get(type);
 		if (script == null) {
 			//スクリプト未設定の場合は従来通り表示する
@@ -198,12 +198,10 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 		sc.setAttribute(ENTITY_BINDING_NAME, entity);
 
 		Object val = script.eval(sc);
-		if (val != null) {
-			if (val instanceof Boolean) {
-				return ((Boolean) val).booleanValue();
-			} else if (val instanceof String) {
-				return Boolean.parseBoolean((String) val);
-			}
+		if (val instanceof Boolean booleanValue) {
+			return booleanValue;
+		} else if (val instanceof String stringValue) {
+			return Boolean.parseBoolean(stringValue);
 		}
 		return false;
 	}
