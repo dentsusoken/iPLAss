@@ -26,7 +26,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
-<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonDisplay"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -84,7 +84,7 @@
 	}
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonDisplay standardButton = new StandardButtonDisplay(defName, OutputType.EDIT, data);
+	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.EDIT, data);
 %>
 <ul class="list_operation">
 <%
@@ -122,7 +122,7 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (standardButton.isDisplayUpdateButton()) {
+		if (standardButton.isUpdateButtonVisible()) {
 %>
 <li class="btn save-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" 
@@ -135,7 +135,7 @@
 <%
 		}
 	} else {
-		if (standardButton.isDisplayInsertButton()) {
+		if (standardButton.isInsertButtonVisible()) {
 %>
 <li class="btn insert-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" 

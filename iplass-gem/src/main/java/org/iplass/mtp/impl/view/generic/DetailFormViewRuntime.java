@@ -65,7 +65,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 	private Script compiledInitScript;
 	private ScriptEngine scriptEngine;
 	private EntityManager em;
-	private Map<DetailFormViewButtonType, Script> displayTypeScripts;
+	private final Map<DetailFormViewButtonType, Script> displayTypeScripts;
 
 	public DetailFormViewRuntime(MetaDetailFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);

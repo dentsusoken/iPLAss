@@ -34,7 +34,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
-<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonDisplay"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -90,7 +90,7 @@
 	//ワークフローの権限確認用
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonDisplay standardButton = new StandardButtonDisplay(defName, OutputType.VIEW, data);
+	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.VIEW, data);
 %>
 <ul class="list_operation edit-bar">
 <%
@@ -127,7 +127,7 @@
 				}
 			}
 		}
-		if (standardButton.isDisplayLockButton()) {
+		if (standardButton.isLockButtonVisible()) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.viewButton.lock')}" class="gr-btn-02" 
@@ -139,7 +139,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDisplayEditButton()) {
+		if (standardButton.isEditButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
@@ -147,11 +147,11 @@
 %>
 <li class="btn edit-btn">
 <input type="submit" value="<c:out value="<%=editDisplayLabel %>"/>" class="gr-btn" 
-style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_submit()" />
+	style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_submit()" />
 </li>
 <%
 		}
-		if (standardButton.isDisplayCopyButton()) {
+		if (standardButton.isCopyButtonVisible()) {
 %>
 <li class="btn copy-btn">
 <input type="button" value="<c:out value="<%=copyDisplayLabel %>"/>" class="gr-btn" 
@@ -159,7 +159,7 @@ style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_submit()" />
 </li>
 <%
 		}
-		if (standardButton.isDisplayVersionupButton()) {
+		if (standardButton.isVersionupButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
@@ -167,7 +167,7 @@ style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_submit()" />
 %>
 <li class="btn version-btn">
 <input type="button" value="<c:out value="<%=versionupDisplayLabel %>"/>" class="gr-btn gr-size-03" 
-style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
+	style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
 </li>
 <%
 		}

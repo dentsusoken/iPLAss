@@ -26,7 +26,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
-<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonDisplay"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -76,7 +76,7 @@
 	}
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonDisplay standardButton = new StandardButtonDisplay(defName, OutputType.EDIT, data);
+	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.EDIT, data);
 %>
 
 <ul class="list_operation edit-bar">
@@ -115,7 +115,7 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (standardButton.isDisplayUpdateButton()) {
+		if (standardButton.isUpdateButtonVisible()) {
 			String updateDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.save");
 			String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
@@ -128,7 +128,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDisplayDeleteButton()) {
+		if (standardButton.isDeleteButtonVisible()) {
 			String deleteDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.delete");
 			String localizedDeleteDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteDisplayLabel(), form.getLocalizedDeleteDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedDeleteDisplayLabel)) {
@@ -141,7 +141,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDisplayDeleteVersionButton()) {
+		if (standardButton.isDeleteVersionButtonVisible()) {
 			String displayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.deleteSpecificVersion");
 			String localizedDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteSpecificVersionDisplayLabel(), form.getLocalizedDeleteSpecificVersionDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedDisplayLabel)) {
@@ -155,7 +155,7 @@
 <%
 		}
 	} else {
-		if (standardButton.isDisplayInsertButton()) {
+		if (standardButton.isInsertButtonVisible()) {
 			String insertDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.reg");
 			String localizedInsertDisplayLabel = TemplateUtil.getMultilingualString(form.getInsertDisplayLabel(), form.getLocalizedInsertDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedInsertDisplayLabel)) {

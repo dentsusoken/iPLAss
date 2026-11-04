@@ -28,18 +28,24 @@ import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.OutputType;
 
 /**
- * 詳細画面の標準ボタンの表示可否を判定するサポートクラス。
+ * 詳細画面の標準ボタンの表示可否を判定するクラス。
  *
  */
-public class StandardButtonDisplay {
+public class StandardButtonVisibility {
 
-	private EntityViewManager entityViewManager;
+	private final EntityViewManager entityViewManager;
 
-	private String definitionName;
+	private final String definitionName;
 
-	private OutputType outputType;
+	private final OutputType outputType;
 
-	private DetailFormViewData data;
+	private final DetailFormViewData data;
+
+	/** 画面定義（ボタン判定の都度 data.getView() を呼び直さないよう保持する） */
+	private final DetailFormView form;
+
+	/** バージョン管理ありの場合true */
+	private final boolean versionControl;
 
 	/**
 	 * コンストラクタ
@@ -48,89 +54,92 @@ public class StandardButtonDisplay {
 	 * @param outputType 表示タイプ
 	 * @param data 詳細画面表示用データ
 	 */
-	public StandardButtonDisplay(String definitionName, OutputType outputType, DetailFormViewData data) {
+	public StandardButtonVisibility(String definitionName, OutputType outputType, DetailFormViewData data) {
 		this.entityViewManager = ManagerLocator.getInstance()
 				.getManager(EntityViewManager.class);
 		this.definitionName = definitionName;
 		this.outputType = outputType;
 		this.data = data;
+		this.form = data.getView();
+		this.versionControl = data.getEntityDefinition()
+				.getVersionControlType() != VersionControlType.NONE;
 	}
 
 	/**
-	 * 編集ボタンの表示可否を判定します。
+	 * 編集ボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayEditButton() {
-		return (data.isCanUpdate() || data.isCanDelete()) && !getForm().isHideDetail()
+	public boolean isEditButtonVisible() {
+		return (data.isCanUpdate() || data.isCanDelete()) && !form.isHideDetail()
 				&& isStandardButtonVisible(DetailFormViewButtonType.EDIT);
 	}
 
 	/**
-	 * ロックボタンの表示可否を判定します。
+	 * ロックボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayLockButton() {
-		return (data.isCanUpdate() || data.isCanDelete()) && !getForm().isHideLock()
+	public boolean isLockButtonVisible() {
+		return (data.isCanUpdate() || data.isCanDelete()) && !form.isHideLock()
 				&& isStandardButtonVisible(DetailFormViewButtonType.LOCK);
 	}
 
 	/**
-	 * コピーボタンの表示可否を判定します。
+	 * コピーボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayCopyButton() {
-		return data.isCanCreate() && !getForm().isNoneDispCopyButton()
+	public boolean isCopyButtonVisible() {
+		return data.isCanCreate() && !form.isNoneDispCopyButton()
 				&& isStandardButtonVisible(DetailFormViewButtonType.COPY);
 	}
 
 	/**
-	 * バージョンアップボタンの表示可否を判定します。
+	 * バージョンアップボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayVersionupButton() {
-		return (data.isCanUpdate() || data.isCanDelete()) && isVersionControl()
+	public boolean isVersionupButtonVisible() {
+		return (data.isCanUpdate() || data.isCanDelete()) && versionControl
 				&& isStandardButtonVisible(DetailFormViewButtonType.VERSIONUP);
 	}
 
 	/**
-	 * 更新ボタンの表示可否を判定します。
+	 * 更新ボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayUpdateButton() {
+	public boolean isUpdateButtonVisible() {
 		return data.isCanUpdate() && isStandardButtonVisible(DetailFormViewButtonType.UPDATE);
 	}
 
 	/**
-	 * 削除ボタンの表示可否を判定します。
+	 * 削除ボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayDeleteButton() {
-		return data.isCanDelete() && !getForm().isHideDelete()
+	public boolean isDeleteButtonVisible() {
+		return data.isCanDelete() && !form.isHideDelete()
 				&& isStandardButtonVisible(DetailFormViewButtonType.DELETE);
 	}
 
 	/**
-	 * バージョン削除ボタンの表示可否を判定します。
+	 * バージョン削除ボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayDeleteVersionButton() {
-		return isVersionControl() && data.isCanDelete() && getForm().isShowDeleteSpecificVersion()
+	public boolean isDeleteVersionButtonVisible() {
+		return versionControl && data.isCanDelete() && form.isShowDeleteSpecificVersion()
 				&& isStandardButtonVisible(DetailFormViewButtonType.DELETE_VERSION);
 	}
 
 	/**
-	 * 登録ボタンの表示可否を判定します。
+	 * 登録ボタンを表示するかを判定します。
 	 *
 	 * @return 表示する場合true
 	 */
-	public boolean isDisplayInsertButton() {
+	public boolean isInsertButtonVisible() {
 		return data.isCanCreate() && isStandardButtonVisible(DetailFormViewButtonType.INSERT);
 	}
 
@@ -161,16 +170,7 @@ public class StandardButtonDisplay {
 		return data.isCanCreate();
 	}
 
-	private DetailFormView getForm() {
-		return data.getView();
-	}
-
-	private boolean isVersionControl() {
-		return data.getEntityDefinition()
-				.getVersionControlType() != VersionControlType.NONE;
-	}
-
 	private boolean isStandardButtonVisible(DetailFormViewButtonType type) {
-		return entityViewManager.isStandardButtonVisible(definitionName, getForm().getName(), type, outputType, data.getEntity());
+		return entityViewManager.isStandardButtonVisible(definitionName, form.getName(), type, outputType, data.getEntity());
 	}
 }

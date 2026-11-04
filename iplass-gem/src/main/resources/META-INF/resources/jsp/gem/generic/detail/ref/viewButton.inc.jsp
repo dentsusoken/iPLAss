@@ -28,7 +28,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
-<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonDisplay"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -80,7 +80,7 @@
 	boolean isEditable = "true".equals(refEdit);
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonDisplay standardButton = new StandardButtonDisplay(defName, OutputType.VIEW, data);
+	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.VIEW, data);
 %>
 
 <ul class="list_operation">
@@ -117,7 +117,7 @@
 		}
 	}
 	if (isEditable) {
-		if (standardButton.isDisplayLockButton()) {
+		if (standardButton.isLockButtonVisible()) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.ref.viewButton.lock')}" class="gr-btn-02" 
@@ -129,7 +129,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDisplayEditButton()) {
+		if (standardButton.isEditButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
@@ -140,7 +140,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDisplayVersionupButton()) {
+		if (standardButton.isVersionupButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
@@ -148,7 +148,7 @@
 %>
 <li class="btn version-btn">
 <input type="button" value="<c:out value="<%=versionupDisplayLabel %>"/>" class="gr-btn gr-size-03" 
-style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
+	style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
 </li>
 <%
 		}
