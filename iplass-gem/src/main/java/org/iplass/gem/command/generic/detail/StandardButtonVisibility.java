@@ -41,7 +41,7 @@ public class StandardButtonVisibility {
 
 	private final DetailFormViewData data;
 
-	/** 画面定義（ボタン判定の都度 data.getView() を呼び直さないよう保持する） */
+	/** 画面定義 */
 	private final DetailFormView form;
 
 	/** バージョン管理ありの場合true */
