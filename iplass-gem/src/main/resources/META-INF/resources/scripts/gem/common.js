@@ -150,11 +150,12 @@ function oidCellFormatter(cellvalue, options, rowObject) {
  * 一般検索画面、トップ画面の一覧パーツ、全文検索画面で共通利用します。
  *
  * 次の全てが連続する行で同じ場合に、セルを結合します。
- * - 行のEntityの oid と version
- * - ネストした参照プロパティの列(例: "mref2.mref3.name")は、その列が属する階層(例: "mref2.mref3")と
- *   祖先の階層(例: "mref2")の参照先Entityの oid と version(行データの "mref2.@oid"、"mref2.mref3.@version" など)
- *   (参照先Entityが異なる行同士を、値が同じというだけで結合しないようにするため)
+ * - 行のEntityの (oid, version)
+ * - (ネストした参照プロパティの場合) 「自身が属する階層 + 祖先」の (oid, version)
  * - 対象の列の値
+ * 
+ * 例)
+ * 対象列が "mref2.mref3.name" → ["oid", "mref2.@oid", "mref2.mref3.@oid", "mref2.mref3.name"] をkeyとして結合
  *
  * @param grid jqGrid(_data に検索結果の行データを保持していること)
  * @param rowId 行ID(jqGrid の cellattr の引数)
