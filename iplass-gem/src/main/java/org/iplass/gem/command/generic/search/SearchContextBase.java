@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.iplass.gem.command.CommandUtil;
+import org.iplass.gem.command.SearchUtil;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.ViewUtil;
@@ -167,10 +168,16 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			select.add(Entity.UPDATE_DATE);
 		}
 
+		// 重複を除くが ON のときは祖先の oid/version を足さない（DISTINCT のキーが変わり、件数が変わるため）
+		boolean isDistinct = getConditionSection().isDistinct();
+
 		List<PropertyColumn> properties = getColumnProperties();
 		for (PropertyColumn p : properties) {
 			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
+				if (!isDistinct) {
+					select.addAll(SearchUtil.referenceOidVersion(select, propName, this::getPropertyDefinition));
+				}
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor) p.getEditor()).getNestProperties();
 					addSearchProperty(select, propName, p.getEditor(), nest.toArray(new NestProperty[nest.size()]));
@@ -178,12 +185,18 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
 					addSearchProperty(select, propName, je.getEditor());
 					for (NestProperty nest : je.getProperties()) {
+						if (!isDistinct) {
+							select.addAll(SearchUtil.referenceOidVersion(select, nest.getPropertyName(), this::getPropertyDefinition));
+						}
 						addSearchProperty(select, nest.getPropertyName(), nest.getEditor());
 					}
 				} else if (p.getEditor() instanceof RangePropertyEditor) {
 					addSearchProperty(select, propName);
 					RangePropertyEditor re = (RangePropertyEditor) p.getEditor();
 					if (StringUtil.isNotBlank(re.getToPropertyName())) {
+						if (!isDistinct) {
+							select.addAll(SearchUtil.referenceOidVersion(select, re.getToPropertyName(), this::getPropertyDefinition));
+						}
 						addSearchProperty(select, re.getToPropertyName());
 					}
 				} else {
@@ -202,7 +215,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				.toList();
 
 		// ソート条件のデータを取得カラムにしておかないと、DistinctでSQLエラーになる。
-		boolean isDistinct = getConditionSection().isDistinct();
 		return new Select(isDistinct, (isDistinct ? Stream.concat(fieldSelection.stream(), orderBySelection.stream()) : fieldSelection.stream())
 				.distinct()
 				.toList());

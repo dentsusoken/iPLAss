@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;
+import org.iplass.gem.command.SearchUtil;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.ViewUtil;
 import org.iplass.gem.command.fulltext.FullTextSearchResult.ColModel;
@@ -461,6 +462,8 @@ public final class FullTextSearchCommand implements Command {
 	}
 
 	private void addSearchProperty(List<String> select, EntityDefinition ed, String propName, PropertyEditor editor, NestProperty... nest) {
+		select.addAll(SearchUtil.referenceOidVersion(select, propName,
+				path -> EntityViewUtil.getPropertyDefinition(path, ed)));
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 		if (pd instanceof ReferenceProperty) {
 			if (!select.contains(propName + "." + Entity.NAME)) {

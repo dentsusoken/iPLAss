@@ -178,9 +178,10 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	});
 
 	// 2つの行が結合対象(同一)か判定する
+	// 識別キーが無い(null / undefined)場合は不一致とする。無い同士を一致にすると、親が違う同名セルが結合される
 	const isSame = (row1, row2) => row1.orgOid == row2.orgOid
 		&& row1.orgVersion == row2.orgVersion
-		&& idKeys.every((key) => row1[key] == row2[key])
+		&& idKeys.every((key) => row1[key] != null && row1[key] == row2[key])
 		&& row1[colName] == row2[colName];
 
 	// 前の行と同じ場合は非表示にする
