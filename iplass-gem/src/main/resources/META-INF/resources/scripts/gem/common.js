@@ -177,7 +177,7 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	const parts = colName.split(".");
 	// isLeaf: 列名の末尾(末端)か。末端は識別キーが両方の行に無いときだけ比較を省く
 	const identityMatches = (row1, row2, path, isLeaf) => {
-		const keys = [path + ".@oid", path + ".@version"];
+		const keys = ["@oid", "@version"].map(key => `${path}.${key}`);
 		if (isLeaf && keys.every((key) => row1[key] == null && row2[key] == null)) {
 			return true;
 		}
