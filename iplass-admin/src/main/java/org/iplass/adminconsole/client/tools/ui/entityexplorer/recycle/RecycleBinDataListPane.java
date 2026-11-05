@@ -109,7 +109,8 @@ public class RecycleBinDataListPane extends VLayout {
 		toolStrip.addSeparator();
 
 		Label entityLabel = new Label("Entity: " + entityName + "  Purge target date (To): "
-				+ SmartGWTUtil.createInputDateFormat().format(purgeTargetDate));
+				+ SmartGWTUtil.createInputDateFormat()
+						.format(purgeTargetDate));
 		entityLabel.setAutoWidth();
 		entityLabel.setWrap(false);
 		toolStrip.addMember(entityLabel);
