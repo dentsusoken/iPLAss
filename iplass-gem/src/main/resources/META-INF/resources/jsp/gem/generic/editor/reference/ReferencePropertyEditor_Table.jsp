@@ -56,7 +56,6 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%@ page import="org.iplass.gem.command.generic.editor.ReferencePropertyEditorUtil" %>
 <%!
 	boolean isDispProperty(PropertyDefinition pd, String mappedBy, NestProperty property, OutputType type) {
 		if (pd == null) return false;
@@ -155,7 +154,6 @@
 
 	//Request情報取得
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
-	String referenceModalSizeAttributes = ReferencePropertyEditorUtil.getDialogSizeAttributes(editor);
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
@@ -836,7 +834,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 						+ ")";
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %>
+<a href="javascript:void(0);" class="modal-lnk"
  onclick="<c:out value="<%=editReference %>"/>">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
@@ -871,7 +869,7 @@ $(function() {
 	scriptContext[dynamicParamCallbackKey] = dynamicParamCallback;
 });
 </script>
-<a href="javascript:void(0);" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %>
+<a href="javascript:void(0);" class="modal-lnk"
  onclick="<c:out value="<%=viewEditableReference %>"/>">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
 </td>
@@ -1156,7 +1154,7 @@ $(function() {
 	scriptContext[dynamicParamCallbackKey] = dynamicParamCallback;
 });
 </script>
-<a href="javascript:void(0);" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %>
+<a href="javascript:void(0);" class="modal-lnk"
  onclick="<c:out value="<%=viewEditableReference %>"/>"><%= GemResourceBundleUtil.resourceString(strKey) %></a>
 </td>
 <%
@@ -1264,11 +1262,7 @@ $(function() {
 
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
-<input type="button"
-	value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}"
-	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=selBtnId %>"/>"
-data-specVersionKey="
-<c:out value="<%=specVersionKey%>" />" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -1309,8 +1303,7 @@ $(function() {
 					}
 				}
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}"
-	class="gr-btn-02 modal-btn mt05" data-reference-modal="true"<%=referenceModalSizeAttributes %> id="<c:out value="<%=insBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {

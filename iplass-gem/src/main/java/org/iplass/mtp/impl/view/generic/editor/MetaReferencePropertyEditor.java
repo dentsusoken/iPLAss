@@ -119,15 +119,6 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** ビュー定義名 */
 	private String viewName;
 
-	/** 参照型モーダルの初期表示幅（ピクセル） */
-	private Integer dialogWidth;
-
-	/** 参照型モーダルの初期表示高さ（ピクセル） */
-	private Integer dialogHeight;
-
-	/** 参照型モーダルを初期表示時に最大化 */
-	private boolean dialogMaximize;
-
 	/** URLパラメータ */
 	private String urlParameter;
 
@@ -510,56 +501,6 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 */
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
-	}
-
-	/**
-	 * 参照型モーダルの初期表示幅を取得します。
-	 * @return 幅（ピクセル）
-	 */
-	public Integer getDialogWidth() {
-		return dialogWidth;
-	}
-
-	/**
-	 * 参照型モーダルの初期表示幅を設定します。
-	 * @param dialogWidth 幅（ピクセル）
-	 */
-	public void setDialogWidth(Integer dialogWidth) {
-		this.dialogWidth = dialogWidth;
-	}
-
-	/**
-	 * 参照型モーダルの初期表示高さを取得します。
-	 * @return 高さ（ピクセル）
-	 */
-	public Integer getDialogHeight() {
-		return dialogHeight;
-	}
-
-	/**
-	 * 参照型モーダルの初期表示高さを設定します。
-	 * @param dialogHeight 高さ（ピクセル）
-	 */
-	public void setDialogHeight(Integer dialogHeight) {
-		this.dialogHeight = dialogHeight;
-	}
-
-	/**
-	 * 参照型モーダルを初期表示時に最大化するかを取得します。
-	 * 
-	 * @return 参照型モーダルを初期表示時に最大化するか
-	 */
-	public boolean isDialogMaximize() {
-		return dialogMaximize;
-	}
-
-	/**
-	 * 参照型モーダルを初期表示時に最大化するかを設定します。
-	 * 
-	 * @param dialogMaximize 参照型モーダルを初期表示時に最大化するか
-	 */
-	public void setDialogMaximize(boolean dialogMaximize) {
-		this.dialogMaximize = dialogMaximize;
 	}
 
 	/**
@@ -1072,9 +1013,6 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		selectActionName = rpe.getSelectActionName();
 		addActionName = rpe.getAddActionName();
 		viewName = rpe.getViewName();
-		dialogWidth = rpe.getDialogWidth();
-		dialogHeight = rpe.getDialogHeight();
-		dialogMaximize = rpe.isDialogMaximize();
 		urlParameter = rpe.getUrlParameter();
 		urlParameterAction = rpe.getUrlParameterAction() != null ? new ArrayList<>(rpe.getUrlParameterAction()) : null;
 		dynamicUrlParameter = rpe.getDynamicUrlParameter();
@@ -1208,9 +1146,6 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setSelectActionName(selectActionName);
 		editor.setAddActionName(addActionName);
 		editor.setViewName(viewName);
-		editor.setDialogWidth(dialogWidth);
-		editor.setDialogHeight(dialogHeight);
-		editor.setDialogMaximize(dialogMaximize);
 		editor.setUrlParameter(urlParameter);
 		editor.setUrlParameterAction(urlParameterAction != null ? new ArrayList<>(urlParameterAction) : null);
 		editor.setUrlParameterScriptKey(urlParameterScriptKey);
