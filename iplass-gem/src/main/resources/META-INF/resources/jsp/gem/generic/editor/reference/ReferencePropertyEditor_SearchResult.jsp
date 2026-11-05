@@ -25,7 +25,6 @@
 <%@page import="java.util.Map"%>
 <%@page import="org.iplass.gem.command.Constants"%>
 <%@page import="org.iplass.gem.command.ViewUtil"%>
-<%@page import="org.iplass.gem.command.generic.editor.ReferencePropertyEditorUtil" %>
 <%@page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@page import="org.iplass.mtp.ManagerLocator"%>
 <%@page import="org.iplass.mtp.entity.Entity"%>
@@ -61,7 +60,6 @@
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
-	String referenceModalSizeAttributes = ReferencePropertyEditorUtil.getDialogSizeAttributes(editor);
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 
@@ -133,9 +131,7 @@
 							+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 							+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> id="<c:out value=" <%=linkId %>" />"
-	data-linkId="
-	<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 					}
@@ -184,9 +180,7 @@
 								+ ", '" + StringUtil.escapeJavaScript(rootVersion) + "'"
 								+ ")";
 %>
-<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" <%=referenceModalSizeAttributes %> id="<c:out value=" <%=linkId %>" />"
-	data-linkId="
-	<c:out value="<%=linkId %>" />"
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=entity.getName() %>" /></a>
 <%
 						}

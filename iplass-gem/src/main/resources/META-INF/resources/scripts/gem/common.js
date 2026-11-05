@@ -2561,11 +2561,9 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @return
  */
 function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion, dpCallback, customStyle) {
-	// null は空文字にし、プロパティ名の前後にある空白文字を正規表現で除去する。
-	var referencePropertyName =
-		propName == null ? "" : String(propName).replace(/^\s+|\s+$/g, "");
+	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
-		var $ul = $("#ul_" + es(referencePropertyName));
+		var $ul = $("#ul_" + _propName);
 		var refs = new Array();
 		$ul.children("li").children(":hidden").each(function() {
 			refs[$(this).val()] = this.parentNode;
@@ -2604,13 +2602,12 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 		}
 
 		if (list.length > 0) {
-			// API 用のプロパティ名にするため、検索条件の "sc_" 接頭辞とネストテーブルの行識別子（例: [0]）を除去する。
-			var parentPropName = referencePropertyName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
+			var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
 			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, rootEntity, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
-					addReference("li_" + referencePropertyName + _key, viewAction, defName, _key, entity.name, referencePropertyName, "ul_" + es(referencePropertyName), refEdit, delCallback, parentDefName, parentViewName, viewType, null, entityOid, entityVersion, customStyle);
+					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType, null, entityOid, entityVersion, customStyle);
 				}
 				entityList = entities;
 			});
@@ -2618,15 +2615,15 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 
 		if (callback && $.isFunction(callback)) {
 			if (typeof button === "undefined" || button == null) {
-				callback.call(this, entityList, deleteList, referencePropertyName);
+				callback.call(this, entityList, deleteList, propName);
 			} else {
 				//引数で渡されたトリガーとなるボタンをthisとして渡す
-				callback.call(button, entityList, deleteList, referencePropertyName);
+				callback.call(button, entityList, deleteList, propName);
 			}
 		}
 
 		if (entityList.length > 0) {
-			$("[name='" + es(referencePropertyName) + "']:eq(0)").trigger("change", {});// 複数選択だとイベントが複数回発生するので1つだけ
+			$("[name='" + _propName + "']:eq(0)").trigger("change", {});// 複数選択だとイベントが複数回発生するので1つだけ
 		}
 		closeModalDialog();
 	};
@@ -2640,8 +2637,8 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 	$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);//定義名
 	$("<input />").attr({type:"hidden", name:"multiplicity", value:multiplicity}).appendTo($form);//選択可能数
 	$("<input />").attr({type:"hidden", name:"selectType", value:selType}).appendTo($form);//単一or複数
-	$("<input />").attr({type:"hidden", name:"propName", value: referencePropertyName }).appendTo($form); //プロパティ名
-	$("<input />").attr({type:"hidden", name:"rootName", value:"ul_" + referencePropertyName,}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"propName", value:propName}).appendTo($form);//プロパティ名
+	$("<input />").attr({type:"hidden", name:"rootName", value:"ul_" + propName}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
@@ -3231,16 +3228,6 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	var $link = $("<a href='javascript:void(0)' />").attr({"id":linkId, "data-linkId":linkId, "style":customStyle}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex, entityOid, entityVersion);
 	}).appendTo($li);
-	if ($ul.attr("data-reference-modal") === "true") {
-		$link.attr("data-reference-modal", "true");
-		const dialogWidth = $ul.attr("data-dialog-width");
-		const dialogHeight = $ul.attr("data-dialog-height");
-		const dialogMaximize = $ul.attr("data-dialog-maximize");
-		if (dialogWidth != null) $link.attr("data-dialog-width", dialogWidth);
-		if (dialogHeight != null) $link.attr("data-dialog-height", dialogHeight);
-		if (dialogMaximize != null)
-			$link.attr("data-dialog-maximize", dialogMaximize);
-	}
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
 		$link.subModalWindow();
