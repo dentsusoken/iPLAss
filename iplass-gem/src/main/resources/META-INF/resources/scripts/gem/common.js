@@ -197,9 +197,10 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	}
 
 	// この行から何行分rowspanを設定するか計算
-	const rest = data.slice(rowIndex);
-	const diffIndex = rest.findIndex((nextRow) => !isSame(row, nextRow));
-	const count = diffIndex < 0 ? rest.length : diffIndex;
+	let count = 0;
+	for (let i = rowIndex; i < data.length && isSame(row, data[i]); i++) {
+		count++;
+	}
 
 	if (count > 1) {
 		// タイトルを指定しないと(""含む)CELL値が設定されるので、空の場合は &nbsp; を指定
