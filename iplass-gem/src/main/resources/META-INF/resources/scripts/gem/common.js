@@ -156,6 +156,7 @@ function oidCellFormatter(cellvalue, options, rowObject) {
  * 
  * 例)
  * 対象列が "mref2.mref3.name" → ["oid", "mref2.@oid", "mref2.mref3.@oid", "mref2.mref3.name"] をkeyとして結合
+ * 対象列が "mref2.mref3"(Nest なしの参照列) → ["oid", "mref2.@oid", "mref2.mref3.@oid", "mref2.mref3"] をkeyとして結合
  *
  * @param grid jqGrid(_data に検索結果の行データを保持していること)
  * @param rowId 行ID(jqGrid の cellattr の引数)
@@ -169,19 +170,24 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	const row = data[rowIndex];
 	const colName = colModel.name;
 
-	// 列が属する階層と祖先の階層の参照先Entityの oid、version のキーを取得
-	// 例: "mref2.mref3.name" → ["mref2.@oid", "mref2.@version", "mref2.mref3.@oid", "mref2.mref3.@version"]、"name" → []
-	const names = colName.split(".").slice(0, -1);
-	const idKeys = names.flatMap((_, i) => {
-		const path = names.slice(0, i + 1).join(".");
-		return [path + ".@oid", path + ".@version"];
-	});
+	// 列名の各階層について参照先Entityの oid、version を比較する
+	// 祖先(末尾以外)は必須。識別キーが無い場合は不一致とする(無い同士を一致にすると、親が違う同名セルが結合されてしまう)
+	// 列名自体は、Nest なしの参照列(例: "mref2.mref3")のときだけ行に "mref2.mref3.@oid" が入るので、入っている場合だけ比較する
+	// 通常の末端プロパティ(例: "mref2.mref3.name"、"name")には対応する識別キーが無いので比較しない
+	const parts = colName.split(".");
+	// isLeaf: 列名の末尾(末端)か。末端は識別キーが両方の行に無いときだけ比較を省く
+	const identityMatches = (row1, row2, path, isLeaf) => {
+		const keys = [path + ".@oid", path + ".@version"];
+		if (isLeaf && keys.every((key) => row1[key] == null && row2[key] == null)) {
+			return true;
+		}
+		return keys.every((key) => row1[key] != null && row1[key] == row2[key]);
+	};
 
 	// 2つの行が結合対象(同一)か判定する
-	// 識別キーが無い(null / undefined)場合は不一致とする。無い同士を一致にすると、親が違う同名セルが結合される
 	const isSame = (row1, row2) => row1.orgOid == row2.orgOid
 		&& row1.orgVersion == row2.orgVersion
-		&& idKeys.every((key) => row1[key] != null && row1[key] == row2[key])
+		&& parts.every((_, i) => identityMatches(row1, row2, parts.slice(0, i + 1).join("."), i === parts.length - 1))
 		&& row1[colName] == row2[colName];
 
 	// 前の行と同じ場合は非表示にする
