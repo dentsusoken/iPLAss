@@ -471,6 +471,45 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	)
 	private String viewName;
 
+	/** 参照型モーダルの初期表示幅（ピクセル） */
+	@MetaFieldInfo(
+			displayName = "参照型モーダルの初期表示幅",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_dialogWidthDisplayNameKey",
+			inputType = InputType.NUMBER,
+			displayOrder = 605,
+			description = "ReferencePropertyEditorのモーダル初期表示幅をピクセル単位で指定します。未指定または0以下の場合はGemConfigServiceの設定を使用します。",
+			descriptionKey = "generic_editor_ReferencePropertyEditor_dialogWidthDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = { FieldReferenceType.ALL }
+	)
+	private Integer dialogWidth;
+
+	/** 参照型モーダルの初期表示高さ（ピクセル） */
+	@MetaFieldInfo(
+			displayName = "参照型モーダルの初期表示高さ",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_dialogHeightDisplayNameKey",
+			inputType = InputType.NUMBER,
+			displayOrder = 606,
+			description = "ReferencePropertyEditorのモーダル初期表示高さをピクセル単位で指定します。未指定または0以下の場合はGemConfigServiceの設定を使用します。",
+			descriptionKey = "generic_editor_ReferencePropertyEditor_dialogHeightDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = { FieldReferenceType.ALL }
+	)
+	private Integer dialogHeight;
+
+	/** 参照型モーダルを初期表示時に最大化 */
+	@MetaFieldInfo(
+			displayName = "参照型モーダルを初期表示時に最大化",
+			displayNameKey = "generic_editor_ReferencePropertyEditor_dialogMaximizeDisplayNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 607,
+			description = "ReferencePropertyEditorのモーダルを開いた直後に最大化表示します。",
+			descriptionKey = "generic_editor_ReferencePropertyEditor_dialogMaximizeDescriptionKey")
+	@EntityViewField(referenceTypes = { FieldReferenceType.ALL })
+	private boolean dialogMaximize;
+
 	/** URLパラメータ */
 	@MetaFieldInfo(
 			displayName = "URLパラメータ",
@@ -1077,6 +1116,56 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
+	}
+
+	/**
+	 * 参照型モーダルの初期表示幅を取得します。
+	 * @return 幅（ピクセル）
+	 */
+	public Integer getDialogWidth() {
+		return dialogWidth;
+	}
+
+	/**
+	 * 参照型モーダルの初期表示幅を設定します。
+	 * @param dialogWidth 幅（ピクセル）
+	 */
+	public void setDialogWidth(Integer dialogWidth) {
+		this.dialogWidth = dialogWidth;
+	}
+
+	/**
+	 * 参照型モーダルの初期表示高さを取得します。
+	 * @return 高さ（ピクセル）
+	 */
+	public Integer getDialogHeight() {
+		return dialogHeight;
+	}
+
+	/**
+	 * 参照型モーダルの初期表示高さを設定します。
+	 * @param dialogHeight 高さ（ピクセル）
+	 */
+	public void setDialogHeight(Integer dialogHeight) {
+		this.dialogHeight = dialogHeight;
+	}
+
+	/**
+	 * 参照型モーダルを初期表示時に最大化するかを取得します。
+	 * 
+	 * @return 参照型モーダルを初期表示時に最大化するか
+	 */
+	public boolean isDialogMaximize() {
+		return dialogMaximize;
+	}
+
+	/**
+	 * 参照型モーダルを初期表示時に最大化するかを設定します。
+	 * 
+	 * @param dialogMaximize 参照型モーダルを初期表示時に最大化するか
+	 */
+	public void setDialogMaximize(boolean dialogMaximize) {
+		this.dialogMaximize = dialogMaximize;
 	}
 
 	/**
