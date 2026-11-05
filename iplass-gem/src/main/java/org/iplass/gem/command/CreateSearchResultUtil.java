@@ -169,7 +169,7 @@ public class CreateSearchResultUtil {
 	 */
 	private static Map<String, String> referenceIdentityKeys(Entity entity, PropertyColumn property) {
 		var propName = property.getPropertyName();
-		
+
 		return merge(Stream.of(
 				ancestorReferenceIdentityKeys(entity, propName),
 				nestReferenceIdentityKeys(entity.getValue(propName), propName, property.getEditor())));
@@ -223,7 +223,8 @@ public class CreateSearchResultUtil {
 		var keys = new LinkedHashMap<String, String>();
 		keys.put(path + ".@oid", refEntity.getOid());
 		if (refEntity.getVersion() != null) {
-			keys.put(path + ".@version", refEntity.getVersion().toString());
+			keys.put(path + ".@version", refEntity.getVersion()
+					.toString());
 		}
 		return keys;
 	}
@@ -233,7 +234,8 @@ public class CreateSearchResultUtil {
 	 */
 	private static Map<String, String> merge(Stream<Map<String, String>> maps) {
 		return maps
-				.flatMap(m -> m.entrySet().stream())
+				.flatMap(m -> m.entrySet()
+						.stream())
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 	}
 
