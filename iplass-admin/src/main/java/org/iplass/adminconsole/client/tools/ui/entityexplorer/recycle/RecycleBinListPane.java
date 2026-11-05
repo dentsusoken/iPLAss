@@ -65,7 +65,7 @@ public class RecycleBinListPane extends VLayout {
 
 		purgeTargetDateItem = SmartGWTUtil.createDateItem();
 		purgeTargetDateItem.setValue(new Timestamp(System.currentTimeMillis()));
-		purgeTargetDateItem.setTitle("Purge target date");
+		purgeTargetDateItem.setTitle("Purge target date (To)");
 		purgeTargetDateItem.setWrapTitle(false);
 		toolStrip.addFormItem(purgeTargetDateItem);
 
@@ -191,7 +191,7 @@ public class RecycleBinListPane extends VLayout {
 
 				String entityName = event.getRecord()
 						.getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name());
-				mainPane.showDataListPane(entityName, new Timestamp(purgeTimeDate.getTime()));
+				mainPane.showDataListPane(entityName, purgeTimeDate);
 			}
 		});
 		grid.setShowResizeBar(true); // リサイズ可能
@@ -252,7 +252,7 @@ public class RecycleBinListPane extends VLayout {
 			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "specifyPurgeTargetDate"));
 			return;
 		}
-		final Timestamp ts = new Timestamp(purgeTimeDate.getTime());
+		final Timestamp ts = new Timestamp(getPurgeTargetCutoff(purgeTimeDate).getTime());
 
 		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"), AdminClientMessageUtil.getString(RESOURCE_PREFIX + "cleanConfirm"),
 				new BooleanCallback() {
@@ -278,7 +278,7 @@ public class RecycleBinListPane extends VLayout {
 
 		startClean();
 
-		Timestamp ts = new Timestamp(purgeTimeDate.getTime());
+		Timestamp ts = new Timestamp(getPurgeTargetCutoff(purgeTimeDate).getTime());
 		boolean isGetDataCount = showCountItem.getValueAsBoolean();
 		RecycleBinEntityInfoDS ds = RecycleBinEntityInfoDS.getInstance(ts, isGetDataCount);
 		grid.setDataSource(ds);
@@ -302,6 +302,12 @@ public class RecycleBinListPane extends VLayout {
 
 	private Date getPurgeTargetDate() {
 		return SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
+	}
+
+	private Date getPurgeTargetCutoff(Date purgeTargetDate) {
+		Date purgeTargetCutoff = new Date(purgeTargetDate.getTime());
+		purgeTargetCutoff.setDate(purgeTargetCutoff.getDate() + 1);
+		return purgeTargetCutoff;
 	}
 
 	private void startClean() {

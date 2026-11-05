@@ -2,6 +2,7 @@ package org.iplass.adminconsole.client.tools.ui.entityexplorer.recycle;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -51,12 +52,12 @@ public class RecycleBinDataListPane extends VLayout {
 
 	private final RecycleBinMainPane mainPane;
 	private final String entityName;
-	private final Timestamp purgeTargetDate;
+	private final Date purgeTargetDate;
 	private final ListGrid grid;
 	private final Label countLabel;
 	private final MessageTabSet messageTabSet;
 
-	public RecycleBinDataListPane(RecycleBinMainPane mainPane, String entityName, Timestamp purgeTargetDate) {
+	public RecycleBinDataListPane(RecycleBinMainPane mainPane, String entityName, Date purgeTargetDate) {
 		this.mainPane = mainPane;
 		this.entityName = entityName;
 		this.purgeTargetDate = purgeTargetDate;
@@ -107,8 +108,8 @@ public class RecycleBinDataListPane extends VLayout {
 		toolStrip.addButton(clearButton);
 		toolStrip.addSeparator();
 
-		Label entityLabel = new Label("Entity: " + entityName + "  Purge target date: "
-				+ SmartGWTUtil.formatTimestamp(purgeTargetDate));
+		Label entityLabel = new Label("Entity: " + entityName + "  Purge target date (To): "
+				+ SmartGWTUtil.createInputDateFormat().format(purgeTargetDate));
 		entityLabel.setAutoWidth();
 		entityLabel.setWrap(false);
 		toolStrip.addMember(entityLabel);
@@ -164,12 +165,18 @@ public class RecycleBinDataListPane extends VLayout {
 	}
 
 	private void refreshGrid() {
-		grid.setDataSource(new RecycleBinDataInfoDS(entityName, purgeTargetDate));
+		grid.setDataSource(new RecycleBinDataInfoDS(entityName, getPurgeTargetCutoff(purgeTargetDate)));
 
 		grid.setFields(
 				new ListGridField(RecycleBinDataInfoDS.FIELD_NAME.NAME.name(), "Name"),
 				new ListGridField(RecycleBinDataInfoDS.FIELD_NAME.RECYCLE_DATE.name(), "Deleted Date"));
 		grid.fetchData();
+	}
+
+	private Timestamp getPurgeTargetCutoff(Date purgeTargetDate) {
+		Date purgeTargetCutoff = new Date(purgeTargetDate.getTime());
+		purgeTargetCutoff.setDate(purgeTargetCutoff.getDate() + 1);
+		return new Timestamp(purgeTargetCutoff.getTime());
 	}
 
 	private void restore() {
