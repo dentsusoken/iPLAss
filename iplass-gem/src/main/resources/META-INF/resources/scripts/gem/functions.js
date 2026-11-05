@@ -661,6 +661,7 @@ $.fn.allInputCheck = function(){
  * 参照型のトリガーの場合のみ、以下の優先順でサイズを返す
  * 1. トリガーのdata-dialog-width/data-dialog-height属性
  * 2. GemConfigServiceのreferenceModal設定(scriptContext.gem.referenceModal)
+ * maximizeはdata-dialog-maximize、未指定時にGemConfigService設定を参照する
  * 未設定の場合は空オブジェクトを返す(各プラグインのデフォルトを利用)
  */
 (function($){
@@ -669,6 +670,16 @@ $.fn.allInputCheck = function(){
 			const num = Number(value);
 			if (!isNaN(num) && num > 0) {
 				return num;
+			}
+			return null;
+		}
+		//true/false文字列をbooleanに変換、未設定はnullを返す
+		function toBoolean(value) {
+			if (value === true || value === "true") {
+				return true;
+			}
+			if (value === false || value === "false") {
+				return false;
 			}
 			return null;
 		}
@@ -684,6 +695,8 @@ $.fn.allInputCheck = function(){
 			|| toPositiveNumber(config && config.width);
 		const height = toPositiveNumber($el.attr("data-dialog-height"))
 			|| toPositiveNumber(config && config.height);
+		const attrDialogMaximize = toBoolean($el.attr("data-dialog-maximize"));
+		const configDialogMaximize = toBoolean(config && config.maximize);
 
 		const option = {};
 		if (width != null) {
@@ -691,6 +704,11 @@ $.fn.allInputCheck = function(){
 		}
 		if (height != null) {
 			option.dialogHeight = height;
+		}
+		if (attrDialogMaximize != null) {
+			option.dialogMaximize = attrDialogMaximize;
+		} else if (configDialogMaximize != null) {
+			option.dialogMaximize = configDialogMaximize;
 		}
 		return option;
 	};
@@ -718,6 +736,9 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 
 	return {dialogHeight: dialogHeight, dialogWidth: dialogWidth};
 }
+
+const FULL_WINDOW_CLASS = "fullWindow";
+const UNRESIZABLE_CLASS = "unresizable";
 
 /**
  * モーダルウィンドウ
@@ -779,10 +800,14 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				$trigger = $this;
 
 				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+				$under.removeClass(FULL_WINDOW_CLASS);
+				if (runtimeOptions.dialogMaximize === true) {
+					$under.addClass(FULL_WINDOW_CLASS);
+				}
 
-				$under.removeClass("unresizable");
+				$under.removeClass(UNRESIZABLE_CLASS);
 				if (runtimeOptions.resizable == false) {
-					$under.addClass("unresizable");
+					$under.addClass(UNRESIZABLE_CLASS);
 				}
 
 				fade.show();
@@ -805,7 +830,7 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 					$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
 				});
 				$under.on("click", ".modal-maximize", function() {
-					$under.addClass("fullWindow");
+					$under.addClass(FULL_WINDOW_CLASS);
 					//$thisと違って共通部分なので、複数のダイアログがいると最初の初期化時のものが実行されてしまう
 					//⇒dialogHeigth:550を指定しても、先に730で指定してると730になってしまう
 					//ダイアログを呼び出したトリガーに紐づくfunctionを呼び出し、
@@ -813,7 +838,7 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 					$trigger.setModalWindowToCenter();
 				});
 				$under.on("click", ".modal-restore", function() {
-					$under.removeClass("fullWindow");
+					$under.removeClass(FULL_WINDOW_CLASS);
 					$trigger.setModalWindowToCenter();
 				});
 				$overlay.on("click", function(){
@@ -854,7 +879,7 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 			}
 
 			function setModalWindowToCenter(){
-				if ($under.hasClass("fullWindow")) {
+				if ($under.hasClass(FULL_WINDOW_CLASS)) {
 					const dialogHeight = $window.height() - 40;
 
 					//frameはheader分減らす
@@ -954,11 +979,11 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
 			});
 			$under.on("click", ".modal-maximize.sub-modal-maximize", function(){
-				$under.addClass("fullWindow");
+				$under.addClass(FULL_WINDOW_CLASS);
 				$trigger.setModalWindowToCenter();
 			});
 			$under.on("click", ".modal-restore.sub-modal-restore", function(){
-				$under.removeClass("fullWindow");
+				$under.removeClass(FULL_WINDOW_CLASS);
 				$trigger.setModalWindowToCenter();
 			});
 			$overlay.on("click", function(){
@@ -988,10 +1013,14 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 				$trigger = $this;
 
 				runtimeOptions = $.extend({}, options, $this.referenceModalOption());
+				$under.removeClass(FULL_WINDOW_CLASS);
+				if (runtimeOptions.dialogMaximize === true) {
+					$under.addClass(FULL_WINDOW_CLASS);
+				}
 
-				$under.removeClass("unresizable");
+				$under.removeClass(UNRESIZABLE_CLASS);
 				if (runtimeOptions.resizable == false) {
-					$under.addClass("unresizable");
+					$under.addClass(UNRESIZABLE_CLASS);
 				}
 
 				fade.show();
@@ -1021,7 +1050,7 @@ function getModalWindowSize(windowWidth, windowHeight, runtimeOptions) {
 		}
 
 		function setModalWindowToCenter(){
-			if ($under.hasClass("fullWindow")) {
+			if ($under.hasClass(FULL_WINDOW_CLASS)) {
 				const $rootWindow = $(rootDocument.scriptContext.getWindow());
 				const dialogHeight = $rootWindow.height() - 40;
 
