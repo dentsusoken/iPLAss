@@ -36,31 +36,15 @@ addNestRow_ColumnCallback("<%=StringUtil.escapeJavaScript(nestPropName) %>", "<%
 		function($td, index) {
 
 			const $textArea = $td.children("textarea");
-			const textAreaId = $textArea.attr("id");
-
-			const $container = $("<div/>").attr("id", textAreaId + "_ql_container")
-				.addClass("gem-quill-container gem-quill-editable");
-
-			$textArea.hide();
-			$container.insertAfter($textArea);
-
-			const toolbarOptions = scriptContext.gem.richtext.quill.toolbarOptions;
-
-			const defaults = {
-				modules: {
-					toolbar: toolbarOptions,
-				},
-				theme: 'snow',
-			}
 
 <%	if (StringUtil.isNotBlank(editorOption)) { %>
 			const custom = <%=editorOption%>;
 <%	} else { %>
 			const custom = {}; 
 <%	} %>
-			const option = $.extend(true, {}, defaults, custom);
+			const option = scriptContext.gem.richtext.quill.createEditableOptions(custom);
 
-			const editor = new Quill($container.get(0), option);
+			const editor = scriptContext.gem.richtext.quill.createEditor($textArea, option, "gem-quill-editable");
 			editor.on('text-change', function() {
 				const text = editor.getSemanticHTML();
 				$textArea.val(text);

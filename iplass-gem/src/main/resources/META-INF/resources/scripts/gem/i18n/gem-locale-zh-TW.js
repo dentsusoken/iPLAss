@@ -107,3 +107,42 @@ scriptContext.gem.locale.calendar.withoutEntity = "我從搜索中刪除{0}";
 
 scriptContext.gem.locale.apendCategory("application");
 scriptContext.gem.locale.application.specifyDescription = "請輸入要生成的令牌的描述。";
+
+scriptContext.gem.locale.apendCategory("quill");
+scriptContext.gem.locale.quill.imageUrlPrompt = "請輸入圖片 URL";
+scriptContext.gem.locale.quill.imageUrlInvalid = "請輸入有效的圖片 URL。";
+scriptContext.gem.locale.quill.tableUp = {
+	fullCheckboxText: "插入全寬表格",
+	customBtnText: "自訂",
+	confirmText: "確認",
+	cancelText: "取消",
+	rowText: "列",
+	colText: "欄",
+	notPositiveNumberError: "請輸入正整數",
+	custom: "自訂",
+	clear: "清除",
+	transparent: "透明",
+	perWidthInsufficient: "百分比寬度不足。若要完成此操作，必須將表格轉換為固定寬度。要繼續嗎？",
+	CopyCell: "複製儲存格",
+	CutCell: "剪下儲存格",
+	InsertTop: "在上方插入列",
+	InsertRight: "在右側插入欄",
+	InsertBottom: "在下方插入列",
+	InsertLeft: "在左側插入欄",
+	MergeCell: "合併儲存格",
+	SplitCell: "分割儲存格",
+	DeleteRow: "刪除列",
+	DeleteColumn: "刪除欄",
+	DeleteTable: "刪除表格",
+	BackgroundColor: "設定背景色",
+	BorderColor: "設定框線顏色",
+	FreezeRow: "凍結至此列",
+	UnfreezeRow: "取消凍結列",
+	FreezeCol: "凍結至此欄",
+	UnfreezeCol: "取消凍結欄",
+	SwitchWidth: "切換表格寬度",
+	InsertCaption: "插入表格標題",
+	ToggleTdBetweenTh: "切換資料儲存格與標題儲存格",
+	ConvertTothead: "轉換為表頭",
+	ConvertTotfoot: "轉換為表尾"
+};
