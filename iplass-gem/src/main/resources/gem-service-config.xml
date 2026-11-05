@@ -162,6 +162,15 @@
 		<!-- プルダウンの「選択してください」を表示するか -->
 		<property name="showPulldownPleaseSelectLabel" value="true" />
 
+		<!-- ReferencePropertyEditorのモーダル初期サイズ設定 -->
+		<!-- 未設定時は既定値（幅:750 / 高さ:735） -->
+		<!--
+		<property name="referenceModal" class="org.iplass.gem.GemConfigService$ReferenceModal">
+			<property name="width" value="1200" />
+			<property name="height" value="900" />
+		</property>
+		-->
+
 		<!-- binaryファイルアップロード非同期設定 -->
 		<property name="binaryUploadAsync" value="true" />
 
