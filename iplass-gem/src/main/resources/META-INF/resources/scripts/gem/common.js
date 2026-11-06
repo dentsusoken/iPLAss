@@ -151,6 +151,11 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 const REFERENCE_OID_SUFFIX = "@oid";
 const REFERENCE_VERSION_SUFFIX = "@version";
 
+// MEMO: 現代的な開発との乖離(課題)
+// - Java(SearchResultRow)と JS が「キー名の規約」だけで繋がっており、型・スキーマによる契約が無い(片方の変更により、静かに壊れる)
+// - 行データが平坦な文字列キーのMapで、構造(祖先の階層など)がデータ上に現れない
+// 本来あるべき姿:
+// - 行データを構造化する(例: セルごとに { html, lineage: [{path, oid, version}] })
 /**
  * 「検索結果をまとめる」用の cellattr。セル結合(rowspan)の属性文字列を返す。
  * 以下が、連続する行で全て同じ場合に結合する。
@@ -171,12 +176,9 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	const colName = colModel.name;
 
 	// 列名の各階層について参照先Entityの oid、version を比較する
-	// 祖先(末尾以外)は必須。識別キーが無い場合は不一致とする(無い同士を一致にすると、親が違う同名セルが結合されてしまう)
-	// 列名自体は、Nest なしの参照列(例: "mref2.mref3")のときだけ行に "mref2.mref3.@oid" が入るので、入っている場合だけ比較する
-	// 通常の末端プロパティ(例: "mref2.mref3.name"、"name")には対応する識別キーが無いので比較しない
 	const parts = colName.split(".");
-	// isLeaf: 列名の末尾(末端)か。末端は識別キーが両方の行に無いときだけ比較を省く
-	const identityMatches = (row1, row2, path, isLeaf) => {
+	// isLeaf: 列名の末尾(末端)か（name, ref.ref.nameなど）
+	const isMatched = (row1, row2, path, isLeaf) => {
 		const keys = [REFERENCE_OID_SUFFIX, REFERENCE_VERSION_SUFFIX].map(suffix => `${path}.${suffix}`);
 		if (isLeaf && keys.every((key) => row1[key] == null && row2[key] == null)) {
 			return true;
@@ -184,10 +186,10 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 		return keys.every((key) => row1[key] != null && row1[key] == row2[key]);
 	};
 
-	// 2つの行が結合対象(同一)か判定する
+	// 2つの行が結合対象(同一)か
 	const isSame = (row1, row2) => row1.orgOid == row2.orgOid
 		&& row1.orgVersion == row2.orgVersion
-		&& parts.every((_, i) => identityMatches(row1, row2, parts.slice(0, i + 1).join("."), i === parts.length - 1))
+		&& parts.every((_, i) => isMatched(row1, row2, parts.slice(0, i + 1).join("."), i === parts.length - 1))
 		&& row1[colName] == row2[colName];
 
 	// 前の行と同じ場合は非表示にする
