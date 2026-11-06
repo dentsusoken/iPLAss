@@ -62,7 +62,7 @@ final class StandardButtonViewParts {
 	 * @param scriptNamePrefix スクリプト名の接頭辞
 	 * @return 標準ボタン表示判定部品
 	 */
-	static StandardButtonViewParts create(MetaDetailFormView form, ScriptEngine scriptEngine, String scriptNamePrefix) {
+	static StandardButtonViewParts createWithCompiledScripts(MetaDetailFormView form, ScriptEngine scriptEngine, String scriptNamePrefix) {
 		StandardButtonViewParts parts = new StandardButtonViewParts(
 				new EnumMap<>(DetailFormViewButtonType.class), scriptEngine);
 		parts.compileDisplayTypeScript(DetailFormViewButtonType.EDIT, form.getEditDisplayTypeScript(), scriptNamePrefix);

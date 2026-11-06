@@ -104,7 +104,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 				.getId() + "_"
 				+ (metaData.getName() == null || metaData.getName()
 						.isEmpty() ? "default" : metaData.getName());
-		standardButtonParts = StandardButtonViewParts.create(metaData, scriptEngine, scriptNamePrefix);
+		standardButtonParts = StandardButtonViewParts.createWithCompiledScripts(metaData, scriptEngine, scriptNamePrefix);
 	}
 
 	@Override
