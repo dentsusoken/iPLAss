@@ -12,8 +12,8 @@ dependencies {
 //gradle-node-plugin options
 node {
     download = true
-    version = '22.22.2'
-    npmVersion = '10.9.7'
+    version = '22.23.4'
+    npmVersion = '10.9.9'
 
     workDir = rootProject.layout.buildDirectory.dir('nodejs')
     npmWorkDir = rootProject.layout.buildDirectory.dir('npm')
