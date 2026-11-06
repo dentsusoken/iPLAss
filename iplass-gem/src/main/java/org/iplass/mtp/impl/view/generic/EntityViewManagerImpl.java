@@ -916,7 +916,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return true;
 		}
 
-		return StandardButtonViewParts.isStandardButtonVisible(entityView.getFormViews(), viewName, type, outputType, entity);
+		return StandardButtonViewParts.isVisibleInFormViews(entityView.getFormViews(), viewName, type, outputType, entity);
 	}
 
 	@Override

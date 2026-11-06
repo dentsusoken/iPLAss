@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.view.generic;
 
-import java.util.EnumMap;
-
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
@@ -102,20 +100,11 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 			compiledInitScript = scriptEngine.createScript(metaData.getInitScript(), scriptName);
 		}
 
-		standardButtonParts = new StandardButtonViewParts(new EnumMap<>(DetailFormViewButtonType.class), scriptEngine);
 		String scriptNamePrefix = SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT + "_" + entityView.getMetaData()
 				.getId() + "_"
 				+ (metaData.getName() == null || metaData.getName()
 						.isEmpty() ? "default" : metaData.getName());
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.EDIT, metaData.getEditDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.LOCK, metaData.getLockDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.COPY, metaData.getCopyDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.VERSIONUP, metaData.getVersionupDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.INSERT, metaData.getInsertDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.UPDATE, metaData.getUpdateDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.DELETE, metaData.getDeleteDisplayTypeScript(), scriptNamePrefix);
-		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.DELETE_VERSION,
-				metaData.getDeleteSpecificVersionDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts = StandardButtonViewParts.create(metaData, scriptEngine, scriptNamePrefix);
 	}
 
 	@Override

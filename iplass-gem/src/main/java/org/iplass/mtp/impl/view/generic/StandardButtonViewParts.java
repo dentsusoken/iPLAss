@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ import org.iplass.mtp.view.generic.OutputType;
  * 詳細画面の標準ボタン表示判定を担う部品。
  *
  */
-public final class StandardButtonViewParts {
+final class StandardButtonViewParts {
 
 	private final Map<DetailFormViewButtonType, Script> displayTypeScripts;
 	private final ScriptEngine scriptEngine;
@@ -51,6 +52,30 @@ public final class StandardButtonViewParts {
 	StandardButtonViewParts(Map<DetailFormViewButtonType, Script> displayTypeScripts, ScriptEngine scriptEngine) {
 		this.displayTypeScripts = displayTypeScripts;
 		this.scriptEngine = scriptEngine;
+	}
+
+	/**
+	 * 画面定義に設定された標準ボタン表示判定用スクリプトをまとめてコンパイルし、部品を生成します。
+	 *
+	 * @param form 詳細画面定義
+	 * @param scriptEngine スクリプトエンジン
+	 * @param scriptNamePrefix スクリプト名の接頭辞
+	 * @return 標準ボタン表示判定部品
+	 */
+	static StandardButtonViewParts create(MetaDetailFormView form, ScriptEngine scriptEngine, String scriptNamePrefix) {
+		StandardButtonViewParts parts = new StandardButtonViewParts(
+				new EnumMap<>(DetailFormViewButtonType.class), scriptEngine);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.EDIT, form.getEditDisplayTypeScript(), scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.LOCK, form.getLockDisplayTypeScript(), scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.COPY, form.getCopyDisplayTypeScript(), scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.VERSIONUP, form.getVersionupDisplayTypeScript(),
+				scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.INSERT, form.getInsertDisplayTypeScript(), scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.UPDATE, form.getUpdateDisplayTypeScript(), scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.DELETE, form.getDeleteDisplayTypeScript(), scriptNamePrefix);
+		parts.compileDisplayTypeScript(DetailFormViewButtonType.DELETE_VERSION,
+				form.getDeleteSpecificVersionDisplayTypeScript(), scriptNamePrefix);
+		return parts;
 	}
 
 	/**
@@ -100,6 +125,26 @@ public final class StandardButtonViewParts {
 	}
 
 	/**
+	 * 指定の画面名に対応する詳細画面定義を検索し、標準ボタンを表示するか判定します。
+	 *
+	 * @param formViews 検索対象の画面定義
+	 * @param viewName 画面名（null または空文字の場合は無名の画面定義を対象とする）
+	 * @param type ボタン種別
+	 * @param outputType 表示タイプ
+	 * @param entity 対象のエンティティ（新規登録時はnull）
+	 * @return 表示する場合true
+	 */
+	static boolean isVisibleInFormViews(List<FormViewRuntime> formViews, String viewName, DetailFormViewButtonType type,
+			OutputType outputType, Entity entity) {
+		DetailFormViewRuntime detailView = findDetailFormView(formViews, viewName);
+		if (detailView == null) {
+			//画面定義が見つからない場合は従来通り表示する
+			return true;
+		}
+		return detailView.isStandardButtonVisible(type, outputType, entity);
+	}
+
+	/**
 	 * 指定の画面名に対応する詳細画面定義を検索します。
 	 *
 	 * @param formViews 検索対象の画面定義
@@ -123,25 +168,5 @@ public final class StandardButtonViewParts {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * 指定の画面名に対応する詳細画面定義を検索し、標準ボタンを表示するか判定します。
-	 *
-	 * @param formViews 検索対象の画面定義
-	 * @param viewName 画面名（null または空文字の場合は無名の画面定義を対象とする）
-	 * @param type ボタン種別
-	 * @param outputType 表示タイプ
-	 * @param entity 対象のエンティティ（新規登録時はnull）
-	 * @return 表示する場合true
-	 */
-	static boolean isStandardButtonVisible(List<FormViewRuntime> formViews, String viewName,
-			DetailFormViewButtonType type, OutputType outputType, Entity entity) {
-		DetailFormViewRuntime detailView = findDetailFormView(formViews, viewName);
-		if (detailView == null) {
-			//画面定義が見つからない場合は従来通り表示する
-			return true;
-		}
-		return detailView.isStandardButtonVisible(type, outputType, entity);
 	}
 }
