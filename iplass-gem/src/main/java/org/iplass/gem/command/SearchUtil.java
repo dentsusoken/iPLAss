@@ -41,11 +41,11 @@ public final class SearchUtil {
 	/**
 	 * プロパティパス上の参照の oid/version 列名を返す。
 	 * <p>
-	 * 既に {@code select} にある列は含めない。ドットが無いパスは空。
+	 * ドットが無いパスは空。
 	 * 末端が参照でなければ、その末端の oid/version は含めない。
 	 * 例: {@code mref2.mref3.name} → {@code mref2.oid}、{@code mref2.version}、{@code mref2.mref3.oid}、{@code mref2.mref3.version}
 	 */
-	public static List<String> referenceOidVersion(List<String> select, String propName,
+	public static List<String> referenceOidVersion(String propName,
 			Function<String, PropertyDefinition> propertyDefinition) {
 		if (propName == null || propName.indexOf('.') < 0) {
 			return List.of();
@@ -55,7 +55,6 @@ public final class SearchUtil {
 				.mapToObj(i -> String.join(".", Arrays.copyOf(parts, i + 1)))
 				.filter(path -> propertyDefinition.apply(path) instanceof ReferenceProperty)
 				.flatMap(path -> Stream.of(path + "." + Entity.OID, path + "." + Entity.VERSION))
-				.filter(column -> !select.contains(column))
 				.toList();
 	}
 }

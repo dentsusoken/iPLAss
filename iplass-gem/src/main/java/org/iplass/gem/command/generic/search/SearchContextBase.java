@@ -176,7 +176,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
 				if (!isDistinct) {
-					select.addAll(SearchUtil.referenceOidVersion(select, propName, this::getPropertyDefinition));
+					select.addAll(SearchUtil.referenceOidVersion(propName, this::getPropertyDefinition));
 				}
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor) p.getEditor()).getNestProperties();
@@ -193,7 +193,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					RangePropertyEditor re = (RangePropertyEditor) p.getEditor();
 					if (StringUtil.isNotBlank(re.getToPropertyName())) {
 						if (!isDistinct) {
-							select.addAll(SearchUtil.referenceOidVersion(select, re.getToPropertyName(), this::getPropertyDefinition));
+							select.addAll(SearchUtil.referenceOidVersion(re.getToPropertyName(), this::getPropertyDefinition));
 						}
 						addSearchProperty(select, re.getToPropertyName());
 					}

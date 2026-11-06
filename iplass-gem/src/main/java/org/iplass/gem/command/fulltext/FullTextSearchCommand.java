@@ -462,8 +462,10 @@ public final class FullTextSearchCommand implements Command {
 	}
 
 	private void addSearchProperty(List<String> select, EntityDefinition ed, String propName, PropertyEditor editor, NestProperty... nest) {
-		select.addAll(SearchUtil.referenceOidVersion(select, propName,
-				path -> EntityViewUtil.getPropertyDefinition(path, ed)));
+		SearchUtil.referenceOidVersion(propName, path -> EntityViewUtil.getPropertyDefinition(path, ed))
+				.stream()
+				.filter(column -> !select.contains(column))
+				.forEach(select::add);
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 		if (pd instanceof ReferenceProperty) {
 			if (!select.contains(propName + "." + Entity.NAME)) {
