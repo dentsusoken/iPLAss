@@ -21,7 +21,6 @@
 package org.iplass.mtp.impl.view.generic;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
@@ -65,7 +64,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 	private Script compiledInitScript;
 	private ScriptEngine scriptEngine;
 	private EntityManager em;
-	private final Map<DetailFormViewButtonType, Script> displayTypeScripts;
+	private final StandardButtonViewParts standardButtonParts;
 
 	public DetailFormViewRuntime(MetaDetailFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
@@ -103,27 +102,20 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 			compiledInitScript = scriptEngine.createScript(metaData.getInitScript(), scriptName);
 		}
 
-		displayTypeScripts = new EnumMap<>(DetailFormViewButtonType.class);
+		standardButtonParts = new StandardButtonViewParts(new EnumMap<>(DetailFormViewButtonType.class), scriptEngine);
 		String scriptNamePrefix = SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT + "_" + entityView.getMetaData()
 				.getId() + "_"
 				+ (metaData.getName() == null || metaData.getName()
 						.isEmpty() ? "default" : metaData.getName());
-		compileDisplayTypeScript(DetailFormViewButtonType.EDIT, metaData.getEditDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.LOCK, metaData.getLockDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.COPY, metaData.getCopyDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.VERSIONUP, metaData.getVersionupDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.INSERT, metaData.getInsertDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.UPDATE, metaData.getUpdateDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.DELETE, metaData.getDeleteDisplayTypeScript(), scriptNamePrefix);
-		compileDisplayTypeScript(DetailFormViewButtonType.DELETE_VERSION,
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.EDIT, metaData.getEditDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.LOCK, metaData.getLockDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.COPY, metaData.getCopyDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.VERSIONUP, metaData.getVersionupDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.INSERT, metaData.getInsertDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.UPDATE, metaData.getUpdateDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.DELETE, metaData.getDeleteDisplayTypeScript(), scriptNamePrefix);
+		standardButtonParts.compileDisplayTypeScript(DetailFormViewButtonType.DELETE_VERSION,
 				metaData.getDeleteSpecificVersionDisplayTypeScript(), scriptNamePrefix);
-	}
-
-	private void compileDisplayTypeScript(DetailFormViewButtonType type, String script, String scriptNamePrefix) {
-		if (script == null || script.isEmpty()) {
-			return;
-		}
-		displayTypeScripts.put(type, scriptEngine.createScript(script, scriptNamePrefix + "_" + type.name()));
 	}
 
 	@Override
@@ -183,27 +175,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 	 * @return 表示する場合true
 	 */
 	public boolean isStandardButtonVisible(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
-		Script script = displayTypeScripts.get(type);
-		if (script == null) {
-			//スクリプト未設定の場合は従来通り表示する
-			return true;
-		}
-
-		ScriptContext sc = scriptEngine.newScriptContext();
-		sc.setAttribute(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());
-		sc.setAttribute(SESSION_BINDING_NAME, SessionBinding.newSessionBinding());
-		sc.setAttribute(USER_BINDING_NAME, AuthContextHolder.getAuthContext()
-				.newUserBinding());
-		sc.setAttribute(OUTPUT_TYPE_BINDING_NAME, outputType);
-		sc.setAttribute(ENTITY_BINDING_NAME, entity);
-
-		Object val = script.eval(sc);
-		if (val instanceof Boolean booleanValue) {
-			return booleanValue;
-		} else if (val instanceof String stringValue) {
-			return Boolean.parseBoolean(stringValue);
-		}
-		return false;
+		return standardButtonParts.isStandardButtonVisible(type, outputType, entity);
 	}
 
 	private static String resourceString(String key, Object... arguments) {

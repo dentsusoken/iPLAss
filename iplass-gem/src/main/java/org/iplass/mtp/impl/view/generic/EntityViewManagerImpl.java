@@ -916,32 +916,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return true;
 		}
 
-		DetailFormViewRuntime detailView = null;
-		for (FormViewRuntime formView : entityView.getFormViews()) {
-			if (!(formView instanceof DetailFormViewRuntime detailFormView)) {
-				continue;
-			}
-			//nameが一致するhandlerを検索
-			String formViewName = detailFormView.getMetaData()
-					.getName();
-			if (viewName == null || viewName.isEmpty()) {
-				if (formViewName == null || formViewName.isEmpty()) {
-					detailView = detailFormView;
-					break;
-				}
-			} else {
-				if (viewName.equals(formViewName)) {
-					detailView = detailFormView;
-					break;
-				}
-			}
-		}
-
-		if (detailView == null) {
-			//画面定義が見つからない場合は従来通り表示する
-			return true;
-		}
-		return detailView.isStandardButtonVisible(type, outputType, entity);
+		return StandardButtonViewParts.isStandardButtonVisible(entityView.getFormViews(), viewName, type, outputType, entity);
 	}
 
 	@Override
