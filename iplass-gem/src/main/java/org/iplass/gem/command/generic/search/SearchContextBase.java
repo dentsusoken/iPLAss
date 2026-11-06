@@ -185,9 +185,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
 					addSearchProperty(select, propName, je.getEditor());
 					for (NestProperty nest : je.getProperties()) {
-						if (!isDistinct) {
-							select.addAll(SearchUtil.referenceOidVersion(select, nest.getPropertyName(), this::getPropertyDefinition));
-						}
+						// JoinPropertyEditor の追加プロパティは自エンティティ直下のみ指定可能なため、祖先の oid/version の追加は不要
 						addSearchProperty(select, nest.getPropertyName(), nest.getEditor());
 					}
 				} else if (p.getEditor() instanceof RangePropertyEditor) {
