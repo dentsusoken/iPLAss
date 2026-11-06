@@ -151,7 +151,7 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 const REFERENCE_OID_SUFFIX = "@oid";
 const REFERENCE_VERSION_SUFFIX = "@version";
 
-// MEMO: 現代的な開発との乖離(課題)
+// MEMO: 課題
 // - Java(SearchResultRow)と JS が「キー名の規約」だけで繋がっており、型・スキーマによる契約が無い(片方の変更により、静かに壊れる)
 // - 行データが平坦な文字列キーのMapで、構造(祖先の階層など)がデータ上に現れない
 // 本来あるべき姿:
@@ -175,7 +175,6 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	const row = data[rowIndex];
 	const colName = colModel.name;
 
-	// 列名の各階層について参照先Entityの oid、version を比較する
 	const parts = colName.split(".");
 	// isLeaf: 列名の末尾(末端)か（name, ref.ref.nameなど）
 	const isMatched = (row1, row2, path, isLeaf) => {

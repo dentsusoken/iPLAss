@@ -240,7 +240,8 @@ public class CreateSearchResultUtil {
 	}
 
 	/**
-	 * 参照プロパティの値から Entity を取り出す。Entity 以外は null を返す。
+	 * 参照プロパティの値から Entity を取り出す。
+	 * Entity 以外は null を返す。
 	 * <p>
 	 * 前提：検索結果の行では、複数値参照も 1 行 1 件の Entity に展開されている。
 	 * 例: Entity → そのまま、null → null

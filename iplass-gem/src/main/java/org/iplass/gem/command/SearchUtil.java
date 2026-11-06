@@ -43,6 +43,7 @@ public final class SearchUtil {
 	 * <p>
 	 * ドットが無いパスは空。
 	 * 末端が参照でなければ、その末端の oid/version は含めない。
+	 * <p>
 	 * 例: {@code mref2.mref3.name} → {@code mref2.oid}、{@code mref2.version}、{@code mref2.mref3.oid}、{@code mref2.mref3.version}
 	 */
 	public static List<String> referenceOidVersion(String propName,
