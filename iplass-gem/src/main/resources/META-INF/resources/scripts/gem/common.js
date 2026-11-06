@@ -145,23 +145,23 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 }
 
 /**
- * 「検索結果をまとめる」用のCELL Attr
- * 検索結果一覧(jqGrid)の cellattr から呼び出し、セル結合(rowspan)の属性文字列を返します。
- * 一般検索画面、トップ画面の一覧パーツ、全文検索画面で共通利用します。
- *
- * 次の全てが連続する行で同じ場合に、セルを結合します。
- * - 行のEntityの (oid, version)
- * - (ネストした参照プロパティの場合) 「自身が属する階層 + 祖先」の (oid, version)
- * - 対象の列の値
- * 
- * 例)
- * 対象列が "mref2.mref3.name" → ["oid", "mref2.@oid", "mref2.mref3.@oid", "mref2.mref3.name"] をkeyとして結合
- * 対象列が "mref2.mref3"(Nest なしの参照列) → ["oid", "mref2.@oid", "mref2.mref3.@oid", "mref2.mref3"] をkeyとして結合
+ * 参照先の識別キー("<参照プロパティのパス>.@oid" など)の接尾辞。Java の SearchResultRow と合わせる。
+ * 参照先が無い、または SELECT されていない場合、行データにキーは存在しない。
+ */
+const REFERENCE_OID_SUFFIX = "@oid";
+const REFERENCE_VERSION_SUFFIX = "@version";
+
+/**
+ * 「検索結果をまとめる」用の cellattr。セル結合(rowspan)の属性文字列を返す。
+ * 以下が、連続する行で全て同じ場合に結合する。
+ * - 行Entity
+ * - 列の階層(祖先を含む)の参照先Entity
+ * - 列の値
  *
  * @param grid jqGrid(_data に検索結果の行データを保持していること)
- * @param rowId 行ID(jqGrid の cellattr の引数)
- * @param colModel 列定義(jqGrid の cellattr の引数)
- * @param rdata 行のフォーマット済みデータ(jqGrid の cellattr の引数)
+ * @param rowId 行ID
+ * @param colModel 列定義
+ * @param rdata 行のフォーマット済みデータ
  * @returns cellattr の戻り値(属性文字列。属性を設定しない場合は null)
  */
 function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
@@ -177,7 +177,7 @@ function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
 	const parts = colName.split(".");
 	// isLeaf: 列名の末尾(末端)か。末端は識別キーが両方の行に無いときだけ比較を省く
 	const identityMatches = (row1, row2, path, isLeaf) => {
-		const keys = ["@oid", "@version"].map(key => `${path}.${key}`);
+		const keys = [REFERENCE_OID_SUFFIX, REFERENCE_VERSION_SUFFIX].map(suffix => `${path}.${suffix}`);
 		if (isLeaf && keys.every((key) => row1[key] == null && row2[key] == null)) {
 			return true;
 		}

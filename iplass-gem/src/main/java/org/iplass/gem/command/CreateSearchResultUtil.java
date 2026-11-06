@@ -221,9 +221,9 @@ public class CreateSearchResultUtil {
 			return Map.of();
 		}
 		var keys = new LinkedHashMap<String, String>();
-		keys.put(path + ".@oid", refEntity.getOid());
+		keys.put(SearchResultRow.referenceKey(path, SearchResultRow.REFERENCE_OID_SUFFIX), refEntity.getOid());
 		if (refEntity.getVersion() != null) {
-			keys.put(path + ".@version", refEntity.getVersion()
+			keys.put(SearchResultRow.referenceKey(path, SearchResultRow.REFERENCE_VERSION_SUFFIX), refEntity.getVersion()
 					.toString());
 		}
 		return keys;
