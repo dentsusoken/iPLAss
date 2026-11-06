@@ -27,7 +27,6 @@
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.EntityManager"%>
-<%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.And"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.predicate.Equals"%>
 <%@ page import="org.iplass.mtp.entity.query.Query"%>
@@ -35,6 +34,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -54,8 +54,6 @@
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 
 	DetailFormView form = data.getView();
-	//コピーボタン表示可否
-	boolean isNoneDispCopyButton = form.isNoneDispCopyButton();
 
 	//ロック制御
 	String oid = null;
@@ -88,13 +86,11 @@
 		versionupDisplayLabel = localizedVersionupDisplayLabel;
 	}
 
-	//権限確認用
-	boolean showEditButton = data.isCanUpdate() || data.isCanDelete();
-	boolean showCopyButton = data.isCanCreate();
 
 	//ワークフローの権限確認用
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.VIEW, data);
 %>
 <ul class="list_operation edit-bar">
 <%
@@ -131,8 +127,7 @@
 				}
 			}
 		}
-		if (showEditButton) {
-			if (!form.isHideLock()) {
+		if (standardButton.isLockButtonVisible()) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.viewButton.lock')}" class="gr-btn-02" 
@@ -143,21 +138,20 @@
 	name="unlock" style="<c:out value="<%=unlockStyle %>"/>" onclick="dataUnlock()" />
 </li>
 <%
+		}
+		if (standardButton.isEditButtonVisible()) {
+			String dispStyle = "";
+			if (isLock && !hasLock) {
+				dispStyle = "display: none";
 			}
-			if (!form.isHideDetail()) {
-				String dispStyle = "";
-				if (isLock && !hasLock) {
-					dispStyle = "display: none";
-				}
 %>
 <li class="btn edit-btn">
 <input type="submit" value="<c:out value="<%=editDisplayLabel %>"/>" class="gr-btn" 
 	style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_submit()" />
 </li>
 <%
-			}
 		}
-		if (showCopyButton && !isNoneDispCopyButton) {
+		if (standardButton.isCopyButtonVisible()) {
 %>
 <li class="btn copy-btn">
 <input type="button" value="<c:out value="<%=copyDisplayLabel %>"/>" class="gr-btn" 
@@ -165,19 +159,17 @@
 </li>
 <%
 		}
-		if (showEditButton) {
-			if (data.getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
-				String dispStyle = "";
-				if (isLock && !hasLock) {
-					dispStyle = "display: none";
-				}
+		if (standardButton.isVersionupButtonVisible()) {
+			String dispStyle = "";
+			if (isLock && !hasLock) {
+				dispStyle = "display: none";
+			}
 %>
 <li class="btn version-btn">
 <input type="button" value="<c:out value="<%=versionupDisplayLabel %>"/>" class="gr-btn gr-size-03" 
 	style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_newversion()" />
 </li>
 <%
-			}
 		}
 %>
 <li class="mt05 cancel-link">

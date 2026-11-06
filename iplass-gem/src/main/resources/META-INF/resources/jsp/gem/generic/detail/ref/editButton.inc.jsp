@@ -26,6 +26,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -83,6 +84,7 @@
 	}
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.EDIT, data);
 %>
 <ul class="list_operation">
 <%
@@ -120,27 +122,27 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (data.isCanUpdate()) {
+		if (standardButton.isUpdateButtonVisible()) {
 %>
 <li class="btn save-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" 
 	disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" />
 </li>
 <%
-		} else {
+		} else if (!standardButton.isCanUpdate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notUpdate")}</span></li>
 <%
 		}
 	} else {
-		if (data.isCanCreate()) {
+		if (standardButton.isInsertButtonVisible()) {
 %>
 <li class="btn insert-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" 
 	disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" />
 </li>
 <%
-		} else {
+		} else if (!standardButton.isCanCreate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notRegist")}</span></li>
 <%

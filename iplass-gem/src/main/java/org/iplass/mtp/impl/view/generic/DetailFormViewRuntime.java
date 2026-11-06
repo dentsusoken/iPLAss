@@ -36,6 +36,8 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.view.generic.DetailFormViewButtonType;
+import org.iplass.mtp.view.generic.OutputType;
 
 public class DetailFormViewRuntime extends FormViewRuntime {
 	public static final String ENTITY_BINDING_NAME = "entity";
@@ -54,11 +56,13 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 
 	private static final String SCRIPT_PREFIX_CUSTOM_COPY_SCRIPT = "DetailFormViewHandler_customCopyScript";
 	private static final String SCRIPT_PREFIX_INIT_SCRIPT = "DetailFormViewHandler_initScript";
+	private static final String SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT = "DetailFormViewRuntime_displayTypeScript";
 
 	private Script compiledCustomCopyScript;
 	private Script compiledInitScript;
 	private ScriptEngine scriptEngine;
 	private EntityManager em;
+	private final StandardButtonViewParts standardButtonParts;
 
 	public DetailFormViewRuntime(MetaDetailFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
@@ -95,6 +99,12 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 
 			compiledInitScript = scriptEngine.createScript(metaData.getInitScript(), scriptName);
 		}
+
+		String scriptNamePrefix = SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT + "_" + entityView.getMetaData()
+				.getId() + "_"
+				+ (metaData.getName() == null || metaData.getName()
+						.isEmpty() ? "default" : metaData.getName());
+		standardButtonParts = StandardButtonViewParts.create(metaData, scriptEngine, scriptNamePrefix);
 	}
 
 	@Override
@@ -143,6 +153,18 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 		sc.setAttribute(USER_BINDING_NAME, user);
 		compiledInitScript.eval(sc);
 		return ret;
+	}
+
+	/**
+	 * 標準ボタンを表示するか判定します。
+	 *
+	 * @param type ボタン種別
+	 * @param outputType 表示タイプ
+	 * @param entity 対象のエンティティ（新規登録時はnull）
+	 * @return 表示する場合true
+	 */
+	public boolean isStandardButtonVisible(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
+		return standardButtonParts.isStandardButtonVisible(type, outputType, entity);
 	}
 
 	private static String resourceString(String key, Object... arguments) {
