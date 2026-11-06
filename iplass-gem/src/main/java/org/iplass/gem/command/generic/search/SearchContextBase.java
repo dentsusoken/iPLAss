@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.iplass.gem.command.CommandUtil;
-import org.iplass.gem.command.SearchUtil;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.gem.command.SearchUtil;
 import org.iplass.gem.command.ViewUtil;
 import org.iplass.gem.command.common.SearchResultData;
 import org.iplass.gem.command.generic.search.handler.CheckPermissionLimitConditionOfEditLinkHandler;

@@ -37,8 +37,8 @@ import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;
-import org.iplass.gem.command.SearchUtil;
 import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.gem.command.SearchUtil;
 import org.iplass.gem.command.ViewUtil;
 import org.iplass.gem.command.fulltext.FullTextSearchResult.ColModel;
 import org.iplass.gem.command.generic.detail.DetailViewCommand;
