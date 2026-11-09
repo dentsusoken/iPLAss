@@ -46,7 +46,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 	/**
 	 * コンストラクタ
 	 *
-	 * args[0]・・・execMode["Wizard" or "Silent"]
+	 * args[0]・・・execMode["WIZARD" or "SILENT"]
 	 * args[1]・・・tenantId
 	 * args[2]・・・entityName
 	 * args[3]・・・storageSpaceName

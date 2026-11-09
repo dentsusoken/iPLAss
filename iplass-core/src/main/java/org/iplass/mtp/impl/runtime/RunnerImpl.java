@@ -102,7 +102,7 @@ public class RunnerImpl implements Runner {
 
 		try {
 			ExecuteContext ec = new ExecuteContext(tc);
-			ExecuteContext.initContext(new ExecuteContext(tc));
+			ExecuteContext.initContext(ec);
 			if (lang != null) {
 				ec.setLanguage(lang);
 			}
