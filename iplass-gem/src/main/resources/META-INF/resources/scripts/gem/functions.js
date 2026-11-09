@@ -2819,6 +2819,16 @@ const UNRESIZABLE_CLASS = "unresizable";
 								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({"id":linkId, "data-linkId":linkId, "style":$v.customStyle}).text(nodes[i].name).on("click", function() {
 									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
 								}).appendTo($li);
+								//参照モーダルのサイズ設定を、コンテナ(ul)から引き継ぐ
+								if ($container.attr("data-reference-modal") === "true") {
+									$link.attr("data-reference-modal", "true");
+									const dialogWidth = $container.attr("data-dialog-width");
+									const dialogHeight = $container.attr("data-dialog-height");
+									const dialogMaximize = $container.attr("data-dialog-maximize");
+									if (dialogWidth != null) $link.attr("data-dialog-width", dialogWidth);
+									if (dialogHeight != null) $link.attr("data-dialog-height", dialogHeight);
+									if (dialogMaximize != null) $link.attr("data-dialog-maximize", dialogMaximize);
+								}
 								if ($("body.modal-body").length != 0) {
 									$link.subModalWindow();
 								} else {
