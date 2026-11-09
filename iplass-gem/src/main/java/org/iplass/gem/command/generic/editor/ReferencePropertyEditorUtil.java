@@ -37,7 +37,7 @@ public final class ReferencePropertyEditorUtil {
 	 * @return ダイアログサイズのdata属性。未設定の場合は空文字列
 	 */
 	public static String getDialogSizeAttributes(ReferencePropertyEditor editor) {
-		return getDialogSizeAttributes(editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
+		return getDialogSizeAttributes(editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximized());
 	}
 
 	/**

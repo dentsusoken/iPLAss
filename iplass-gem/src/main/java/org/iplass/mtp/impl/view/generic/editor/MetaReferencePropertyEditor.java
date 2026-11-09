@@ -549,7 +549,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 * 
 	 * @return 参照型モーダルを初期表示時に最大化するか
 	 */
-	public boolean isDialogMaximize() {
+	public boolean isDialogMaximized() {
 		return dialogMaximize;
 	}
 
@@ -1074,7 +1074,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		viewName = rpe.getViewName();
 		dialogWidth = rpe.getDialogWidth();
 		dialogHeight = rpe.getDialogHeight();
-		dialogMaximize = rpe.isDialogMaximize();
+		dialogMaximize = rpe.isDialogMaximized();
 		urlParameter = rpe.getUrlParameter();
 		urlParameterAction = rpe.getUrlParameterAction() != null ? new ArrayList<>(rpe.getUrlParameterAction()) : null;
 		dynamicUrlParameter = rpe.getDynamicUrlParameter();

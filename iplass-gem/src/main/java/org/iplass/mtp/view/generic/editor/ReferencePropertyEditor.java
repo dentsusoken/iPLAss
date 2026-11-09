@@ -1155,7 +1155,7 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 * 
 	 * @return 参照型モーダルを初期表示時に最大化するか
 	 */
-	public boolean isDialogMaximize() {
+	public boolean isDialogMaximized() {
 		return dialogMaximize;
 	}
 

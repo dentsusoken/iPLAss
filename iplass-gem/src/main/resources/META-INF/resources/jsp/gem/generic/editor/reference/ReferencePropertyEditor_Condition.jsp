@@ -752,7 +752,7 @@ $(function() {
 					+ ", false"
 					+ ")";
 				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
-						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximized());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -796,7 +796,7 @@ $(function() {
 					+ ", false"
 					+ ")";
 				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
-						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximized());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -955,7 +955,7 @@ $(function() {
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
 				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
-						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximized());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
@@ -993,7 +993,7 @@ $(function() {
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
 				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel,
-						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximize());
+						editor.getDialogWidth(), editor.getDialogHeight(), editor.isDialogMaximized());
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%=referenceLink %>
