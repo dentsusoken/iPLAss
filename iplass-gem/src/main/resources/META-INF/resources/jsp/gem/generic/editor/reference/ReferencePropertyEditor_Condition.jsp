@@ -28,6 +28,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.*"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.And"%>
@@ -295,6 +296,15 @@
 				+ "'" + StringUtil.escapeJavaScript(liId) + "'"
 				+ ", " + isMultiple
 				+ ")";
+	}
+	String createReferenceLink(String linkId, String customStyle, String showReference, String displayPropLabel) {
+		String template = "<a href=\"javascript:void(0)\" class=\"modal-lnk\" data-reference-modal=\"true\" "
+				+ " id=\"%1$s\" data-linkId=\"%1$s\" style=\"%2$s\" onclick=\"%3$s\">%4$s</a>";
+		return String.format(template,
+				StringEscapeUtils.escapeHtml4(linkId),
+				StringEscapeUtils.escapeHtml4(customStyle),
+				StringEscapeUtils.escapeHtml4(showReference),
+				StringEscapeUtils.escapeHtml4(displayPropLabel));
 	}
 %>
 <%
@@ -736,10 +746,10 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <%
 				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 					String deleteItem = "deleteItem(" 
@@ -779,10 +789,10 @@ $(function() {
 					+ ", '" + StringUtil.escapeJavaScript(linkId) + "'"
 					+ ", false"
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <%
 			if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 				String deleteItem = "deleteItem(" 
@@ -808,7 +818,8 @@ $(function() {
 		String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, null, UrlParameterActionType.SELECT);
 		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn" data-reference-modal="true" id="<c:out value=" <%=selBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var dynamicParamCallback = function(urlParam) {
@@ -935,10 +946,10 @@ $(function() {
 				String deleteItem = "deleteItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>" />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
@@ -972,10 +983,10 @@ $(function() {
 				String deleteItem = "deleteItem(" 
 					+ "'" + StringUtil.escapeJavaScript(liId) + "'" 
 					+ ")";
+				String referenceLink = createReferenceLink(linkId, customStyle, showReference, displayPropLabel);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
- onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
+<%=referenceLink %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
@@ -1184,10 +1195,14 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>"/></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1246,10 +1261,14 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="<c:out value="<%=uniquePropValue %>" />" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" id="<c:out value=" <%=linkId %>" />"
+	data-linkId="
+	<c:out value="<%=linkId %>" />" style="
+	<c:out value="<%=customStyle%>" />"
  onclick="<c:out value="<%=showReference %>"/>"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
@@ -1288,10 +1307,12 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" value="" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName%>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName%>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+	<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn"
  onclick="<c:out value="<%=deleteItem %>"/>"/>
 </span>
@@ -1325,10 +1346,12 @@ $(function() {
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}"
+	class="gr-btn-02 modal-btn sel-btn" data-reference-modal="true" data-propName="<c:out value=" <%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>"></a>
+<a href="javascript:void(0)" class="modal-lnk" data-reference-modal="true" style="<c:out value="
+	<%=customStyle%>"/>"></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 </span>
 <input type="hidden"/>
@@ -1491,7 +1514,7 @@ $(function() {
 	    class="form-size-02 inpbr ref-select-filter-item"
 		id="<c:out value="<%=inputId %>"/>"
 	    style="<c:out value="<%=customStyle%>"/>"
-	    placeholder="<%=org.apache.commons.text.StringEscapeUtils.escapeHtml4(placeHolder) %>"
+		placeholder="<%=StringEscapeUtils.escapeHtml4(placeHolder) %>"
 	    data-defName="<c:out value="<%=rootDefName%>"/>"
 	    data-viewName="<%=viewName %>" 
 	    data-propName="<c:out value="<%=propertyName%>"/>" 
