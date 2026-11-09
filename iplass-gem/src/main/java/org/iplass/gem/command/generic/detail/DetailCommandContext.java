@@ -25,8 +25,10 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -872,13 +874,13 @@ public class DetailCommandContext extends RegistrationCommandContext
 						.equals(p.getName()))
 				.findFirst();
 		if (ret.isPresent()) {
-			addNestTableRegistHandler(p, list, red, ret.get());
+			addNestTableRegistHandler(p, list, red, ret.get(), prefix);
 		}
 
 		return list;
 	}
 
-	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property) {
+	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property, String prefix) {
 		// ネストテーブルはプロパティ単位で登録可否決定
 		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) {
 			return;
@@ -905,9 +907,38 @@ public class DetailCommandContext extends RegistrationCommandContext
 			//表示順再指定
 			PropertyDefinition pd = red.getProperty(editor.getTableOrderPropertyName());
 			target = EntityViewUtil.sortByOrderProperty(list, Constants.REF_TABLE_ORDER_INDEX);
+
+			// ソート前の行番号（REF_INDEX）から、ソート後の行番号へのマッピングを作成する
+			Map<Integer, Integer> indexMap = new HashMap<>();
+			for (int i = 0; i < target.size(); i++) {
+				Integer oldIndex = target.get(i)
+						.getValue(Constants.REF_INDEX);
+				if (oldIndex != null) {
+					indexMap.put(oldIndex, i);
+				}
+			}
+
+			// Entity作成時に追加済みの入力エラーも、ソート後の行番号へ付け替える
+			String errorBase = prefix + p.getName();
+			for (ValidateError error : getErrors()) {
+				String oldName = error.getPropertyName();
+				for (Map.Entry<Integer, Integer> entry : indexMap.entrySet()) {
+					String oldPrefix = errorBase + "[" + entry.getKey() + "].";
+					if (oldName.startsWith(oldPrefix)) {
+						String newPrefix = errorBase + "[" + entry.getValue() + "].";
+						error.setPropertyName(newPrefix + oldName.substring(oldPrefix.length()));
+						break;
+					}
+				}
+			}
+
 			for (int i = 0; i < target.size(); i++) {
 				target.get(i)
 						.setValue(editor.getTableOrderPropertyName(), ConvertUtil.convert(pd.getJavaType(), i));
+
+				// エラーメッセージのキーとの整合性をあわせるためREF_INDEXも更新する
+				target.get(i)
+						.setValue(Constants.REF_INDEX, i);
 			}
 		} else {
 			target = list;
