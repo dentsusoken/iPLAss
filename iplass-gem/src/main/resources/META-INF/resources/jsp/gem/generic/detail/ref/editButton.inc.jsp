@@ -129,7 +129,7 @@
 	disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" />
 </li>
 <%
-		} else if (!stdButtonVisibility.isCanUpdate()) {
+		} else if (!stdButtonVisibility.canUpdate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notUpdate")}</span></li>
 <%
@@ -142,7 +142,7 @@
 	disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" />
 </li>
 <%
-		} else if (!stdButtonVisibility.isCanCreate()) {
+		} else if (!stdButtonVisibility.canCreate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notRegist")}</span></li>
 <%

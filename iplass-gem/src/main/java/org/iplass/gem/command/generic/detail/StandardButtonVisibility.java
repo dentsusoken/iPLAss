@@ -148,17 +148,8 @@ public class StandardButtonVisibility {
 	 *
 	 * @return 更新権限がある場合true
 	 */
-	public boolean isCanUpdate() {
+	public boolean canUpdate() {
 		return data.isCanUpdate();
-	}
-
-	/**
-	 * 削除権限があるかを判定します。
-	 *
-	 * @return 削除権限がある場合true
-	 */
-	public boolean isCanDelete() {
-		return data.isCanDelete();
 	}
 
 	/**
@@ -166,7 +157,7 @@ public class StandardButtonVisibility {
 	 *
 	 * @return 登録権限がある場合true
 	 */
-	public boolean isCanCreate() {
+	public boolean canCreate() {
 		return data.isCanCreate();
 	}
 
