@@ -40,6 +40,8 @@ import org.iplass.mtp.view.generic.OutputType;
  */
 final class StandardButtonViewParts {
 
+	private static final String SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT = "DetailFormViewRuntime_displayTypeScript";
+
 	private final Map<DetailFormViewButtonType, Script> displayTypeScripts;
 	private final ScriptEngine scriptEngine;
 
@@ -59,12 +61,17 @@ final class StandardButtonViewParts {
 	 *
 	 * @param form 詳細画面定義
 	 * @param scriptEngine スクリプトエンジン
-	 * @param scriptNamePrefix スクリプト名の接頭辞
+	 * @param entityView エンティティ画面定義
 	 * @return 標準ボタン表示判定部品
 	 */
-	static StandardButtonViewParts createWithCompiledScripts(MetaDetailFormView form, ScriptEngine scriptEngine, String scriptNamePrefix) {
+	static StandardButtonViewParts createWithCompiledScripts(MetaDetailFormView form, ScriptEngine scriptEngine,
+			EntityViewRuntime entityView) {
 		StandardButtonViewParts parts = new StandardButtonViewParts(
 				new EnumMap<>(DetailFormViewButtonType.class), scriptEngine);
+		String scriptNamePrefix = SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT + "_" + entityView.getMetaData()
+				.getId() + "_"
+				+ (form.getName() == null || form.getName()
+						.isEmpty() ? "default" : form.getName());
 		parts.compileDisplayTypeScript(DetailFormViewButtonType.EDIT, form.getEditDisplayTypeScript(), scriptNamePrefix);
 		parts.compileDisplayTypeScript(DetailFormViewButtonType.LOCK, form.getLockDisplayTypeScript(), scriptNamePrefix);
 		parts.compileDisplayTypeScript(DetailFormViewButtonType.COPY, form.getCopyDisplayTypeScript(), scriptNamePrefix);
@@ -85,7 +92,7 @@ final class StandardButtonViewParts {
 	 * @param script スクリプト文字列
 	 * @param scriptNamePrefix スクリプト名の接頭辞
 	 */
-	void compileDisplayTypeScript(DetailFormViewButtonType type, String script, String scriptNamePrefix) {
+	private void compileDisplayTypeScript(DetailFormViewButtonType type, String script, String scriptNamePrefix) {
 		if (script == null || script.isEmpty()) {
 			return;
 		}
@@ -100,7 +107,7 @@ final class StandardButtonViewParts {
 	 * @param entity 対象のエンティティ（新規登録時はnull）
 	 * @return 表示する場合true
 	 */
-	boolean isStandardButtonVisible(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
+	boolean isVisible(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
 		Script script = displayTypeScripts.get(type);
 		if (script == null) {
 			//スクリプト未設定の場合は従来通り表示する

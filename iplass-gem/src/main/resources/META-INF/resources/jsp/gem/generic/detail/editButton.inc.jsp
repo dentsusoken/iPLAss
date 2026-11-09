@@ -76,7 +76,7 @@
 	}
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.EDIT, data);
+	StandardButtonVisibility stdButtonVisibility = new StandardButtonVisibility(defName, OutputType.EDIT, data);
 %>
 
 <ul class="list_operation edit-bar">
@@ -115,7 +115,7 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (standardButton.isUpdateButtonVisible()) {
+		if (stdButtonVisibility.isUpdateButtonVisible()) {
 			String updateDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.save");
 			String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
@@ -128,7 +128,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDeleteButtonVisible()) {
+		if (stdButtonVisibility.isDeleteButtonVisible()) {
 			String deleteDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.delete");
 			String localizedDeleteDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteDisplayLabel(), form.getLocalizedDeleteDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedDeleteDisplayLabel)) {
@@ -141,7 +141,7 @@
 </li>
 <%
 		}
-		if (standardButton.isDeleteVersionButtonVisible()) {
+		if (stdButtonVisibility.isDeleteVersionButtonVisible()) {
 			String displayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.deleteSpecificVersion");
 			String localizedDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteSpecificVersionDisplayLabel(), form.getLocalizedDeleteSpecificVersionDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedDisplayLabel)) {
@@ -155,7 +155,7 @@
 <%
 		}
 	} else {
-		if (standardButton.isInsertButtonVisible()) {
+		if (stdButtonVisibility.isInsertButtonVisible()) {
 			String insertDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.reg");
 			String localizedInsertDisplayLabel = TemplateUtil.getMultilingualString(form.getInsertDisplayLabel(), form.getLocalizedInsertDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedInsertDisplayLabel)) {

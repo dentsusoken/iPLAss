@@ -90,7 +90,7 @@
 	//ワークフローの権限確認用
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.VIEW, data);
+	StandardButtonVisibility stdButtonVisibility = new StandardButtonVisibility(defName, OutputType.VIEW, data);
 %>
 <ul class="list_operation edit-bar">
 <%
@@ -127,7 +127,7 @@
 				}
 			}
 		}
-		if (standardButton.isLockButtonVisible()) {
+		if (stdButtonVisibility.isLockButtonVisible()) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.viewButton.lock')}" class="gr-btn-02" 
@@ -139,7 +139,7 @@
 </li>
 <%
 		}
-		if (standardButton.isEditButtonVisible()) {
+		if (stdButtonVisibility.isEditButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
@@ -151,7 +151,7 @@
 </li>
 <%
 		}
-		if (standardButton.isCopyButtonVisible()) {
+		if (stdButtonVisibility.isCopyButtonVisible()) {
 %>
 <li class="btn copy-btn">
 <input type="button" value="<c:out value="<%=copyDisplayLabel %>"/>" class="gr-btn" 
@@ -159,7 +159,7 @@
 </li>
 <%
 		}
-		if (standardButton.isVersionupButtonVisible()) {
+		if (stdButtonVisibility.isVersionupButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";

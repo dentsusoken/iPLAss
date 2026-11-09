@@ -84,7 +84,7 @@
 	}
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.EDIT, data);
+	StandardButtonVisibility stdButtonVisibility = new StandardButtonVisibility(defName, OutputType.EDIT, data);
 %>
 <ul class="list_operation">
 <%
@@ -122,27 +122,27 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (standardButton.isUpdateButtonVisible()) {
+		if (stdButtonVisibility.isUpdateButtonVisible()) {
 %>
 <li class="btn save-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" 
 	disabled="disabled" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" />
 </li>
 <%
-		} else if (!standardButton.isCanUpdate()) {
+		} else if (!stdButtonVisibility.isCanUpdate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notUpdate")}</span></li>
 <%
 		}
 	} else {
-		if (standardButton.isInsertButtonVisible()) {
+		if (stdButtonVisibility.isInsertButtonVisible()) {
 %>
 <li class="btn insert-btn">
 <input type="button" class="gr-btn disabled-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" 
 	disabled="disabled" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" />
 </li>
 <%
-		} else if (!standardButton.isCanCreate()) {
+		} else if (!stdButtonVisibility.isCanCreate()) {
 %>
 <li><span class="error">${m:rs("mtp-gem-messages", "generic.detail.ref.detailButton.notRegist")}</span></li>
 <%

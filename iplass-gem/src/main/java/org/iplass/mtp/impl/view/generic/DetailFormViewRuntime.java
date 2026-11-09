@@ -56,7 +56,6 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 
 	private static final String SCRIPT_PREFIX_CUSTOM_COPY_SCRIPT = "DetailFormViewHandler_customCopyScript";
 	private static final String SCRIPT_PREFIX_INIT_SCRIPT = "DetailFormViewHandler_initScript";
-	private static final String SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT = "DetailFormViewRuntime_displayTypeScript";
 
 	private Script compiledCustomCopyScript;
 	private Script compiledInitScript;
@@ -100,11 +99,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 			compiledInitScript = scriptEngine.createScript(metaData.getInitScript(), scriptName);
 		}
 
-		String scriptNamePrefix = SCRIPT_PREFIX_DISPLAY_TYPE_SCRIPT + "_" + entityView.getMetaData()
-				.getId() + "_"
-				+ (metaData.getName() == null || metaData.getName()
-						.isEmpty() ? "default" : metaData.getName());
-		standardButtonParts = StandardButtonViewParts.createWithCompiledScripts(metaData, scriptEngine, scriptNamePrefix);
+		standardButtonParts = StandardButtonViewParts.createWithCompiledScripts(metaData, scriptEngine, entityView);
 	}
 
 	@Override
@@ -164,7 +159,7 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 	 * @return 表示する場合true
 	 */
 	public boolean isStandardButtonVisible(DetailFormViewButtonType type, OutputType outputType, Entity entity) {
-		return standardButtonParts.isStandardButtonVisible(type, outputType, entity);
+		return standardButtonParts.isVisible(type, outputType, entity);
 	}
 
 	private static String resourceString(String key, Object... arguments) {

@@ -80,7 +80,7 @@
 	boolean isEditable = "true".equals(refEdit);
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	StandardButtonVisibility standardButton = new StandardButtonVisibility(defName, OutputType.VIEW, data);
+	StandardButtonVisibility stdButtonVisibility = new StandardButtonVisibility(defName, OutputType.VIEW, data);
 %>
 
 <ul class="list_operation">
@@ -117,7 +117,7 @@
 		}
 	}
 	if (isEditable) {
-		if (standardButton.isLockButtonVisible()) {
+		if (stdButtonVisibility.isLockButtonVisible()) {
 %>
 <li class="btn lock-btn">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.detail.ref.viewButton.lock')}" class="gr-btn-02" 
@@ -129,7 +129,7 @@
 </li>
 <%
 		}
-		if (standardButton.isEditButtonVisible()) {
+		if (stdButtonVisibility.isEditButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
@@ -140,7 +140,7 @@
 </li>
 <%
 		}
-		if (standardButton.isVersionupButtonVisible()) {
+		if (stdButtonVisibility.isVersionupButtonVisible()) {
 			String dispStyle = "";
 			if (isLock && !hasLock) {
 				dispStyle = "display: none";
