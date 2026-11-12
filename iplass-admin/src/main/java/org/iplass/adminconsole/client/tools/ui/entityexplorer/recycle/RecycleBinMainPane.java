@@ -1,6 +1,6 @@
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.recycle;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPane;
 
@@ -36,7 +36,7 @@ public class RecycleBinMainPane extends VLayout {
 		}
 	}
 
-	public void showDataListPane(String entityName, Timestamp purgeTargetDate) {
+	public void showDataListPane(String entityName, Date purgeTargetDate) {
 		if (recycleBinDataListPane != null) {
 			recycleBinDataListPane.hide();
 			recycleBinDataListPane.destroy();
