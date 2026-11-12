@@ -304,7 +304,7 @@ public class RecycleBinListPane extends VLayout {
 		return SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
 	}
 
-	private Date getPurgeTargetCutoff(Date purgeTargetDate) {
+	private static Date getPurgeTargetCutoff(Date purgeTargetDate) {
 		Date purgeTargetCutoff = new Date(purgeTargetDate.getTime());
 		purgeTargetCutoff.setDate(purgeTargetCutoff.getDate() + 1);
 		return purgeTargetCutoff;

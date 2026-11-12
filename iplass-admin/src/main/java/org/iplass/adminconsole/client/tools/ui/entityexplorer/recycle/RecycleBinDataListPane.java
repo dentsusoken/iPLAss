@@ -174,7 +174,7 @@ public class RecycleBinDataListPane extends VLayout {
 		grid.fetchData();
 	}
 
-	private Timestamp getPurgeTargetCutoff(Date purgeTargetDate) {
+	private static Timestamp getPurgeTargetCutoff(Date purgeTargetDate) {
 		Date purgeTargetCutoff = new Date(purgeTargetDate.getTime());
 		purgeTargetCutoff.setDate(purgeTargetCutoff.getDate() + 1);
 		return new Timestamp(purgeTargetCutoff.getTime());
