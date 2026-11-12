@@ -21,9 +21,13 @@
 package org.iplass.gem.command;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.iplass.gem.command.common.SearchResultData;
 import org.iplass.gem.command.common.SearchResultRow;
@@ -38,6 +42,7 @@ import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -135,6 +140,9 @@ public class CreateSearchResultUtil {
 				String propName = property.getPropertyName();
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 
+				//「検索結果をまとめる」判定用の参照先 oid/version を追加
+				rowData.putAll(referenceIdentityKeys(entity, property));
+
 				String html = outputHtml(ed, section, entity, rowData, propName, pd, editor, path, viewName);
 
 				WebRequestStack stack = WebRequestStack.getCurrent();
@@ -148,6 +156,98 @@ public class CreateSearchResultUtil {
 				req.setAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + propName, null);
 			}
 		}
+	}
+
+	/**
+	 * 「検索結果をまとめる」判定用の、参照先Entityの oid/version を返す。
+	 * <p>
+	 * キー例: {@code reference.@oid}、{@code reference.reference.@version}
+	 * <ul>
+	 * <li>プロパティ名がパス形式(例: {@code reference.reference.name})の場合、各祖先を含める</li>
+	 * <li>Editor が ReferencePropertyEditor の場合、その参照先と Nest 定義上の参照階層も含める</li>
+	 * </ul>
+	 */
+	private static Map<String, String> referenceIdentityKeys(Entity entity, PropertyColumn property) {
+		var propName = property.getPropertyName();
+
+		return merge(Stream.of(
+				ancestorReferenceIdentityKeys(entity, propName),
+				nestReferenceIdentityKeys(entity.getValue(propName), propName, property.getEditor())));
+	}
+
+	/**
+	 * プロパティパスの祖先にあたる参照先の oid/version を返す。
+	 * <p>
+	 * 例: {@code reference.reference.name} → {@code reference} と {@code reference.reference}
+	 */
+	private static Map<String, String> ancestorReferenceIdentityKeys(Entity entity, String propName) {
+		if (propName == null || propName.indexOf('.') < 0) {
+			return Map.of();
+		}
+		var parts = propName.split("\\.");
+		return merge(IntStream.range(0, parts.length - 1)
+				.mapToObj(i -> String.join(".", Arrays.copyOfRange(parts, 0, i + 1)))
+				.map(path -> identityKeysOf(path, entity.getValue(path))));
+	}
+
+	/**
+	 * 参照先とその Nest 定義上の参照階層について oid/version を返す。
+	 * <p>
+	 * 例: {@code reference}(Nest に {@code reference} を持つ) → {@code reference.@oid}、{@code reference.reference.@oid} など
+	 */
+	private static Map<String, String> nestReferenceIdentityKeys(Object refValue, String path,
+			PropertyEditor editor) {
+		var refEntity = toEntity(refValue);
+		if (refEntity == null || !(editor instanceof ReferencePropertyEditor)) {
+			return Map.of();
+		}
+
+		var self = Stream.of(identityKeysOf(path, refEntity));
+		var children = ((ReferencePropertyEditor) editor).getNestProperties()
+				.stream()
+				.map(np -> nestReferenceIdentityKeys(refEntity.getValue(np.getPropertyName()),
+						path + "." + np.getPropertyName(), np.getEditor()));
+		return merge(Stream.concat(self, children));
+	}
+
+	/**
+	 * パスに対する oid/version の Map を返す。
+	 * <p>
+	 * 例: path={@code reference}、oid=2、version=0 → {@code {reference.@oid=2, reference.@version=0}}
+	 */
+	private static Map<String, String> identityKeysOf(String path, Object value) {
+		var refEntity = toEntity(value);
+		if (refEntity == null || refEntity.getOid() == null) {
+			return Map.of();
+		}
+		var keys = new LinkedHashMap<String, String>();
+		keys.put(SearchResultRow.referenceKey(path, SearchResultRow.REFERENCE_OID_SUFFIX), refEntity.getOid());
+		if (refEntity.getVersion() != null) {
+			keys.put(SearchResultRow.referenceKey(path, SearchResultRow.REFERENCE_VERSION_SUFFIX), refEntity.getVersion()
+					.toString());
+		}
+		return keys;
+	}
+
+	/**
+	 * 複数の Map を 1 つにまとめる。
+	 */
+	private static Map<String, String> merge(Stream<Map<String, String>> maps) {
+		return maps
+				.flatMap(m -> m.entrySet()
+						.stream())
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+	}
+
+	/**
+	 * 参照プロパティの値から Entity を取り出す。
+	 * Entity 以外は null を返す。
+	 * <p>
+	 * 前提：検索結果の行では、複数値参照も 1 行 1 件の Entity に展開されている。
+	 * 例: Entity → そのまま、null → null
+	 */
+	private static Entity toEntity(Object value) {
+		return value instanceof Entity ? (Entity) value : null;
 	}
 
 	private static String outputHtml(final EntityDefinition ed, SearchResultSection section, final Entity entity,
