@@ -33,6 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Download用基底クラス
  *
+ */
 public abstract class AdminDownloadService extends XsrfProtectedServlet {
 
 	private static final long serialVersionUID = -4465947965629579502L;
