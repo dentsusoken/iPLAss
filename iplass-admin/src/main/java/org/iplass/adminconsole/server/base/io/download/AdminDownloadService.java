@@ -21,48 +21,31 @@
 package org.iplass.adminconsole.server.base.io.download;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
+import org.iplass.adminconsole.server.base.io.XsrfProtectedServlet;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.shared.metadata.dto.entity.EntityJavaMappingClassDownloadProperty;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Download用基底クラス
- * 
- * 各種処理は {@link #doDownload(HttpServletRequest, HttpServletResponse, int)} を実装する。
- */
-public abstract class AdminDownloadService extends HttpServlet {
+ *
+public abstract class AdminDownloadService extends XsrfProtectedServlet {
 
 	private static final long serialVersionUID = -4465947965629579502L;
 
-	public AdminDownloadService() {
-		super();
-	}
-
 	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+	protected final void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
-		//エンコード指定
-		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		download(req, resp);
-	}
-
-	@Override
-	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		//エンコード指定
-		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		download(req, resp);
 	}
 
 	/**
-	 * 権限チェックを実行したのち、{@link #doDownload(HttpServletRequest, HttpServletResponse, int)} を実行します。
-	 * 
+	 * ダウンロード処理を実行する。
+	 *
 	 * @param req リクエスト
 	 * @param resp レスポンス
 	 */
@@ -85,5 +68,4 @@ public abstract class AdminDownloadService extends HttpServlet {
 	 * @param tenantId テナントID
 	 */
 	protected abstract void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId);
-
 }

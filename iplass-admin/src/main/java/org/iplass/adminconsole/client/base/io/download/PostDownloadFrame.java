@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.base.io.download;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.rpc.XsrfToken;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -32,6 +33,8 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.NamedFrame;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 /**
  * Postメソッドによるレスポンスダウンロード用フレーム
@@ -47,6 +50,9 @@ public class PostDownloadFrame extends NamedFrame {
 
 	/** frame名 **/
 	private static final String FRAME_NAME = "__mtp_post_dummyFrame";
+
+	/** XSRFトークンのパラメータ名 **/
+	private static final String XSRF_TOKEN_NAME = "xsrfToken";
 
 	/** 送信Form */
 	private PostFormPanel form;
@@ -128,6 +134,9 @@ public class PostDownloadFrame extends NamedFrame {
 		/** パラメータ保持用Panel */
 		private FlowPanel paramPanel;
 
+		/** XSRFトークン保持用 */
+		private Hidden xsrfToken;
+
 		public PostFormPanel(NamedFrame target) {
 			//targetをこのPanelが含まれるFrameと別にすると、
 			//FormSubmitComplete Eventが発生しない
@@ -139,6 +148,10 @@ public class PostDownloadFrame extends NamedFrame {
 			//hidden条件保持用Panel
 			paramPanel = new FlowPanel();
 			add(paramPanel);
+
+			//XSRFトークン用のhidden(送信時に値を設定する)
+			xsrfToken = new Hidden(XSRF_TOKEN_NAME, "");
+			paramPanel.add(xsrfToken);
 
 			//メソッドはPOST
 			setMethod(METHOD_POST);
@@ -164,6 +177,9 @@ public class PostDownloadFrame extends NamedFrame {
 		 * submit処理を実行します。
 		 */
 		public void execute() {
+			//XSRFトークンをパラメータに設定してから送信する
+			XsrfToken token = AdminXsrfTokenHolder.token();
+			xsrfToken.setValue(token != null ? token.getToken() : "");
 			submit();
 		}
 
