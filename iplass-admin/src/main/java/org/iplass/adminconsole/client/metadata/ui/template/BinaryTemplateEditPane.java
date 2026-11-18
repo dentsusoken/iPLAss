@@ -20,11 +20,13 @@
 
 package org.iplass.adminconsole.client.metadata.ui.template;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.io.download.GetRequestBuilder;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
+import org.iplass.adminconsole.client.base.io.download.XsrfProtectedImageLoader;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
 import org.iplass.adminconsole.client.base.io.upload.UploadSubmitCompleteHandler;
@@ -46,9 +48,8 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.ImageStyle;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -73,7 +74,9 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private StaticTextItem txtDownloadFileName;
 
 	private Label lblRegistedStatus;
-	private Img imgRegistedBinary;
+	private Canvas imgRegistedBinary;
+	/** プレビュー画像のblob URL */
+	private String previewObjectUrl;
 
 	private AsyncCallback<AdminDefinitionModifyResult> callback;
 
@@ -114,13 +117,12 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 		lblRegistedStatus.setHeight(25);
 		previewContents.addMember(lblRegistedStatus);
 
-		imgRegistedBinary = new Img();
+		imgRegistedBinary = new Canvas();
 		imgRegistedBinary.setPadding(5);
 		imgRegistedBinary.setWidth100();
 		imgRegistedBinary.setHeight100();
 		imgRegistedBinary.setOverflow(Overflow.AUTO);
 		imgRegistedBinary.setBorder("1px solid gray");
-		imgRegistedBinary.setImageType(ImageStyle.NORMAL);
 		previewContents.addMember(imgRegistedBinary);
 
 		Label previewComment = new Label(AdminClientMessageUtil.getString("ui_metadata_template_BinaryTemplateEditPane_previewComment"));
@@ -231,26 +233,71 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 			setTemplateDownloadAction(defName, lang);
 			downloadForm.setVisible(true);
 
-			GetRequestBuilder builder = new GetRequestBuilder();
-			builder.baseUrl(GWT.getModuleBaseURL());
-			builder.targetUrl(BinaryTemplateDownloadProperty.ACTION_URL);
-			builder.parameterWithValue(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()));
-			builder.parameterWithValue(BinaryTemplateDownloadProperty.DEFINITION_NAME, defName);
-			builder.parameterWithValue(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.INLINE.name());
+			Map<String, String> params = new LinkedHashMap<String, String>();
+			params.put(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()));
+			params.put(BinaryTemplateDownloadProperty.DEFINITION_NAME, defName);
+			params.put(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.INLINE.name());
 			if (!SmartGWTUtil.isEmpty(lang)) {
-				builder.parameterWithValue(BinaryTemplateDownloadProperty.LANG, lang);
+				params.put(BinaryTemplateDownloadProperty.LANG, lang);
 			}
-			builder.parameterWithValue("dummy", String.valueOf(System.currentTimeMillis())); // 画像変換時の再描画のため
-			String url = builder.toEncodedUrl();
+			params.put("dummy", String.valueOf(System.currentTimeMillis())); // 画像変換時の再描画のため
 			lblRegistedStatus.setContents("Binary data is registered.");
-			imgRegistedBinary.setVisible(true);
-			imgRegistedBinary.setSrc(url);
+			loadPreviewImage(GWT.getModuleBaseURL() + BinaryTemplateDownloadProperty.ACTION_URL, params);
 		} else {
 			downloadForm.setVisible(false);
 			lblRegistedStatus.setContents("Still no binary data.");
-			imgRegistedBinary.setSrc((String) null);
+			releasePreviewImage();
+			imgRegistedBinary.setContents("");
 			imgRegistedBinary.setVisible(false);
 		}
+	}
+
+	/**
+	 * XSRFトークン付きPOSTでプレビュー画像を取得する。
+	 *
+	 * @param url    ダウンロードサーブレットのURL
+	 * @param params リクエストパラメータ
+	 */
+	private void loadPreviewImage(String url, Map<String, String> params) {
+		releasePreviewImage();
+		imgRegistedBinary.setVisible(false);
+
+		XsrfProtectedImageLoader.load(url, params, new XsrfProtectedImageLoader.Callback() {
+
+			@Override
+			public void onLoad(String objectUrl) {
+				previewObjectUrl = objectUrl;
+				imgRegistedBinary.setContents(previewImageHtml(objectUrl));
+				imgRegistedBinary.setVisible(true);
+			}
+
+			@Override
+			public void onError(int status) {
+				previewObjectUrl = null;
+				imgRegistedBinary.setContents("");
+				imgRegistedBinary.setVisible(false);
+			}
+		});
+	}
+
+	/**
+	 * プレビュー画像のblob URLを解放する。
+	 */
+	private void releasePreviewImage() {
+		if (previewObjectUrl != null) {
+			XsrfProtectedImageLoader.release(previewObjectUrl);
+			previewObjectUrl = null;
+		}
+	}
+
+	/**
+	 * プレビュー画像を Canvas の内容として出力する。
+	 *
+	 * @param objectUrl {@code URL.createObjectURL} が返した blob URL
+	 * @return プレビュー用の img 要素の HTML
+	 */
+	private static String previewImageHtml(String objectUrl) {
+		return "<img src=\"" + objectUrl + "\" style=\"max-width:100%;max-height:100%;\"/>";
 	}
 
 	private void setTemplateDownloadAction(final String templateName, final String lang) {
@@ -310,7 +357,8 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 			// FlowPanelに追加しているので戻す
 			itmFileUpload.redrawFileUpload();
 
-			imgRegistedBinary.resetSrc();
+			releasePreviewImage();
+			imgRegistedBinary.setContents("");
 
 			if (callback != null) {
 				String message = null;

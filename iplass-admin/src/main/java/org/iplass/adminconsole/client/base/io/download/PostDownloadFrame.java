@@ -20,6 +20,8 @@
 
 package org.iplass.adminconsole.client.base.io.download;
 
+import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
@@ -33,8 +35,6 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.NamedFrame;
 import com.google.gwt.user.client.ui.RootPanel;
-
-import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 /**
  * Postメソッドによるレスポンスダウンロード用フレーム

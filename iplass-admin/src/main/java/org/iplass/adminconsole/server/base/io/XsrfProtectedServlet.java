@@ -51,8 +51,7 @@ public abstract class XsrfProtectedServlet extends HttpServlet {
 	private static final String DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID";
 
 	/** セッションCookie名を保持するServletContext属性キー */
-	private static final String CONTEXT_ATTR_SESSION_COOKIE_NAME =
-			XsrfProtectedServlet.class.getName() + ".sessionCookieName";
+	private static final String CONTEXT_ATTR_SESSION_COOKIE_NAME = XsrfProtectedServlet.class.getName() + ".sessionCookieName";
 
 	@Override
 	public void init() throws ServletException {
@@ -129,8 +128,10 @@ public abstract class XsrfProtectedServlet extends HttpServlet {
 		}
 
 		//大文字小文字の揺れを吸収して比較する
-		final byte[] actualBytes = token.toLowerCase(Locale.ROOT).getBytes(StandardCharsets.UTF_8);
-		final byte[] expectedBytes = expected.toLowerCase(Locale.ROOT).getBytes(StandardCharsets.UTF_8);
+		final byte[] actualBytes = token.toLowerCase(Locale.ROOT)
+				.getBytes(StandardCharsets.UTF_8);
+		final byte[] expectedBytes = expected.toLowerCase(Locale.ROOT)
+				.getBytes(StandardCharsets.UTF_8);
 		return MessageDigest.isEqual(actualBytes, expectedBytes);
 	}
 
