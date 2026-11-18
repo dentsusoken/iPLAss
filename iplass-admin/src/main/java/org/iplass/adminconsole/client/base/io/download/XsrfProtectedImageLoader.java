@@ -29,14 +29,8 @@ import com.google.gwt.user.client.rpc.XsrfToken;
 
 /**
  * XSRFトークン付きPOSTでバイナリを取得し、表示用のblob URLを返すローダー。
- *
  */
 public final class XsrfProtectedImageLoader {
-
-	/** XSRFトークンのリクエストパラメータ名 */
-	private static final String PARAM_XSRF_TOKEN = "xsrfToken";
-	/** リクエストのContent-Type */
-	private static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded; charset=UTF-8";
 
 	/**
 	 * 取得結果の通知先。
@@ -78,7 +72,8 @@ public final class XsrfProtectedImageLoader {
 		}
 
 		XsrfToken token = AdminXsrfTokenHolder.token();
-		appendParameter(body, PARAM_XSRF_TOKEN, token != null ? token.getToken() : "");
+		appendParameter(body, XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY,
+				token != null ? token.getToken() : "");
 
 		request(url, body.toString(), callback);
 	}

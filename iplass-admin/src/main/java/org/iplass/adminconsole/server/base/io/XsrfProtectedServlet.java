@@ -1,187 +1,148 @@
 /*
  * Copyright (C) 2026 DENTSU SOKEN INC. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package org.iplass.adminconsole.server.base.io;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gwt.user.client.rpc.RpcTokenException;
+import com.google.gwt.user.client.rpc.XsrfToken;
+import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * XSRFトークン検証付きのServlet基底クラス。
+ * XsrfProtected Servlet（ダウンロード用）
  *
  */
-public abstract class XsrfProtectedServlet extends HttpServlet {
-
+public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
+	/** serialVersionUID */
 	private static final long serialVersionUID = 5183467290123847361L;
+	/** POST */
+	private static final String METHOD_POST = "POST";
 
-	/** XSRFトークンのリクエストパラメータ名 */
-	protected static final String PARAM_XSRF_TOKEN = "xsrfToken";
+	/** ロガー */
+	private Logger logger = LoggerFactory.getLogger(XsrfProtectedServlet.class);
 
-	/** セッションCookie名のcontext-param名 */
-	protected static final String PARAM_SESSION_COOKIE_NAME = "gwt.xsrf.session_cookie_name";
-
-	/** セッションCookie名の初期値 */
-	private static final String DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID";
-
-	/** セッションCookie名を保持するServletContext属性キー */
-	private static final String CONTEXT_ATTR_SESSION_COOKIE_NAME = XsrfProtectedServlet.class.getName() + ".sessionCookieName";
+	/**
+	 * デフォルトコンストラクタ
+	 */
+	public XsrfProtectedServlet() {
+		super();
+		perThreadRequest = new ThreadLocal<HttpServletRequest>();
+		perThreadResponse = new ThreadLocal<HttpServletResponse>();
+	}
 
 	@Override
-	public void init() throws ServletException {
-		super.init();
-
-		//セッションCookie名をServletContextに保持する
-		String name = getServletConfig().getInitParameter(PARAM_SESSION_COOKIE_NAME);
-		if (name == null || name.isEmpty()) {
-			name = getServletContext().getInitParameter(PARAM_SESSION_COOKIE_NAME);
-		}
-		if (name == null || name.isEmpty()) {
-			name = DEFAULT_SESSION_COOKIE_NAME;
-		}
-		getServletContext().setAttribute(CONTEXT_ATTR_SESSION_COOKIE_NAME, name);
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 	}
 
 	@Override
 	protected final void service(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
+		// 制約外リクエストの場合、405: Method Not Allowed を返却する
+		if (!METHOD_POST.equals(req.getMethod())) {
+			HttpSession session = req.getSession(false);
+			String sessionId = session != null ? session.getId() : null;
+			int httpStatus = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 
-		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
-
-		//XSRFトークンの検証
-		if (!validateXsrfToken(req)) {
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "invalid xsrf token");
+			// エラーログ出力
+			logger.error("Error request. sessionId = {}, httpStatus = {}, uri = {}.",
+					sessionId, httpStatus, req.getRequestURI());
+			// http status 設定
+			resp.sendError(httpStatus);
 			return;
 		}
 
-		doProtectedService(req, resp);
+		try {
+			// XsrfProtectedServiceServlet#validateXsrfToken(RpcToken, Method) を利用するための準備
+			perThreadRequest.set(req);
+			perThreadResponse.set(resp);
+
+			// リクエストの文字コード設定
+			req.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+			// トークン検証
+			if (!validateXsrfToken(req)) {
+				HttpSession session = req.getSession(false);
+				String sessionId = session != null ? session.getId() : null;
+				// トークン検証エラーの場合、403: Forbidden を返却する
+				int httpStatus = HttpServletResponse.SC_FORBIDDEN;
+
+				// エラーログ出力
+				logger.error("Error request. sessionId = {}, httpStatus = {}, uri = {}.",
+						sessionId, httpStatus, req.getRequestURI());
+				// http status 設定
+				resp.sendError(httpStatus, "invalid xsrf token");
+				return;
+			}
+
+			doProtectedService(req, resp);
+
+		} finally {
+			perThreadRequest.set(null);
+			perThreadResponse.set(null);
+		}
 	}
 
 	/**
-	 * XSRFトークン検証済みのリクエストを処理する。
+	 * POST メソッドのリクエスト処理
 	 *
-	 * @param req リクエスト
-	 * @param resp レスポンス
-	 * @throws ServletException Servlet例外
-	 * @throws IOException IO例外
+	 * @param req HttpServletRequest
+	 * @param resp HttpServletResponse
+	 * @throws ServletException サーブレット例外
+	 * @throws IOException 入出力例外
 	 */
 	protected abstract void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException;
 
 	/**
-	 * リクエストからXSRFトークンを取り出す。
-	 *
-	 * @param req リクエスト
-	 * @return XSRFトークン
+	 * リクエストパラメータから Xsrf トークンを取得する
+	 * @param req HttpServletRequest
+	 * @return Xsrf トークン
 	 */
 	protected String extractXsrfToken(final HttpServletRequest req) {
-		return req.getParameter(PARAM_XSRF_TOKEN);
+		return req.getParameter(XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY);
 	}
 
 	/**
-	 * XSRFトークンを検証する。
+	 * リクエストの Xsrf トークンを検証する。
 	 *
 	 * @param req リクエスト
 	 * @return 検証結果
 	 */
 	protected boolean validateXsrfToken(final HttpServletRequest req) {
-
-		final String token = extractXsrfToken(req);
-		if (token == null || token.isEmpty()) {
-			return false;
-		}
-
-		final String sessionId = getSessionCookieValue(req);
-		if (sessionId == null || sessionId.isEmpty()) {
-			return false;
-		}
-
-		final String expected = md5Hex(sessionId);
-		if (expected == null) {
-			return false;
-		}
-
-		//大文字小文字の揺れを吸収して比較する
-		final byte[] actualBytes = token.toLowerCase(Locale.ROOT)
-				.getBytes(StandardCharsets.UTF_8);
-		final byte[] expectedBytes = expected.toLowerCase(Locale.ROOT)
-				.getBytes(StandardCharsets.UTF_8);
-		return MessageDigest.isEqual(actualBytes, expectedBytes);
-	}
-
-	/**
-	 * セッションCookieの値を取得する。
-	 *
-	 * @param req リクエスト
-	 * @return セッションID
-	 */
-	private String getSessionCookieValue(final HttpServletRequest req) {
-
-		Object attr = getServletContext().getAttribute(CONTEXT_ATTR_SESSION_COOKIE_NAME);
-		final String cookieName = (attr instanceof String) ? (String) attr : DEFAULT_SESSION_COOKIE_NAME;
-
-		final Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookieName.equals(cookie.getName())) {
-					return cookie.getValue();
-				}
-			}
-		}
-
-		//Cookieが取得できない場合はセッションIDにフォールバックする
-		final HttpSession session = req.getSession(false);
-		return (session == null) ? null : session.getId();
-	}
-
-	/**
-	 * 文字列のMD5(16進小文字)を返す。
-	 *
-	 * @param value 対象文字列
-	 * @return MD5の16進文字列表現
-	 */
-	private String md5Hex(final String value) {
-
 		try {
-			final MessageDigest digest = MessageDigest.getInstance("MD5");
-			final byte[] bytes = digest.digest(value.getBytes(StandardCharsets.UTF_8));
-
-			final StringBuilder sb = new StringBuilder(bytes.length * 2);
-			for (byte b : bytes) {
-				sb.append(Character.forDigit((b >> 4) & 0xF, 16));
-				sb.append(Character.forDigit(b & 0xF, 16));
-			}
-			return sb.toString();
-		} catch (NoSuchAlgorithmException e) {
-			//MD5は必ず存在するため通常到達しない
-			getServletContext().log("failed to calculate md5.", e);
-			return null;
+			super.validateXsrfToken(new XsrfToken(extractXsrfToken(req)), null);
+			return true;
+		} catch (RpcTokenException e) {
+			logger.debug("Invalid xsrf token. {}", e.getMessage());
+			return false;
 		}
 	}
 }

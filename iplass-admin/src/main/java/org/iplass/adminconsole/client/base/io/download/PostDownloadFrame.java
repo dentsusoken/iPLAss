@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.base.io.download;
 
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 import com.google.gwt.core.client.GWT;
@@ -44,28 +45,25 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class PostDownloadFrame extends NamedFrame {
 
-	//TODO removeするタイミングがない
+	// TODO removeするタイミングがない
 	//     onSubmitCompleteはTypeが「text/html」の場合のみ発生
 	//     onLoadイベントでremoveしてしまうとResponseが取得できない
 
 	/** frame名 **/
 	private static final String FRAME_NAME = "__mtp_post_dummyFrame";
 
-	/** XSRFトークンのパラメータ名 **/
-	private static final String XSRF_TOKEN_NAME = "xsrfToken";
-
 	/** 送信Form */
 	private PostFormPanel form;
 
 	public PostDownloadFrame() {
-		//FormPanelのターゲットとなるようにFrameに名前を設定
+		// FormPanelのターゲットとなるようにFrameに名前を設定
 		super(FRAME_NAME);
 
 		setSize("0px", "0px");
 		setVisible(false);
 		setUrl("javascript:''");
 
-		//送信用Formの生成
+		// 送信用Formの生成
 		form = new PostFormPanel(this);
 		form.addSubmitHandler(new SubmitHandler() {
 			@Override
@@ -73,7 +71,7 @@ public class PostDownloadFrame extends NamedFrame {
 				GWT.log("submit start. url=" + form.getAction());
 			}
 		});
-		//onSubmitCompleteはResponseのtypeがtext/htmlの場合のみ発生
+		// onSubmitCompleteはResponseのtypeがtext/htmlの場合のみ発生
 		form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
@@ -85,7 +83,7 @@ public class PostDownloadFrame extends NamedFrame {
 			@Override
 			public void onLoad(LoadEvent event) {
 				GWT.log("browser onload. name=" + FRAME_NAME);
-				//このタイミングでremoveしてしまうとResponseが取得できない
+				// このタイミングでremoveしてしまうとResponseが取得できない
 //				RootPanel.get().remove(HiddenPostFrame.this);
 			}
 		});
@@ -138,22 +136,22 @@ public class PostDownloadFrame extends NamedFrame {
 		private Hidden xsrfToken;
 
 		public PostFormPanel(NamedFrame target) {
-			//targetをこのPanelが含まれるFrameと別にすると、
-			//FormSubmitComplete Eventが発生しない
+			// targetをこのPanelが含まれるFrameと別にすると、
+			// FormSubmitComplete Eventが発生しない
 			super(target);
 
 			setSize("0px", "0px");
 			setVisible(false);
 
-			//hidden条件保持用Panel
+			// hidden条件保持用Panel
 			paramPanel = new FlowPanel();
 			add(paramPanel);
 
-			//XSRFトークン用のhidden(送信時に値を設定する)
-			xsrfToken = new Hidden(XSRF_TOKEN_NAME, "");
+			// XSRFトークン用のhidden(送信時に値を設定する)
+			xsrfToken = new Hidden(XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY, "");
 			paramPanel.add(xsrfToken);
 
-			//メソッドはPOST
+			// メソッドはPOST
 			setMethod(METHOD_POST);
 
 			RootPanel.get()
@@ -177,7 +175,7 @@ public class PostDownloadFrame extends NamedFrame {
 		 * submit処理を実行します。
 		 */
 		public void execute() {
-			//XSRFトークンをパラメータに設定してから送信する
+			// XSRFトークンをパラメータに設定してから送信する
 			XsrfToken token = AdminXsrfTokenHolder.token();
 			xsrfToken.setValue(token != null ? token.getToken() : "");
 			submit();

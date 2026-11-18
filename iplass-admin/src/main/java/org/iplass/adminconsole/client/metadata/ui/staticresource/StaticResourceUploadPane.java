@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
-import org.iplass.adminconsole.client.base.io.download.XsrfProtectedImageLoader;
+import org.iplass.adminconsole.client.base.io.download.XsrfProtectedImagePreview;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -38,8 +38,6 @@ import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -74,9 +72,7 @@ public class StaticResourceUploadPane extends VLayout {
 	private StaticTextItem txtDownloadFileName;
 
 	private Label lblRegistedStatus;
-	private Canvas imgRegistedBinary;
-	/** プレビュー画像のblob URL */
-	private String previewObjectUrl;
+	private XsrfProtectedImagePreview imgRegistedBinary;
 
 	public StaticResourceUploadPane() {
 		// レイアウト設定
@@ -122,12 +118,7 @@ public class StaticResourceUploadPane extends VLayout {
 		lblRegistedStatus.setHeight(25);
 		previewContents.addMember(lblRegistedStatus);
 
-		imgRegistedBinary = new Canvas();
-		imgRegistedBinary.setPadding(5);
-		imgRegistedBinary.setWidth100();
-		imgRegistedBinary.setHeight100();
-		imgRegistedBinary.setOverflow(Overflow.AUTO);
-		imgRegistedBinary.setBorder("1px solid gray");
+		imgRegistedBinary = new XsrfProtectedImagePreview();
 		previewContents.addMember(imgRegistedBinary);
 
 		Label previewComment = new Label(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourceUploadPane_previewComment"));
@@ -151,7 +142,7 @@ public class StaticResourceUploadPane extends VLayout {
 			this.fileTypeField.setValue(FileType.SIMPLE);
 		}
 
-		//選択ファイルをクリア
+		// 選択ファイルをクリア
 		this.itmFileUpload.clearFile();
 
 		// Previewの設定
@@ -196,8 +187,7 @@ public class StaticResourceUploadPane extends VLayout {
 	}
 
 	public void resetSrcImg() {
-		releasePreviewImage();
-		this.imgRegistedBinary.setContents("");
+		this.imgRegistedBinary.clearPreview();
 	}
 
 	public boolean validate() {
@@ -227,69 +217,23 @@ public class StaticResourceUploadPane extends VLayout {
 				if (!SmartGWTUtil.isEmpty(lang)) {
 					params.put(StaticResourceDownloadProperty.LANG, lang);
 				}
-				params.put("dummy", String.valueOf(System.currentTimeMillis())); // 画像変換時の再描画のため
-				loadPreviewImage(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL, params);
+				imgRegistedBinary.load(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL, params);
 			} else {
-				releasePreviewImage();
-				imgRegistedBinary.setContents("");
-				imgRegistedBinary.setVisible(false);
+				imgRegistedBinary.clearPreview();
 			}
 			lblRegistedStatus.setContents("Resource data is registered.");
 		} else {
 			downloadForm.setVisible(false);
 
-			imgRegistedBinary.setContents("");
-			imgRegistedBinary.setVisible(false);
+			imgRegistedBinary.clearPreview();
 			lblRegistedStatus.setContents("Still no resource data.");
 		}
 	}
 
-	/**
-	 * XSRFトークン付きPOSTでプレビュー画像を取得する。
-	 *
-	 * @param url    ダウンロードサーブレットのURL
-	 * @param params リクエストパラメータ
-	 */
-	private void loadPreviewImage(String url, Map<String, String> params) {
-		releasePreviewImage();
-		imgRegistedBinary.setVisible(false);
-
-		XsrfProtectedImageLoader.load(url, params, new XsrfProtectedImageLoader.Callback() {
-
-			@Override
-			public void onLoad(String objectUrl) {
-				previewObjectUrl = objectUrl;
-				imgRegistedBinary.setContents(previewImageHtml(objectUrl));
-				imgRegistedBinary.setVisible(true);
-			}
-
-			@Override
-			public void onError(int status) {
-				previewObjectUrl = null;
-				imgRegistedBinary.setContents("");
-				imgRegistedBinary.setVisible(false);
-			}
-		});
-	}
-
-	/**
-	 * プレビュー画像のblob URLを解放する。
-	 */
-	private void releasePreviewImage() {
-		if (previewObjectUrl != null) {
-			XsrfProtectedImageLoader.release(previewObjectUrl);
-			previewObjectUrl = null;
-		}
-	}
-
-	/**
-	 * プレビュー画像を Canvas の内容として出力する。
-	 *
-	 * @param objectUrl {@code URL.createObjectURL} が返した blob URL
-	 * @return プレビュー用の img 要素の HTML
-	 */
-	private static String previewImageHtml(String objectUrl) {
-		return "<img src=\"" + objectUrl + "\" style=\"max-width:100%;max-height:100%;\"/>";
+	@Override
+	public void destroy() {
+		imgRegistedBinary.clearPreview();
+		super.destroy();
 	}
 
 	private void setTemplateDownloadAction(final String defName, final String lang) {
