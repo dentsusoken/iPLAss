@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 DENTSU SOKEN INC. All Rights Reserved.
+ * Copyright (C) 2026 DENTSU SOKEN INC. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.base.io.download;
 
 import java.util.Map;
 
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 import com.google.gwt.http.client.URL;
