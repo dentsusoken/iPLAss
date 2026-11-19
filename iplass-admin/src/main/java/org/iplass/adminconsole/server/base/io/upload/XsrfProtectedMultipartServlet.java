@@ -56,7 +56,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @see org.iplass.adminconsole.client.base.io.upload.XsrfProtectedMultipartForm
  * @author SEKIGUCHI Naoya
  */
-public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet {
+public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet<List<MultipartRequestParameter>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 3352671393580437480L;
 	/** リクエスト許容サイズデフォルト値 */
@@ -82,7 +82,7 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet
 	}
 
 	@Override
-	protected int checkRequest(final HttpServletRequest req) throws IOException {
+	protected int checkRequest(final HttpServletRequest req) {
 		boolean isPost = METHOD_POST.equals(req.getMethod());
 		boolean isMultipart = JakartaServletFileUpload.isMultipartContent(req);
 		boolean isContentLengthAcceptable = isContentLengthAcceptable(req.getContentLengthLong());
@@ -96,37 +96,31 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet
 		return !isPost || !isMultipart ? HttpServletResponse.SC_NOT_FOUND : HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;
 	}
 
-	/**
-	 * リクエスト受け付け処理
-	 *
-	 * <p>
-	 * 以下の処理を行う。
-	 *
-	 * <ul>
-	 * <li>リクエストパラメータのパース</li>
-	 * <li>XSRFトークン検証</li>
-	 * <li>doMultipartPost メソッドの実行</li>
-	 * <li>パースしたパラメータのリソース破棄</li>
-	 * </p>
-	 *
-	 * @param req HttpServletRequest
-	 * @param resp HttpServletResponse
-	 * @throws ServletException サーブレット例外
-	 * @throws IOException 入出力例外
-	 */
 	@Override
-	protected void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp)
+	protected final List<MultipartRequestParameter> prepareRequest(final HttpServletRequest req)
 			throws ServletException, IOException {
-		List<MultipartRequestParameter> requestParameterList = parameterParser.parse(req);
-		try {
-			XsrfToken token = getXsrfToken(requestParameterList);
+		return parameterParser.parse(req);
+	}
 
-			// トークン検証
-			validateXsrfToken(token, null);
+	@Override
+	protected final XsrfToken extractXsrfToken(final HttpServletRequest req,
+			final List<MultipartRequestParameter> requestParameterList) {
+		Optional<MultipartRequestParameter> tokenItem = requestParameterList.stream()
+				.filter(item -> XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY.equals(item.getFieldName()))
+				.findFirst();
+		return tokenItem.isPresent() ? new XsrfToken(tokenItem.get()
+				.getString(getDefaultCharset())) : null;
+	}
 
-			doMultipartPost(req, resp, requestParameterList);
+	@Override
+	protected final void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp,
+			final List<MultipartRequestParameter> requestParameterList) throws ServletException, IOException {
+		doMultipartPost(req, resp, requestParameterList);
+	}
 
-		} finally {
+	@Override
+	protected final void cleanupRequest(final List<MultipartRequestParameter> requestParameterList) {
+		if (requestParameterList != null) {
 			// パースパラメータの破棄
 			requestParameterList.stream()
 					.forEach(p -> p.dispose());
@@ -195,18 +189,5 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet
 	 */
 	protected void setDefaultCharset(Charset defaultCharset) {
 		this.defaultCharset = defaultCharset;
-	}
-
-	/**
-	 * リクエストパラメータから Xsrf トークンを取得する
-	 * @param requestParameterList リクエストパラメータ
-	 * @return Xsrf トークン
-	 */
-	private XsrfToken getXsrfToken(List<MultipartRequestParameter> requestParameterList) {
-		Optional<MultipartRequestParameter> tokenItem = requestParameterList.stream()
-				.filter(item -> XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY.equals(item.getFieldName()))
-				.findFirst();
-		return tokenItem.isPresent() ? new XsrfToken(tokenItem.get()
-				.getString(getDefaultCharset())) : null;
 	}
 }

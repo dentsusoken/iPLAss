@@ -97,6 +97,8 @@ public class XsrfProtectedImagePreview extends Canvas {
 
 	@Override
 	protected void onDestroy() {
+		// 破棄後に取得中のリクエストのコールバックが届いても、破棄済みの Canvas を更新しないようにする
+		generation++;
 		releaseObjectUrl();
 		super.onDestroy();
 	}

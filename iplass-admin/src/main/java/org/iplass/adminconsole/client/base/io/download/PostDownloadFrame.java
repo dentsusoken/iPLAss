@@ -45,8 +45,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class PostDownloadFrame extends NamedFrame {
 
-	//     onSubmitCompleteはTypeが「text/html」の場合のみ発生し、ダウンロード(attachment)では呼ばれない
-	//     onLoadイベントでremoveしてしまうとResponseが取得できない
+	// この Frame はダウンロード後に除去しない（安全に除去できるタイミングが無いため）
+	// onSubmitComplete は Type が「text/html」の場合のみ発生し、ダウンロード(attachment)では呼ばれない
+	// onLoad イベントで remove してしまうと Response が取得できない
 
 	/** frame名 **/
 	private static final String FRAME_NAME = "__mtp_post_dummyFrame";
