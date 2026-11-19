@@ -20,7 +20,7 @@
 
 package org.iplass.adminconsole.client.base.io.download;
 
-import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 import com.google.gwt.core.client.GWT;
@@ -45,8 +45,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class PostDownloadFrame extends NamedFrame {
 
-	// TODO removeするタイミングがない
-	//     onSubmitCompleteはTypeが「text/html」の場合のみ発生
+	//     onSubmitCompleteはTypeが「text/html」の場合のみ発生し、ダウンロード(attachment)では呼ばれない
 	//     onLoadイベントでremoveしてしまうとResponseが取得できない
 
 	/** frame名 **/
@@ -84,7 +83,7 @@ public class PostDownloadFrame extends NamedFrame {
 			public void onLoad(LoadEvent event) {
 				GWT.log("browser onload. name=" + FRAME_NAME);
 				// このタイミングでremoveしてしまうとResponseが取得できない
-//				RootPanel.get().remove(HiddenPostFrame.this);
+//				RootPanel.get().remove(PostDownloadFrame.this);
 			}
 		});
 
@@ -148,7 +147,7 @@ public class PostDownloadFrame extends NamedFrame {
 			add(paramPanel);
 
 			// XSRFトークン用のhidden(送信時に値を設定する)
-			xsrfToken = new Hidden(XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY, "");
+			xsrfToken = new Hidden(XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY, "");
 			paramPanel.add(xsrfToken);
 
 			// メソッドはPOST

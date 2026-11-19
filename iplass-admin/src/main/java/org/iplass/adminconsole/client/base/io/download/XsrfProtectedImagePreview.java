@@ -21,6 +21,8 @@ package org.iplass.adminconsole.client.base.io.download;
 
 import java.util.Map;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
@@ -73,7 +75,9 @@ public class XsrfProtectedImagePreview extends Canvas {
 				if (current != generation) {
 					return;
 				}
-				setContents("<span style=\"color:#cc0000\">Failed to load the preview image."
+				setContents("<span style=\"color:#cc0000\">"
+						+ AdminClientMessageUtil.getString(
+								"base_io_download_XsrfProtectedImagePreview_message_failedToLoad")
 						+ (status > 0 ? " (HTTP " + status + ")" : "") + "</span>");
 				setVisible(true);
 				GWT.log("failed to load preview image. status=" + status);
@@ -86,17 +90,21 @@ public class XsrfProtectedImagePreview extends Canvas {
 	 */
 	public void clearPreview() {
 		generation++;
-		if (objectUrl != null) {
-			XsrfProtectedImageLoader.release(objectUrl);
-			objectUrl = null;
-		}
+		releaseObjectUrl();
 		setContents("");
 		setVisible(false);
 	}
 
 	@Override
-	public void destroy() {
-		clearPreview();
-		super.destroy();
+	protected void onDestroy() {
+		releaseObjectUrl();
+		super.onDestroy();
+	}
+
+	private void releaseObjectUrl() {
+		if (objectUrl != null) {
+			XsrfProtectedImageLoader.release(objectUrl);
+			objectUrl = null;
+		}
 	}
 }

@@ -20,33 +20,31 @@
 package org.iplass.adminconsole.server.base.io;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
-import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.client.rpc.RpcTokenException;
 import com.google.gwt.user.client.rpc.XsrfToken;
 import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * XsrfProtected Servlet（ダウンロード用）
+ * XsrfProtected Servlet
  *
  */
 public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 5183467290123847361L;
 	/** POST */
-	private static final String METHOD_POST = "POST";
+	protected static final String METHOD_POST = "POST";
 
 	/** ロガー */
-	private Logger logger = LoggerFactory.getLogger(XsrfProtectedServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(XsrfProtectedServlet.class);
 
 	/**
 	 * デフォルトコンストラクタ
@@ -58,24 +56,11 @@ public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
 	}
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-	}
-
-	@Override
 	protected final void service(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
-		// 制約外リクエストの場合、405: Method Not Allowed を返却する
-		if (!METHOD_POST.equals(req.getMethod())) {
-			HttpSession session = req.getSession(false);
-			String sessionId = session != null ? session.getId() : null;
-			int httpStatus = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
-
-			// エラーログ出力
-			logger.error("Error request. sessionId = {}, httpStatus = {}, uri = {}.",
-					sessionId, httpStatus, req.getRequestURI());
-			// http status 設定
-			resp.sendError(httpStatus);
+		int rejectedStatus = checkRequest(req);
+		if (rejectedStatus != 0) {
+			rejectRequest(req, resp, rejectedStatus, null);
 			return;
 		}
 
@@ -83,24 +68,6 @@ public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
 			// XsrfProtectedServiceServlet#validateXsrfToken(RpcToken, Method) を利用するための準備
 			perThreadRequest.set(req);
 			perThreadResponse.set(resp);
-
-			// リクエストの文字コード設定
-			req.setCharacterEncoding(StandardCharsets.UTF_8.name());
-
-			// トークン検証
-			if (!validateXsrfToken(req)) {
-				HttpSession session = req.getSession(false);
-				String sessionId = session != null ? session.getId() : null;
-				// トークン検証エラーの場合、403: Forbidden を返却する
-				int httpStatus = HttpServletResponse.SC_FORBIDDEN;
-
-				// エラーログ出力
-				logger.error("Error request. sessionId = {}, httpStatus = {}, uri = {}.",
-						sessionId, httpStatus, req.getRequestURI());
-				// http status 設定
-				resp.sendError(httpStatus, "invalid xsrf token");
-				return;
-			}
 
 			doProtectedService(req, resp);
 
@@ -111,10 +78,21 @@ public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
 	}
 
 	/**
-	 * POST メソッドのリクエスト処理
+	 * リクエストの制約をチェックする。
 	 *
-	 * @param req HttpServletRequest
-	 * @param resp HttpServletResponse
+	 * @param req リクエスト
+	 * @return 制約を満たす場合は 0、満たさない場合は応答するHTTPステータス
+	 * @throws IOException 入出力例外
+	 */
+	protected int checkRequest(final HttpServletRequest req) throws IOException {
+		return METHOD_POST.equals(req.getMethod()) ? 0 : HttpServletResponse.SC_METHOD_NOT_ALLOWED;
+	}
+
+	/**
+	 * 制約を満たしたリクエストを処理する。
+	 *
+	 * @param req リクエスト
+	 * @param resp レスポンス
 	 * @throws ServletException サーブレット例外
 	 * @throws IOException 入出力例外
 	 */
@@ -122,12 +100,36 @@ public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
 			throws ServletException, IOException;
 
 	/**
+	 * リクエストをエラーとして応答し、その内容をログに出力する。
+	 *
+	 * @param req リクエスト
+	 * @param resp レスポンス
+	 * @param httpStatus 応答するHTTPステータス
+	 * @param message エラーメッセージ（指定しない場合は null）
+	 * @throws IOException 入出力例外
+	 */
+	protected final void rejectRequest(final HttpServletRequest req, final HttpServletResponse resp,
+			final int httpStatus, final String message) throws IOException {
+		HttpSession session = req.getSession(false);
+		String sessionId = session != null ? session.getId() : null;
+		logger.error("Error request. sessionId = {}, httpStatus = {}, uri = {}, content-length={}.",
+				sessionId, httpStatus, req.getRequestURI(), req.getContentLengthLong());
+
+		if (message != null) {
+			resp.sendError(httpStatus, message);
+		} else {
+			resp.sendError(httpStatus);
+		}
+	}
+
+	/**
 	 * リクエストパラメータから Xsrf トークンを取得する
-	 * @param req HttpServletRequest
+	 *
+	 * @param req リクエスト
 	 * @return Xsrf トークン
 	 */
 	protected String extractXsrfToken(final HttpServletRequest req) {
-		return req.getParameter(XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY);
+		return req.getParameter(XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY);
 	}
 
 	/**
@@ -136,7 +138,7 @@ public abstract class XsrfProtectedServlet extends XsrfProtectedServiceServlet {
 	 * @param req リクエスト
 	 * @return 検証結果
 	 */
-	protected boolean validateXsrfToken(final HttpServletRequest req) {
+	protected final boolean isValidXsrfToken(final HttpServletRequest req) {
 		try {
 			super.validateXsrfToken(new XsrfToken(extractXsrfToken(req)), null);
 			return true;

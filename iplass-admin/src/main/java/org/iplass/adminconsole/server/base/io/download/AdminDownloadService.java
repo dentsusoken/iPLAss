@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.server.base.io.download;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.iplass.adminconsole.server.base.io.XsrfProtectedServlet;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
@@ -41,18 +42,13 @@ public abstract class AdminDownloadService extends XsrfProtectedServlet {
 	@Override
 	protected final void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
-		download(req, resp);
-	}
+		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-	/**
-	 * ダウンロード処理を実行する。
-	 *
-	 * @param req リクエスト
-	 * @param resp レスポンス
-	 */
-	protected void download(final HttpServletRequest req, final HttpServletResponse resp) {
+		if (!isValidXsrfToken(req)) {
+			rejectRequest(req, resp, HttpServletResponse.SC_FORBIDDEN, "invalid xsrf token");
+			return;
+		}
 
-		//パラメータの取得
 		final int tenantId = Integer.parseInt(req.getParameter(EntityJavaMappingClassDownloadProperty.TENANT_ID));
 
 		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, () -> {

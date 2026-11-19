@@ -240,12 +240,6 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 		}
 	}
 
-	@Override
-	public void destroy() {
-		imgRegistedBinary.clearPreview();
-		super.destroy();
-	}
-
 	private void setTemplateDownloadAction(final String templateName, final String lang) {
 		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 

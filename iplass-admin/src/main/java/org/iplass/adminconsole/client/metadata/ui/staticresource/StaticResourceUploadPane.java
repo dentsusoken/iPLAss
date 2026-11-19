@@ -230,12 +230,6 @@ public class StaticResourceUploadPane extends VLayout {
 		}
 	}
 
-	@Override
-	public void destroy() {
-		imgRegistedBinary.clearPreview();
-		super.destroy();
-	}
-
 	private void setTemplateDownloadAction(final String defName, final String lang) {
 
 		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {

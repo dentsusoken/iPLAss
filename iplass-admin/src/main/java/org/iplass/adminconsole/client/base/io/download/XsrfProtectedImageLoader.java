@@ -22,7 +22,7 @@ package org.iplass.adminconsole.client.base.io.download;
 
 import java.util.Map;
 
-import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 import com.google.gwt.http.client.URL;
@@ -31,12 +31,12 @@ import com.google.gwt.user.client.rpc.XsrfToken;
 /**
  * XSRFトークン付きPOSTでバイナリを取得し、表示用のblob URLを返すローダー。
  */
-public final class XsrfProtectedImageLoader {
+final class XsrfProtectedImageLoader {
 
 	/**
 	 * 取得結果の通知先。
 	 */
-	public interface Callback {
+	interface Callback {
 
 		/**
 		 * 取得に成功した場合に呼び出される。
@@ -73,7 +73,7 @@ public final class XsrfProtectedImageLoader {
 		}
 
 		XsrfToken token = AdminXsrfTokenHolder.token();
-		appendParameter(body, XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY,
+		appendParameter(body, XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY,
 				token != null ? token.getToken() : "");
 
 		request(url, body.toString(), callback);
