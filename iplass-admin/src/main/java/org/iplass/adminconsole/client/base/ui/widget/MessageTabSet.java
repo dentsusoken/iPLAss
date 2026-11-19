@@ -22,7 +22,9 @@ package org.iplass.adminconsole.client.base.ui.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.widgets.Canvas;
@@ -215,14 +217,14 @@ public class MessageTabSet extends TabSet {
 		}
 
 		private String getMessageString(List<String> messages) {
-			StringBuilder builder = new StringBuilder();
-			for (String message : messages) {
-				builder.append(message + "<br/>");
+			if (messages == null) {
+				return "";
 			}
-			if (builder.length() > 0) {
-				builder.delete(builder.length() - 5, builder.length());
-			}
-			return builder.toString();
+
+			return messages.stream()
+					.filter(message -> message != null)
+					.map(message -> SafeHtmlUtils.htmlEscape(message))
+					.collect(Collectors.joining("<br/>"));
 
 		}
 	}
