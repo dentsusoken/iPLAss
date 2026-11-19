@@ -39,8 +39,11 @@ public class SelectBuiltinUserDS extends BuiltinUserDS {
 
 		ListGridField oidField = new ListGridField(OID, "OID");
 		ListGridField accountIdField = new ListGridField(ACCOUNT_ID, "Account ID");
+		accountIdField.setEscapeHTML(true);
 		ListGridField nameField = new ListGridField(NAME, "Name");
+		nameField.setEscapeHTML(true);
 		ListGridField mailField = new ListGridField(MAIL, "Mail");
+		mailField.setEscapeHTML(true);
 		ListGridField adminField = new ListGridField(ADMIN, "Admin");
 		adminField.setAlign(Alignment.CENTER);
 		ListGridField startDateField = new ListGridField(START_DATE, "Start Date");
