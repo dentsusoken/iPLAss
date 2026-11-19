@@ -78,9 +78,13 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 
 		ListGridField oidField = new ListGridField(OID, "OID");
 		ListGridField accountIdField = new ListGridField(ACCOUNT_ID, "Account ID");
+		accountIdField.setEscapeHTML(true);
 		ListGridField nameField = new ListGridField(NAME, "Name");
+		nameField.setEscapeHTML(true);
 		ListGridField mailField = new ListGridField(MAIL, "Mail");
+		mailField.setEscapeHTML(true);
 		ListGridField policyNameField = new ListGridField(POLICY_NAME, "Policy Name");
+		policyNameField.setEscapeHTML(true);
 		ListGridField adminField = new ListGridField(ADMIN, "Admin");
 		adminField.setAlign(Alignment.CENTER);
 		ListGridField loginErrorCntField = new ListGridField(LOGIN_ERROR_COUNT, "Error Count");
