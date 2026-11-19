@@ -217,8 +217,13 @@ public class MessageTabSet extends TabSet {
 		}
 
 		private String getMessageString(List<String> messages) {
+			if (messages == null) {
+				return "";
+			}
+
 			return messages.stream()
-					.map(message -> SafeHtmlUtils.htmlEscape(String.valueOf(message)))
+					.filter(message -> message != null)
+					.map(message -> SafeHtmlUtils.htmlEscape(message))
 					.collect(Collectors.joining("<br/>"));
 
 		}
