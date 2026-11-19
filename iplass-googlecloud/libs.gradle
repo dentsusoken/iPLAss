@@ -1,4 +1,11 @@
 dependencies {
+	// dependency management
+	constraints {
+		api(sharedLib('com.google.guava:guava')) {
+			because 'Use to newer version of Guava.'
+		}
+	}
+
 	// for FCM
 	implementation sharedLib('com.google.auth:google-auth-library-oauth2-http')
 
