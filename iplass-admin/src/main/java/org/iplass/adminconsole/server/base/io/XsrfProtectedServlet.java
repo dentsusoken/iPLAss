@@ -33,8 +33,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * XsrfProtected Servlet
+ * XSRF トークン検証を行うサーブレットの基底クラス。
  *
+ * {@link #service(HttpServletRequest, HttpServletResponse)} は以下の順でリクエストを処理する。
+ * 1. {@link #checkRequest(HttpServletRequest)} によるリクエスト制約チェック
+ * 2. {@link #prepareRequest(HttpServletRequest)} による前準備
+ * 3. {@link #extractXsrfToken(HttpServletRequest, Object)} によるトークン抽出と検証
+ * 4. {@link #doProtectedService(HttpServletRequest, HttpServletResponse, Object)} による業務処理
+ * 5. {@link #cleanupRequest(Object)} によるリソース破棄（finally で実行）
+ *
+ * @param <T> {@link #prepareRequest(HttpServletRequest)} が返し、後続処理へ渡すリクエストコンテキストの型
  */
 public abstract class XsrfProtectedServlet<T> extends XsrfProtectedServiceServlet {
 	/** serialVersionUID */
@@ -170,7 +178,7 @@ public abstract class XsrfProtectedServlet<T> extends XsrfProtectedServiceServle
 			super.validateXsrfToken(token, null);
 			return true;
 		} catch (RpcTokenException e) {
-			// トークン有効期限切れは正常系とみなすため debug とする（403応答自体は rejectRequest で error 出力）
+			// 403 応答自体は rejectRequest で error 出力するため、例外詳細は debug とする
 			logger.debug("Invalid xsrf token. {}", e.getMessage());
 			return false;
 		}

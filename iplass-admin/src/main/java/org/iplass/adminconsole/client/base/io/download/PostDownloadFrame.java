@@ -83,8 +83,6 @@ public class PostDownloadFrame extends NamedFrame {
 			@Override
 			public void onLoad(LoadEvent event) {
 				GWT.log("browser onload. name=" + FRAME_NAME);
-				// このタイミングでremoveしてしまうとResponseが取得できない
-//				RootPanel.get().remove(PostDownloadFrame.this);
 			}
 		});
 
