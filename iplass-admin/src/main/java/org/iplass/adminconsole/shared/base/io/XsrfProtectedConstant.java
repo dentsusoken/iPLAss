@@ -20,11 +20,11 @@
 package org.iplass.adminconsole.shared.base.io;
 
 /**
- * AdminConsole Upload 操作でクライアントと共有する値
+ * AdminConsole の XsrfProtected な操作でクライアントと共有する値
  *
  * @author SEKIGUCHI Naoya
  */
-public class XsrfProtectedMultipartConstant {
+public class XsrfProtectedConstant {
 	/**
 	 * リクエストパラメータキー名
 	 */
@@ -42,6 +42,6 @@ public class XsrfProtectedMultipartConstant {
 	/**
 	 * プライベートコンストラクタ
 	 */
-	private XsrfProtectedMultipartConstant() {
+	private XsrfProtectedConstant() {
 	}
 }

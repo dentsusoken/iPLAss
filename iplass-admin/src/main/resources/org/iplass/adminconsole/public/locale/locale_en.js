@@ -1,4 +1,5 @@
 var LocaleInfo = {};
+LocaleInfo.base_io_download_XsrfProtectedImagePreview_message_failedToLoad = "Failed to load the preview image.";
 LocaleInfo.base_io_upload_AdminSingleUploader_message_invalidFileExtension = "File extensions are different.<br/>Only the following extensions are supported. :<br/>{0}";
 LocaleInfo.common_AdminAsyncCallback_failedMessage = "An error has occurred in connection with the server.<br/>Cause:";
 LocaleInfo.datasource_PropertyListRecord_name = "Name";
