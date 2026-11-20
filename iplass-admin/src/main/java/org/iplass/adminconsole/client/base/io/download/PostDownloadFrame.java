@@ -63,7 +63,6 @@ public class PostDownloadFrame extends NamedFrame {
 		setVisible(false);
 		setUrl("javascript:''");
 
-		// 送信用Formの生成
 		form = new PostFormPanel(this);
 		form.addSubmitHandler(new SubmitHandler() {
 			@Override
@@ -149,7 +148,6 @@ public class PostDownloadFrame extends NamedFrame {
 			xsrfToken = new Hidden(XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY, "");
 			paramPanel.add(xsrfToken);
 
-			// メソッドはPOST
 			setMethod(METHOD_POST);
 
 			RootPanel.get()
