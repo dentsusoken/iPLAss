@@ -25,16 +25,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.iplass.adminconsole.server.base.io.XsrfProtectedServlet;
 import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.iplass.mtp.util.StringUtil;
 
 import com.google.gwt.user.client.rpc.XsrfToken;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * XsrfProtected Servlet（Multipart リクエスト用）
@@ -83,7 +84,7 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet
 	@Override
 	protected int checkRequest(final HttpServletRequest req) {
 		boolean isPost = METHOD_POST.equals(req.getMethod());
-		boolean isMultipart = JakartaServletFileUpload.isMultipartContent(req);
+		boolean isMultipart = ServletFileUpload.isMultipartContent(req);
 		boolean isContentLengthAcceptable = isContentLengthAcceptable(req.getContentLengthLong());
 
 		if (isPost && isMultipart && isContentLengthAcceptable) {

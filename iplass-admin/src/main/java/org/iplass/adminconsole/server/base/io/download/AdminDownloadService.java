@@ -23,6 +23,10 @@ package org.iplass.adminconsole.server.base.io.download;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.iplass.adminconsole.server.base.io.XsrfProtectedServlet;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
@@ -30,9 +34,6 @@ import org.iplass.adminconsole.shared.metadata.dto.entity.EntityJavaMappingClass
 import org.iplass.mtp.util.StringUtil;
 
 import com.google.gwt.user.client.rpc.XsrfToken;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Download用基底クラス
