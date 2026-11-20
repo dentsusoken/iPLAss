@@ -26,25 +26,21 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
-import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
+import org.iplass.adminconsole.server.base.io.XsrfProtectedServlet;
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.iplass.mtp.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.client.rpc.XsrfToken;
-import com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  * XsrfProtected Servlet（Multipart リクエスト用）
  *
  * <p>
- * {@link com.google.gwt.user.server.rpc.jakarta.XsrfProtectedServiceServlet#validateXsrfToken(com.google.gwt.user.client.rpc.RpcToken, java.lang.reflect.Method)} を利用しトークン検証を実施するサーブレット。
- * XsrfProtectedServiceServlet では GWT RPC が強制されるので、service メソッドをオーバーライドし Multipart リクエストのみ受け付け可能な形としている。
+ * {@link XsrfProtectedServlet} を継承し、{@link #checkRequest(HttpServletRequest)} や {@link #prepareRequest(HttpServletRequest)} 等をオーバーライドして Multipart リクエストのみ受け付け可能な形としている。
  * </p>
  *
  * <p>
@@ -59,16 +55,12 @@ import jakarta.servlet.http.HttpSession;
  * @see org.iplass.adminconsole.client.base.io.upload.XsrfProtectedMultipartForm
  * @author SEKIGUCHI Naoya
  */
-public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServiceServlet {
+public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedServlet<List<MultipartRequestParameter>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 3352671393580437480L;
-	/** POST */
-	private static final String METHOD_POST = "POST";
 	/** リクエスト許容サイズデフォルト値 */
 	private static final long DEFAULT_MAX_SIZE = 2_097_152L; // 2MB = 1024 * 1024 * 2
 
-	/** ロガー */
-	private Logger logger = LoggerFactory.getLogger(XsrfProtectedMultipartServlet.class);
 	/** リクエスト許容サイズ */
 	protected long maxSize = DEFAULT_MAX_SIZE;
 	/** マルチパートリクエストパラメータ解析機能 */
@@ -88,85 +80,46 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedService
 		parameterParser = createParameterParser();
 	}
 
-	/**
-	 * デフォルトコンストラクタ
-	 */
-	public XsrfProtectedMultipartServlet() {
-		super();
-		perThreadRequest = new ThreadLocal<HttpServletRequest>();
-		perThreadResponse = new ThreadLocal<HttpServletResponse>();
-	}
-
 	@Override
-	protected final void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// リクエストの制約チェック
-		// Method POST かつ
+	protected int checkRequest(final HttpServletRequest req) {
 		boolean isPost = METHOD_POST.equals(req.getMethod());
-		// マルチパートリクエスト かつ
 		boolean isMultipart = JakartaServletFileUpload.isMultipartContent(req);
-		// conetnt-length は許容範囲内
 		boolean isContentLengthAcceptable = isContentLengthAcceptable(req.getContentLengthLong());
 
 		if (isPost && isMultipart && isContentLengthAcceptable) {
-
-			try {
-				// XsrfProtectedServiceServlet#validateXsrfToken(RpcToken, Method) を利用するための準備
-				perThreadRequest.set(req);
-				perThreadResponse.set(resp);
-
-				acceptRequest(req, resp);
-
-			} finally {
-				perThreadRequest.set(null);
-				perThreadResponse.set(null);
-			}
-
-		} else {
-			HttpSession session = req.getSession(false);
-			String sessionId = session != null ? session.getId() : null;
-
-			// 制約外リクエストの場合、404: Not Found を返却する
-			int httpStatus = !isPost || !isMultipart ? HttpServletResponse.SC_NOT_FOUND
-					// conetnt-length が許容範囲外の場合、413: Payload Too Large を返却する
-					: HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;
-
-			// エラーログ出力
-			logger.error("Error request. sessionId = {}, httpStatus = {}, uri = {}, content-length={}.",
-					sessionId, httpStatus, req.getRequestURI(), req.getContentLengthLong());
-			// http status 設定
-			resp.sendError(httpStatus);
+			return 0;
 		}
+
+		// 制約外リクエストの場合、404: Not Found を返却する
+		// content-length が許容範囲外の場合、413: Payload Too Large を返却する
+		return !isPost || !isMultipart ? HttpServletResponse.SC_NOT_FOUND : HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;
 	}
 
-	/**
-	 * リクエスト受け付け処理
-	 *
-	 * <p>
-	 * 以下の処理を行う。
-	 *
-	 * <ul>
-	 * <li>リクエストパラメータのパース</li>
-	 * <li>XSRFトークン検証</li>
-	 * <li>doMultipartPost メソッドの実行</li>
-	 * <li>パースしたパラメータのリソース破棄</li>
-	 * </p>
-	 *
-	 * @param req HttpServletRequest
-	 * @param resp HttpServletResponse
-	 * @throws ServletException サーブレット例外
-	 * @throws IOException 入出力例外
-	 */
-	private void acceptRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<MultipartRequestParameter> requestParameterList = parameterParser.parse(req);
-		try {
-			XsrfToken token = getXsrfToken(requestParameterList);
+	@Override
+	protected final List<MultipartRequestParameter> prepareRequest(final HttpServletRequest req)
+			throws ServletException, IOException {
+		return parameterParser.parse(req);
+	}
 
-			// トークン検証
-			validateXsrfToken(token, null);
+	@Override
+	protected final XsrfToken extractXsrfToken(final HttpServletRequest req,
+			final List<MultipartRequestParameter> requestParameterList) {
+		Optional<MultipartRequestParameter> tokenItem = requestParameterList.stream()
+				.filter(item -> XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY.equals(item.getFieldName()))
+				.findFirst();
+		return tokenItem.isPresent() ? new XsrfToken(tokenItem.get()
+				.getString(getDefaultCharset())) : null;
+	}
 
-			doMultipartPost(req, resp, requestParameterList);
+	@Override
+	protected final void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp,
+			final List<MultipartRequestParameter> requestParameterList) throws ServletException, IOException {
+		doMultipartPost(req, resp, requestParameterList);
+	}
 
-		} finally {
+	@Override
+	protected final void cleanupRequest(final List<MultipartRequestParameter> requestParameterList) {
+		if (requestParameterList != null) {
 			// パースパラメータの破棄
 			requestParameterList.stream()
 					.forEach(p -> p.dispose());
@@ -235,18 +188,5 @@ public abstract class XsrfProtectedMultipartServlet extends XsrfProtectedService
 	 */
 	protected void setDefaultCharset(Charset defaultCharset) {
 		this.defaultCharset = defaultCharset;
-	}
-
-	/**
-	 * リクエストパラメータから Xsrf トークンを取得する
-	 * @param requestParameterList リクエストパラメータ
-	 * @return Xsrf トークン
-	 */
-	private XsrfToken getXsrfToken(List<MultipartRequestParameter> requestParameterList) {
-		Optional<MultipartRequestParameter> tokenItem = requestParameterList.stream()
-				.filter(item -> XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY.equals(item.getFieldName()))
-				.findFirst();
-		return tokenItem.isPresent() ? new XsrfToken(tokenItem.get()
-				.getString(getDefaultCharset())) : null;
 	}
 }

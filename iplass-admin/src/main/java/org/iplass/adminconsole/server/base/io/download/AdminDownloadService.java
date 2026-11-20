@@ -23,52 +23,43 @@ package org.iplass.adminconsole.server.base.io.download;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.iplass.adminconsole.server.base.io.XsrfProtectedServlet;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.iplass.adminconsole.shared.metadata.dto.entity.EntityJavaMappingClassDownloadProperty;
+import org.iplass.mtp.util.StringUtil;
 
+import com.google.gwt.user.client.rpc.XsrfToken;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Download用基底クラス
- * 
- * 各種処理は {@link #doDownload(HttpServletRequest, HttpServletResponse, int)} を実装する。
+ *
+ * <p>
+ * 各種処理は doDownload を実装する。
+ * </p>
  */
-public abstract class AdminDownloadService extends HttpServlet {
+public abstract class AdminDownloadService extends XsrfProtectedServlet<Void> {
 
 	private static final long serialVersionUID = -4465947965629579502L;
 
-	public AdminDownloadService() {
-		super();
+	@Override
+	protected final Void prepareRequest(final HttpServletRequest req) throws ServletException, IOException {
+		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		return null;
 	}
 
 	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		//エンコード指定
-		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		download(req, resp);
+	protected final XsrfToken extractXsrfToken(final HttpServletRequest req, final Void context) {
+		String token = req.getParameter(XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY);
+		return StringUtil.isNotBlank(token) ? new XsrfToken(token) : null;
 	}
 
 	@Override
-	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		//エンコード指定
-		req.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		download(req, resp);
-	}
-
-	/**
-	 * 権限チェックを実行したのち、{@link #doDownload(HttpServletRequest, HttpServletResponse, int)} を実行します。
-	 * 
-	 * @param req リクエスト
-	 * @param resp レスポンス
-	 */
-	protected void download(final HttpServletRequest req, final HttpServletResponse resp) {
-
-		//パラメータの取得
+	protected final void doProtectedService(final HttpServletRequest req, final HttpServletResponse resp,
+			final Void context) throws ServletException, IOException {
 		final int tenantId = Integer.parseInt(req.getParameter(EntityJavaMappingClassDownloadProperty.TENANT_ID));
 
 		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, () -> {
@@ -85,5 +76,4 @@ public abstract class AdminDownloadService extends HttpServlet {
 	 * @param tenantId テナントID
 	 */
 	protected abstract void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId);
-
 }
