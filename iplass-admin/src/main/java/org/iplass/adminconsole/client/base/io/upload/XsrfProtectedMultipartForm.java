@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.shared.base.io.XsrfProtectedMultipartConstant;
+import org.iplass.adminconsole.shared.base.io.XsrfProtectedConstant;
 import org.iplass.adminconsole.shared.base.rpc.AdminXsrfTokenHolder;
 
 import com.google.gwt.core.client.GWT;
@@ -73,7 +73,7 @@ public class XsrfProtectedMultipartForm extends Composite {
 	/** 子ウィジェット管理パネル */
 	private FlowPanel childWidgetPanel = new FlowPanel();
 	/** XsrfToken ウィジェット */
-	private Hidden xsrfTokenWidget = new Hidden(XsrfProtectedMultipartConstant.RequestParameterName.XSRF_TOKEN_KEY);
+	private Hidden xsrfTokenWidget = new Hidden(XsrfProtectedConstant.RequestParameterName.XSRF_TOKEN_KEY);
 	/** XSRFトークン削除 submit complete HandlerRegistration */
 	private HandlerRegistration xsrfTokenRemoveSubmitCompleteHandlerRegistration;
 	/** submit キャンセル時　XSRFトークン削除 submit HandlerRegistration */

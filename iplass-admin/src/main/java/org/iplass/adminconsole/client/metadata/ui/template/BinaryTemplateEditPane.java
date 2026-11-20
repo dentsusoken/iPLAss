@@ -20,11 +20,13 @@
 
 package org.iplass.adminconsole.client.metadata.ui.template;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.io.download.GetRequestBuilder;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
+import org.iplass.adminconsole.client.base.io.download.XsrfProtectedImagePreview;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
 import org.iplass.adminconsole.client.base.io.upload.UploadSubmitCompleteHandler;
@@ -46,9 +48,6 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.ImageStyle;
-import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -73,7 +72,7 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private StaticTextItem txtDownloadFileName;
 
 	private Label lblRegistedStatus;
-	private Img imgRegistedBinary;
+	private XsrfProtectedImagePreview imgRegistedBinary;
 
 	private AsyncCallback<AdminDefinitionModifyResult> callback;
 
@@ -114,13 +113,7 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 		lblRegistedStatus.setHeight(25);
 		previewContents.addMember(lblRegistedStatus);
 
-		imgRegistedBinary = new Img();
-		imgRegistedBinary.setPadding(5);
-		imgRegistedBinary.setWidth100();
-		imgRegistedBinary.setHeight100();
-		imgRegistedBinary.setOverflow(Overflow.AUTO);
-		imgRegistedBinary.setBorder("1px solid gray");
-		imgRegistedBinary.setImageType(ImageStyle.NORMAL);
+		imgRegistedBinary = new XsrfProtectedImagePreview();
 		previewContents.addMember(imgRegistedBinary);
 
 		Label previewComment = new Label(AdminClientMessageUtil.getString("ui_metadata_template_BinaryTemplateEditPane_previewComment"));
@@ -193,7 +186,8 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		if (localeList != null && !localeList.isEmpty()) {
 			for (LocalizedBinaryDefinitionInfo info : localeList) {
-				String locale = info.getDefinition().getLocaleName();
+				String locale = info.getDefinition()
+						.getLocaleName();
 
 				String prefix = BinaryTemplateUploadProperty.LOCALE_PREFIX + locale + "_";
 
@@ -204,7 +198,8 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 				// ファイルが選択されているもののみ送る
 				// (新規でFileが選択されていないものは除外される
 				if (info.getFileItem() != null) {
-					FileUpload localeFile = info.getFileItem().getEditFileUpload();
+					FileUpload localeFile = info.getFileItem()
+							.getEditFileUpload();
 					localeFile.setName(prefix + BinaryTemplateUploadProperty.UPLOAD_FILE);
 					localeFile.setVisible(false);
 					paramPanel.add(localeFile);
@@ -229,40 +224,33 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 			setTemplateDownloadAction(defName, lang);
 			downloadForm.setVisible(true);
 
-			GetRequestBuilder builder = new GetRequestBuilder();
-			builder.baseUrl(GWT.getModuleBaseURL());
-			builder.targetUrl(BinaryTemplateDownloadProperty.ACTION_URL);
-			builder.parameterWithValue(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()));
-			builder.parameterWithValue(BinaryTemplateDownloadProperty.DEFINITION_NAME, defName);
-			builder.parameterWithValue(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.INLINE.name());
+			Map<String, String> params = new LinkedHashMap<String, String>();
+			params.put(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()));
+			params.put(BinaryTemplateDownloadProperty.DEFINITION_NAME, defName);
+			params.put(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.INLINE.name());
 			if (!SmartGWTUtil.isEmpty(lang)) {
-				builder.parameterWithValue(BinaryTemplateDownloadProperty.LANG, lang);
+				params.put(BinaryTemplateDownloadProperty.LANG, lang);
 			}
-			builder.parameterWithValue("dummy", String.valueOf(System.currentTimeMillis())); // 画像変換時の再描画のため
-			String url = builder.toEncodedUrl();
 			lblRegistedStatus.setContents("Binary data is registered.");
-			imgRegistedBinary.setVisible(true);
-			imgRegistedBinary.setSrc(url);
+			imgRegistedBinary.load(GWT.getModuleBaseURL() + BinaryTemplateDownloadProperty.ACTION_URL, params);
 		} else {
 			downloadForm.setVisible(false);
 			lblRegistedStatus.setContents("Still no binary data.");
-			imgRegistedBinary.setSrc((String)null);
-			imgRegistedBinary.setVisible(false);
+			imgRegistedBinary.clearPreview();
 		}
 	}
 
 	private void setTemplateDownloadAction(final String templateName, final String lang) {
-		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler =
-				new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				PostDownloadFrame frame = new PostDownloadFrame();
 				frame.setAction(GWT.getModuleBaseURL() + BinaryTemplateDownloadProperty.ACTION_URL)
-				.addParameter(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
-				.addParameter(BinaryTemplateDownloadProperty.DEFINITION_NAME, templateName)
-				.addParameter(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
-				.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
+						.addParameter(BinaryTemplateDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
+						.addParameter(BinaryTemplateDownloadProperty.DEFINITION_NAME, templateName)
+						.addParameter(BinaryTemplateDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
+						.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
 				if (!SmartGWTUtil.isEmpty(lang)) {
 					frame.addParameter(BinaryTemplateDownloadProperty.LANG, lang);
 				}
@@ -309,12 +297,14 @@ public class BinaryTemplateEditPane extends TemplateTypeEditPane implements HasE
 			// FlowPanelに追加しているので戻す
 			itmFileUpload.redrawFileUpload();
 
-			imgRegistedBinary.resetSrc();
+			imgRegistedBinary.clearPreview();
 
 			if (callback != null) {
 				String message = null;
-				if (result.getMessages() != null && result.getMessages().size() > 0) {
-					message = result.getMessages().get(0);
+				if (result.getMessages() != null && result.getMessages()
+						.size() > 0) {
+					message = result.getMessages()
+							.get(0);
 				}
 				callback.onSuccess(new AdminDefinitionModifyResult(result.isFileUploadStatusSuccess(), message));
 			}

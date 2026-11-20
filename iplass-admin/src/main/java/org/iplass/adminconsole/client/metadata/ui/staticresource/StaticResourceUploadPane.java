@@ -21,10 +21,11 @@
 package org.iplass.adminconsole.client.metadata.ui.staticresource;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.io.download.GetRequestBuilder;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
+import org.iplass.adminconsole.client.base.io.download.XsrfProtectedImagePreview;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -37,9 +38,6 @@ import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.ImageStyle;
-import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -74,7 +72,7 @@ public class StaticResourceUploadPane extends VLayout {
 	private StaticTextItem txtDownloadFileName;
 
 	private Label lblRegistedStatus;
-	private Img imgRegistedBinary;
+	private XsrfProtectedImagePreview imgRegistedBinary;
 
 	public StaticResourceUploadPane() {
 		// レイアウト設定
@@ -120,13 +118,7 @@ public class StaticResourceUploadPane extends VLayout {
 		lblRegistedStatus.setHeight(25);
 		previewContents.addMember(lblRegistedStatus);
 
-		imgRegistedBinary = new Img();
-		imgRegistedBinary.setPadding(5);
-		imgRegistedBinary.setWidth100();
-		imgRegistedBinary.setHeight100();
-		imgRegistedBinary.setOverflow(Overflow.AUTO);
-		imgRegistedBinary.setBorder("1px solid gray");
-		imgRegistedBinary.setImageType(ImageStyle.NORMAL);
+		imgRegistedBinary = new XsrfProtectedImagePreview();
 		previewContents.addMember(imgRegistedBinary);
 
 		Label previewComment = new Label(AdminClientMessageUtil.getString("ui_metadata_staticresource_StaticResourceUploadPane_previewComment"));
@@ -150,7 +142,7 @@ public class StaticResourceUploadPane extends VLayout {
 			this.fileTypeField.setValue(FileType.SIMPLE);
 		}
 
-		//選択ファイルをクリア
+		// 選択ファイルをクリア
 		this.itmFileUpload.clearFile();
 
 		// Previewの設定
@@ -195,7 +187,7 @@ public class StaticResourceUploadPane extends VLayout {
 	}
 
 	public void resetSrcImg() {
-		this.imgRegistedBinary.resetSrc();
+		this.imgRegistedBinary.clearPreview();
 	}
 
 	public boolean validate() {
@@ -216,50 +208,46 @@ public class StaticResourceUploadPane extends VLayout {
 			setTemplateDownloadAction(defName, lang);
 			downloadForm.setVisible(true);
 
-			GetRequestBuilder builder = null;
 			if (fileType == FileType.SIMPLE) {
-				builder = new GetRequestBuilder();
-				builder.baseUrl(GWT.getModuleBaseURL());
-				builder.targetUrl(StaticResourceDownloadProperty.ACTION_URL);
-				builder.parameterWithValue(StaticResourceDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()));
-				builder.parameterWithValue(StaticResourceDownloadProperty.DEFINITION_NAME, defName);
-				builder.parameterWithValue(StaticResourceDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.INLINE.name());
+				Map<String, String> params = new LinkedHashMap<String, String>();
+				params.put(StaticResourceDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()));
+				params.put(StaticResourceDownloadProperty.DEFINITION_NAME, defName);
+				params.put(StaticResourceDownloadProperty.CONTENT_DISPOSITION_TYPE,
+						ContentDispositionType.INLINE.name());
 				if (!SmartGWTUtil.isEmpty(lang)) {
-					builder.parameterWithValue(StaticResourceDownloadProperty.LANG, lang);
+					params.put(StaticResourceDownloadProperty.LANG, lang);
 				}
-				builder.parameterWithValue("dummy", String.valueOf(System.currentTimeMillis()));	// 画像変換時の再描画のため
+				imgRegistedBinary.load(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL, params);
+			} else {
+				imgRegistedBinary.clearPreview();
 			}
-			imgRegistedBinary.setSrc(builder != null ? builder.toEncodedUrl() : null);
-			imgRegistedBinary.setVisible(builder != null);
 			lblRegistedStatus.setContents("Resource data is registered.");
 		} else {
 			downloadForm.setVisible(false);
 
-			imgRegistedBinary.setSrc((String)null);
-			imgRegistedBinary.setVisible(false);
+			imgRegistedBinary.clearPreview();
 			lblRegistedStatus.setContents("Still no resource data.");
 		}
 	}
 
 	private void setTemplateDownloadAction(final String defName, final String lang) {
 
-		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler =
-			new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		com.smartgwt.client.widgets.form.fields.events.ClickHandler handler = new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
-				@Override
-				public void onClick(ClickEvent event) {
-					PostDownloadFrame frame = new PostDownloadFrame();
-					frame.setAction(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL)
+			@Override
+			public void onClick(ClickEvent event) {
+				PostDownloadFrame frame = new PostDownloadFrame();
+				frame.setAction(GWT.getModuleBaseURL() + StaticResourceDownloadProperty.ACTION_URL)
 						.addParameter(StaticResourceDownloadProperty.TENANT_ID, String.valueOf(TenantInfoHolder.getId()))
 						.addParameter(StaticResourceDownloadProperty.DEFINITION_NAME, defName)
 						.addParameter(StaticResourceDownloadProperty.CONTENT_DISPOSITION_TYPE, ContentDispositionType.ATTACHMENT.name())
 						.addParameter("dummy", String.valueOf(System.currentTimeMillis()));
-					if (!SmartGWTUtil.isEmpty(lang)) {
-						frame.addParameter(StaticResourceDownloadProperty.LANG, lang);
-					}
-					frame.execute();
+				if (!SmartGWTUtil.isEmpty(lang)) {
+					frame.addParameter(StaticResourceDownloadProperty.LANG, lang);
 				}
-			};
+				frame.execute();
+			}
+		};
 		downloadFilebtn.addClickHandler(handler);
 	}
 
