@@ -106,3 +106,42 @@ scriptContext.gem.locale.calendar.withoutEntity = "我从搜索中删除{0}";
 
 scriptContext.gem.locale.apendCategory("application");
 scriptContext.gem.locale.application.specifyDescription = "请输入要生成的令牌的描述。";
+
+scriptContext.gem.locale.apendCategory("quill");
+scriptContext.gem.locale.quill.imageUrlPrompt = "请输入图片 URL";
+scriptContext.gem.locale.quill.imageUrlInvalid = "请输入有效的图片 URL。";
+scriptContext.gem.locale.quill.tableUp = {
+	fullCheckboxText: "插入全宽表格",
+	customBtnText: "自定义",
+	confirmText: "确认",
+	cancelText: "取消",
+	rowText: "行",
+	colText: "列",
+	notPositiveNumberError: "请输入正整数",
+	custom: "自定义",
+	clear: "清除",
+	transparent: "透明",
+	perWidthInsufficient: "百分比宽度不足。要完成此操作，需要将表格转换为固定宽度。是否继续？",
+	CopyCell: "复制单元格",
+	CutCell: "剪切单元格",
+	InsertTop: "在上方插入行",
+	InsertRight: "在右侧插入列",
+	InsertBottom: "在下方插入行",
+	InsertLeft: "在左侧插入列",
+	MergeCell: "合并单元格",
+	SplitCell: "拆分单元格",
+	DeleteRow: "删除行",
+	DeleteColumn: "删除列",
+	DeleteTable: "删除表格",
+	BackgroundColor: "设置背景色",
+	BorderColor: "设置边框颜色",
+	FreezeRow: "冻结到此行",
+	UnfreezeRow: "取消冻结行",
+	FreezeCol: "冻结到此列",
+	UnfreezeCol: "取消冻结列",
+	SwitchWidth: "切换表格宽度",
+	InsertCaption: "插入表格标题",
+	ToggleTdBetweenTh: "切换数据单元格与表头单元格",
+	ConvertTothead: "转换为表头",
+	ConvertTotfoot: "转换为表尾"
+};

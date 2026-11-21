@@ -107,3 +107,42 @@ scriptContext.gem.locale.calendar.withoutEntity = "{0}を検索対象から外�
 
 scriptContext.gem.locale.apendCategory("application");
 scriptContext.gem.locale.application.specifyDescription = "生成するトークンの説明を入力してください。";
+
+scriptContext.gem.locale.apendCategory("quill");
+scriptContext.gem.locale.quill.imageUrlPrompt = "画像のURLを入力してください";
+scriptContext.gem.locale.quill.imageUrlInvalid = "有効な画像URLを指定してください。";
+scriptContext.gem.locale.quill.tableUp = {
+	fullCheckboxText: "全幅の表を挿入",
+	customBtnText: "カスタム",
+	confirmText: "確定",
+	cancelText: "キャンセル",
+	rowText: "行",
+	colText: "列",
+	notPositiveNumberError: "正の整数を入力してください",
+	custom: "カスタム",
+	clear: "クリア",
+	transparent: "透明",
+	perWidthInsufficient: "パーセント幅が不足しています。操作を完了するには表を固定幅に変換する必要があります。続行しますか？",
+	CopyCell: "セルをコピー",
+	CutCell: "セルを切り取り",
+	InsertTop: "上に行を挿入",
+	InsertRight: "右に列を挿入",
+	InsertBottom: "下に行を挿入",
+	InsertLeft: "左に列を挿入",
+	MergeCell: "セルを結合",
+	SplitCell: "セルを分割",
+	DeleteRow: "行を削除",
+	DeleteColumn: "列を削除",
+	DeleteTable: "表を削除",
+	BackgroundColor: "背景色を設定",
+	BorderColor: "罫線の色を設定",
+	FreezeRow: "この行まで固定",
+	UnfreezeRow: "行の固定を解除",
+	FreezeCol: "この列まで固定",
+	UnfreezeCol: "列の固定を解除",
+	SwitchWidth: "表の幅を切り替え",
+	InsertCaption: "表題を挿入",
+	ToggleTdBetweenTh: "セルを見出しセルと切り替え",
+	ConvertTothead: "ヘッダー行に変換",
+	ConvertTotfoot: "フッター行に変換"
+};
