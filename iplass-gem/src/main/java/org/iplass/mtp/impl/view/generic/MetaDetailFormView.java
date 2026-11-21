@@ -176,6 +176,30 @@ public class MetaDetailFormView extends MetaFormView {
 	/** 初期化スクリプト */
 	private String initScript;
 
+	/** 編集ボタン表示判定用スクリプト */
+	private String editDisplayTypeScript;
+
+	/** コピーボタン表示判定用スクリプト */
+	private String copyDisplayTypeScript;
+
+	/** バージョンアップボタン表示判定用スクリプト */
+	private String versionupDisplayTypeScript;
+
+	/** 登録ボタン表示判定用スクリプト */
+	private String insertDisplayTypeScript;
+
+	/** 更新ボタン表示判定用スクリプト */
+	private String updateDisplayTypeScript;
+
+	/** 削除ボタン表示判定用スクリプト */
+	private String deleteDisplayTypeScript;
+
+	/** バージョン削除ボタン表示判定用スクリプト */
+	private String deleteSpecificVersionDisplayTypeScript;
+
+	/** ロックボタン表示判定用スクリプト */
+	private String lockDisplayTypeScript;
+
 	/**
 	 * 編集アクション名を取得します。
 	 * @return 編集アクション名
@@ -864,6 +888,70 @@ public class MetaDetailFormView extends MetaFormView {
 		this.initScript = initScript;
 	}
 
+	/**
+	 * 編集ボタン表示判定用スクリプトを取得します。
+	 * @return 編集ボタン表示判定用スクリプト
+	 */
+	public String getEditDisplayTypeScript() {
+		return editDisplayTypeScript;
+	}
+
+	/**
+	 * コピーボタン表示判定用スクリプトを取得します。
+	 * @return コピーボタン表示判定用スクリプト
+	 */
+	public String getCopyDisplayTypeScript() {
+		return copyDisplayTypeScript;
+	}
+
+	/**
+	 * バージョンアップボタン表示判定用スクリプトを取得します。
+	 * @return バージョンアップボタン表示判定用スクリプト
+	 */
+	public String getVersionupDisplayTypeScript() {
+		return versionupDisplayTypeScript;
+	}
+
+	/**
+	 * 登録ボタン表示判定用スクリプトを取得します。
+	 * @return 登録ボタン表示判定用スクリプト
+	 */
+	public String getInsertDisplayTypeScript() {
+		return insertDisplayTypeScript;
+	}
+
+	/**
+	 * 更新ボタン表示判定用スクリプトを取得します。
+	 * @return 更新ボタン表示判定用スクリプト
+	 */
+	public String getUpdateDisplayTypeScript() {
+		return updateDisplayTypeScript;
+	}
+
+	/**
+	 * 削除ボタン表示判定用スクリプトを取得します。
+	 * @return 削除ボタン表示判定用スクリプト
+	 */
+	public String getDeleteDisplayTypeScript() {
+		return deleteDisplayTypeScript;
+	}
+
+	/**
+	 * バージョン削除ボタン表示判定用スクリプトを取得します。
+	 * @return バージョン削除ボタン表示判定用スクリプト
+	 */
+	public String getDeleteSpecificVersionDisplayTypeScript() {
+		return deleteSpecificVersionDisplayTypeScript;
+	}
+
+	/**
+	 * ロックボタン表示判定用スクリプトを取得します。
+	 * @return ロックボタン表示判定用スクリプト
+	 */
+	public String getLockDisplayTypeScript() {
+		return lockDisplayTypeScript;
+	}
+
 	@Override
 	public MetaDetailFormView copy() {
 		return ObjectUtil.deepCopy(this);
@@ -922,6 +1010,14 @@ public class MetaDetailFormView extends MetaFormView {
 		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName() == null ? null : new ArrayList<>(dForm.getDetailFormViewHandlerName());
 		customCopyScript = dForm.getCustomCopyScript();
 		initScript = dForm.getInitScript();
+		editDisplayTypeScript = dForm.getEditDisplayTypeScript();
+		copyDisplayTypeScript = dForm.getCopyDisplayTypeScript();
+		versionupDisplayTypeScript = dForm.getVersionupDisplayTypeScript();
+		insertDisplayTypeScript = dForm.getInsertDisplayTypeScript();
+		updateDisplayTypeScript = dForm.getUpdateDisplayTypeScript();
+		deleteDisplayTypeScript = dForm.getDeleteDisplayTypeScript();
+		deleteSpecificVersionDisplayTypeScript = dForm.getDeleteSpecificVersionDisplayTypeScript();
+		lockDisplayTypeScript = dForm.getLockDisplayTypeScript();
 	}
 
 	/**
@@ -974,6 +1070,14 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setDetailFormViewHandlerName(detailFormViewHandlerName == null ? null : new ArrayList<>(detailFormViewHandlerName));
 		form.setCustomCopyScript(customCopyScript);
 		form.setInitScript(initScript);
+		form.setEditDisplayTypeScript(editDisplayTypeScript);
+		form.setCopyDisplayTypeScript(copyDisplayTypeScript);
+		form.setVersionupDisplayTypeScript(versionupDisplayTypeScript);
+		form.setInsertDisplayTypeScript(insertDisplayTypeScript);
+		form.setUpdateDisplayTypeScript(updateDisplayTypeScript);
+		form.setDeleteDisplayTypeScript(deleteDisplayTypeScript);
+		form.setDeleteSpecificVersionDisplayTypeScript(deleteSpecificVersionDisplayTypeScript);
+		form.setLockDisplayTypeScript(lockDisplayTypeScript);
 		if (validJavascriptDetailPage != null) {
 			form.setValidJavascriptDetailPage(validJavascriptDetailPage);
 		} else {
