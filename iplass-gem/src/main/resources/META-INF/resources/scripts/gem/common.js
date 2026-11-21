@@ -145,6 +145,73 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 }
 
 /**
+ * 参照先の識別キー("<参照プロパティのパス>.@oid" など)の接尾辞。Java の SearchResultRow と合わせる。
+ * 参照先が無い、または SELECT されていない場合、行データにキーは存在しない。
+ */
+const REFERENCE_OID_SUFFIX = "@oid";
+const REFERENCE_VERSION_SUFFIX = "@version";
+
+// MEMO: 課題
+// - Java(SearchResultRow)と JS が「キー名の規約」だけで繋がっており、型・スキーマによる契約が無い(片方の変更により、静かに壊れる)
+// - 行データが平坦な文字列キーのMapで、構造(祖先の階層など)がデータ上に現れない
+// 本来あるべき姿:
+// - 行データを構造化する(例: セルごとに { html, lineage: [{path, oid, version}] })
+/**
+ * 「検索結果をまとめる」用の cellattr。セル結合(rowspan)の属性文字列を返す。
+ * 以下が、連続する行で全て同じ場合に結合する。
+ * - 行Entity
+ * - 列の階層(祖先を含む)の参照先Entity
+ * - 列の値
+ *
+ * @param grid jqGrid(_data に検索結果の行データを保持していること)
+ * @param rowId 行ID
+ * @param colModel 列定義
+ * @param rdata 行のフォーマット済みデータ
+ * @returns cellattr の戻り値(属性文字列。属性を設定しない場合は null)
+ */
+function searchResultGroupingCellAttr(grid, rowId, colModel, rdata) {
+	const rowIndex = parseInt(rowId) - 1;
+	const data = grid.getGridParam("_data");
+	const row = data[rowIndex];
+	const colName = colModel.name;
+
+	const parts = colName.split(".");
+	// isLeaf: 列名の末尾(末端)か（name, ref.ref.nameなど）
+	const isMatched = (row1, row2, path, isLeaf) => {
+		const keys = [REFERENCE_OID_SUFFIX, REFERENCE_VERSION_SUFFIX].map(suffix => `${path}.${suffix}`);
+		if (isLeaf && keys.every((key) => row1[key] == null && row2[key] == null)) {
+			return true;
+		}
+		return keys.every((key) => row1[key] != null && row1[key] == row2[key]);
+	};
+
+	// 2つの行が結合対象(同一)か
+	const isSame = (row1, row2) => row1.orgOid == row2.orgOid
+		&& row1.orgVersion == row2.orgVersion
+		&& parts.every((_, i) => isMatched(row1, row2, parts.slice(0, i + 1).join("."), i === parts.length - 1))
+		&& row1[colName] == row2[colName];
+
+	// 前の行と同じ場合は非表示にする
+	// タイトルを指定しないと(""含む)CELL値が設定されるので指定
+	if (rowIndex > 0 && isSame(row, data[rowIndex - 1])) {
+		return " title=\"&nbsp;\" style=\"display:none;\" ";
+	}
+
+	// この行から何行分rowspanを設定するか計算
+	let count = 0;
+	for (let i = rowIndex; i < data.length && isSame(row, data[i]); i++) {
+		count++;
+	}
+
+	if (count > 1) {
+		// タイトルを指定しないと(""含む)CELL値が設定されるので、空の場合は &nbsp; を指定
+		const label = $.jgrid.stripHtml(rdata[colName]).replace(/'/g, "&apos;") || "&nbsp;";
+		return " title=\"" + label + "\" style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+	}
+	return null;
+}
+
+/**
 * ファイルダウンロード実行
 * @param searchType 検索タイプ(normal、detail、fixed)
 * @param formName search condition form name

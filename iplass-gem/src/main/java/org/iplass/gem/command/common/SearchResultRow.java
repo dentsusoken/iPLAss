@@ -43,6 +43,21 @@ public class SearchResultRow {
 	/** 削除可 */
 	public static final String CAN_DELETE = "@canDelete";
 
+	/** 参照先 Entity の oid のキー接尾辞(「検索結果をまとめる」判定用。common.js の定数と合わせる) */
+	public static final String REFERENCE_OID_SUFFIX = "@oid";
+	/** 参照先 Entity の version のキー接尾辞(「検索結果をまとめる」判定用。common.js の定数と合わせる) */
+	public static final String REFERENCE_VERSION_SUFFIX = "@version";
+
+	/**
+	 * 参照先の識別キー({@code <参照プロパティのパス>.@oid} など。例: {@code mref2.mref3.@oid})を返します。
+	 *
+	 * @param path 参照プロパティのパス
+	 * @param suffix {@link #REFERENCE_OID_SUFFIX} または {@link #REFERENCE_VERSION_SUFFIX}
+	 */
+	public static String referenceKey(String path, String suffix) {
+		return path + "." + suffix;
+	}
+
 	/** 対象Entity */
 	private Entity entity;
 
