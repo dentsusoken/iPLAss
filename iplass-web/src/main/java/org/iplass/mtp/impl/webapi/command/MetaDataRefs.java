@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.webapi.command;
 import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 import org.iplass.mtp.impl.webapi.command.binary.BinaryCommand;
 import org.iplass.mtp.impl.webapi.command.definition.DefinitionCommand;
+import org.iplass.mtp.impl.webapi.command.definition.DefinitionStatusCheckCommand;
 import org.iplass.mtp.impl.webapi.command.entity.CreateEntityCommand;
 import org.iplass.mtp.impl.webapi.command.entity.DeleteEntityCommand;
 import org.iplass.mtp.impl.webapi.command.entity.GetEntityCommand;
@@ -33,6 +34,7 @@ import org.iplass.mtp.impl.webapi.command.stub.StubResponseCommand;
  */
 @MetaDataSeeAlso({
 		DefinitionCommand.class,
+		DefinitionStatusCheckCommand.class,
 		GetEntityCommand.class,
 		CreateEntityCommand.class,
 		UpdateEntityCommand.class,
