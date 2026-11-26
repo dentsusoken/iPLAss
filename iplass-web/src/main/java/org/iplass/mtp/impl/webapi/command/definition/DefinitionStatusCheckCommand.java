@@ -130,14 +130,12 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 	 * @param e 状態チェックで発生した例外
 	 * @return エラーメッセージ
 	 */
-	private String toMessage(MetaDataIllegalStateException e) {
+	private static String toMessage(MetaDataIllegalStateException e) {
 		// 例外は原因例外のメッセージを引き継いで生成されるため、原因例外のメッセージは確認しない
-		if (e.getMessage() != null) {
-			return e.getMessage();
-		}
-		return Objects.requireNonNullElse(e.getCause(), e)
-				.getClass()
-				.getName();
+		return e.getMessage() != null ? e.getMessage()
+				: Objects.requireNonNullElse(e.getCause(), e)
+						.getClass()
+						.getName();
 	}
 
 }
