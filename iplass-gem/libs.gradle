@@ -50,6 +50,8 @@ dependencies {
 
 	wjRuntime sharedLib('org.webjars.npm:jquery-ui')
 	wjRuntime sharedLib('org.webjars.npm:quill')
+	wjRuntime sharedLib('org.webjars.npm:quill-table-up')
+	wjRuntime sharedLib('org.webjars.npm:quill-resize-module')
 
 	//css
 	wjRuntime sharedLib('org.webjars:font-awesome')

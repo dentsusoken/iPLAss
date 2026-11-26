@@ -107,3 +107,42 @@ scriptContext.gem.locale.calendar.withoutEntity = "I removed from the search for
 
 scriptContext.gem.locale.apendCategory("application");
 scriptContext.gem.locale.application.specifyDescription = "Specify a note of the token to be generated.";
+
+scriptContext.gem.locale.apendCategory("quill");
+scriptContext.gem.locale.quill.imageUrlPrompt = "Enter the image URL";
+scriptContext.gem.locale.quill.imageUrlInvalid = "Specify a valid image URL.";
+scriptContext.gem.locale.quill.tableUp = {
+	fullCheckboxText: "Insert full width table",
+	customBtnText: "Custom",
+	confirmText: "Confirm",
+	cancelText: "Cancel",
+	rowText: "Row",
+	colText: "Column",
+	notPositiveNumberError: "Please enter a positive integer",
+	custom: "Custom",
+	clear: "Clear",
+	transparent: "Transparent",
+	perWidthInsufficient: "The percentage width is insufficient. To complete the operation, the table needs to be converted to a fixed width. Do you want to continue?",
+	CopyCell: "Copy cell",
+	CutCell: "Cut cell",
+	InsertTop: "Insert row above",
+	InsertRight: "Insert column right",
+	InsertBottom: "Insert row below",
+	InsertLeft: "Insert column Left",
+	MergeCell: "Merge Cell",
+	SplitCell: "Split Cell",
+	DeleteRow: "Delete Row",
+	DeleteColumn: "Delete Column",
+	DeleteTable: "Delete table",
+	BackgroundColor: "Set background color",
+	BorderColor: "Set border color",
+	FreezeRow: "Freeze to this row",
+	UnfreezeRow: "Unfreeze",
+	FreezeCol: "Freeze to this column",
+	UnfreezeCol: "Unfreeze column",
+	SwitchWidth: "Switch table width",
+	InsertCaption: "Insert table caption",
+	ToggleTdBetweenTh: "Toggle td between th",
+	ConvertTothead: "Convert to thead",
+	ConvertTotfoot: "Convert to tfoot"
+};
