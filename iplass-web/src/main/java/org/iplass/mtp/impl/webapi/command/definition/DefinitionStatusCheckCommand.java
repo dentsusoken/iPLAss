@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.webapi.command.definition;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Objects;
 
 import org.iplass.mtp.auth.AuthContext;
@@ -53,8 +51,7 @@ import jakarta.ws.rs.core.Response.Status;
 		methods = { MethodType.GET },
 		responseResults = {
 				@WebApiResultAttribute(name = DefinitionStatusCheckCommand.RESULT_STATE, dataType = String.class),
-				@WebApiResultAttribute(name = DefinitionStatusCheckCommand.RESULT_MESSAGE, dataType = String.class),
-				@WebApiResultAttribute(name = DefinitionStatusCheckCommand.RESULT_STACK_TRACE, dataType = String.class) },
+				@WebApiResultAttribute(name = DefinitionStatusCheckCommand.RESULT_MESSAGE, dataType = String.class) },
 		supportBearerToken = true,
 		overwritable = false)
 @CommandClass(name = "mtp/definition/DefinitionStatusCheckCommand", displayName = "Definition Status Check Web API", overwritable = false)
@@ -65,8 +62,6 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 	public static final String RESULT_STATE = "definitionState";
 	/** 状態に問題がある場合のエラーメッセージ */
 	public static final String RESULT_MESSAGE = "message";
-	/** 状態に問題がある場合のスタックトレース */
-	public static final String RESULT_STACK_TRACE = "stackTrace";
 
 	/** メタデータの状態：問題なし */
 	private static final String STATE_SUCCESS = "SUCCESS";
@@ -111,7 +106,6 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 			logger.warn("metadata status check error. target={}, {}", metaDataPath, e.getMessage());
 			request.setAttribute(RESULT_STATE, STATE_ILLEGAL);
 			request.setAttribute(RESULT_MESSAGE, toMessage(e));
-			request.setAttribute(RESULT_STACK_TRACE, toStackTrace(e));
 		}
 		return CMD_EXEC_SUCCESS;
 	}
@@ -144,20 +138,6 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 		return Objects.requireNonNullElse(e.getCause(), e)
 				.getClass()
 				.getName();
-	}
-
-	/**
-	 * 状態チェックで発生した例外から、レスポンス用のスタックトレースを取得します。
-	 * 原因となった例外（Groovyのコンパイルエラーなど）がある場合は、そのスタックトレースを返します。
-	 *
-	 * @param e 状態チェックで発生した例外
-	 * @return スタックトレース文字列
-	 */
-	private String toStackTrace(MetaDataIllegalStateException e) {
-		Throwable target = Objects.requireNonNullElse(e.getCause(), e);
-		StringWriter writer = new StringWriter();
-		target.printStackTrace(new PrintWriter(writer));
-		return writer.toString();
 	}
 
 }
