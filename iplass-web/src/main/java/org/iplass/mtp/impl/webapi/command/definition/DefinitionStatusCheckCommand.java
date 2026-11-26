@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.webapi.command.definition;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
 
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.NoPermissionException;
@@ -36,6 +37,7 @@ import org.iplass.mtp.impl.metadata.MetaDataIllegalStateException;
 import org.iplass.mtp.impl.webapi.WebApiService;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
@@ -67,15 +69,15 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 	public static final String RESULT_STACK_TRACE = "stackTrace";
 
 	/** メタデータの状態：問題なし */
-	public static final String STATE_SUCCESS = "SUCCESS";
+	private static final String STATE_SUCCESS = "SUCCESS";
 	/** メタデータの状態：問題あり（Groovyのコンパイルエラーなど） */
-	public static final String STATE_ILLEGAL = "ILLEGAL";
+	private static final String STATE_ILLEGAL = "ILLEGAL";
 	/** メタデータの状態：指定されたメタデータが存在しない */
-	public static final String STATE_NOT_FOUND = "NOT_FOUND";
+	private static final String STATE_NOT_FOUND = "NOT_FOUND";
 
-	WebApiService webApiService = ServiceRegistry.getRegistry()
+	private final WebApiService webApiService = ServiceRegistry.getRegistry()
 			.getService(WebApiService.class);
-	DefinitionService service = DefinitionService.getInstance();
+	private final DefinitionService service = DefinitionService.getInstance();
 
 	@Override
 	public String execute(RequestContext request) {
@@ -87,27 +89,26 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 		if (!AuthContext.getCurrentContext()
 				.getUser()
 				.isAdmin()) {
-			throw new NoPermissionException("User is not admin.");
+			throw new NoPermissionException("User is not an admin.");
 		}
 		DefinitionPath typeAndPath = typeAndPath(request);
 
 		String metaDataPath = service.getPath(typeAndPath.getType(), typeAndPath.getPath());
+		MetaDataContext context = MetaDataContext.getContext();
 
 		// 存在チェック。checkStateは存在しない場合も同じ例外をスローし区別できないため、先に確認する。
 		// Definitionへの変換を伴うTypedDefinitionManager#getは、不正な定義で例外となるため使用しない
-		if (MetaDataContext.getContext()
-				.getMetaDataEntry(metaDataPath) == null) {
+		if (context.getMetaDataEntry(metaDataPath) == null) {
 			request.setAttribute(RESULT_STATE, STATE_NOT_FOUND);
 			return CMD_EXEC_SUCCESS;
 		}
 
 		// 状態チェック。Groovyのコンパイルエラーなどは、MetaDataRuntime生成時に記録されている
 		try {
-			MetaDataContext.getContext()
-					.checkState(metaDataPath);
+			context.checkState(metaDataPath);
 			request.setAttribute(RESULT_STATE, STATE_SUCCESS);
 		} catch (MetaDataIllegalStateException e) {
-			logger.error("meta data status check error. target=" + metaDataPath + ", " + e.getMessage(), e);
+			logger.warn("metadata status check error. target={}, {}", metaDataPath, e.getMessage());
 			request.setAttribute(RESULT_STATE, STATE_ILLEGAL);
 			request.setAttribute(RESULT_MESSAGE, toMessage(e));
 			request.setAttribute(RESULT_STACK_TRACE, toStackTrace(e));
@@ -115,11 +116,10 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 		return CMD_EXEC_SUCCESS;
 	}
 
-	// リクエストが送られてきたときにパスから型などを判明させる
 	private DefinitionPath typeAndPath(RequestContext request) {
 		String subPath = (String) request.getAttribute(WebApiRequestConstants.SUB_PATH);
-		if (subPath == null || subPath.length() == 0) {
-			throw new NullPointerException("definition path must specify.");
+		if (StringUtil.isEmpty(subPath)) {
+			throw new IllegalArgumentException("definition path must be specified.");
 		}
 
 		DefinitionPath path = service.resolvePath(subPath);
@@ -137,16 +137,12 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 	 * @return エラーメッセージ
 	 */
 	private String toMessage(MetaDataIllegalStateException e) {
+		// 例外は原因例外のメッセージを引き継いで生成されるため、原因例外のメッセージは確認しない
 		if (e.getMessage() != null) {
 			return e.getMessage();
 		}
-		Throwable cause = e.getCause();
-		if (cause != null) {
-			return cause.getMessage() != null ? cause.getMessage()
-					: cause.getClass()
-							.getName();
-		}
-		return e.getClass()
+		return Objects.requireNonNullElse(e.getCause(), e)
+				.getClass()
 				.getName();
 	}
 
@@ -158,7 +154,7 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 	 * @return スタックトレース文字列
 	 */
 	private String toStackTrace(MetaDataIllegalStateException e) {
-		Throwable target = e.getCause() != null ? e.getCause() : e;
+		Throwable target = Objects.requireNonNullElse(e.getCause(), e);
 		StringWriter writer = new StringWriter();
 		target.printStackTrace(new PrintWriter(writer));
 		return writer.toString();
