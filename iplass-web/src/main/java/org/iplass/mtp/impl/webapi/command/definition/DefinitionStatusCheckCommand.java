@@ -107,6 +107,7 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 					.checkState(metaDataPath);
 			request.setAttribute(RESULT_STATE, STATE_SUCCESS);
 		} catch (MetaDataIllegalStateException e) {
+			logger.error("meta data status check error. target=" + metaDataPath + ", " + e.getMessage(), e);
 			request.setAttribute(RESULT_STATE, STATE_ILLEGAL);
 			request.setAttribute(RESULT_MESSAGE, toMessage(e));
 			request.setAttribute(RESULT_STACK_TRACE, toStackTrace(e));
