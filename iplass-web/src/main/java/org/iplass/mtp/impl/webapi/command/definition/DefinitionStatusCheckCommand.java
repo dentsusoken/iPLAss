@@ -29,8 +29,6 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.command.annotation.webapi.WebApiResultAttribute;
-import org.iplass.mtp.definition.Definition;
-import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.DefinitionPath;
 import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
@@ -93,15 +91,17 @@ public final class DefinitionStatusCheckCommand implements Command, Constants {
 		}
 		DefinitionPath typeAndPath = typeAndPath(request);
 
-		// 存在チェック。checkStateは存在しない場合も同じ例外をスローし区別できないため、先に確認する
-		TypedDefinitionManager<? extends Definition> tdm = service.getTypedDefinitionManager(typeAndPath.getType());
-		if (tdm.get(typeAndPath.getPath()) == null) {
+		String metaDataPath = service.getPath(typeAndPath.getType(), typeAndPath.getPath());
+
+		// 存在チェック。checkStateは存在しない場合も同じ例外をスローし区別できないため、先に確認する。
+		// Definitionへの変換を伴うTypedDefinitionManager#getは、不正な定義で例外となるため使用しない
+		if (MetaDataContext.getContext()
+				.getMetaDataEntry(metaDataPath) == null) {
 			request.setAttribute(RESULT_STATE, STATE_NOT_FOUND);
 			return CMD_EXEC_SUCCESS;
 		}
 
 		// 状態チェック。Groovyのコンパイルエラーなどは、MetaDataRuntime生成時に記録されている
-		String metaDataPath = service.getPath(typeAndPath.getType(), typeAndPath.getPath());
 		try {
 			MetaDataContext.getContext()
 					.checkState(metaDataPath);
