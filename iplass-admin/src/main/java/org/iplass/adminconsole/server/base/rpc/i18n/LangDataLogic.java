@@ -103,12 +103,13 @@ public class LangDataLogic implements Service {
 		if (annotation.isMultiLangValue()) {
 
 			// defaultの値を取得してlocalizeStringへ変換
-			String defaultLang = (String) cls.getMethod(annotation.itemGetter())
+			String defaultLang = (String) getAccessibleMethod(cls, annotation.itemGetter())
 					.invoke(definition, new Object[] {});
 
 			@SuppressWarnings("unchecked")
-			List<LocalizedStringDefinition> localizedDisplayNameList = (List<LocalizedStringDefinition>) cls.getMethod(annotation.multiLangGetter())
-					.invoke(definition, new Object[] {});
+			List<LocalizedStringDefinition> localizedDisplayNameList = (List<LocalizedStringDefinition>) getAccessibleMethod(cls,
+					annotation.multiLangGetter())
+							.invoke(definition, new Object[] {});
 
 			LocalizedStringDefinition defaultDefinition = new LocalizedStringDefinition();
 			defaultDefinition.setLocaleName(DEFAULT_KEY_NAME);
@@ -125,7 +126,7 @@ public class LangDataLogic implements Service {
 
 		} else {
 
-			Object child = cls.getMethod(annotation.itemGetter())
+			Object child = getAccessibleMethod(cls, annotation.itemGetter())
 					.invoke(definition, new Object[] {});
 
 			// topsection1のようにnullの可能性あり、その場合は次の処理へ
@@ -145,9 +146,9 @@ public class LangDataLogic implements Service {
 					localizedDisplayNameList.add(defaultDefinition);
 
 					@SuppressWarnings("unchecked")
-					List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) cls
-							.getMethod(annotation.multiLangGetter())
-							.invoke(definition, new Object[] {});
+					List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) getAccessibleMethod(
+							cls, annotation.multiLangGetter())
+									.invoke(definition, new Object[] {});
 					for (LocalizedSelectValueDefinition localizedSelectValueDefinition : localizedSelectValueDefinitionList) {
 						// localizedSelectValueDefinitionはnullの可能性あり
 						if (localizedSelectValueDefinition != null && localizedSelectValueDefinition.getSelectValueList() != null) {
@@ -275,12 +276,12 @@ public class LangDataLogic implements Service {
 						throw new RuntimeException(resourceString("inputError", editItemKey));
 					}
 					String itemSetter = annotation.itemSetter();
-					cls.getMethod(itemSetter, new Class[] { String.class })
+					getAccessibleMethod(cls, itemSetter, String.class)
 							.invoke(definition, new Object[] { multiLangFieldInfo.getDefaultString() });
 
 					// multilang
 					String multiLangSetter = annotation.multiLangSetter();
-					cls.getMethod(multiLangSetter, new Class[] { List.class })
+					getAccessibleMethod(cls, multiLangSetter, List.class)
 							.invoke(definition, new Object[] { multiLangFieldInfo.getLocalizedStringList() });
 
 					continue;
@@ -289,7 +290,7 @@ public class LangDataLogic implements Service {
 
 		} else {
 
-			Object child = cls.getMethod(annotation.itemGetter())
+			Object child = getAccessibleMethod(cls, annotation.itemGetter())
 					.invoke(definition, new Object[] {});
 
 			// topsection1のようにnullの可能性あり、その場合は次の処理へ
@@ -320,9 +321,9 @@ public class LangDataLogic implements Service {
 
 							// multi
 							@SuppressWarnings("unchecked")
-							List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) cls
-									.getMethod(annotation.multiLangGetter())
-									.invoke(definition, new Object[] {});
+							List<LocalizedSelectValueDefinition> localizedSelectValueDefinitionList = (List<LocalizedSelectValueDefinition>) getAccessibleMethod(
+									cls, annotation.multiLangGetter())
+											.invoke(definition, new Object[] {});
 							for (LocalizedStringDefinition editLocalizedString : multiLangFieldInfo.getLocalizedStringList()) {
 								String editlocale = editLocalizedString.getLocaleName();
 								for (LocalizedSelectValueDefinition lsvd : localizedSelectValueDefinitionList) {
@@ -414,12 +415,11 @@ public class LangDataLogic implements Service {
 			String nameGetter = annotation.itemNameGetter();
 			if (!"".equals(nameGetter)) {
 				if (annotation.isUseSuperForItemName()) {
-					String name = (String) cls.getSuperclass()
-							.getMethod(nameGetter)
+					String name = (String) getAccessibleMethod(cls.getSuperclass(), nameGetter)
 							.invoke(definition, new Object[] {});
 					itemKey = name + "." + itemKey;
 				} else {
-					String name = (String) cls.getMethod(nameGetter)
+					String name = (String) getAccessibleMethod(cls, nameGetter)
 							.invoke(definition, new Object[] {});
 					itemKey = name + "." + itemKey;
 				}
@@ -439,6 +439,15 @@ public class LangDataLogic implements Service {
 		}
 
 		return itemKey;
+	}
+
+	private Method getAccessibleMethod(Class<?> cls, String name, Class<?>... parameterTypes)
+			throws NoSuchMethodException {
+		Method method = cls.getMethod(name, parameterTypes);
+		if (!method.trySetAccessible()) {
+			logger.warn("Cannot access method: {}.{}", cls.getName(), name);
+		}
+		return method;
 	}
 
 	/**

@@ -22,11 +22,11 @@
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
-<%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
+<%@ page import="org.iplass.gem.command.generic.detail.StandardButtonVisibility"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -76,6 +76,7 @@
 	}
 
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+	StandardButtonVisibility stdButtonVisibility = new StandardButtonVisibility(defName, OutputType.EDIT, data);
 %>
 
 <ul class="list_operation edit-bar">
@@ -114,7 +115,7 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (data.isCanUpdate()) {
+		if (stdButtonVisibility.isUpdateButtonVisible()) {
 			String updateDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.save");
 			String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
@@ -127,7 +128,7 @@
 </li>
 <%
 		}
-		if (data.isCanDelete() && !form.isHideDelete()) {
+		if (stdButtonVisibility.isDeleteButtonVisible()) {
 			String deleteDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.delete");
 			String localizedDeleteDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteDisplayLabel(), form.getLocalizedDeleteDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedDeleteDisplayLabel)) {
@@ -140,8 +141,7 @@
 </li>
 <%
 		}
-		if (data.getEntityDefinition().getVersionControlType() != VersionControlType.NONE
-				&& data.isCanDelete() && form.isShowDeleteSpecificVersion()) {
+		if (stdButtonVisibility.isDeleteVersionButtonVisible()) {
 			String displayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.deleteSpecificVersion");
 			String localizedDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteSpecificVersionDisplayLabel(), form.getLocalizedDeleteSpecificVersionDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedDisplayLabel)) {
@@ -155,7 +155,7 @@
 <%
 		}
 	} else {
-		if (data.isCanCreate()) {
+		if (stdButtonVisibility.isInsertButtonVisible()) {
 			String insertDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.reg");
 			String localizedInsertDisplayLabel = TemplateUtil.getMultilingualString(form.getInsertDisplayLabel(), form.getLocalizedInsertDisplayLabelList());
 			if (StringUtil.isNotBlank(localizedInsertDisplayLabel)) {
